@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carry Note — Análisis Macroeconómico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0b;
+  --surface: #111114;
+  --surface2: #18181d;
+  --border: #2a2a32;
+  --border2: #1e1e24;
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --text: #e8e6e0;
+  --muted: #6b6875;
+  --muted2: #4a4855;
+  --green: #4caf7d;
+  --red: #e05252;
+  --blue: #5b8dee;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* ── HEADER ── */
+header {
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header-eyebrow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 2.5rem;
+  border-bottom: 1px solid var(--border2);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+.header-eyebrow .dot { color: var(--gold); margin: 0 0.4rem; }
+#live-clock { color: var(--gold); }
+
+.header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2.5rem;
+}
+.logo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.logo-name {
+  font-family: var(--serif);
+  font-size: 2.8rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text);
+}
+.logo-name em {
+  font-style: italic;
+  color: var(--gold);
+}
+.logo-tagline {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--muted);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+.issue-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  border: 1px solid var(--border);
+  padding: 0.2rem 0.6rem;
+}
+
+.nav-strip {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--border2);
+  overflow-x: auto;
+}
+.nav-strip a {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0.65rem 1.5rem;
+  border-right: 1px solid var(--border2);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-strip a:hover, .nav-strip a.active {
+  color: var(--gold);
+  background: var(--surface);
+}
+
+/* ── API KEY BAR ── */
+.apikey-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.55rem 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  flex-wrap: wrap;
+}
+.apikey-bar label { color: var(--muted); white-space: nowrap; letter-spacing: 0.08em; }
+.apikey-bar input {
+  flex: 1;
+  min-width: 240px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  padding: 0.35rem 0.75rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.apikey-bar input:focus { border-color: var(--gold); }
+.apikey-bar input::placeholder { color: var(--muted2); }
+.key-save {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 1rem;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.key-save:hover { background: var(--gold2); }
+.key-status { font-size: 0.62rem; }
+.key-status.ok { color: var(--green); }
+.key-status.err { color: var(--red); }
+.key-hint { color: var(--muted2); font-size: 0.58rem; }
+.key-hint a { color: var(--muted); }
+
+/* ── TICKER ── */
+.ticker {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.4rem 0;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: 0.65rem;
+}
+.ticker-inner { display: flex; gap: 2.5rem; animation: scroll 40s linear infinite; white-space: nowrap; }
+.t-item { display: inline-flex; gap: 0.4rem; align-items: center; padding: 0 0.5rem; }
+.t-lbl { color: var(--muted); }
+.t-val { color: var(--text); }
+.t-up { color: var(--green); }
+.t-dn { color: var(--red); }
+.t-sep { color: var(--border); }
+@keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── MAIN LAYOUT ── */
+main {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 2.5rem 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 3rem;
+}
+
+/* ── GENERATOR ── */
+.generator {
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  background: var(--surface);
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.gen-label {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.1rem;
+  font-weight: 500;
+}
+.topic-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.t-btn {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+.t-btn:hover { border-color: var(--gold); color: var(--gold); }
+.t-btn.sel { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 500; }
+.gen-row { display: flex; gap: 0.6rem; margin-top: 0.9rem; }
+.gen-row input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  padding: 0.5rem 0.75rem;
+  outline: none;
+}
+.gen-row input:focus { border-color: var(--gold); }
+.gen-row input::placeholder { color: var(--muted2); }
+.gen-go {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.4rem;
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.gen-go:hover { background: var(--gold2); }
+.gen-go:disabled { background: var(--muted2); cursor: not-allowed; }
+
+/* ── ARTICLES ── */
+.feed { display: flex; flex-direction: column; }
+
+.note-card {
+  border-bottom: 1px solid var(--border2);
+  padding: 2rem 0;
+  animation: rise 0.45s ease forwards;
+  opacity: 0;
+  transform: translateY(12px);
+}
+@keyframes rise { to { opacity:1; transform:translateY(0); } }
+
+.note-meta { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; }
+.note-tag {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+.note-tag.macro { border-color: var(--gold); color: var(--gold); }
+.note-tag.geo { border-color: var(--blue); color: var(--blue); }
+.note-tag.markets { border-color: var(--text); color: var(--text); }
+.note-tag.policy { border-color: var(--green); color: var(--green); }
+.note-date { font-family: var(--mono); font-size: 0.58rem; color: var(--muted); }
+
+.note-number {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  color: var(--muted2);
+  margin-left: auto;
+  letter-spacing: 0.1em;
+}
+
+.note-title {
+  font-family: var(--serif);
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.note-title:hover { color: var(--gold); }
+
+.note-sub {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 1.1rem;
+  font-weight: 300;
+  font-style: italic;
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+.note-body { display: none; }
+.note-body.open { display: block; }
+.note-body p { font-size: 0.9rem; line-height: 1.78; color: #c8c4bc; font-weight: 300; margin-bottom: 1rem; }
+.note-body h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.5rem; }
+.note-body .key-stat {
+  background: var(--surface2);
+  border-left: 2px solid var(--gold);
+  padding: 0.8rem 1.1rem;
+  margin: 1.2rem 0;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--gold2);
+  line-height: 1.5;
+}
+.read-toggle {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.read-toggle:hover { color: var(--gold2); }
+
+/* ── LOADING ── */
+.loading-card { padding: 2rem 0; border-bottom: 1px solid var(--border2); }
+.skel { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shim 1.5s infinite; margin-bottom: 0.7rem; }
+@keyframes shim { to { background-position: -200% 0; } }
+.load-msg { font-family: var(--mono); font-size: 0.65rem; color: var(--gold); margin-top: 0.8rem; }
+.ell::after { content: '.'; animation: ell 1.2s infinite; }
+@keyframes ell { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
+
+/* ── EMPTY ── */
+.empty { text-align: center; padding: 5rem 2rem; color: var(--muted2); }
+.empty .icon { font-size: 2rem; margin-bottom: 1rem; display: block; opacity: 0.4; }
+.empty p { font-family: var(--mono); font-size: 0.68rem; line-height: 1.8; color: var(--muted); }
+
+/* ── SIDEBAR ── */
+.sb-block {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+.sb-title {
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.1rem;
+  font-weight: 500;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border2);
+}
+.ind { display: flex; justify-content: space-between; align-items: baseline; padding: 0.5rem 0; border-bottom: 1px solid var(--border2); }
+.ind:last-child { border-bottom: none; }
+.ind-n { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); }
+.ind-v { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; }
+.ind-v.up { color: var(--green); }
+.ind-v.dn { color: var(--red); }
+.ind-v.neu { color: var(--text); }
+.chart-box { height: 80px; margin: 0.8rem 0; overflow: hidden; background: var(--surface2); }
+.chart-box svg { width: 100%; height: 100%; }
+.geo-entry { padding: 0.8rem 0; border-bottom: 1px solid var(--border2); }
+.geo-entry:last-child { border-bottom: none; }
+.geo-region { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); margin-bottom: 0.3rem; }
+.geo-text { font-size: 0.78rem; color: var(--muted); line-height: 1.5; font-weight: 300; }
+.cal-row { display: flex; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px solid var(--border2); font-family: var(--mono); font-size: 0.65rem; }
+.cal-row:last-child { border-bottom: none; }
+.cal-date { color: var(--gold); min-width: 50px; }
+.cal-ev { color: var(--muted); }
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 2.5rem;
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--muted2);
+}
+.footer-logo { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--muted); }
+.footer-logo em { font-style: italic; color: var(--gold); opacity: 0.7; }
+
+@media(max-width:960px) {
+  main { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .logo-name { font-size: 2rem; }
+  .header-main { padding: 1rem 1.5rem; }
+  .apikey-bar { padding: 0.55rem 1.5rem; }
+  main { padding: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">
+    <div>
+      <span id="live-clock">—</span>
+      <span class="dot">·</span>
+      <span>Buenos Aires</span>
+      <span class="dot">·</span>
+      <span>Vol. I</span>
+    </div>
+    <div>Análisis Macroeconómico &amp; Geopolítica · Powered by Claude AI</div>
+  </div>
+  <div class="header-main">
+    <div class="logo">
+      <div class="logo-name">Carry<em>Note</em></div>
+      <div class="logo-tagline">Macro · Geopolítica · Mercados</div>
+    </div>
+    <div class="header-right">
+      <div class="issue-badge">EST. 2025</div>
+    </div>
+  </div>
+  <nav class="nav-strip">
+    <a class="active">All Notes</a>
+    <a>Macro US</a>
+    <a>Fed &amp; Rates</a>
+    <a>Geopolítica</a>
+    <a>Mercados</a>
+    <a>EM &amp; Latam</a>
+    <a>Commodities</a>
+  </nav>
+</header>
+
+<div class="apikey-bar">
+  <label>▸ API KEY</label>
+  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
+  <button class="key-save" onclick="saveKey()">Guardar ▸</button>
+  <span class="key-status" id="keyStatus"></span>
+  <span class="key-hint">Obtén tu key en <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> · Se guarda solo en tu navegador</span>
+</div>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val"> 5,712.4</span><span class="t-up"> ▲0.43%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val"> 4.31%</span><span class="t-dn"> ▼3bp</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val"> 103.8</span><span class="t-dn"> ▼0.21%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val"> $71.4</span><span class="t-up"> ▲1.2%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val"> 1.0842</span><span class="t-up"> ▲0.18%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val"> $3,018</span><span class="t-up"> ▲0.65%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">FED FUNDS</span><span class="t-val"> 4.25–4.50%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">CPI YoY</span><span class="t-val"> 2.8%</span><span class="t-dn"> ▼</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">DESEMPLEO US</span><span class="t-val"> 4.1%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val"> 5,712.4</span><span class="t-up"> ▲0.43%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val"> 4.31%</span><span class="t-dn"> ▼3bp</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val"> 103.8</span><span class="t-dn"> ▼0.21%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val"> $71.4</span><span class="t-up"> ▲1.2%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val"> 1.0842</span><span class="t-up"> ▲0.18%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val"> $3,018</span><span class="t-up"> ▲0.65%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">FED FUNDS</span><span class="t-val"> 4.25–4.50%</span></span>
+    <span class="t-item t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">CPI YoY</span><span class="t-val"> 2.8%</span><span class="t-dn"> ▼</span></span>
+  </div>
+</div>
+
+<main>
+  <section>
+    <div class="generator">
+      <div class="gen-label">▸ Nueva nota de análisis</div>
+      <div class="topic-grid" id="tGrid">
+        <button class="t-btn sel" data-t="Fed y política monetaria en 2025: tasas, dot plot y perspectivas">Fed &amp; Rates</button>
+        <button class="t-btn" data-t="Inflación en Estados Unidos: situación actual, core PCE y perspectivas de desinflación">Inflación US</button>
+        <button class="t-btn" data-t="Impacto macroeconómico de los aranceles de Trump: guerra comercial y cadenas de valor globales">Aranceles &amp; Trade</button>
+        <button class="t-btn" data-t="Geopolítica: conflicto en Ucrania, energía europea y reconfiguración del orden global">Ucrania &amp; Energía</button>
+        <button class="t-btn" data-t="Desaceleración económica de China: sector inmobiliario, deflación y riesgo sistémico global">China Risk</button>
+        <button class="t-btn" data-t="Mercado laboral de Estados Unidos: NFP, desempleo, salarios y señales de enfriamiento">Labour Market</button>
+        <button class="t-btn" data-t="Curva de rendimientos del Tesoro americano: inversión, normalización y señales de recesión">Yield Curve</button>
+        <button class="t-btn" data-t="Sostenibilidad fiscal de Estados Unidos: déficit, deuda pública y el rol del dólar como reserva">US Fiscal</button>
+        <button class="t-btn" data-t="Tensiones en Medio Oriente: riesgo geopolítico, petróleo y primas de riesgo en mercados">Middle East &amp; Oil</button>
+        <button class="t-btn" data-t="El dólar como moneda de reserva global bajo presión: BRICS, desdolarización y alternativas">Dollar Dominance</button>
+        <button class="t-btn" data-t="Argentina: programa económico, carry trade del peso, brecha cambiaria y acceso a mercados">Argentina Macro</button>
+        <button class="t-btn" data-t="Economías emergentes: carry trade, flujos de capital, fortaleza del dólar y vulnerabilidades">EM &amp; Carry</button>
+      </div>
+      <div class="gen-row">
+        <input type="text" id="customT" placeholder="O escribí tu propio tema de análisis..."/>
+        <button class="gen-go" id="genBtn" onclick="gen()">Generar nota ▸</button>
+      </div>
+    </div>
+    <div class="feed" id="feed">
+      <div class="empty">
+        <span class="icon">◈</span>
+        <p>Introducí tu API key arriba, seleccioná un tema<br>y generá tu primera nota de análisis.<br><br>Carry Note combina tu criterio editorial<br>con la velocidad de Claude AI.</p>
+      </div>
+    </div>
+  </section>
+
+  <aside class="sidebar">
+    <div class="sb-block">
+      <div class="sb-title">Macro Dashboard · US</div>
+      <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">4.25–4.50%</span></div>
+      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v dn">2.8%</span></div>
+      <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v dn">2.6%</span></div>
+      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v neu">4.1%</span></div>
+      <div class="ind"><span class="ind-n">PIB Q4 '24</span><span class="ind-v up">+2.3%</span></div>
+      <div class="ind"><span class="ind-n">10Y–2Y Spread</span><span class="ind-v up">+12bp</span></div>
+      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.8</span></div>
+      <div class="chart-box">
+        <svg viewBox="0 0 300 80" preserveAspectRatio="none">
+          <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+          <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22 L300,80 L0,80Z" fill="url(#gld)"/>
+          <text x="4" y="76" font-family="DM Mono" font-size="6.5" fill="#6b6875">10Y UST YIELD · 24M</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="sb-block">
+      <div class="sb-title">Geopolitical Radar</div>
+      <div class="geo-entry">
+        <div class="geo-region">Eastern Europe</div>
+        <div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad y reconstrucción.</div>
+      </div>
+      <div class="geo-entry">
+        <div class="geo-region">Indo-Pacific</div>
+        <div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona bajo presión de Washington.</div>
+      </div>
+      <div class="geo-entry">
+        <div class="geo-region">Middle East</div>
+        <div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo permanente.</div>
+      </div>
+      <div class="geo-entry">
+        <div class="geo-region">Trade War 2.0</div>
+        <div class="geo-text">Aranceles recíprocos de la administración Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div>
+      </div>
+    </div>
+
+    <div class="sb-block">
+      <div class="sb-title">Event Calendar</div>
+      <div class="cal-row"><span class="cal-date">Mar 28</span><span class="cal-ev">PCE Core Feb</span></div>
+      <div class="cal-row"><span class="cal-date">Abr 4</span><span class="cal-ev">NFP Marzo</span></div>
+      <div class="cal-row"><span class="cal-date">Abr 10</span><span class="cal-ev">CPI Marzo</span></div>
+      <div class="cal-row"><span class="cal-date">Abr 30</span><span class="cal-ev">FOMC Decision</span></div>
+      <div class="cal-row"><span class="cal-date">May 2</span><span class="cal-ev">PIB Q1 Advance</span></div>
+      <div class="cal-row"><span class="cal-date">May 13</span><span class="cal-ev">CPI Abril</span></div>
+    </div>
+  </aside>
+</main>
+
+<footer>
+  <div class="footer-logo">Carry<em>Note</em></div>
+  <div>© 2025 · Análisis generado con Claude AI · No constituye asesoramiento financiero</div>
+</footer>
+
+<script>
+let KEY = localStorage.getItem('cn_key') || '';
+let noteCount = 0;
+
+function saveKey() {
+  const v = document.getElementById('apiKey').value.trim();
+  const s = document.getElementById('keyStatus');
+  if (!v.startsWith('sk-ant-')) {
+    s.textContent = '✗ Formato incorrecto';
+    s.className = 'key-status err';
+    return;
+  }
+  KEY = v;
+  localStorage.setItem('cn_key', v);
+  s.textContent = '✓ Key guardada';
+  s.className = 'key-status ok';
+  document.getElementById('apiKey').value = v.slice(0,16) + '••••••••••';
+}
+
+window.addEventListener('load', () => {
+  if (KEY) {
+    document.getElementById('apiKey').value = KEY.slice(0,16) + '••••••••••';
+    document.getElementById('keyStatus').textContent = '✓ Key cargada';
+    document.getElementById('keyStatus').className = 'key-status ok';
+  }
+});
+document.getElementById('apiKey').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
+
+function updateClock() {
+  document.getElementById('live-clock').textContent =
+    new Date().toLocaleDateString('es-ES', {weekday:'short',day:'2-digit',month:'short',year:'numeric'}) +
+    ' · ' + new Date().toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock, 1000); updateClock();
+
+let selT = 'Fed y política monetaria en 2025: tasas, dot plot y perspectivas';
+document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.t-btn').forEach(x => x.classList.remove('sel'));
+  b.classList.add('sel');
+  selT = b.dataset.t;
+  document.getElementById('customT').value = '';
+}));
+document.getElementById('customT').addEventListener('keydown', e => { if (e.key === 'Enter') gen(); });
+
+const tagMap = {
+  'Fed':{l:'Monetary Policy',c:'macro'}, 'Inflación':{l:'Macro US',c:'macro'},
+  'Aranceles':{l:'Trade',c:'markets'}, 'Ucrania':{l:'Geopolitics',c:'geo'},
+  'China':{l:'Global Risk',c:'geo'}, 'Labour':{l:'Macro US',c:'macro'},
+  'Yield':{l:'Fixed Income',c:'markets'}, 'Fiscal':{l:'Fiscal Policy',c:'policy'},
+  'Middle East':{l:'Geopolitics',c:'geo'}, 'Dollar':{l:'FX & Markets',c:'markets'},
+  'Argentina':{l:'EM · Argentina',c:'geo'}, 'EM':{l:'Emerging Markets',c:'markets'},
+  'carry':{l:'EM · Carry',c:'markets'},
+};
+function getTag(t) {
+  for (const [k,v] of Object.entries(tagMap))
+    if (t.toLowerCase().includes(k.toLowerCase())) return v;
+  return {l:'Analysis',c:'macro'};
+}
+
+async function gen() {
+  if (!KEY) {
+    const s = document.getElementById('keyStatus');
+    s.textContent = '✗ Introducí tu API key primero';
+    s.className = 'key-status err';
+    document.getElementById('apiKey').focus();
+    return;
+  }
+  const topic = document.getElementById('customT').value.trim() || selT;
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = 'Generando...';
+  const feed = document.getElementById('feed');
+  const empty = feed.querySelector('.empty'); if (empty) empty.remove();
+
+  const lid = 'l' + Date.now();
+  const lel = document.createElement('div'); lel.className = 'loading-card'; lel.id = lid;
+  lel.innerHTML = `
+    <div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div>
+    <div class="skel" style="height:30px;width:75%"></div>
+    <div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div>
+    <div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div>
+    <div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div>
+    <div class="skel" style="height:9px;width:60%"></div>
+    <div class="load-msg"><span class="ell">Carry Note analizando fuentes</span></div>`;
+  feed.insertBefore(lel, feed.firstChild);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        system: `Sos un economista senior y analista de mercados con base en Buenos Aires, especializado en macroeconomía global, política monetaria de la Fed y geopolítica económica. Escribís para Carry Note, una publicación de análisis económico de alto nivel dirigida a profesionales con formación en ciencias económicas, finanzas y política económica.
+
+Estilo: análisis denso y bien argumentado, con posición propia clara y fundamentada. Usás terminología técnica precisa — spreads, curvas de rendimiento, política monetaria, balanza de pagos, cuenta corriente, prima de riesgo, carry trade, tipo de cambio real — sin sobre-explicar. El tono es de research note profesional: conciso, directo, sin relleno. Cuando mencionás cifras, son específicas. Cuando tomás una posición, la justificás.
+
+Respondé ÚNICAMENTE con JSON válido, sin texto extra, sin bloques markdown:
+{"title":"Título en estilo research note (máx 10 palabras, puede ser en inglés o español)","subtitle":"Bajada que amplía la tesis central (máx 35 palabras, puede ser en inglés o español)","body":"HTML con <p>, <h3>, <div class='key-stat'>dato clave o cita</div>. Mínimo 6 párrafos. El primer párrafo establece la tesis. Los siguientes desarrollan el análisis con datos específicos, contexto histórico cuando es relevante, y perspectiva propia. Cerrá con una conclusión que indique implicancias para tomadores de decisión."}`,
+        messages: [{
+          role: 'user',
+          content: `Escribí una nota de análisis para Carry Note sobre: "${topic}". Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}. Usá datos concretos, tomá posición, sin frases genéricas.`
+        }]
+      })
+    });
+
+    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'HTTP ' + res.status); }
+    const data = await res.json();
+    const txt = data.content.map(i => i.type === 'text' ? i.text : '').join('').trim()
+      .replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    const note = JSON.parse(txt);
+
+    document.getElementById(lid)?.remove();
+    noteCount++;
+    const tag = getTag(topic);
+    const ds = new Date().toLocaleDateString('es-ES', {day:'2-digit',month:'short',year:'numeric'}) +
+      ' · ' + new Date().toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
+    const aid = 'n' + Date.now();
+
+    const card = document.createElement('div'); card.className = 'note-card';
+    card.innerHTML = `
+      <div class="note-meta">
+        <span class="note-tag ${tag.c}">${tag.l}</span>
+        <span class="note-date">${ds}</span>
+        <span class="note-number">Note #${String(noteCount).padStart(3,'0')}</span>
+      </div>
+      <div class="note-title" onclick="toggle('${aid}')">${note.title}</div>
+      <div class="note-sub">${note.subtitle}</div>
+      <div class="note-body" id="${aid}">${note.body}</div>
+      <button class="read-toggle" id="b${aid}" onclick="toggle('${aid}')">Read note ▸</button>`;
+    feed.insertBefore(card, feed.firstChild);
+    toggle(aid);
+
+  } catch(err) {
+    document.getElementById(lid)?.remove();
+    const ec = document.createElement('div'); ec.className = 'note-card';
+    ec.innerHTML = `<div style="font-family:var(--mono);font-size:0.7rem;color:var(--red);padding:1rem 0">
+      ✗ ${err.message}<br>
+      <span style="color:var(--muted);font-size:0.62rem">Verificá que la API key es correcta y tiene créditos disponibles.</span>
+    </div>`;
+    feed.insertBefore(ec, feed.firstChild);
+  }
+  btn.disabled = false; btn.textContent = 'Generar nota ▸';
+}
+
+function toggle(id) {
+  const b = document.getElementById(id), btn = document.getElementById('b'+id);
+  b.classList.toggle('open');
+  btn.textContent = b.classList.contains('open') ? 'Close note ▲' : 'Read note ▸';
+}
+</script>
+</body>
+</html>
