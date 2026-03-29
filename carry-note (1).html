@@ -7,457 +7,180 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a0b;
-  --surface: #111114;
-  --surface2: #18181d;
-  --border: #2a2a32;
-  --border2: #1e1e24;
-  --gold: #c9a84c;
-  --gold2: #e8c96a;
-  --text: #e8e6e0;
-  --muted: #6b6875;
-  --muted2: #4a4855;
-  --green: #4caf7d;
-  --red: #e05252;
-  --blue: #5b8dee;
-  --serif: 'Cormorant Garamond', Georgia, serif;
-  --mono: 'DM Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
+  --bg:#0a0a0b;--surface:#111114;--surface2:#18181d;--border:#2a2a32;--border2:#1e1e24;
+  --gold:#c9a84c;--gold2:#e8c96a;--text:#e8e6e0;--muted:#6b6875;--muted2:#4a4855;
+  --green:#4caf7d;--red:#e05252;--blue:#5b8dee;
+  --serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35}
 
-/* ── NOISE OVERLAY ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.35;
-}
+/* HEADER */
+header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
+.eyebrow{display:flex;justify-content:space-between;align-items:center;padding:0.55rem 2.5rem;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em}
+.eyebrow .dot{color:var(--gold);margin:0 0.4rem}
+#live-clock{color:var(--gold)}
+.header-main{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 2.5rem}
+.logo-name{font-family:var(--serif);font-size:2.8rem;font-weight:600;letter-spacing:-0.02em;line-height:1}
+.logo-name em{font-style:italic;color:var(--gold)}
+.logo-tag{font-family:var(--mono);font-size:0.58rem;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;margin-top:0.15rem}
+.issue-badge{font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;border:1px solid var(--border);padding:0.2rem 0.6rem}
+.nav-strip{display:flex;border-top:1px solid var(--border2);overflow-x:auto}
+.nav-strip a{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:0.65rem 1.5rem;border-right:1px solid var(--border2);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.nav-strip a:hover,.nav-strip a.active{color:var(--gold);background:var(--surface)}
 
-/* ── HEADER ── */
-header {
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-eyebrow {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.55rem 2.5rem;
-  border-bottom: 1px solid var(--border2);
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-}
-.header-eyebrow .dot { color: var(--gold); margin: 0 0.4rem; }
-#live-clock { color: var(--gold); }
+/* EDITOR BAR */
+.editor-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.55rem 2.5rem;display:none;align-items:center;gap:0.75rem;font-family:var(--mono);font-size:0.65rem;flex-wrap:wrap}
+.editor-bar.visible{display:flex}
+.editor-bar label{color:var(--gold);white-space:nowrap;letter-spacing:0.08em}
+.editor-bar input{flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.65rem;padding:0.35rem 0.75rem;outline:none}
+.editor-bar input:focus{border-color:var(--gold)}
+.editor-bar input::placeholder{color:var(--muted2)}
+.eb-btn{font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 1rem;border:none;cursor:pointer;white-space:nowrap;transition:background 0.2s}
+.eb-save{background:var(--gold);color:var(--bg)}
+.eb-save:hover{background:var(--gold2)}
+.eb-logout{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.eb-logout:hover{color:var(--red);border-color:var(--red)}
+.eb-status{font-size:0.62rem}
+.eb-status.ok{color:var(--green)}
+.eb-status.err{color:var(--red)}
 
-.header-main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.2rem 2.5rem;
-}
-.logo {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-.logo-name {
-  font-family: var(--serif);
-  font-size: 2.8rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  color: var(--text);
-}
-.logo-name em {
-  font-style: italic;
-  color: var(--gold);
-}
-.logo-tagline {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  color: var(--muted);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-.header-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.3rem;
-}
-.issue-badge {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  border: 1px solid var(--border);
-  padding: 0.2rem 0.6rem;
-}
+/* LOGIN TOGGLE */
+.login-toggle{font-family:var(--mono);font-size:0.58rem;color:var(--muted2);text-align:center;padding:0.4rem;cursor:pointer;border-bottom:1px solid var(--border2);letter-spacing:0.06em;transition:color 0.2s}
+.login-toggle:hover{color:var(--muted)}
 
-.nav-strip {
-  display: flex;
-  gap: 0;
-  border-top: 1px solid var(--border2);
-  overflow-x: auto;
-}
-.nav-strip a {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--muted);
-  text-decoration: none;
-  padding: 0.65rem 1.5rem;
-  border-right: 1px solid var(--border2);
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.nav-strip a:hover, .nav-strip a.active {
-  color: var(--gold);
-  background: var(--surface);
-}
+/* TICKER */
+.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 0;overflow:hidden;font-family:var(--mono);font-size:0.65rem}
+.ticker-inner{display:flex;gap:2.5rem;animation:scroll 40s linear infinite;white-space:nowrap}
+.t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem}
+.t-lbl{color:var(--muted)}.t-val{color:var(--text)}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border)}
+@keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* ── API KEY BAR ── */
-.apikey-bar {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0.55rem 2.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  flex-wrap: wrap;
-}
-.apikey-bar label { color: var(--muted); white-space: nowrap; letter-spacing: 0.08em; }
-.apikey-bar input {
-  flex: 1;
-  min-width: 240px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  padding: 0.35rem 0.75rem;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.apikey-bar input:focus { border-color: var(--gold); }
-.apikey-bar input::placeholder { color: var(--muted2); }
-.key-save {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.35rem 1rem;
-  background: var(--gold);
-  color: var(--bg);
-  border: none;
-  cursor: pointer;
-  transition: background 0.2s;
-  white-space: nowrap;
-}
-.key-save:hover { background: var(--gold2); }
-.key-status { font-size: 0.62rem; }
-.key-status.ok { color: var(--green); }
-.key-status.err { color: var(--red); }
-.key-hint { color: var(--muted2); font-size: 0.58rem; }
-.key-hint a { color: var(--muted); }
+/* MAIN */
+main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:3rem}
 
-/* ── TICKER ── */
-.ticker {
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  padding: 0.4rem 0;
-  overflow: hidden;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-}
-.ticker-inner { display: flex; gap: 2.5rem; animation: scroll 40s linear infinite; white-space: nowrap; }
-.t-item { display: inline-flex; gap: 0.4rem; align-items: center; padding: 0 0.5rem; }
-.t-lbl { color: var(--muted); }
-.t-val { color: var(--text); }
-.t-up { color: var(--green); }
-.t-dn { color: var(--red); }
-.t-sep { color: var(--border); }
-@keyframes scroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+/* EDITOR PANEL */
+.editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
+.editor-panel.visible{display:block}
+.ep-label{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;font-weight:500}
+.ep-tabs{display:flex;gap:0;margin-bottom:1.2rem;border:1px solid var(--border)}
+.ep-tab{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.45rem 1rem;cursor:pointer;color:var(--muted);background:transparent;border:none;border-right:1px solid var(--border);transition:all 0.15s}
+.ep-tab:last-child{border-right:none}
+.ep-tab.active{background:var(--gold);color:var(--bg);font-weight:500}
 
-/* ── MAIN LAYOUT ── */
-main {
-  max-width: 1360px;
-  margin: 0 auto;
-  padding: 2.5rem 2.5rem;
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 3rem;
-}
+/* AI TAB */
+.ai-tab{display:none}.ai-tab.visible{display:block}
+.topic-grid{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem}
+.t-btn{font-family:var(--mono);font-size:0.62rem;padding:0.3rem 0.7rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
+.t-btn:hover{border-color:var(--gold);color:var(--gold)}
+.t-btn.sel{background:var(--gold);color:var(--bg);border-color:var(--gold);font-weight:500}
+.gen-row{display:flex;gap:0.6rem;margin-top:0.9rem}
+.gen-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none}
+.gen-row input:focus{border-color:var(--gold)}
+.gen-row input::placeholder{color:var(--muted2)}
+.gen-go{font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem 1.4rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap;transition:background 0.2s}
+.gen-go:hover{background:var(--gold2)}
+.gen-go:disabled{background:var(--muted2);cursor:not-allowed}
 
-/* ── GENERATOR ── */
-.generator {
-  border: 1px solid var(--border);
-  border-top: 2px solid var(--gold);
-  background: var(--surface);
-  padding: 1.5rem;
-  margin-bottom: 2.5rem;
-}
-.gen-label {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1.1rem;
-  font-weight: 500;
-}
-.topic-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
-.t-btn {
-  font-family: var(--mono);
-  font-size: 0.62rem;
-  padding: 0.3rem 0.7rem;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.15s;
-  letter-spacing: 0.04em;
-}
-.t-btn:hover { border-color: var(--gold); color: var(--gold); }
-.t-btn.sel { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 500; }
-.gen-row { display: flex; gap: 0.6rem; margin-top: 0.9rem; }
-.gen-row input {
-  flex: 1;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  padding: 0.5rem 0.75rem;
-  outline: none;
-}
-.gen-row input:focus { border-color: var(--gold); }
-.gen-row input::placeholder { color: var(--muted2); }
-.gen-go {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.5rem 1.4rem;
-  background: var(--gold);
-  color: var(--bg);
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s;
-}
-.gen-go:hover { background: var(--gold2); }
-.gen-go:disabled { background: var(--muted2); cursor: not-allowed; }
+/* WRITE TAB */
+.write-tab{display:none}.write-tab.visible{display:block}
+.write-tab input,.write-tab textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.6rem 0.8rem;outline:none;margin-bottom:0.6rem;resize:vertical}
+.write-tab input:focus,.write-tab textarea:focus{border-color:var(--gold)}
+.write-tab input::placeholder,.write-tab textarea::placeholder{color:var(--muted2)}
+.write-tab textarea{min-height:180px;line-height:1.6}
+.write-meta{display:flex;gap:0.6rem;margin-bottom:0.6rem}
+.write-meta select{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.55rem 0.7rem;outline:none;cursor:pointer}
+.write-meta select:focus{border-color:var(--gold)}
+.write-actions{display:flex;gap:0.6rem;margin-top:0.3rem}
+.w-btn{font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;border:none;cursor:pointer;transition:all 0.2s}
+.w-publish{background:var(--gold);color:var(--bg)}
+.w-publish:hover{background:var(--gold2)}
+.w-polish{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.w-polish:hover{border-color:var(--gold);color:var(--gold)}
+.w-polish:disabled{opacity:0.4;cursor:not-allowed}
 
-/* ── ARTICLES ── */
-.feed { display: flex; flex-direction: column; }
+/* FEED */
+.feed{display:flex;flex-direction:column}
+.note-card{border-bottom:1px solid var(--border2);padding:2rem 0;animation:rise 0.45s ease forwards;opacity:0;transform:translateY(12px)}
+@keyframes rise{to{opacity:1;transform:translateY(0)}}
+.note-meta{display:flex;gap:0.75rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap}
+.note-tag{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.18rem 0.5rem;font-weight:500;border:1px solid}
+.note-tag.macro{border-color:var(--gold);color:var(--gold)}
+.note-tag.geo{border-color:var(--blue);color:var(--blue)}
+.note-tag.markets{border-color:var(--text);color:var(--text)}
+.note-tag.policy{border-color:var(--green);color:var(--green)}
+.note-date{font-family:var(--mono);font-size:0.58rem;color:var(--muted)}
+.note-num{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto;letter-spacing:0.1em}
+.note-title{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
+.note-title:hover{color:var(--gold)}
+.note-sub{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--muted);line-height:1.55;margin-bottom:1.1rem}
+.note-body{display:none}
+.note-body.open{display:block}
+.note-body p{font-size:0.9rem;line-height:1.78;color:#c8c4bc;font-weight:300;margin-bottom:1rem}
+.note-body h3{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin:1.5rem 0 0.5rem}
+.note-body .key-stat{background:var(--surface2);border-left:2px solid var(--gold);padding:0.8rem 1.1rem;margin:1.2rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2);line-height:1.5}
+.note-footer{display:flex;align-items:center;gap:1rem;margin-top:0.5rem}
+.read-toggle{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;font-weight:500;transition:color 0.2s}
+.read-toggle:hover{color:var(--gold2)}
+.del-btn{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);background:none;border:none;cursor:pointer;padding:0;display:none;transition:color 0.2s}
+.del-btn:hover{color:var(--red)}
+.editor-active .del-btn{display:inline}
 
-.note-card {
-  border-bottom: 1px solid var(--border2);
-  padding: 2rem 0;
-  animation: rise 0.45s ease forwards;
-  opacity: 0;
-  transform: translateY(12px);
-}
-@keyframes rise { to { opacity:1; transform:translateY(0); } }
+/* LOADING */
+.loading-card{padding:2rem 0;border-bottom:1px solid var(--border2)}
+.skel{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shim 1.5s infinite;margin-bottom:0.7rem}
+@keyframes shim{to{background-position:-200% 0}}
+.load-msg{font-family:var(--mono);font-size:0.65rem;color:var(--gold);margin-top:0.8rem}
+.ell::after{content:'.';animation:ell 1.2s infinite}
+@keyframes ell{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
 
-.note-meta { display: flex; gap: 0.75rem; align-items: center; margin-bottom: 0.75rem; }
-.note-tag {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 0.18rem 0.5rem;
-  font-weight: 500;
-  border: 1px solid;
-}
-.note-tag.macro { border-color: var(--gold); color: var(--gold); }
-.note-tag.geo { border-color: var(--blue); color: var(--blue); }
-.note-tag.markets { border-color: var(--text); color: var(--text); }
-.note-tag.policy { border-color: var(--green); color: var(--green); }
-.note-date { font-family: var(--mono); font-size: 0.58rem; color: var(--muted); }
+/* EMPTY */
+.empty{text-align:center;padding:5rem 2rem}
+.empty .icon{font-size:2rem;margin-bottom:1rem;display:block;opacity:0.3}
+.empty p{font-family:var(--mono);font-size:0.68rem;line-height:1.8;color:var(--muted)}
 
-.note-number {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  color: var(--muted2);
-  margin-left: auto;
-  letter-spacing: 0.1em;
-}
+/* SIDEBAR */
+.sb-block{border:1px solid var(--border);background:var(--surface);padding:1.25rem;margin-bottom:1.5rem}
+.sb-title{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;font-weight:500;padding-bottom:0.6rem;border-bottom:1px solid var(--border2)}
+.ind{display:flex;justify-content:space-between;align-items:baseline;padding:0.5rem 0;border-bottom:1px solid var(--border2)}
+.ind:last-child{border-bottom:none}
+.ind-n{font-family:var(--mono);font-size:0.65rem;color:var(--muted)}
+.ind-v{font-family:var(--mono);font-size:0.72rem;font-weight:500}
+.ind-v.up{color:var(--green)}.ind-v.dn{color:var(--red)}.ind-v.neu{color:var(--text)}
+.chart-box{height:80px;margin:0.8rem 0;overflow:hidden;background:var(--surface2)}
+.chart-box svg{width:100%;height:100%}
+.geo-entry{padding:0.8rem 0;border-bottom:1px solid var(--border2)}
+.geo-entry:last-child{border-bottom:none}
+.geo-region{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.3rem}
+.geo-text{font-size:0.78rem;color:var(--muted);line-height:1.5;font-weight:300}
+.cal-row{display:flex;gap:1rem;padding:0.45rem 0;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.65rem}
+.cal-row:last-child{border-bottom:none}
+.cal-date{color:var(--gold);min-width:50px}
+.cal-ev{color:var(--muted)}
 
-.note-title {
-  font-family: var(--serif);
-  font-size: 1.9rem;
-  font-weight: 600;
-  line-height: 1.2;
-  color: var(--text);
-  margin-bottom: 0.5rem;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.note-title:hover { color: var(--gold); }
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
+.footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
+.footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
 
-.note-sub {
-  font-size: 0.85rem;
-  color: var(--muted);
-  line-height: 1.55;
-  margin-bottom: 1.1rem;
-  font-weight: 300;
-  font-style: italic;
-  font-family: var(--serif);
-  font-size: 1rem;
-}
-
-.note-body { display: none; }
-.note-body.open { display: block; }
-.note-body p { font-size: 0.9rem; line-height: 1.78; color: #c8c4bc; font-weight: 300; margin-bottom: 1rem; }
-.note-body h3 { font-family: var(--serif); font-size: 1.2rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.5rem; }
-.note-body .key-stat {
-  background: var(--surface2);
-  border-left: 2px solid var(--gold);
-  padding: 0.8rem 1.1rem;
-  margin: 1.2rem 0;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--gold2);
-  line-height: 1.5;
-}
-.read-toggle {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--gold);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-.read-toggle:hover { color: var(--gold2); }
-
-/* ── LOADING ── */
-.loading-card { padding: 2rem 0; border-bottom: 1px solid var(--border2); }
-.skel { background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%); background-size: 200% 100%; animation: shim 1.5s infinite; margin-bottom: 0.7rem; }
-@keyframes shim { to { background-position: -200% 0; } }
-.load-msg { font-family: var(--mono); font-size: 0.65rem; color: var(--gold); margin-top: 0.8rem; }
-.ell::after { content: '.'; animation: ell 1.2s infinite; }
-@keyframes ell { 0%{content:'.'} 33%{content:'..'} 66%{content:'...'} }
-
-/* ── EMPTY ── */
-.empty { text-align: center; padding: 5rem 2rem; color: var(--muted2); }
-.empty .icon { font-size: 2rem; margin-bottom: 1rem; display: block; opacity: 0.4; }
-.empty p { font-family: var(--mono); font-size: 0.68rem; line-height: 1.8; color: var(--muted); }
-
-/* ── SIDEBAR ── */
-.sb-block {
-  border: 1px solid var(--border);
-  background: var(--surface);
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
-}
-.sb-title {
-  font-family: var(--mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1.1rem;
-  font-weight: 500;
-  padding-bottom: 0.6rem;
-  border-bottom: 1px solid var(--border2);
-}
-.ind { display: flex; justify-content: space-between; align-items: baseline; padding: 0.5rem 0; border-bottom: 1px solid var(--border2); }
-.ind:last-child { border-bottom: none; }
-.ind-n { font-family: var(--mono); font-size: 0.65rem; color: var(--muted); }
-.ind-v { font-family: var(--mono); font-size: 0.72rem; font-weight: 500; }
-.ind-v.up { color: var(--green); }
-.ind-v.dn { color: var(--red); }
-.ind-v.neu { color: var(--text); }
-.chart-box { height: 80px; margin: 0.8rem 0; overflow: hidden; background: var(--surface2); }
-.chart-box svg { width: 100%; height: 100%; }
-.geo-entry { padding: 0.8rem 0; border-bottom: 1px solid var(--border2); }
-.geo-entry:last-child { border-bottom: none; }
-.geo-region { font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); margin-bottom: 0.3rem; }
-.geo-text { font-size: 0.78rem; color: var(--muted); line-height: 1.5; font-weight: 300; }
-.cal-row { display: flex; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px solid var(--border2); font-family: var(--mono); font-size: 0.65rem; }
-.cal-row:last-child { border-bottom: none; }
-.cal-date { color: var(--gold); min-width: 50px; }
-.cal-ev { color: var(--muted); }
-
-/* ── FOOTER ── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 1.5rem 2.5rem;
-  max-width: 1360px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  color: var(--muted2);
-}
-.footer-logo { font-family: var(--serif); font-size: 1rem; font-weight: 600; color: var(--muted); }
-.footer-logo em { font-style: italic; color: var(--gold); opacity: 0.7; }
-
-@media(max-width:960px) {
-  main { grid-template-columns: 1fr; }
-  .sidebar { display: none; }
-  .logo-name { font-size: 2rem; }
-  .header-main { padding: 1rem 1.5rem; }
-  .apikey-bar { padding: 0.55rem 1.5rem; }
-  main { padding: 1.5rem; }
-}
+@media(max-width:960px){main{grid-template-columns:1fr}.sidebar{display:none}.logo-name{font-size:2rem}.header-main,.eyebrow,.editor-bar{padding-left:1.5rem;padding-right:1.5rem}main{padding:1.5rem}}
 </style>
 </head>
 <body>
 
 <header>
-  <div class="header-eyebrow">
-    <div>
-      <span id="live-clock">—</span>
-      <span class="dot">·</span>
-      <span>Buenos Aires</span>
-      <span class="dot">·</span>
-      <span>Vol. I</span>
-    </div>
-    <div>Análisis Macroeconómico &amp; Geopolítica · Powered by Claude AI</div>
+  <div class="eyebrow">
+    <div><span id="live-clock">—</span><span class="dot">·</span><span>Buenos Aires</span><span class="dot">·</span><span>Vol. I</span></div>
+    <div>Análisis Macroeconómico &amp; Geopolítica</div>
   </div>
   <div class="header-main">
-    <div class="logo">
+    <div>
       <div class="logo-name">Carry<em>Note</em></div>
-      <div class="logo-tagline">Macro · Geopolítica · Mercados</div>
+      <div class="logo-tag">Macro · Geopolítica · Mercados</div>
     </div>
-    <div class="header-right">
-      <div class="issue-badge">EST. 2025</div>
-    </div>
+    <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip">
     <a class="active">All Notes</a>
@@ -470,79 +193,124 @@ footer {
   </nav>
 </header>
 
-<div class="apikey-bar">
-  <label>▸ API KEY</label>
-  <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off"/>
-  <button class="key-save" onclick="saveKey()">Guardar ▸</button>
-  <span class="key-status" id="keyStatus"></span>
-  <span class="key-hint">Obtén tu key en <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> · Se guarda solo en tu navegador</span>
+<!-- EDITOR BAR (solo visible si es editor) -->
+<div class="editor-bar" id="editorBar">
+  <label>▸ MODO EDITOR</label>
+  <input type="password" id="anthroKey" placeholder="Anthropic API key (sk-ant-...)"/>
+  <button class="eb-btn eb-save" onclick="saveAnthroKey()">Guardar key ▸</button>
+  <span class="eb-status" id="anthroStatus"></span>
+  <button class="eb-btn eb-logout" onclick="logout()" style="margin-left:auto">Salir del editor ✕</button>
+</div>
+
+<!-- LOGIN TOGGLE -->
+<div class="login-toggle" id="loginToggle" onclick="showLogin()">· · ·</div>
+
+<!-- LOGIN MODAL -->
+<div id="loginModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:none;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;width:340px;font-family:var(--mono)">
+    <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem">▸ Acceso Editor</div>
+    <input type="password" id="editorPin" placeholder="PIN de editor" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.8rem;padding:0.6rem 0.8rem;outline:none;margin-bottom:0.75rem"/>
+    <div style="display:flex;gap:0.5rem">
+      <button onclick="doLogin()" style="flex:1;font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Entrar ▸</button>
+      <button onclick="closeLogin()" style="font-family:var(--mono);font-size:0.65rem;padding:0.5rem 0.8rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">✕</button>
+    </div>
+    <div id="loginErr" style="color:var(--red);font-size:0.62rem;margin-top:0.5rem"></div>
+  </div>
 </div>
 
 <div class="ticker">
   <div class="ticker-inner">
     <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val"> 5,712.4</span><span class="t-up"> ▲0.43%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val"> 4.31%</span><span class="t-dn"> ▼3bp</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val"> 103.8</span><span class="t-dn"> ▼0.21%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val"> $71.4</span><span class="t-up"> ▲1.2%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val"> 1.0842</span><span class="t-up"> ▲0.18%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val"> $3,018</span><span class="t-up"> ▲0.65%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">FED FUNDS</span><span class="t-val"> 4.25–4.50%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">CPI YoY</span><span class="t-val"> 2.8%</span><span class="t-dn"> ▼</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DESEMPLEO US</span><span class="t-val"> 4.1%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val"> 5,712.4</span><span class="t-up"> ▲0.43%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val"> 4.31%</span><span class="t-dn"> ▼3bp</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val"> 103.8</span><span class="t-dn"> ▼0.21%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val"> $71.4</span><span class="t-up"> ▲1.2%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val"> 1.0842</span><span class="t-up"> ▲0.18%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val"> $3,018</span><span class="t-up"> ▲0.65%</span></span>
-    <span class="t-item t-sep">·</span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">FED FUNDS</span><span class="t-val"> 4.25–4.50%</span></span>
-    <span class="t-item t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">CPI YoY</span><span class="t-val"> 2.8%</span><span class="t-dn"> ▼</span></span>
   </div>
 </div>
 
 <main>
   <section>
-    <div class="generator">
-      <div class="gen-label">▸ Nueva nota de análisis</div>
-      <div class="topic-grid" id="tGrid">
-        <button class="t-btn sel" data-t="Fed y política monetaria en 2025: tasas, dot plot y perspectivas">Fed &amp; Rates</button>
-        <button class="t-btn" data-t="Inflación en Estados Unidos: situación actual, core PCE y perspectivas de desinflación">Inflación US</button>
-        <button class="t-btn" data-t="Impacto macroeconómico de los aranceles de Trump: guerra comercial y cadenas de valor globales">Aranceles &amp; Trade</button>
-        <button class="t-btn" data-t="Geopolítica: conflicto en Ucrania, energía europea y reconfiguración del orden global">Ucrania &amp; Energía</button>
-        <button class="t-btn" data-t="Desaceleración económica de China: sector inmobiliario, deflación y riesgo sistémico global">China Risk</button>
-        <button class="t-btn" data-t="Mercado laboral de Estados Unidos: NFP, desempleo, salarios y señales de enfriamiento">Labour Market</button>
-        <button class="t-btn" data-t="Curva de rendimientos del Tesoro americano: inversión, normalización y señales de recesión">Yield Curve</button>
-        <button class="t-btn" data-t="Sostenibilidad fiscal de Estados Unidos: déficit, deuda pública y el rol del dólar como reserva">US Fiscal</button>
-        <button class="t-btn" data-t="Tensiones en Medio Oriente: riesgo geopolítico, petróleo y primas de riesgo en mercados">Middle East &amp; Oil</button>
-        <button class="t-btn" data-t="El dólar como moneda de reserva global bajo presión: BRICS, desdolarización y alternativas">Dollar Dominance</button>
-        <button class="t-btn" data-t="Argentina: programa económico, carry trade del peso, brecha cambiaria y acceso a mercados">Argentina Macro</button>
-        <button class="t-btn" data-t="Economías emergentes: carry trade, flujos de capital, fortaleza del dólar y vulnerabilidades">EM &amp; Carry</button>
+    <!-- EDITOR PANEL -->
+    <div class="editor-panel" id="editorPanel">
+      <div class="ep-label">▸ Nueva nota</div>
+      <div class="ep-tabs">
+        <button class="ep-tab active" onclick="switchTab('ai')">Generar con AI</button>
+        <button class="ep-tab" onclick="switchTab('write')">Escribir nota</button>
       </div>
-      <div class="gen-row">
-        <input type="text" id="customT" placeholder="O escribí tu propio tema de análisis..."/>
-        <button class="gen-go" id="genBtn" onclick="gen()">Generar nota ▸</button>
+
+      <!-- AI TAB -->
+      <div class="ai-tab visible" id="aiTab">
+        <div class="topic-grid" id="tGrid">
+          <button class="t-btn sel" data-t="Fed y política monetaria en 2025: tasas, dot plot y perspectivas">Fed &amp; Rates</button>
+          <button class="t-btn" data-t="Inflación en Estados Unidos: situación actual, core PCE y perspectivas de desinflación">Inflación US</button>
+          <button class="t-btn" data-t="Impacto macroeconómico de los aranceles de Trump: guerra comercial y cadenas de valor globales">Aranceles &amp; Trade</button>
+          <button class="t-btn" data-t="Geopolítica: conflicto en Ucrania, energía europea y reconfiguración del orden global">Ucrania &amp; Energía</button>
+          <button class="t-btn" data-t="Desaceleración económica de China: sector inmobiliario, deflación y riesgo sistémico global">China Risk</button>
+          <button class="t-btn" data-t="Mercado laboral de Estados Unidos: NFP, desempleo, salarios y señales de enfriamiento">Labour Market</button>
+          <button class="t-btn" data-t="Curva de rendimientos del Tesoro americano: inversión, normalización y señales de recesión">Yield Curve</button>
+          <button class="t-btn" data-t="Sostenibilidad fiscal de Estados Unidos: déficit, deuda pública y el rol del dólar como reserva">US Fiscal</button>
+          <button class="t-btn" data-t="Tensiones en Medio Oriente: riesgo geopolítico, petróleo y primas de riesgo en mercados">Middle East &amp; Oil</button>
+          <button class="t-btn" data-t="El dólar como moneda de reserva global bajo presión: BRICS, desdolarización y alternativas">Dollar Dominance</button>
+          <button class="t-btn" data-t="Argentina: programa económico, carry trade del peso, brecha cambiaria y acceso a mercados">Argentina Macro</button>
+          <button class="t-btn" data-t="Economías emergentes: carry trade, flujos de capital, fortaleza del dólar y vulnerabilidades">EM &amp; Carry</button>
+        </div>
+        <div class="gen-row">
+          <input type="text" id="customT" placeholder="O escribí tu propio tema..."/>
+          <button class="gen-go" id="genBtn" onclick="genAI()">Generar nota ▸</button>
+        </div>
+      </div>
+
+      <!-- WRITE TAB -->
+      <div class="write-tab" id="writeTab">
+        <input type="text" id="wTitle" placeholder="Título de la nota..."/>
+        <input type="text" id="wSubtitle" placeholder="Subtítulo o bajada..."/>
+        <div class="write-meta">
+          <select id="wTag">
+            <option value="macro">Monetary Policy / Macro US</option>
+            <option value="geo">Geopolitics</option>
+            <option value="markets">Markets / Fixed Income</option>
+            <option value="policy">Fiscal Policy</option>
+          </select>
+        </div>
+        <textarea id="wBody" placeholder="Escribí tu análisis acá. Podés usar texto plano — Claude lo va a formatear y pulir antes de publicar si usás el botón 'Pulir con Claude'. O publicá directamente si ya está listo."></textarea>
+        <div class="write-actions">
+          <button class="w-btn w-polish" id="polishBtn" onclick="polishNote()">✦ Pulir con Claude</button>
+          <button class="w-btn w-publish" onclick="publishWritten()">Publicar nota ▸</button>
+        </div>
       </div>
     </div>
+
+    <!-- FEED -->
     <div class="feed" id="feed">
-      <div class="empty">
+      <div class="empty" id="emptyState">
         <span class="icon">◈</span>
-        <p>Introducí tu API key arriba, seleccioná un tema<br>y generá tu primera nota de análisis.<br><br>Carry Note combina tu criterio editorial<br>con la velocidad de Claude AI.</p>
+        <p id="emptyMsg">Cargando notas...</p>
       </div>
     </div>
   </section>
@@ -566,27 +334,13 @@ footer {
         </svg>
       </div>
     </div>
-
     <div class="sb-block">
       <div class="sb-title">Geopolitical Radar</div>
-      <div class="geo-entry">
-        <div class="geo-region">Eastern Europe</div>
-        <div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad y reconstrucción.</div>
-      </div>
-      <div class="geo-entry">
-        <div class="geo-region">Indo-Pacific</div>
-        <div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona bajo presión de Washington.</div>
-      </div>
-      <div class="geo-entry">
-        <div class="geo-region">Middle East</div>
-        <div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo permanente.</div>
-      </div>
-      <div class="geo-entry">
-        <div class="geo-region">Trade War 2.0</div>
-        <div class="geo-text">Aranceles recíprocos de la administración Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div>
-      </div>
+      <div class="geo-entry"><div class="geo-region">Eastern Europe</div><div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad y reconstrucción.</div></div>
+      <div class="geo-entry"><div class="geo-region">Indo-Pacific</div><div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona bajo presión de Washington.</div></div>
+      <div class="geo-entry"><div class="geo-region">Middle East</div><div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo permanente.</div></div>
+      <div class="geo-entry"><div class="geo-region">Trade War 2.0</div><div class="geo-text">Aranceles recíprocos de Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div></div>
     </div>
-
     <div class="sb-block">
       <div class="sb-title">Event Calendar</div>
       <div class="cal-row"><span class="cal-date">Mar 28</span><span class="cal-ev">PCE Core Feb</span></div>
@@ -601,156 +355,104 @@ footer {
 
 <footer>
   <div class="footer-logo">Carry<em>Note</em></div>
-  <div>© 2025 · Análisis generado con Claude AI · No constituye asesoramiento financiero</div>
+  <div>© 2025 · No constituye asesoramiento financiero</div>
 </footer>
 
 <script>
-let KEY = localStorage.getItem('cn_key') || '';
+// ── CONFIG ──────────────────────────────────────────────────
+const SUPABASE_URL = 'https://fhswsvjkkmnhlbdnozoe.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_HCwgAA7wQJIJj45eU_MhvQ_gVklccHK';
+const EDITOR_PIN   = 'carrynote2025'; // Cambiá esto por tu PIN secreto
+
+// ── STATE ───────────────────────────────────────────────────
+let isEditor = false;
+let ANTHRO_KEY = localStorage.getItem('cn_akey') || '';
 let noteCount = 0;
-
-function saveKey() {
-  const v = document.getElementById('apiKey').value.trim();
-  const s = document.getElementById('keyStatus');
-  if (!v.startsWith('sk-ant-')) {
-    s.textContent = '✗ Formato incorrecto';
-    s.className = 'key-status err';
-    return;
-  }
-  KEY = v;
-  localStorage.setItem('cn_key', v);
-  s.textContent = '✓ Key guardada';
-  s.className = 'key-status ok';
-  document.getElementById('apiKey').value = v.slice(0,16) + '••••••••••';
-}
-
-window.addEventListener('load', () => {
-  if (KEY) {
-    document.getElementById('apiKey').value = KEY.slice(0,16) + '••••••••••';
-    document.getElementById('keyStatus').textContent = '✓ Key cargada';
-    document.getElementById('keyStatus').className = 'key-status ok';
-  }
-});
-document.getElementById('apiKey').addEventListener('keydown', e => { if (e.key === 'Enter') saveKey(); });
-
-function updateClock() {
-  document.getElementById('live-clock').textContent =
-    new Date().toLocaleDateString('es-ES', {weekday:'short',day:'2-digit',month:'short',year:'numeric'}) +
-    ' · ' + new Date().toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
-}
-setInterval(updateClock, 1000); updateClock();
-
 let selT = 'Fed y política monetaria en 2025: tasas, dot plot y perspectivas';
-document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.t-btn').forEach(x => x.classList.remove('sel'));
-  b.classList.add('sel');
-  selT = b.dataset.t;
-  document.getElementById('customT').value = '';
-}));
-document.getElementById('customT').addEventListener('keydown', e => { if (e.key === 'Enter') gen(); });
 
-const tagMap = {
-  'Fed':{l:'Monetary Policy',c:'macro'}, 'Inflación':{l:'Macro US',c:'macro'},
-  'Aranceles':{l:'Trade',c:'markets'}, 'Ucrania':{l:'Geopolitics',c:'geo'},
-  'China':{l:'Global Risk',c:'geo'}, 'Labour':{l:'Macro US',c:'macro'},
-  'Yield':{l:'Fixed Income',c:'markets'}, 'Fiscal':{l:'Fiscal Policy',c:'policy'},
-  'Middle East':{l:'Geopolitics',c:'geo'}, 'Dollar':{l:'FX & Markets',c:'markets'},
-  'Argentina':{l:'EM · Argentina',c:'geo'}, 'EM':{l:'Emerging Markets',c:'markets'},
-  'carry':{l:'EM · Carry',c:'markets'},
-};
-function getTag(t) {
-  for (const [k,v] of Object.entries(tagMap))
-    if (t.toLowerCase().includes(k.toLowerCase())) return v;
-  return {l:'Analysis',c:'macro'};
+// ── SUPABASE HELPERS ────────────────────────────────────────
+async function sbFetch(path, opts = {}) {
+  const res = await fetch(SUPABASE_URL + path, {
+    ...opts,
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      ...(opts.headers || {})
+    }
+  });
+  return res;
 }
 
-async function gen() {
-  if (!KEY) {
-    const s = document.getElementById('keyStatus');
-    s.textContent = '✗ Introducí tu API key primero';
-    s.className = 'key-status err';
-    document.getElementById('apiKey').focus();
+async function loadNotes() {
+  try {
+    const res = await sbFetch('/rest/v1/notes?select=*&order=created_at.desc');
+    if (!res.ok) throw new Error('DB error');
+    const notes = await res.json();
+    renderNotes(notes);
+  } catch(e) {
+    document.getElementById('emptyMsg').textContent = 'Error cargando notas. Verificá la configuración de Supabase.';
+  }
+}
+
+async function saveNote(note) {
+  const res = await sbFetch('/rest/v1/notes', {
+    method: 'POST',
+    headers: { 'Prefer': 'return=representation' },
+    body: JSON.stringify(note)
+  });
+  if (!res.ok) { const e = await res.json(); throw new Error(JSON.stringify(e)); }
+  return await res.json();
+}
+
+async function deleteNote(id) {
+  await sbFetch('/rest/v1/notes?id=eq.' + id, { method: 'DELETE' });
+}
+
+// ── RENDER ──────────────────────────────────────────────────
+function renderNotes(notes) {
+  const feed = document.getElementById('feed');
+  const empty = document.getElementById('emptyState');
+  if (!notes || notes.length === 0) {
+    if (empty) { empty.style.display = 'block'; document.getElementById('emptyMsg').textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera!' : 'Las notas aparecerán aquí pronto.'; }
     return;
   }
-  const topic = document.getElementById('customT').value.trim() || selT;
-  const btn = document.getElementById('genBtn');
-  btn.disabled = true; btn.textContent = 'Generando...';
-  const feed = document.getElementById('feed');
-  const empty = feed.querySelector('.empty'); if (empty) empty.remove();
+  if (empty) empty.style.display = 'none';
+  feed.innerHTML = '';
+  noteCount = notes.length;
+  notes.forEach((n, i) => {
+    const card = buildCard(n, noteCount - i);
+    feed.appendChild(card);
+  });
+  if (isEditor) document.getElementById('feed').classList.add('editor-active');
+}
 
-  const lid = 'l' + Date.now();
-  const lel = document.createElement('div'); lel.className = 'loading-card'; lel.id = lid;
-  lel.innerHTML = `
-    <div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div>
-    <div class="skel" style="height:30px;width:75%"></div>
-    <div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div>
-    <div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div>
-    <div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div>
-    <div class="skel" style="height:9px;width:60%"></div>
-    <div class="load-msg"><span class="ell">Carry Note analizando fuentes</span></div>`;
-  feed.insertBefore(lel, feed.firstChild);
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        system: `Sos un economista senior y analista de mercados con base en Buenos Aires, especializado en macroeconomía global, política monetaria de la Fed y geopolítica económica. Escribís para Carry Note, una publicación de análisis económico de alto nivel dirigida a profesionales con formación en ciencias económicas, finanzas y política económica.
-
-Estilo: análisis denso y bien argumentado, con posición propia clara y fundamentada. Usás terminología técnica precisa — spreads, curvas de rendimiento, política monetaria, balanza de pagos, cuenta corriente, prima de riesgo, carry trade, tipo de cambio real — sin sobre-explicar. El tono es de research note profesional: conciso, directo, sin relleno. Cuando mencionás cifras, son específicas. Cuando tomás una posición, la justificás.
-
-Respondé ÚNICAMENTE con JSON válido, sin texto extra, sin bloques markdown:
-{"title":"Título en estilo research note (máx 10 palabras, puede ser en inglés o español)","subtitle":"Bajada que amplía la tesis central (máx 35 palabras, puede ser en inglés o español)","body":"HTML con <p>, <h3>, <div class='key-stat'>dato clave o cita</div>. Mínimo 6 párrafos. El primer párrafo establece la tesis. Los siguientes desarrollan el análisis con datos específicos, contexto histórico cuando es relevante, y perspectiva propia. Cerrá con una conclusión que indique implicancias para tomadores de decisión."}`,
-        messages: [{
-          role: 'user',
-          content: `Escribí una nota de análisis para Carry Note sobre: "${topic}". Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}. Usá datos concretos, tomá posición, sin frases genéricas.`
-        }]
-      })
-    });
-
-    if (!res.ok) { const e = await res.json(); throw new Error(e.error?.message || 'HTTP ' + res.status); }
-    const data = await res.json();
-    const txt = data.content.map(i => i.type === 'text' ? i.text : '').join('').trim()
-      .replace(/^```json\s*/, '').replace(/\s*```$/, '');
-    const note = JSON.parse(txt);
-
-    document.getElementById(lid)?.remove();
-    noteCount++;
-    const tag = getTag(topic);
-    const ds = new Date().toLocaleDateString('es-ES', {day:'2-digit',month:'short',year:'numeric'}) +
-      ' · ' + new Date().toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
-    const aid = 'n' + Date.now();
-
-    const card = document.createElement('div'); card.className = 'note-card';
-    card.innerHTML = `
-      <div class="note-meta">
-        <span class="note-tag ${tag.c}">${tag.l}</span>
-        <span class="note-date">${ds}</span>
-        <span class="note-number">Note #${String(noteCount).padStart(3,'0')}</span>
-      </div>
-      <div class="note-title" onclick="toggle('${aid}')">${note.title}</div>
-      <div class="note-sub">${note.subtitle}</div>
-      <div class="note-body" id="${aid}">${note.body}</div>
-      <button class="read-toggle" id="b${aid}" onclick="toggle('${aid}')">Read note ▸</button>`;
-    feed.insertBefore(card, feed.firstChild);
-    toggle(aid);
-
-  } catch(err) {
-    document.getElementById(lid)?.remove();
-    const ec = document.createElement('div'); ec.className = 'note-card';
-    ec.innerHTML = `<div style="font-family:var(--mono);font-size:0.7rem;color:var(--red);padding:1rem 0">
-      ✗ ${err.message}<br>
-      <span style="color:var(--muted);font-size:0.62rem">Verificá que la API key es correcta y tiene créditos disponibles.</span>
+function buildCard(n, num) {
+  const card = document.createElement('div');
+  card.className = 'note-card';
+  card.dataset.id = n.id;
+  const ds = new Date(n.created_at).toLocaleDateString('es-ES', {day:'2-digit',month:'short',year:'numeric'}) +
+    ' · ' + new Date(n.created_at).toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
+  const aid = 'nb' + n.id;
+  card.innerHTML = `
+    <div class="note-meta">
+      <span class="note-tag ${n.tag}">${tagLabel(n.tag)}</span>
+      <span class="note-date">${ds}</span>
+      <span class="note-num">Note #${String(num).padStart(3,'0')}</span>
+    </div>
+    <div class="note-title" onclick="toggle('${aid}')">${n.title}</div>
+    <div class="note-sub">${n.subtitle}</div>
+    <div class="note-body" id="${aid}">${n.body}</div>
+    <div class="note-footer">
+      <button class="read-toggle" id="b${aid}" onclick="toggle('${aid}')">Read note ▸</button>
+      <button class="del-btn" onclick="confirmDelete('${n.id}', this)">✕ Eliminar</button>
     </div>`;
-    feed.insertBefore(ec, feed.firstChild);
-  }
-  btn.disabled = false; btn.textContent = 'Generar nota ▸';
+  return card;
+}
+
+function tagLabel(t) {
+  const m = {macro:'Monetary Policy',geo:'Geopolitics',markets:'Markets',policy:'Fiscal Policy'};
+  return m[t] || 'Analysis';
 }
 
 function toggle(id) {
@@ -758,6 +460,168 @@ function toggle(id) {
   b.classList.toggle('open');
   btn.textContent = b.classList.contains('open') ? 'Close note ▲' : 'Read note ▸';
 }
+
+async function confirmDelete(id, btn) {
+  if (!confirm('¿Eliminar esta nota?')) return;
+  btn.textContent = '...';
+  await deleteNote(id);
+  await loadNotes();
+}
+
+// ── AUTH ────────────────────────────────────────────────────
+function showLogin() { document.getElementById('loginModal').style.display = 'flex'; document.getElementById('editorPin').focus(); }
+function closeLogin() { document.getElementById('loginModal').style.display = 'none'; }
+document.getElementById('editorPin').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogin() {
+  const pin = document.getElementById('editorPin').value;
+  if (pin === EDITOR_PIN) {
+    isEditor = true;
+    document.getElementById('loginModal').style.display = 'none';
+    document.getElementById('editorBar').classList.add('visible');
+    document.getElementById('editorPanel').classList.add('visible');
+    document.getElementById('loginToggle').style.display = 'none';
+    document.getElementById('feed').classList.add('editor-active');
+    if (ANTHRO_KEY) { document.getElementById('anthroKey').value = ANTHRO_KEY.slice(0,16)+'••••••••••'; document.getElementById('anthroStatus').textContent='✓ Key cargada'; document.getElementById('anthroStatus').className='eb-status ok'; }
+    loadNotes();
+  } else {
+    document.getElementById('loginErr').textContent = '✗ PIN incorrecto';
+  }
+}
+
+function logout() {
+  isEditor = false;
+  document.getElementById('editorBar').classList.remove('visible');
+  document.getElementById('editorPanel').classList.remove('visible');
+  document.getElementById('loginToggle').style.display = 'block';
+  document.getElementById('feed').classList.remove('editor-active');
+  loadNotes();
+}
+
+function saveAnthroKey() {
+  const v = document.getElementById('anthroKey').value.trim();
+  const s = document.getElementById('anthroStatus');
+  if (!v.startsWith('sk-ant-')) { s.textContent='✗ Formato incorrecto'; s.className='eb-status err'; return; }
+  ANTHRO_KEY = v; localStorage.setItem('cn_akey', v);
+  s.textContent='✓ Key guardada'; s.className='eb-status ok';
+  document.getElementById('anthroKey').value = v.slice(0,16)+'••••••••••';
+}
+document.getElementById('anthroKey').addEventListener('keydown', e => { if(e.key==='Enter') saveAnthroKey(); });
+
+// ── TABS ────────────────────────────────────────────────────
+function switchTab(t) {
+  document.querySelectorAll('.ep-tab').forEach((b,i) => b.classList.toggle('active', (i===0&&t==='ai')||(i===1&&t==='write')));
+  document.getElementById('aiTab').classList.toggle('visible', t==='ai');
+  document.getElementById('writeTab').classList.toggle('visible', t==='write');
+}
+
+// ── TOPIC SELECT ────────────────────────────────────────────
+document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.t-btn').forEach(x => x.classList.remove('sel'));
+  b.classList.add('sel'); selT = b.dataset.t;
+  document.getElementById('customT').value = '';
+}));
+document.getElementById('customT').addEventListener('keydown', e => { if(e.key==='Enter') genAI(); });
+
+// ── TAG MAPPING ─────────────────────────────────────────────
+const tagMap = {'Fed':'macro','Inflación':'macro','Aranceles':'markets','Ucrania':'geo','China':'geo','Labour':'macro','Yield':'markets','Fiscal':'policy','Middle East':'geo','Dollar':'markets','Argentina':'geo','EM':'markets','carry':'markets'};
+function getTagFromTopic(t) { for(const[k,v]of Object.entries(tagMap)) if(t.toLowerCase().includes(k.toLowerCase())) return v; return 'macro'; }
+
+// ── GENERATE WITH AI ────────────────────────────────────────
+async function genAI() {
+  if (!ANTHRO_KEY) { alert('Ingresá tu Anthropic API key en la barra de editor primero.'); return; }
+  const topic = document.getElementById('customT').value.trim() || selT;
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true; btn.textContent = 'Generando...';
+
+  const feed = document.getElementById('feed');
+  const empty = document.getElementById('emptyState'); if(empty) empty.style.display='none';
+  const lid = 'l'+Date.now(); const lel = document.createElement('div');
+  lel.className='loading-card'; lel.id=lid;
+  lel.innerHTML=`<div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div><div class="skel" style="height:30px;width:75%"></div><div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:60%"></div><div class="load-msg"><span class="ell">Carry Note generando análisis</span></div>`;
+  feed.insertBefore(lel, feed.firstChild);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
+        system:`Sos un economista senior y analista de mercados con base en Buenos Aires, especializado en macroeconomía global, política monetaria de la Fed y geopolítica económica. Escribís para Carry Note, una publicación de análisis económico de alto nivel dirigida a profesionales con formación en ciencias económicas, finanzas y política económica.
+
+Estilo: análisis denso y bien argumentado, con posición propia clara y fundamentada. Usás terminología técnica precisa — spreads, curvas de rendimiento, política monetaria, balanza de pagos, cuenta corriente, prima de riesgo, carry trade, tipo de cambio real — sin sobre-explicar. El tono es de research note profesional: conciso, directo, sin relleno. Cuando mencionás cifras, son específicas.
+
+Respondé ÚNICAMENTE con JSON válido, sin texto extra, sin bloques markdown:
+{"title":"Título en estilo research note (máx 10 palabras)","subtitle":"Bajada que amplía la tesis central (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>dato clave</div>. Mínimo 6 párrafos. El primero establece la tesis. Cerrá con implicancias para tomadores de decisión.","tag":"macro|geo|markets|policy"}`,
+        messages:[{role:'user',content:`Escribí una nota de análisis para Carry Note sobre: "${topic}". Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}. Usá datos concretos, tomá posición, sin frases genéricas.`}]})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'HTTP '+res.status);}
+    const data=await res.json();
+    const txt=data.content.map(i=>i.type==='text'?i.text:'').join('').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
+    const note=JSON.parse(txt);
+    document.getElementById(lid)?.remove();
+    const saved = await saveNote({title:note.title,subtitle:note.subtitle,body:note.body,tag:note.tag||getTagFromTopic(topic)});
+    await loadNotes();
+  } catch(err) {
+    document.getElementById(lid)?.remove();
+    alert('Error: '+err.message);
+  }
+  btn.disabled=false; btn.textContent='Generar nota ▸';
+}
+
+// ── POLISH WITH CLAUDE ───────────────────────────────────────
+async function polishNote() {
+  if (!ANTHRO_KEY) { alert('Ingresá tu Anthropic API key primero.'); return; }
+  const title=document.getElementById('wTitle').value.trim();
+  const body=document.getElementById('wBody').value.trim();
+  if (!body) { alert('Escribí algo primero.'); return; }
+  const btn=document.getElementById('polishBtn'); btn.disabled=true; btn.textContent='Puliendo...';
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
+        system:`Sos editor de Carry Note, una publicación de análisis económico profesional. Tu tarea es tomar el borrador del economista y pulirlo: mejorar la estructura, afinar la prosa, asegurarte que la tesis quede clara en el primer párrafo y que cierre con implicancias concretas. No cambiés el contenido ni las ideas — solo mejorá la forma. Respondé ÚNICAMENTE con JSON válido sin texto extra ni bloques markdown: {"title":"título pulido","subtitle":"bajada pulida (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>estadística</div>"}`,
+        messages:[{role:'user',content:`Título: ${title||'(sin título)'}\n\nBorrador:\n${body}`}]})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error?.message);}
+    const data=await res.json();
+    const txt=data.content.map(i=>i.type==='text'?i.text:'').join('').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
+    const note=JSON.parse(txt);
+    document.getElementById('wTitle').value=note.title;
+    document.getElementById('wSubtitle').value=note.subtitle;
+    document.getElementById('wBody').value=note.body.replace(/<[^>]+>/g,'');
+    document.getElementById('wBody').dataset.html=note.body;
+  } catch(err) { alert('Error: '+err.message); }
+  btn.disabled=false; btn.textContent='✦ Pulir con Claude';
+}
+
+async function publishWritten() {
+  const title=document.getElementById('wTitle').value.trim();
+  const subtitle=document.getElementById('wSubtitle').value.trim();
+  const tag=document.getElementById('wTag').value;
+  const bodyEl=document.getElementById('wBody');
+  const rawBody=bodyEl.dataset.html||bodyEl.value.trim();
+  if(!title||!rawBody){alert('El título y el cuerpo son obligatorios.');return;}
+  const body=rawBody.startsWith('<')?rawBody:rawBody.split('\n\n').map(p=>`<p>${p}</p>`).join('');
+  try {
+    await saveNote({title,subtitle,body,tag});
+    document.getElementById('wTitle').value='';
+    document.getElementById('wSubtitle').value='';
+    document.getElementById('wBody').value='';
+    delete document.getElementById('wBody').dataset.html;
+    await loadNotes();
+  } catch(err){alert('Error guardando: '+err.message);}
+}
+
+// ── CLOCK ───────────────────────────────────────────────────
+function updateClock(){document.getElementById('live-clock').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+' · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
+setInterval(updateClock,1000);updateClock();
+
+// ── INIT ────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  // Create table if needed via RPC won't work from client, just load notes
+  loadNotes();
+});
 </script>
 </body>
 </html>
