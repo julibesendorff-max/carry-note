@@ -17,7 +17,6 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35}
 
-/* HEADER */
 header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
 .eyebrow{display:flex;justify-content:space-between;align-items:center;padding:0.55rem 2.5rem;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em}
 .eyebrow .dot{color:var(--gold);margin:0 0.4rem}
@@ -27,11 +26,11 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .logo-name em{font-style:italic;color:var(--gold)}
 .logo-tag{font-family:var(--mono);font-size:0.58rem;color:var(--muted);letter-spacing:0.18em;text-transform:uppercase;margin-top:0.15rem}
 .issue-badge{font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;border:1px solid var(--border);padding:0.2rem 0.6rem}
+
 .nav-strip{display:flex;border-top:1px solid var(--border2);overflow-x:auto}
 .nav-strip a{font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:0.65rem 1.5rem;border-right:1px solid var(--border2);cursor:pointer;transition:all 0.2s;white-space:nowrap}
 .nav-strip a:hover,.nav-strip a.active{color:var(--gold);background:var(--surface)}
 
-/* EDITOR BAR */
 .editor-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0.55rem 2.5rem;display:none;align-items:center;gap:0.75rem;font-family:var(--mono);font-size:0.65rem;flex-wrap:wrap}
 .editor-bar.visible{display:flex}
 .editor-bar label{color:var(--gold);white-space:nowrap;letter-spacing:0.08em}
@@ -39,29 +38,28 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .editor-bar input:focus{border-color:var(--gold)}
 .editor-bar input::placeholder{color:var(--muted2)}
 .eb-btn{font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.35rem 1rem;border:none;cursor:pointer;white-space:nowrap;transition:background 0.2s}
-.eb-save{background:var(--gold);color:var(--bg)}
-.eb-save:hover{background:var(--gold2)}
-.eb-logout{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-.eb-logout:hover{color:var(--red);border-color:var(--red)}
-.eb-status{font-size:0.62rem}
-.eb-status.ok{color:var(--green)}
-.eb-status.err{color:var(--red)}
+.eb-save{background:var(--gold);color:var(--bg)}.eb-save:hover{background:var(--gold2)}
+.eb-logout{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.eb-logout:hover{color:var(--red);border-color:var(--red)}
+.eb-status{font-size:0.62rem}.eb-status.ok{color:var(--green)}.eb-status.err{color:var(--red)}
 
-/* LOGIN TOGGLE */
 .login-toggle{font-family:var(--mono);font-size:0.58rem;color:var(--muted2);text-align:center;padding:0.4rem;cursor:pointer;border-bottom:1px solid var(--border2);letter-spacing:0.06em;transition:color 0.2s}
 .login-toggle:hover{color:var(--muted)}
 
+#loginModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center}
+#loginModal.open{display:flex}
+
 /* TICKER */
-.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 0;overflow:hidden;font-family:var(--mono);font-size:0.65rem}
-.ticker-inner{display:flex;gap:2.5rem;animation:scroll 40s linear infinite;white-space:nowrap}
+.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 0;overflow:hidden;font-family:var(--mono);font-size:0.65rem;position:relative}
+.ticker-inner{display:flex;gap:2rem;animation:scroll 60s linear infinite;white-space:nowrap;width:max-content}
+.ticker-inner:hover{animation-play-state:paused}
 .t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem}
-.t-lbl{color:var(--muted)}.t-val{color:var(--text)}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border)}
+.t-lbl{color:var(--muted)}.t-val{color:var(--text)}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border2);padding:0 0.3rem}
+.ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.55rem;color:var(--muted2)}
+.ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-/* MAIN */
 main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:3rem}
 
-/* EDITOR PANEL */
 .editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
 .editor-panel.visible{display:block}
 .ep-label{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;font-weight:500}
@@ -70,7 +68,6 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .ep-tab:last-child{border-right:none}
 .ep-tab.active{background:var(--gold);color:var(--bg);font-weight:500}
 
-/* AI TAB */
 .ai-tab{display:none}.ai-tab.visible{display:block}
 .topic-grid{display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1rem}
 .t-btn{font-family:var(--mono);font-size:0.62rem;padding:0.3rem 0.7rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
@@ -84,29 +81,30 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .gen-go:hover{background:var(--gold2)}
 .gen-go:disabled{background:var(--muted2);cursor:not-allowed}
 
-/* WRITE TAB */
 .write-tab{display:none}.write-tab.visible{display:block}
 .write-tab input,.write-tab textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.6rem 0.8rem;outline:none;margin-bottom:0.6rem;resize:vertical}
 .write-tab input:focus,.write-tab textarea:focus{border-color:var(--gold)}
 .write-tab input::placeholder,.write-tab textarea::placeholder{color:var(--muted2)}
 .write-tab textarea{min-height:180px;line-height:1.6}
-.write-meta{display:flex;gap:0.6rem;margin-bottom:0.6rem}
-.write-meta select{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.55rem 0.7rem;outline:none;cursor:pointer}
+.write-meta select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.55rem 0.7rem;outline:none;cursor:pointer;margin-bottom:0.6rem}
 .write-meta select:focus{border-color:var(--gold)}
 .write-actions{display:flex;gap:0.6rem;margin-top:0.3rem}
 .w-btn{font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;border:none;cursor:pointer;transition:all 0.2s}
-.w-publish{background:var(--gold);color:var(--bg)}
-.w-publish:hover{background:var(--gold2)}
-.w-polish{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-.w-polish:hover{border-color:var(--gold);color:var(--gold)}
+.w-publish{background:var(--gold);color:var(--bg)}.w-publish:hover{background:var(--gold2)}
+.w-polish{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}.w-polish:hover{border-color:var(--gold);color:var(--gold)}
 .w-polish:disabled{opacity:0.4;cursor:not-allowed}
 
-/* FEED */
+/* FEED & FILTERS */
+.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border2)}
+.feed-count{font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em}
 .feed{display:flex;flex-direction:column}
+
 .note-card{border-bottom:1px solid var(--border2);padding:2rem 0;animation:rise 0.45s ease forwards;opacity:0;transform:translateY(12px)}
+.note-card.hidden{display:none}
 @keyframes rise{to{opacity:1;transform:translateY(0)}}
 .note-meta{display:flex;gap:0.75rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap}
-.note-tag{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.18rem 0.5rem;font-weight:500;border:1px solid}
+.note-tag{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.18rem 0.5rem;font-weight:500;border:1px solid;cursor:pointer;transition:all 0.15s}
+.note-tag:hover{opacity:0.7}
 .note-tag.macro{border-color:var(--gold);color:var(--gold)}
 .note-tag.geo{border-color:var(--blue);color:var(--blue)}
 .note-tag.markets{border-color:var(--text);color:var(--text)}
@@ -116,8 +114,7 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-title{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
 .note-title:hover{color:var(--gold)}
 .note-sub{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--muted);line-height:1.55;margin-bottom:1.1rem}
-.note-body{display:none}
-.note-body.open{display:block}
+.note-body{display:none}.note-body.open{display:block}
 .note-body p{font-size:0.9rem;line-height:1.78;color:#c8c4bc;font-weight:300;margin-bottom:1rem}
 .note-body h3{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin:1.5rem 0 0.5rem}
 .note-body .key-stat{background:var(--surface2);border-left:2px solid var(--gold);padding:0.8rem 1.1rem;margin:1.2rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2);line-height:1.5}
@@ -128,7 +125,6 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .del-btn:hover{color:var(--red)}
 .editor-active .del-btn{display:inline}
 
-/* LOADING */
 .loading-card{padding:2rem 0;border-bottom:1px solid var(--border2)}
 .skel{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);background-size:200% 100%;animation:shim 1.5s infinite;margin-bottom:0.7rem}
 @keyframes shim{to{background-position:-200% 0}}
@@ -136,12 +132,13 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .ell::after{content:'.';animation:ell 1.2s infinite}
 @keyframes ell{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
 
-/* EMPTY */
 .empty{text-align:center;padding:5rem 2rem}
 .empty .icon{font-size:2rem;margin-bottom:1rem;display:block;opacity:0.3}
 .empty p{font-family:var(--mono);font-size:0.68rem;line-height:1.8;color:var(--muted)}
 
-/* SIDEBAR */
+.no-results{text-align:center;padding:3rem 2rem;display:none}
+.no-results p{font-family:var(--mono);font-size:0.68rem;color:var(--muted2)}
+
 .sb-block{border:1px solid var(--border);background:var(--surface);padding:1.25rem;margin-bottom:1.5rem}
 .sb-title{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;font-weight:500;padding-bottom:0.6rem;border-bottom:1px solid var(--border2)}
 .ind{display:flex;justify-content:space-between;align-items:baseline;padding:0.5rem 0;border-bottom:1px solid var(--border2)}
@@ -157,10 +154,8 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .geo-text{font-size:0.78rem;color:var(--muted);line-height:1.5;font-weight:300}
 .cal-row{display:flex;gap:1rem;padding:0.45rem 0;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.65rem}
 .cal-row:last-child{border-bottom:none}
-.cal-date{color:var(--gold);min-width:50px}
-.cal-ev{color:var(--muted)}
+.cal-date{color:var(--gold);min-width:50px}.cal-ev{color:var(--muted)}
 
-/* FOOTER */
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
@@ -182,31 +177,28 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="issue-badge">EST. 2025</div>
   </div>
-  <nav class="nav-strip">
-    <a class="active">All Notes</a>
-    <a>Macro US</a>
-    <a>Fed &amp; Rates</a>
-    <a>Geopolítica</a>
-    <a>Mercados</a>
-    <a>EM &amp; Latam</a>
-    <a>Commodities</a>
+  <nav class="nav-strip" id="navStrip">
+    <a class="active" data-filter="all">All Notes</a>
+    <a data-filter="macro">Macro US</a>
+    <a data-filter="macro">Fed &amp; Rates</a>
+    <a data-filter="geo">Geopolítica</a>
+    <a data-filter="markets">Mercados</a>
+    <a data-filter="geo">EM &amp; Latam</a>
+    <a data-filter="markets">Commodities</a>
   </nav>
 </header>
 
-<!-- EDITOR BAR (solo visible si es editor) -->
 <div class="editor-bar" id="editorBar">
-  <label>▸ MODO EDITOR</label>
+  <label>▸ EDITOR</label>
   <input type="password" id="anthroKey" placeholder="Anthropic API key (sk-ant-...)"/>
-  <button class="eb-btn eb-save" onclick="saveAnthroKey()">Guardar key ▸</button>
+  <button class="eb-btn eb-save" onclick="saveAnthroKey()">Guardar ▸</button>
   <span class="eb-status" id="anthroStatus"></span>
-  <button class="eb-btn eb-logout" onclick="logout()" style="margin-left:auto">Salir del editor ✕</button>
+  <button class="eb-btn eb-logout" onclick="logout()" style="margin-left:auto">Salir ✕</button>
 </div>
 
-<!-- LOGIN TOGGLE -->
 <div class="login-toggle" id="loginToggle" onclick="showLogin()">· · ·</div>
 
-<!-- LOGIN MODAL -->
-<div id="loginModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;display:none;align-items:center;justify-content:center">
+<div id="loginModal">
   <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;width:340px;font-family:var(--mono)">
     <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem">▸ Acceso Editor</div>
     <input type="password" id="editorPin" placeholder="PIN de editor" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.8rem;padding:0.6rem 0.8rem;outline:none;margin-bottom:0.75rem"/>
@@ -218,53 +210,40 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   </div>
 </div>
 
+<!-- TICKER -->
 <div class="ticker">
-  <div class="ticker-inner">
-    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val"> 5,712.4</span><span class="t-up"> ▲0.43%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val"> 4.31%</span><span class="t-dn"> ▼3bp</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val"> 103.8</span><span class="t-dn"> ▼0.21%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val"> $71.4</span><span class="t-up"> ▲1.2%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val"> 1.0842</span><span class="t-up"> ▲0.18%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val"> $3,018</span><span class="t-up"> ▲0.65%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">FED FUNDS</span><span class="t-val"> 4.25–4.50%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">CPI YoY</span><span class="t-val"> 2.8%</span><span class="t-dn"> ▼</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">DESEMPLEO US</span><span class="t-val"> 4.1%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val"> 5,712.4</span><span class="t-up"> ▲0.43%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val"> 4.31%</span><span class="t-dn"> ▼3bp</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val"> 103.8</span><span class="t-dn"> ▼0.21%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val"> $71.4</span><span class="t-up"> ▲1.2%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val"> 1.0842</span><span class="t-up"> ▲0.18%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val"> $3,018</span><span class="t-up"> ▲0.65%</span></span>
-    <span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">FED FUNDS</span><span class="t-val"> 4.25–4.50%</span></span>
+  <div class="ticker-inner" id="tickerInner">
+    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val" id="t-spx"> —</span><span id="t-spx-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">NASDAQ</span><span class="t-val" id="t-ndx"> —</span><span id="t-ndx-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val" id="t-tlt"> —</span><span id="t-tlt-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val" id="t-dxy"> —</span><span id="t-dxy-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur"> —</span><span id="t-eur-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars"> —</span><span id="t-ars-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val" id="t-wti"> —</span><span id="t-wti-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val" id="t-gld"> —</span><span id="t-gld-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">BTC</span><span class="t-val" id="t-btc"> —</span><span id="t-btc-c"> —</span></span><span class="t-sep">·</span>
+    <!-- duplicate for seamless loop -->
+    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val" id="t-spx2"> —</span><span id="t-spx-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">NASDAQ</span><span class="t-val" id="t-ndx2"> —</span><span id="t-ndx-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val" id="t-tlt2"> —</span><span id="t-tlt-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val" id="t-dxy2"> —</span><span id="t-dxy-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur2"> —</span><span id="t-eur-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars2"> —</span><span id="t-ars-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val" id="t-wti2"> —</span><span id="t-wti-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val" id="t-gld2"> —</span><span id="t-gld-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">BTC</span><span class="t-val" id="t-btc2"> —</span><span id="t-btc-c2"> —</span></span>
   </div>
+  <div class="ticker-status" id="tickerStatus">··· cargando</div>
 </div>
 
 <main>
   <section>
-    <!-- EDITOR PANEL -->
     <div class="editor-panel" id="editorPanel">
       <div class="ep-label">▸ Nueva nota</div>
       <div class="ep-tabs">
         <button class="ep-tab active" onclick="switchTab('ai')">Generar con AI</button>
         <button class="ep-tab" onclick="switchTab('write')">Escribir nota</button>
       </div>
-
-      <!-- AI TAB -->
       <div class="ai-tab visible" id="aiTab">
         <div class="topic-grid" id="tGrid">
           <button class="t-btn sel" data-t="Fed y política monetaria en 2025: tasas, dot plot y perspectivas">Fed &amp; Rates</button>
@@ -285,8 +264,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           <button class="gen-go" id="genBtn" onclick="genAI()">Generar nota ▸</button>
         </div>
       </div>
-
-      <!-- WRITE TAB -->
       <div class="write-tab" id="writeTab">
         <input type="text" id="wTitle" placeholder="Título de la nota..."/>
         <input type="text" id="wSubtitle" placeholder="Subtítulo o bajada..."/>
@@ -298,7 +275,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <option value="policy">Fiscal Policy</option>
           </select>
         </div>
-        <textarea id="wBody" placeholder="Escribí tu análisis acá. Podés usar texto plano — Claude lo va a formatear y pulir antes de publicar si usás el botón 'Pulir con Claude'. O publicá directamente si ya está listo."></textarea>
+        <textarea id="wBody" placeholder="Escribí tu análisis acá..."></textarea>
         <div class="write-actions">
           <button class="w-btn w-polish" id="polishBtn" onclick="polishNote()">✦ Pulir con Claude</button>
           <button class="w-btn w-publish" onclick="publishWritten()">Publicar nota ▸</button>
@@ -306,12 +283,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
     </div>
 
-    <!-- FEED -->
+    <div class="feed-header" id="feedHeader" style="display:none">
+      <span class="feed-count" id="feedCount"></span>
+    </div>
     <div class="feed" id="feed">
       <div class="empty" id="emptyState">
         <span class="icon">◈</span>
         <p id="emptyMsg">Cargando notas...</p>
       </div>
+    </div>
+    <div class="no-results" id="noResults">
+      <p>No hay notas en esta categoría todavía.</p>
     </div>
   </section>
 
@@ -336,9 +318,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="sb-block">
       <div class="sb-title">Geopolitical Radar</div>
-      <div class="geo-entry"><div class="geo-region">Eastern Europe</div><div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad y reconstrucción.</div></div>
-      <div class="geo-entry"><div class="geo-region">Indo-Pacific</div><div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona bajo presión de Washington.</div></div>
-      <div class="geo-entry"><div class="geo-region">Middle East</div><div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo permanente.</div></div>
+      <div class="geo-entry"><div class="geo-region">Eastern Europe</div><div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad.</div></div>
+      <div class="geo-entry"><div class="geo-region">Indo-Pacific</div><div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona.</div></div>
+      <div class="geo-entry"><div class="geo-region">Middle East</div><div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo.</div></div>
       <div class="geo-entry"><div class="geo-region">Trade War 2.0</div><div class="geo-text">Aranceles recíprocos de Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div></div>
     </div>
     <div class="sb-block">
@@ -348,7 +330,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <div class="cal-row"><span class="cal-date">Abr 10</span><span class="cal-ev">CPI Marzo</span></div>
       <div class="cal-row"><span class="cal-date">Abr 30</span><span class="cal-ev">FOMC Decision</span></div>
       <div class="cal-row"><span class="cal-date">May 2</span><span class="cal-ev">PIB Q1 Advance</span></div>
-      <div class="cal-row"><span class="cal-date">May 13</span><span class="cal-ev">CPI Abril</span></div>
     </div>
   </aside>
 </main>
@@ -359,243 +340,320 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 </footer>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────
 const SUPABASE_URL = 'https://fhswsvjkkmnhlbdnozoe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_HCwgAA7wQJIJj45eU_MhvQ_gVklccHK';
-const EDITOR_PIN   = 'carrynote2025'; // Cambiá esto por tu PIN secreto
+const EDITOR_PIN   = 'carrynote2025';
+const FINNHUB_KEY  = 'd74n2ihr01qg1eo64720d74n2ihr01qg1eo6472g';
 
-// ── STATE ───────────────────────────────────────────────────
 let isEditor = false;
 let ANTHRO_KEY = localStorage.getItem('cn_akey') || '';
+let allNotes = [];
+let activeFilter = 'all';
 let noteCount = 0;
 let selT = 'Fed y política monetaria en 2025: tasas, dot plot y perspectivas';
 
-// ── SUPABASE HELPERS ────────────────────────────────────────
-async function sbFetch(path, opts = {}) {
-  const res = await fetch(SUPABASE_URL + path, {
-    ...opts,
-    headers: {
-      'Content-Type': 'application/json',
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      ...(opts.headers || {})
-    }
+// ── TICKER ──────────────────────────────────────────────────
+const tickerSymbols = [
+  { id:'spx',  sym:'SPY',      lbl:'S&P 500',  fmt:'price' },
+  { id:'ndx',  sym:'QQQ',      lbl:'NASDAQ',   fmt:'price' },
+  { id:'tlt',  sym:'TLT',      lbl:'10Y UST',  fmt:'price' },
+  { id:'dxy',  sym:'UUP',      lbl:'DXY',      fmt:'price' },
+  { id:'eur',  sym:'EURUSD',   lbl:'EUR/USD',  fmt:'fx'    },
+  { id:'ars',  sym:'USDARSFX', lbl:'USD/ARS',  fmt:'fx'    },
+  { id:'wti',  sym:'USO',      lbl:'WTI',      fmt:'price' },
+  { id:'gld',  sym:'GLD',      lbl:'GOLD',     fmt:'price' },
+  { id:'btc',  sym:'BINANCE:BTCUSDT', lbl:'BTC', fmt:'crypto' },
+];
+
+async function fetchQuote(symbol) {
+  const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_KEY}`);
+  return await res.json();
+}
+
+function fmtPrice(v, fmt) {
+  if (!v || v === 0) return '—';
+  if (fmt === 'crypto') return '$' + v.toLocaleString('en-US', {maximumFractionDigits:0});
+  if (fmt === 'fx') return v.toFixed(4);
+  return v.toFixed(2);
+}
+
+function setTicker(id, price, pct, fmt) {
+  const val = fmtPrice(price, fmt);
+  const sign = pct >= 0 ? '+' : '';
+  const cls = pct >= 0 ? 't-up' : 't-dn';
+  const arr = pct >= 0 ? '▲' : '▼';
+  const chgText = ` ${arr}${Math.abs(pct).toFixed(2)}%`;
+  [id, id+'2'].forEach(i => {
+    const vEl = document.getElementById('t-'+i.replace('2','')+(i.endsWith('2')?'2':''));
+    const cEl = document.getElementById('t-'+i.replace('2','').replace(/\d$/,'')+(i.endsWith('2')?'-c2':'-c'));
+    // simpler approach:
   });
-  return res;
+  // Direct approach
+  const v1 = document.getElementById('t-'+id);
+  const c1 = document.getElementById('t-'+id+'-c');
+  const v2 = document.getElementById('t-'+id+'2');
+  const c2 = document.getElementById('t-'+id+'-c2');
+  if(v1){v1.textContent=' '+val;}
+  if(c1){c1.textContent=chgText;c1.className=cls;}
+  if(v2){v2.textContent=' '+val;}
+  if(c2){c2.textContent=chgText;c2.className=cls;}
+}
+
+async function loadTicker() {
+  const status = document.getElementById('tickerStatus');
+  try {
+    const quotes = await Promise.all(tickerSymbols.map(s => fetchQuote(s.sym)));
+    quotes.forEach((q, i) => {
+      if (q && q.c) {
+        const pct = ((q.c - q.pc) / q.pc) * 100;
+        setTicker(tickerSymbols[i].id, q.c, pct, tickerSymbols[i].fmt);
+      }
+    });
+    status.textContent = '● LIVE';
+    status.className = 'ticker-status live';
+  } catch(e) {
+    status.textContent = '○ offline';
+  }
+}
+
+// Refresh ticker every 2 minutes
+loadTicker();
+setInterval(loadTicker, 120000);
+
+// ── SUPABASE ─────────────────────────────────────────────────
+async function sbFetch(path, opts={}) {
+  return fetch(SUPABASE_URL+path, {...opts, headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,...(opts.headers||{})}});
 }
 
 async function loadNotes() {
   try {
     const res = await sbFetch('/rest/v1/notes?select=*&order=created_at.desc');
-    if (!res.ok) throw new Error('DB error');
-    const notes = await res.json();
-    renderNotes(notes);
+    if(!res.ok) throw new Error();
+    allNotes = await res.json();
+    renderNotes();
   } catch(e) {
-    document.getElementById('emptyMsg').textContent = 'Error cargando notas. Verificá la configuración de Supabase.';
+    document.getElementById('emptyMsg').textContent = 'Error cargando notas.';
   }
 }
 
 async function saveNote(note) {
-  const res = await sbFetch('/rest/v1/notes', {
-    method: 'POST',
-    headers: { 'Prefer': 'return=representation' },
-    body: JSON.stringify(note)
-  });
-  if (!res.ok) { const e = await res.json(); throw new Error(JSON.stringify(e)); }
+  const res = await sbFetch('/rest/v1/notes', {method:'POST', headers:{'Prefer':'return=representation'}, body:JSON.stringify(note)});
+  if(!res.ok){const e=await res.json();throw new Error(JSON.stringify(e));}
   return await res.json();
 }
 
 async function deleteNote(id) {
-  await sbFetch('/rest/v1/notes?id=eq.' + id, { method: 'DELETE' });
+  await sbFetch('/rest/v1/notes?id=eq.'+id, {method:'DELETE'});
 }
 
-// ── RENDER ──────────────────────────────────────────────────
-function renderNotes(notes) {
+// ── RENDER ────────────────────────────────────────────────────
+function renderNotes() {
   const feed = document.getElementById('feed');
   const empty = document.getElementById('emptyState');
-  if (!notes || notes.length === 0) {
-    if (empty) { empty.style.display = 'block'; document.getElementById('emptyMsg').textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera!' : 'Las notas aparecerán aquí pronto.'; }
+  const noRes = document.getElementById('noResults');
+  const header = document.getElementById('feedHeader');
+  const countEl = document.getElementById('feedCount');
+
+  const filtered = activeFilter === 'all' ? allNotes : allNotes.filter(n => n.tag === activeFilter);
+
+  if (allNotes.length === 0) {
+    empty.style.display = 'block';
+    document.getElementById('emptyMsg').textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera!' : 'Las notas aparecerán aquí pronto.';
+    noRes.style.display = 'none';
+    header.style.display = 'none';
+    feed.innerHTML = '';
+    feed.appendChild(empty);
     return;
   }
-  if (empty) empty.style.display = 'none';
+
+  empty.style.display = 'none';
   feed.innerHTML = '';
-  noteCount = notes.length;
-  notes.forEach((n, i) => {
-    const card = buildCard(n, noteCount - i);
-    feed.appendChild(card);
-  });
-  if (isEditor) document.getElementById('feed').classList.add('editor-active');
+
+  if (filtered.length === 0) {
+    noRes.style.display = 'block';
+    header.style.display = 'none';
+  } else {
+    noRes.style.display = 'none';
+    header.style.display = 'flex';
+    countEl.textContent = filtered.length + (filtered.length === 1 ? ' nota' : ' notas') + (activeFilter !== 'all' ? ' · ' + activeFilter : '');
+    noteCount = allNotes.length;
+    filtered.forEach((n, i) => {
+      const globalIdx = allNotes.findIndex(x => x.id === n.id);
+      feed.appendChild(buildCard(n, noteCount - globalIdx));
+    });
+  }
+
+  if(isEditor) feed.classList.add('editor-active');
 }
 
 function buildCard(n, num) {
   const card = document.createElement('div');
   card.className = 'note-card';
   card.dataset.id = n.id;
-  const ds = new Date(n.created_at).toLocaleDateString('es-ES', {day:'2-digit',month:'short',year:'numeric'}) +
-    ' · ' + new Date(n.created_at).toLocaleTimeString('es-ES', {hour:'2-digit',minute:'2-digit'});
-  const aid = 'nb' + n.id;
+  card.dataset.tag = n.tag;
+  const ds = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(n.created_at).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  const aid = 'nb'+n.id;
   card.innerHTML = `
     <div class="note-meta">
-      <span class="note-tag ${n.tag}">${tagLabel(n.tag)}</span>
+      <span class="note-tag ${n.tag}" onclick="filterByTag('${n.tag}')" title="Filtrar por categoría">${tagLabel(n.tag)}</span>
       <span class="note-date">${ds}</span>
       <span class="note-num">Note #${String(num).padStart(3,'0')}</span>
     </div>
-    <div class="note-title" onclick="toggle('${aid}')">${n.title}</div>
-    <div class="note-sub">${n.subtitle}</div>
+    <div class="note-title" onclick="toggleNote('${aid}')">${n.title}</div>
+    <div class="note-sub">${n.subtitle||''}</div>
     <div class="note-body" id="${aid}">${n.body}</div>
     <div class="note-footer">
-      <button class="read-toggle" id="b${aid}" onclick="toggle('${aid}')">Read note ▸</button>
-      <button class="del-btn" onclick="confirmDelete('${n.id}', this)">✕ Eliminar</button>
+      <button class="read-toggle" id="b${aid}" onclick="toggleNote('${aid}')">Read note ▸</button>
+      <button class="del-btn" onclick="confirmDelete('${n.id}',this)">✕ Eliminar</button>
     </div>`;
   return card;
 }
 
 function tagLabel(t) {
-  const m = {macro:'Monetary Policy',geo:'Geopolitics',markets:'Markets',policy:'Fiscal Policy'};
-  return m[t] || 'Analysis';
+  return {macro:'Monetary Policy',geo:'Geopolitics',markets:'Markets',policy:'Fiscal Policy'}[t]||'Analysis';
 }
 
-function toggle(id) {
-  const b = document.getElementById(id), btn = document.getElementById('b'+id);
+function toggleNote(id) {
+  const b=document.getElementById(id),btn=document.getElementById('b'+id);
   b.classList.toggle('open');
-  btn.textContent = b.classList.contains('open') ? 'Close note ▲' : 'Read note ▸';
+  btn.textContent=b.classList.contains('open')?'Close note ▲':'Read note ▸';
 }
 
-async function confirmDelete(id, btn) {
-  if (!confirm('¿Eliminar esta nota?')) return;
-  btn.textContent = '...';
+async function confirmDelete(id,btn) {
+  if(!confirm('¿Eliminar esta nota?'))return;
+  btn.textContent='...';
   await deleteNote(id);
   await loadNotes();
 }
 
-// ── AUTH ────────────────────────────────────────────────────
-function showLogin() { document.getElementById('loginModal').style.display = 'flex'; document.getElementById('editorPin').focus(); }
-function closeLogin() { document.getElementById('loginModal').style.display = 'none'; }
-document.getElementById('editorPin').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+// ── FILTERS ───────────────────────────────────────────────────
+function filterByTag(tag) {
+  activeFilter = tag;
+  document.querySelectorAll('.nav-strip a').forEach(a => {
+    a.classList.toggle('active', a.dataset.filter === tag || (tag === 'all' && a.dataset.filter === 'all'));
+  });
+  renderNotes();
+}
+
+document.querySelectorAll('.nav-strip a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelectorAll('.nav-strip a').forEach(x => x.classList.remove('active'));
+    a.classList.add('active');
+    activeFilter = a.dataset.filter || 'all';
+    renderNotes();
+  });
+});
+
+// ── AUTH ──────────────────────────────────────────────────────
+function showLogin(){document.getElementById('loginModal').classList.add('open');document.getElementById('editorPin').focus();}
+function closeLogin(){document.getElementById('loginModal').classList.remove('open');}
+document.getElementById('editorPin').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();if(e.key==='Escape')closeLogin();});
 
 function doLogin() {
-  const pin = document.getElementById('editorPin').value;
-  if (pin === EDITOR_PIN) {
-    isEditor = true;
-    document.getElementById('loginModal').style.display = 'none';
+  if(document.getElementById('editorPin').value===EDITOR_PIN){
+    isEditor=true;
+    closeLogin();
     document.getElementById('editorBar').classList.add('visible');
     document.getElementById('editorPanel').classList.add('visible');
-    document.getElementById('loginToggle').style.display = 'none';
+    document.getElementById('loginToggle').style.display='none';
     document.getElementById('feed').classList.add('editor-active');
-    if (ANTHRO_KEY) { document.getElementById('anthroKey').value = ANTHRO_KEY.slice(0,16)+'••••••••••'; document.getElementById('anthroStatus').textContent='✓ Key cargada'; document.getElementById('anthroStatus').className='eb-status ok'; }
-    loadNotes();
-  } else {
-    document.getElementById('loginErr').textContent = '✗ PIN incorrecto';
-  }
+    if(ANTHRO_KEY){document.getElementById('anthroKey').value=ANTHRO_KEY.slice(0,16)+'••••••••••';document.getElementById('anthroStatus').textContent='✓ Key cargada';document.getElementById('anthroStatus').className='eb-status ok';}
+    renderNotes();
+  } else { document.getElementById('loginErr').textContent='✗ PIN incorrecto'; }
 }
 
-function logout() {
-  isEditor = false;
+function logout(){
+  isEditor=false;
   document.getElementById('editorBar').classList.remove('visible');
   document.getElementById('editorPanel').classList.remove('visible');
-  document.getElementById('loginToggle').style.display = 'block';
+  document.getElementById('loginToggle').style.display='block';
   document.getElementById('feed').classList.remove('editor-active');
-  loadNotes();
+  renderNotes();
 }
 
-function saveAnthroKey() {
-  const v = document.getElementById('anthroKey').value.trim();
-  const s = document.getElementById('anthroStatus');
-  if (!v.startsWith('sk-ant-')) { s.textContent='✗ Formato incorrecto'; s.className='eb-status err'; return; }
-  ANTHRO_KEY = v; localStorage.setItem('cn_akey', v);
-  s.textContent='✓ Key guardada'; s.className='eb-status ok';
-  document.getElementById('anthroKey').value = v.slice(0,16)+'••••••••••';
+function saveAnthroKey(){
+  const v=document.getElementById('anthroKey').value.trim();
+  const s=document.getElementById('anthroStatus');
+  if(!v.startsWith('sk-ant-')){s.textContent='✗ Formato incorrecto';s.className='eb-status err';return;}
+  ANTHRO_KEY=v;localStorage.setItem('cn_akey',v);
+  s.textContent='✓ Key guardada';s.className='eb-status ok';
+  document.getElementById('anthroKey').value=v.slice(0,16)+'••••••••••';
 }
-document.getElementById('anthroKey').addEventListener('keydown', e => { if(e.key==='Enter') saveAnthroKey(); });
+document.getElementById('anthroKey').addEventListener('keydown',e=>{if(e.key==='Enter')saveAnthroKey();});
 
-// ── TABS ────────────────────────────────────────────────────
-function switchTab(t) {
-  document.querySelectorAll('.ep-tab').forEach((b,i) => b.classList.toggle('active', (i===0&&t==='ai')||(i===1&&t==='write')));
-  document.getElementById('aiTab').classList.toggle('visible', t==='ai');
-  document.getElementById('writeTab').classList.toggle('visible', t==='write');
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(t){
+  document.querySelectorAll('.ep-tab').forEach((b,i)=>b.classList.toggle('active',(i===0&&t==='ai')||(i===1&&t==='write')));
+  document.getElementById('aiTab').classList.toggle('visible',t==='ai');
+  document.getElementById('writeTab').classList.toggle('visible',t==='write');
 }
 
-// ── TOPIC SELECT ────────────────────────────────────────────
-document.querySelectorAll('.t-btn').forEach(b => b.addEventListener('click', () => {
-  document.querySelectorAll('.t-btn').forEach(x => x.classList.remove('sel'));
-  b.classList.add('sel'); selT = b.dataset.t;
-  document.getElementById('customT').value = '';
+document.querySelectorAll('.t-btn').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.t-btn').forEach(x=>x.classList.remove('sel'));
+  b.classList.add('sel');selT=b.dataset.t;document.getElementById('customT').value='';
 }));
-document.getElementById('customT').addEventListener('keydown', e => { if(e.key==='Enter') genAI(); });
+document.getElementById('customT').addEventListener('keydown',e=>{if(e.key==='Enter')genAI();});
 
-// ── TAG MAPPING ─────────────────────────────────────────────
-const tagMap = {'Fed':'macro','Inflación':'macro','Aranceles':'markets','Ucrania':'geo','China':'geo','Labour':'macro','Yield':'markets','Fiscal':'policy','Middle East':'geo','Dollar':'markets','Argentina':'geo','EM':'markets','carry':'markets'};
-function getTagFromTopic(t) { for(const[k,v]of Object.entries(tagMap)) if(t.toLowerCase().includes(k.toLowerCase())) return v; return 'macro'; }
+const tagMap={'Fed':'macro','Inflación':'macro','Aranceles':'markets','Ucrania':'geo','China':'geo','Labour':'macro','Yield':'markets','Fiscal':'policy','Middle East':'geo','Dollar':'markets','Argentina':'geo','EM':'markets','carry':'markets'};
+function getTagFromTopic(t){for(const[k,v]of Object.entries(tagMap))if(t.toLowerCase().includes(k.toLowerCase()))return v;return'macro';}
 
-// ── GENERATE WITH AI ────────────────────────────────────────
-async function genAI() {
-  if (!ANTHRO_KEY) { alert('Ingresá tu Anthropic API key en la barra de editor primero.'); return; }
-  const topic = document.getElementById('customT').value.trim() || selT;
-  const btn = document.getElementById('genBtn');
-  btn.disabled = true; btn.textContent = 'Generando...';
-
-  const feed = document.getElementById('feed');
-  const empty = document.getElementById('emptyState'); if(empty) empty.style.display='none';
-  const lid = 'l'+Date.now(); const lel = document.createElement('div');
-  lel.className='loading-card'; lel.id=lid;
+// ── GENERATE AI ───────────────────────────────────────────────
+async function genAI(){
+  if(!ANTHRO_KEY){alert('Ingresá tu Anthropic API key primero.');return;}
+  const topic=document.getElementById('customT').value.trim()||selT;
+  const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='Generando...';
+  const feed=document.getElementById('feed');
+  document.getElementById('emptyState').style.display='none';
+  const lid='l'+Date.now();const lel=document.createElement('div');lel.className='loading-card';lel.id=lid;
   lel.innerHTML=`<div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div><div class="skel" style="height:30px;width:75%"></div><div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:60%"></div><div class="load-msg"><span class="ell">Carry Note generando análisis</span></div>`;
-  feed.insertBefore(lel, feed.firstChild);
+  feed.insertBefore(lel,feed.firstChild);
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
+      system:`Sos un economista senior y analista de mercados con base en Buenos Aires, especializado en macroeconomía global, política monetaria de la Fed y geopolítica económica. Escribís para Carry Note, una publicación de análisis económico de alto nivel dirigida a profesionales con formación en ciencias económicas, finanzas y política económica.
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
-        system:`Sos un economista senior y analista de mercados con base en Buenos Aires, especializado en macroeconomía global, política monetaria de la Fed y geopolítica económica. Escribís para Carry Note, una publicación de análisis económico de alto nivel dirigida a profesionales con formación en ciencias económicas, finanzas y política económica.
-
-Estilo: análisis denso y bien argumentado, con posición propia clara y fundamentada. Usás terminología técnica precisa — spreads, curvas de rendimiento, política monetaria, balanza de pagos, cuenta corriente, prima de riesgo, carry trade, tipo de cambio real — sin sobre-explicar. El tono es de research note profesional: conciso, directo, sin relleno. Cuando mencionás cifras, son específicas.
-
-Respondé ÚNICAMENTE con JSON válido, sin texto extra, sin bloques markdown:
-{"title":"Título en estilo research note (máx 10 palabras)","subtitle":"Bajada que amplía la tesis central (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>dato clave</div>. Mínimo 6 párrafos. El primero establece la tesis. Cerrá con implicancias para tomadores de decisión.","tag":"macro|geo|markets|policy"}`,
-        messages:[{role:'user',content:`Escribí una nota de análisis para Carry Note sobre: "${topic}". Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}. Usá datos concretos, tomá posición, sin frases genéricas.`}]})
-    });
+Estilo: análisis denso y bien argumentado, con posición propia clara y fundamentada. Usás terminología técnica precisa sin sobre-explicar. Tono de research note profesional: conciso, directo, sin relleno. Cifras específicas. Respondé ÚNICAMENTE con JSON válido, sin texto extra ni bloques markdown:
+{"title":"Título en estilo research note (máx 10 palabras)","subtitle":"Bajada que amplía la tesis (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>dato clave</div>. Mínimo 6 párrafos. El primero establece la tesis. Cerrá con implicancias para tomadores de decisión.","tag":"macro|geo|markets|policy"}`,
+      messages:[{role:'user',content:`Escribí una nota de análisis para Carry Note sobre: "${topic}". Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}. Usá datos concretos, tomá posición.`}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'HTTP '+res.status);}
     const data=await res.json();
     const txt=data.content.map(i=>i.type==='text'?i.text:'').join('').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
     const note=JSON.parse(txt);
     document.getElementById(lid)?.remove();
-    const saved = await saveNote({title:note.title,subtitle:note.subtitle,body:note.body,tag:note.tag||getTagFromTopic(topic)});
+    await saveNote({title:note.title,subtitle:note.subtitle,body:note.body,tag:note.tag||getTagFromTopic(topic)});
     await loadNotes();
-  } catch(err) {
+  }catch(err){
     document.getElementById(lid)?.remove();
     alert('Error: '+err.message);
   }
-  btn.disabled=false; btn.textContent='Generar nota ▸';
+  btn.disabled=false;btn.textContent='Generar nota ▸';
 }
 
-// ── POLISH WITH CLAUDE ───────────────────────────────────────
-async function polishNote() {
-  if (!ANTHRO_KEY) { alert('Ingresá tu Anthropic API key primero.'); return; }
+// ── POLISH & PUBLISH ──────────────────────────────────────────
+async function polishNote(){
+  if(!ANTHRO_KEY){alert('Ingresá tu Anthropic API key primero.');return;}
   const title=document.getElementById('wTitle').value.trim();
   const body=document.getElementById('wBody').value.trim();
-  if (!body) { alert('Escribí algo primero.'); return; }
-  const btn=document.getElementById('polishBtn'); btn.disabled=true; btn.textContent='Puliendo...';
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
-        system:`Sos editor de Carry Note, una publicación de análisis económico profesional. Tu tarea es tomar el borrador del economista y pulirlo: mejorar la estructura, afinar la prosa, asegurarte que la tesis quede clara en el primer párrafo y que cierre con implicancias concretas. No cambiés el contenido ni las ideas — solo mejorá la forma. Respondé ÚNICAMENTE con JSON válido sin texto extra ni bloques markdown: {"title":"título pulido","subtitle":"bajada pulida (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>estadística</div>"}`,
-        messages:[{role:'user',content:`Título: ${title||'(sin título)'}\n\nBorrador:\n${body}`}]})
-    });
+  if(!body){alert('Escribí algo primero.');return;}
+  const btn=document.getElementById('polishBtn');btn.disabled=true;btn.textContent='Puliendo...';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
+      system:`Sos editor de Carry Note. Tu tarea: tomar el borrador del economista y pulirlo — mejorar estructura, afinar prosa, asegurarte que la tesis quede clara en el primer párrafo, cerrar con implicancias concretas. No cambiés las ideas. Respondé ÚNICAMENTE con JSON válido sin markdown: {"title":"título pulido","subtitle":"bajada (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>stat</div>"}`,
+      messages:[{role:'user',content:`Título: ${title||'(sin título)'}\n\nBorrador:\n${body}`}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message);}
     const data=await res.json();
     const txt=data.content.map(i=>i.type==='text'?i.text:'').join('').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
     const note=JSON.parse(txt);
     document.getElementById('wTitle').value=note.title;
     document.getElementById('wSubtitle').value=note.subtitle;
-    document.getElementById('wBody').value=note.body.replace(/<[^>]+>/g,'');
+    document.getElementById('wBody').value=note.body.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
     document.getElementById('wBody').dataset.html=note.body;
-  } catch(err) { alert('Error: '+err.message); }
-  btn.disabled=false; btn.textContent='✦ Pulir con Claude';
+  }catch(err){alert('Error: '+err.message);}
+  btn.disabled=false;btn.textContent='✦ Pulir con Claude';
 }
 
-async function publishWritten() {
+async function publishWritten(){
   const title=document.getElementById('wTitle').value.trim();
   const subtitle=document.getElementById('wSubtitle').value.trim();
   const tag=document.getElementById('wTag').value;
@@ -603,25 +661,22 @@ async function publishWritten() {
   const rawBody=bodyEl.dataset.html||bodyEl.value.trim();
   if(!title||!rawBody){alert('El título y el cuerpo son obligatorios.');return;}
   const body=rawBody.startsWith('<')?rawBody:rawBody.split('\n\n').map(p=>`<p>${p}</p>`).join('');
-  try {
+  try{
     await saveNote({title,subtitle,body,tag});
     document.getElementById('wTitle').value='';
     document.getElementById('wSubtitle').value='';
     document.getElementById('wBody').value='';
-    delete document.getElementById('wBody').dataset.html;
+    delete bodyEl.dataset.html;
     await loadNotes();
-  } catch(err){alert('Error guardando: '+err.message);}
+  }catch(err){alert('Error: '+err.message);}
 }
 
-// ── CLOCK ───────────────────────────────────────────────────
+// ── CLOCK ─────────────────────────────────────────────────────
 function updateClock(){document.getElementById('live-clock').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+' · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
 setInterval(updateClock,1000);updateClock();
 
-// ── INIT ────────────────────────────────────────────────────
-window.addEventListener('load',()=>{
-  // Create table if needed via RPC won't work from client, just load notes
-  loadNotes();
-});
+// ── INIT ──────────────────────────────────────────────────────
+window.addEventListener('load',()=>{ loadNotes(); });
 </script>
 </body>
 </html>
