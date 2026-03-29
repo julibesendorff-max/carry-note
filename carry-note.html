@@ -178,9 +178,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip" id="navStrip">
-    <a class="active" data-filter="all">All Notes</a>
+    <a class="active" data-filter="all">Todas</a>
     <a data-filter="macro">Macro US</a>
-    <a data-filter="macro">Fed &amp; Rates</a>
+    <a data-filter="macro">Fed &amp; Tasas</a>
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
     <a data-filter="geo">EM &amp; Latam</a>
@@ -189,21 +189,21 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 </header>
 
 <div class="editor-bar" id="editorBar">
-  <label>▸ EDITOR</label>
+  <label>▸ MODO EDITOR</label>
   <input type="password" id="anthroKey" placeholder="Anthropic API key (sk-ant-...)"/>
-  <button class="eb-btn eb-save" onclick="saveAnthroKey()">Guardar ▸</button>
+  <button class="eb-btn eb-save" onclick="saveAnthroKey()">Guardar clave ▸</button>
   <span class="eb-status" id="anthroStatus"></span>
-  <button class="eb-btn eb-logout" onclick="logout()" style="margin-left:auto">Salir ✕</button>
+  <button class="eb-btn eb-logout" onclick="logout()" style="margin-left:auto">Salir del editor ✕</button>
 </div>
 
-<div class="login-toggle" id="loginToggle" onclick="showLogin()">· · ·</div>
+<div class="login-toggle" id="loginToggle" onclick="showLogin()" title="Acceso editor">· · ·</div>
 
 <div id="loginModal">
   <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;width:340px;font-family:var(--mono)">
-    <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem">▸ Acceso Editor</div>
+    <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem">▸ Acceso al editor</div>
     <input type="password" id="editorPin" placeholder="PIN de editor" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.8rem;padding:0.6rem 0.8rem;outline:none;margin-bottom:0.75rem"/>
     <div style="display:flex;gap:0.5rem">
-      <button onclick="doLogin()" style="flex:1;font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Entrar ▸</button>
+      <button onclick="doLogin()" style="flex:1;font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.5rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Ingresar ▸</button>
       <button onclick="closeLogin()" style="font-family:var(--mono);font-size:0.65rem;padding:0.5rem 0.8rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">✕</button>
     </div>
     <div id="loginErr" style="color:var(--red);font-size:0.62rem;margin-top:0.5rem"></div>
@@ -241,8 +241,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <div class="editor-panel" id="editorPanel">
       <div class="ep-label">▸ Nueva nota</div>
       <div class="ep-tabs">
-        <button class="ep-tab active" onclick="switchTab('ai')">Generar con AI</button>
-        <button class="ep-tab" onclick="switchTab('write')">Escribir nota</button>
+        <button class="ep-tab active" onclick="switchTab('ai')">Generar con IA</button>
+        <button class="ep-tab" onclick="switchTab('write')">Escribir nota propia</button>
       </div>
       <div class="ai-tab visible" id="aiTab">
         <div class="topic-grid" id="tGrid">
@@ -260,7 +260,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           <button class="t-btn" data-t="Economías emergentes: carry trade, flujos de capital, fortaleza del dólar y vulnerabilidades">EM &amp; Carry</button>
         </div>
         <div class="gen-row">
-          <input type="text" id="customT" placeholder="O escribí tu propio tema..."/>
+          <input type="text" id="customT" placeholder="O escribí tu propio tema de análisis..."/>
           <button class="gen-go" id="genBtn" onclick="genAI()">Generar nota ▸</button>
         </div>
       </div>
@@ -269,13 +269,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <input type="text" id="wSubtitle" placeholder="Subtítulo o bajada..."/>
         <div class="write-meta">
           <select id="wTag">
-            <option value="macro">Monetary Policy / Macro US</option>
-            <option value="geo">Geopolitics</option>
-            <option value="markets">Markets / Fixed Income</option>
-            <option value="policy">Fiscal Policy</option>
+            <option value="macro">Política Monetaria / Macro US</option>
+            <option value="geo">Geopolítica</option>
+            <option value="markets">Mercados / Renta Fija</option>
+            <option value="policy">Política Fiscal</option>
           </select>
         </div>
-        <textarea id="wBody" placeholder="Escribí tu análisis acá..."></textarea>
+        <textarea id="wBody" placeholder="Escribí tu análisis acá. Claude lo puede pulir antes de publicar."></textarea>
         <div class="write-actions">
           <button class="w-btn w-polish" id="polishBtn" onclick="polishNote()">✦ Pulir con Claude</button>
           <button class="w-btn w-publish" onclick="publishWritten()">Publicar nota ▸</button>
@@ -299,14 +299,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
   <aside class="sidebar">
     <div class="sb-block">
-      <div class="sb-title">Macro Dashboard · US</div>
-      <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">4.25–4.50%</span></div>
-      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v dn">2.8%</span></div>
-      <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v dn">2.6%</span></div>
-      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v neu">4.1%</span></div>
-      <div class="ind"><span class="ind-n">PIB Q4 '24</span><span class="ind-v up">+2.3%</span></div>
-      <div class="ind"><span class="ind-n">10Y–2Y Spread</span><span class="ind-v up">+12bp</span></div>
-      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.8</span></div>
+      <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">Indicadores Macro · EEUU<span id="fredStatus" style="font-size:0.52rem;color:var(--muted2)">··· cargando</span></div>
+      <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu" id="fred-ffr">—</span></div>
+      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v" id="fred-cpi">—</span></div>
+      <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v" id="fred-pce">—</span></div>
+      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v" id="fred-unemp">—</span></div>
+      <div class="ind"><span class="ind-n">PIB (últ. trim.)</span><span class="ind-v" id="fred-gdp">—</span></div>
+      <div class="ind"><span class="ind-n">10Y–2Y Spread</span><span class="ind-v" id="fred-spread">—</span></div>
+      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v" id="fred-ism">—</span></div>
       <div class="chart-box">
         <svg viewBox="0 0 300 80" preserveAspectRatio="none">
           <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></linearGradient></defs>
@@ -317,14 +317,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
     </div>
     <div class="sb-block">
-      <div class="sb-title">Geopolitical Radar</div>
-      <div class="geo-entry"><div class="geo-region">Eastern Europe</div><div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad.</div></div>
-      <div class="geo-entry"><div class="geo-region">Indo-Pacific</div><div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona.</div></div>
-      <div class="geo-entry"><div class="geo-region">Middle East</div><div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo.</div></div>
-      <div class="geo-entry"><div class="geo-region">Trade War 2.0</div><div class="geo-text">Aranceles recíprocos de Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div></div>
+      <div class="sb-title">Radar Geopolítico</div>
+      <div class="geo-entry"><div class="geo-region">Europa del Este</div><div class="geo-text">Negociaciones de cese el fuego en Ucrania con mediación de EEUU; incertidumbre sobre garantías de seguridad.</div></div>
+      <div class="geo-entry"><div class="geo-region">Indo-Pacífico</div><div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona.</div></div>
+      <div class="geo-entry"><div class="geo-region">Medio Oriente</div><div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo.</div></div>
+      <div class="geo-entry"><div class="geo-region">Guerra Comercial</div><div class="geo-text">Aranceles recíprocos de Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div></div>
     </div>
     <div class="sb-block">
-      <div class="sb-title">Event Calendar</div>
+      <div class="sb-title">Calendario de Eventos</div>
       <div class="cal-row"><span class="cal-date">Mar 28</span><span class="cal-ev">PCE Core Feb</span></div>
       <div class="cal-row"><span class="cal-date">Abr 4</span><span class="cal-ev">NFP Marzo</span></div>
       <div class="cal-row"><span class="cal-date">Abr 10</span><span class="cal-ev">CPI Marzo</span></div>
@@ -336,7 +336,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
 <footer>
   <div class="footer-logo">Carry<em>Note</em></div>
-  <div>© 2025 · No constituye asesoramiento financiero</div>
+  <div>© 2025 · No constituye asesoramiento financiero ni de inversión</div>
 </footer>
 
 <script>
@@ -409,10 +409,10 @@ async function loadTicker() {
         setTicker(tickerSymbols[i].id, q.c, pct, tickerSymbols[i].fmt);
       }
     });
-    status.textContent = '● LIVE';
+    status.textContent = '● EN VIVO';
     status.className = 'ticker-status live';
   } catch(e) {
-    status.textContent = '○ offline';
+    status.textContent = '○ sin conexión';
   }
 }
 
@@ -458,7 +458,7 @@ function renderNotes() {
 
   if (allNotes.length === 0) {
     empty.style.display = 'block';
-    document.getElementById('emptyMsg').textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera!' : 'Las notas aparecerán aquí pronto.';
+    document.getElementById('emptyMsg').textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera desde el modo editor!' : 'Las notas aparecerán aquí pronto.';
     noRes.style.display = 'none';
     header.style.display = 'none';
     feed.innerHTML = '';
@@ -475,7 +475,7 @@ function renderNotes() {
   } else {
     noRes.style.display = 'none';
     header.style.display = 'flex';
-    countEl.textContent = filtered.length + (filtered.length === 1 ? ' nota' : ' notas') + (activeFilter !== 'all' ? ' · ' + activeFilter : '');
+    const catName = activeFilter === 'all' ? '' : ' · ' + {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal'}[activeFilter]; countEl.textContent = filtered.length + (filtered.length === 1 ? ' nota' : ' notas') + (catName||'');
     noteCount = allNotes.length;
     filtered.forEach((n, i) => {
       const globalIdx = allNotes.findIndex(x => x.id === n.id);
@@ -503,24 +503,24 @@ function buildCard(n, num) {
     <div class="note-sub">${n.subtitle||''}</div>
     <div class="note-body" id="${aid}">${n.body}</div>
     <div class="note-footer">
-      <button class="read-toggle" id="b${aid}" onclick="toggleNote('${aid}')">Read note ▸</button>
-      <button class="del-btn" onclick="confirmDelete('${n.id}',this)">✕ Eliminar</button>
+      <button class="read-toggle" id="b${aid}" onclick="toggleNote('${aid}')">Leer nota ▸</button>
+      <button class="del-btn" onclick="confirmDelete('${n.id}',this)">✕ Eliminar nota</button>
     </div>`;
   return card;
 }
 
 function tagLabel(t) {
-  return {macro:'Monetary Policy',geo:'Geopolitics',markets:'Markets',policy:'Fiscal Policy'}[t]||'Analysis';
+  return {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal'}[t]||'Análisis';
 }
 
 function toggleNote(id) {
   const b=document.getElementById(id),btn=document.getElementById('b'+id);
   b.classList.toggle('open');
-  btn.textContent=b.classList.contains('open')?'Close note ▲':'Read note ▸';
+  btn.textContent=b.classList.contains('open')?'Cerrar nota ▲':'Leer nota ▸';
 }
 
 async function confirmDelete(id,btn) {
-  if(!confirm('¿Eliminar esta nota?'))return;
+  if(!confirm('¿Eliminar esta nota? Esta acción no se puede deshacer.'))return;
   btn.textContent='...';
   await deleteNote(id);
   await loadNotes();
@@ -559,7 +559,7 @@ function doLogin() {
     document.getElementById('feed').classList.add('editor-active');
     if(ANTHRO_KEY){document.getElementById('anthroKey').value=ANTHRO_KEY.slice(0,16)+'••••••••••';document.getElementById('anthroStatus').textContent='✓ Key cargada';document.getElementById('anthroStatus').className='eb-status ok';}
     renderNotes();
-  } else { document.getElementById('loginErr').textContent='✗ PIN incorrecto'; }
+  } else { document.getElementById('loginErr').textContent='✗ PIN incorrecto. Intentá de nuevo.'; }
 }
 
 function logout(){
@@ -605,7 +605,7 @@ async function genAI(){
   const feed=document.getElementById('feed');
   document.getElementById('emptyState').style.display='none';
   const lid='l'+Date.now();const lel=document.createElement('div');lel.className='loading-card';lel.id=lid;
-  lel.innerHTML=`<div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div><div class="skel" style="height:30px;width:75%"></div><div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:60%"></div><div class="load-msg"><span class="ell">Carry Note generando análisis</span></div>`;
+  lel.innerHTML=`<div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div><div class="skel" style="height:30px;width:75%"></div><div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:60%"></div><div class="load-msg"><span class="ell">Generando nota de análisis</span></div>`;
   feed.insertBefore(lel,feed.firstChild);
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
@@ -624,7 +624,7 @@ Estilo: análisis denso y bien argumentado, con posición propia clara y fundame
     await loadNotes();
   }catch(err){
     document.getElementById(lid)?.remove();
-    alert('Error: '+err.message);
+    alert('Error al generar la nota: '+err.message);
   }
   btn.disabled=false;btn.textContent='Generar nota ▸';
 }
@@ -635,7 +635,7 @@ async function polishNote(){
   const title=document.getElementById('wTitle').value.trim();
   const body=document.getElementById('wBody').value.trim();
   if(!body){alert('Escribí algo primero.');return;}
-  const btn=document.getElementById('polishBtn');btn.disabled=true;btn.textContent='Puliendo...';
+  const btn=document.getElementById('polishBtn');btn.disabled=true;btn.textContent='Puliendo con Claude...';
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
@@ -649,7 +649,7 @@ async function polishNote(){
     document.getElementById('wSubtitle').value=note.subtitle;
     document.getElementById('wBody').value=note.body.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
     document.getElementById('wBody').dataset.html=note.body;
-  }catch(err){alert('Error: '+err.message);}
+  }catch(err){alert('Error al generar la nota: '+err.message);}
   btn.disabled=false;btn.textContent='✦ Pulir con Claude';
 }
 
@@ -668,12 +668,120 @@ async function publishWritten(){
     document.getElementById('wBody').value='';
     delete bodyEl.dataset.html;
     await loadNotes();
-  }catch(err){alert('Error: '+err.message);}
+  }catch(err){alert('Error al generar la nota: '+err.message);}
 }
 
 // ── CLOCK ─────────────────────────────────────────────────────
 function updateClock(){document.getElementById('live-clock').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+' · '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});}
 setInterval(updateClock,1000);updateClock();
+
+
+// ── FRED MACRO DASHBOARD ─────────────────────────────────────
+const FRED_KEY = '7d0cf0ff425ecb910fb21a9c93524fe5';
+
+async function fredFetch(series) {
+  const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=2`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const obs = data.observations?.find(o => o.value !== '.');
+  return obs ? parseFloat(obs.value) : null;
+}
+
+function setMacroVal(id, value, fmt, threshold) {
+  const el = document.getElementById(id);
+  if (!el || value === null) return;
+  let display, cls;
+  if (fmt === 'pct') { display = value.toFixed(2) + '%'; }
+  else if (fmt === 'bp') { display = (value >= 0 ? '+' : '') + Math.round(value) + 'bp'; }
+  else if (fmt === 'gdp') { display = (value >= 0 ? '+' : '') + value.toFixed(1) + '%'; }
+  else { display = value.toFixed(1); }
+  
+  if (threshold === 'inflation') cls = value > 2.5 ? 'dn' : value < 2 ? 'up' : 'neu';
+  else if (threshold === 'unemp') cls = value > 4.5 ? 'dn' : value < 3.5 ? 'up' : 'neu';
+  else if (threshold === 'spread') cls = value > 0 ? 'up' : 'dn';
+  else if (threshold === 'gdp') cls = value > 2 ? 'up' : value < 0 ? 'dn' : 'neu';
+  else if (threshold === 'ism') cls = value > 50 ? 'up' : 'dn';
+  else cls = 'neu';
+  
+  el.textContent = display;
+  el.className = 'ind-v ' + cls;
+}
+
+async function loadFREDData() {
+  const status = document.getElementById('fredStatus');
+  try {
+    const [ffr, cpi, pce, unemp, gdp, t10y, t2y, ism] = await Promise.all([
+      fredFetch('FEDFUNDS'),
+      fredFetch('CPIAUCSL'),   // CPI level — we'll compute YoY below
+      fredFetch('PCEPILFE'),   // Core PCE level
+      fredFetch('UNRATE'),
+      fredFetch('A191RL1Q225SBEA'), // Real GDP growth QoQ annualized
+      fredFetch('DGS10'),
+      fredFetch('DGS2'),
+      fredFetch('MANEMP'),     // fallback — use ISM PMI series
+    ]);
+
+    // Fed Funds Rate
+    if (ffr !== null) {
+      document.getElementById('fred-ffr').textContent = ffr.toFixed(2) + '%';
+      document.getElementById('fred-ffr').className = 'ind-v neu';
+    }
+
+    // CPI YoY — fetch 13 months and compute
+    try {
+      const cpiRes = await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=CPIAUCSL&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=14`);
+      const cpiData = await cpiRes.json();
+      const obs = cpiData.observations.filter(o => o.value !== '.');
+      if (obs.length >= 13) {
+        const latest = parseFloat(obs[0].value);
+        const yearAgo = parseFloat(obs[12].value);
+        const yoy = ((latest - yearAgo) / yearAgo) * 100;
+        setMacroVal('fred-cpi', yoy, 'pct', 'inflation');
+      }
+    } catch(e) {}
+
+    // Core PCE YoY
+    try {
+      const pceRes = await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=PCEPILFE&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=14`);
+      const pceData = await pceRes.json();
+      const obs = pceData.observations.filter(o => o.value !== '.');
+      if (obs.length >= 13) {
+        const latest = parseFloat(obs[0].value);
+        const yearAgo = parseFloat(obs[12].value);
+        const yoy = ((latest - yearAgo) / yearAgo) * 100;
+        setMacroVal('fred-pce', yoy, 'pct', 'inflation');
+      }
+    } catch(e) {}
+
+    // Unemployment
+    setMacroVal('fred-unemp', unemp, 'pct', 'unemp');
+
+    // GDP
+    setMacroVal('fred-gdp', gdp, 'gdp', 'gdp');
+
+    // 10Y-2Y Spread
+    if (t10y !== null && t2y !== null) {
+      const spread = (t10y - t2y) * 100; // in basis points
+      setMacroVal('fred-spread', spread, 'bp', 'spread');
+    }
+
+    // ISM — use NAPM series
+    try {
+      const ismRes = await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=NAPM&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=2`);
+      const ismData = await ismRes.json();
+      const ismObs = ismData.observations?.find(o => o.value !== '.');
+      if (ismObs) setMacroVal('fred-ism', parseFloat(ismObs.value), 'pct', 'ism');
+    } catch(e) {}
+
+    status.textContent = '● actualizado';
+    status.style.color = 'var(--green)';
+  } catch(e) {
+    status.textContent = '○ sin conexión';
+  }
+}
+
+loadFREDData();
+setInterval(loadFREDData, 3600000); // refresh every hour
 
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('load',()=>{ loadNotes(); });
