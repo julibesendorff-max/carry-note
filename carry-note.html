@@ -299,14 +299,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
   <aside class="sidebar">
     <div class="sb-block">
-      <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">Indicadores Macro · EEUU<span id="fredStatus" style="font-size:0.52rem;color:var(--muted2)">··· cargando</span></div>
-      <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu" id="fred-ffr">—</span></div>
-      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v" id="fred-cpi">—</span></div>
-      <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v" id="fred-pce">—</span></div>
-      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v" id="fred-unemp">—</span></div>
-      <div class="ind"><span class="ind-n">PIB (últ. trim.)</span><span class="ind-v" id="fred-gdp">—</span></div>
-      <div class="ind"><span class="ind-n">10Y–2Y Spread</span><span class="ind-v" id="fred-spread">—</span></div>
-      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v" id="fred-ism">—</span></div>
+      <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· mar 2026</span></div>
+      <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">3.50–3.75%</span></div>
+      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v dn">2.8%</span></div>
+      <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v dn">2.7%</span></div>
+      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v neu">4.4%</span></div>
+      <div class="ind"><span class="ind-n">PIB Q4 '25</span><span class="ind-v up">+2.4%</span></div>
+      <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v up">+18bp</span></div>
+      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.8</span></div>
       <div class="chart-box">
         <svg viewBox="0 0 300 80" preserveAspectRatio="none">
           <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></linearGradient></defs>
@@ -676,112 +676,7 @@ function updateClock(){document.getElementById('live-clock').textContent=new Dat
 setInterval(updateClock,1000);updateClock();
 
 
-// ── FRED MACRO DASHBOARD ─────────────────────────────────────
-const FRED_KEY = '7d0cf0ff425ecb910fb21a9c93524fe5';
 
-async function fredFetch(series) {
-  const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series}&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=2`;
-  const res = await fetch(url);
-  const data = await res.json();
-  const obs = data.observations?.find(o => o.value !== '.');
-  return obs ? parseFloat(obs.value) : null;
-}
-
-function setMacroVal(id, value, fmt, threshold) {
-  const el = document.getElementById(id);
-  if (!el || value === null) return;
-  let display, cls;
-  if (fmt === 'pct') { display = value.toFixed(2) + '%'; }
-  else if (fmt === 'bp') { display = (value >= 0 ? '+' : '') + Math.round(value) + 'bp'; }
-  else if (fmt === 'gdp') { display = (value >= 0 ? '+' : '') + value.toFixed(1) + '%'; }
-  else { display = value.toFixed(1); }
-  
-  if (threshold === 'inflation') cls = value > 2.5 ? 'dn' : value < 2 ? 'up' : 'neu';
-  else if (threshold === 'unemp') cls = value > 4.5 ? 'dn' : value < 3.5 ? 'up' : 'neu';
-  else if (threshold === 'spread') cls = value > 0 ? 'up' : 'dn';
-  else if (threshold === 'gdp') cls = value > 2 ? 'up' : value < 0 ? 'dn' : 'neu';
-  else if (threshold === 'ism') cls = value > 50 ? 'up' : 'dn';
-  else cls = 'neu';
-  
-  el.textContent = display;
-  el.className = 'ind-v ' + cls;
-}
-
-async function loadFREDData() {
-  const status = document.getElementById('fredStatus');
-  try {
-    const [ffr, cpi, pce, unemp, gdp, t10y, t2y, ism] = await Promise.all([
-      fredFetch('FEDFUNDS'),
-      fredFetch('CPIAUCSL'),   // CPI level — we'll compute YoY below
-      fredFetch('PCEPILFE'),   // Core PCE level
-      fredFetch('UNRATE'),
-      fredFetch('A191RL1Q225SBEA'), // Real GDP growth QoQ annualized
-      fredFetch('DGS10'),
-      fredFetch('DGS2'),
-      fredFetch('MANEMP'),     // fallback — use ISM PMI series
-    ]);
-
-    // Fed Funds Rate
-    if (ffr !== null) {
-      document.getElementById('fred-ffr').textContent = ffr.toFixed(2) + '%';
-      document.getElementById('fred-ffr').className = 'ind-v neu';
-    }
-
-    // CPI YoY — fetch 13 months and compute
-    try {
-      const cpiRes = await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=CPIAUCSL&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=14`);
-      const cpiData = await cpiRes.json();
-      const obs = cpiData.observations.filter(o => o.value !== '.');
-      if (obs.length >= 13) {
-        const latest = parseFloat(obs[0].value);
-        const yearAgo = parseFloat(obs[12].value);
-        const yoy = ((latest - yearAgo) / yearAgo) * 100;
-        setMacroVal('fred-cpi', yoy, 'pct', 'inflation');
-      }
-    } catch(e) {}
-
-    // Core PCE YoY
-    try {
-      const pceRes = await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=PCEPILFE&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=14`);
-      const pceData = await pceRes.json();
-      const obs = pceData.observations.filter(o => o.value !== '.');
-      if (obs.length >= 13) {
-        const latest = parseFloat(obs[0].value);
-        const yearAgo = parseFloat(obs[12].value);
-        const yoy = ((latest - yearAgo) / yearAgo) * 100;
-        setMacroVal('fred-pce', yoy, 'pct', 'inflation');
-      }
-    } catch(e) {}
-
-    // Unemployment
-    setMacroVal('fred-unemp', unemp, 'pct', 'unemp');
-
-    // GDP
-    setMacroVal('fred-gdp', gdp, 'gdp', 'gdp');
-
-    // 10Y-2Y Spread
-    if (t10y !== null && t2y !== null) {
-      const spread = (t10y - t2y) * 100; // in basis points
-      setMacroVal('fred-spread', spread, 'bp', 'spread');
-    }
-
-    // ISM — use NAPM series
-    try {
-      const ismRes = await fetch(`https://api.stlouisfed.org/fred/series/observations?series_id=NAPM&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=2`);
-      const ismData = await ismRes.json();
-      const ismObs = ismData.observations?.find(o => o.value !== '.');
-      if (ismObs) setMacroVal('fred-ism', parseFloat(ismObs.value), 'pct', 'ism');
-    } catch(e) {}
-
-    status.textContent = '● actualizado';
-    status.style.color = 'var(--green)';
-  } catch(e) {
-    status.textContent = '○ sin conexión';
-  }
-}
-
-loadFREDData();
-setInterval(loadFREDData, 3600000); // refresh every hour
 
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('load',()=>{ loadNotes(); });
