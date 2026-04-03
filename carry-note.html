@@ -109,6 +109,7 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-tag.geo{border-color:var(--blue);color:var(--blue)}
 .note-tag.markets{border-color:var(--text);color:var(--text)}
 .note-tag.policy{border-color:var(--green);color:var(--green)}
+.note-tag.latam{border-color:#a855f7;color:#a855f7}
 .note-date{font-family:var(--mono);font-size:0.58rem;color:var(--muted)}
 .note-num{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto;letter-spacing:0.1em}
 .note-title{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
@@ -183,7 +184,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="macro">Fed &amp; Tasas</a>
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
-    <a data-filter="geo">EM &amp; Latam</a>
+    <a data-filter="latam">EM &amp; Latam</a>
     <a data-filter="markets">Commodities</a>
   </nav>
 </header>
@@ -261,6 +262,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         </div>
         <div class="gen-row">
           <input type="text" id="customT" placeholder="O escribí tu propio tema de análisis..."/>
+        </div>
+        <div class="gen-row" style="margin-top:0.5rem">
+          <select id="aiTag" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.65rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="auto">Categoría automática</option>
+            <option value="macro">Macro US / Política Monetaria</option>
+            <option value="geo">Geopolítica</option>
+            <option value="markets">Mercados / Renta Fija</option>
+            <option value="policy">Política Fiscal</option>
+            <option value="latam">EM & Latam</option>
+          </select>
           <button class="gen-go" id="genBtn" onclick="genAI()">Generar nota ▸</button>
         </div>
       </div>
@@ -269,10 +280,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <input type="text" id="wSubtitle" placeholder="Subtítulo o bajada..."/>
         <div class="write-meta">
           <select id="wTag">
-            <option value="macro">Política Monetaria / Macro US</option>
+            <option value="macro">Macro US / Política Monetaria</option>
             <option value="geo">Geopolítica</option>
             <option value="markets">Mercados / Renta Fija</option>
             <option value="policy">Política Fiscal</option>
+            <option value="latam">EM & Latam</option>
           </select>
         </div>
         <textarea id="wBody" placeholder="Escribí tu análisis acá. Claude lo puede pulir antes de publicar."></textarea>
@@ -510,7 +522,7 @@ function buildCard(n, num) {
 }
 
 function tagLabel(t) {
-  return {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal'}[t]||'Análisis';
+  return {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal',latam:'EM & Latam'}[t]||'Análisis';
 }
 
 function toggleNote(id) {
@@ -620,7 +632,9 @@ Estilo: análisis denso y bien argumentado, con posición propia clara y fundame
     const txt=data.content.map(i=>i.type==='text'?i.text:'').join('').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
     const note=JSON.parse(txt);
     document.getElementById(lid)?.remove();
-    await saveNote({title:note.title,subtitle:note.subtitle,body:note.body,tag:note.tag||getTagFromTopic(topic)});
+    const manualTag = document.getElementById('aiTag').value;
+    const finalTag = manualTag !== 'auto' ? manualTag : (note.tag||getTagFromTopic(topic));
+    await saveNote({title:note.title,subtitle:note.subtitle,body:note.body,tag:finalTag});
     await loadNotes();
   }catch(err){
     document.getElementById(lid)?.remove();
