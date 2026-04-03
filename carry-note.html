@@ -643,7 +643,7 @@ async function genAI(){
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 1800,
-          system: "You are a senior economist and markets analyst based in Buenos Aires, specializing in global macroeconomics, Fed monetary policy, and economic geopolitics. You write for Carry Note, a high-level economic analysis publication aimed at professionals with training in economics, finance, and economic policy. Style: dense, well-argued analysis with a clear and well-founded position. Use precise technical terminology without over-explaining. Professional research note tone: concise, direct, no filler. Specific figures. Respond ONLY with valid JSON, no extra text, no markdown blocks: {\"title\":\"Research note style title (max 10 words)\",\"subtitle\":\"Subtitle expanding the thesis (max 35 words)\",\"body\":\"HTML with <p>, <h3>, <div class='key-stat'>key data</div>. Minimum 6 paragraphs. First one establishes the thesis. Close with implications for decision makers.\",\"tag\":\"macro|geo|markets|policy|latam\"}",
+          system: "You are a senior economist writing for Carry Note, an economic analysis publication. Respond ONLY with a valid JSON object. CRITICAL: In the body field, use only single quotes for HTML attributes (class='key-stat'), never double quotes. Escape any double quotes inside strings with backslash. JSON structure: {title: string max 10 words, subtitle: string max 35 words, body: HTML string with <p> paragraphs and <h3> headers and <div class='key-stat'>stat</div> for key data points - minimum 6 paragraphs starting with thesis ending with implications for decision makers, tag: one of macro|geo|markets|policy|latam}. Write the analysis in Spanish.",
           messages: [{role:'user', content:'Write an economic analysis note for Carry Note about: "' + topic + '". Date: ' + new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) + '. Use concrete data, take a position. Write the analysis in Spanish.'}]
         })
       });
@@ -668,16 +668,30 @@ async function genAI(){
       .replace(/^```json\s*/, '').replace(/\s*```$/, '');
 
     let note;
-    try { note = JSON.parse(txt); }
-    catch(e) {
+    try {
+      note = JSON.parse(txt);
+    } catch(e) {
       console.error('RAW RESPONSE:', txt);
-      // Try to extract JSON from response if wrapped in text
-      const jsonMatch = txt.match(/\{[\s\S]*\}/);
-      if(jsonMatch) {
-        try { note = JSON.parse(jsonMatch[0]); }
-        catch(e2) { throw new Error('Error parseando respuesta. Respuesta en consola (F12).'); }
-      } else {
-        throw new Error('Error parseando respuesta. Respuesta en consola (F12).');
+      // Robust extraction: pull title, subtitle, body individually
+      try {
+        const getField = (key, raw) => {
+          const rx = new RegExp('"' + key + '"\\s*:\\s*"((?:[^"\\\\]|\\\\.|\\n)*)"', 's');
+          const m = raw.match(rx);
+          return m ? m[1].replace(/\\n/g,'\n').replace(/\\"/g,'"').replace(/\\'/g,"'") : '';
+        };
+        // For body, extract everything between "body": " and the last field
+        const bodyMatch = txt.match(/"body"\s*:\s*"([\s\S]*?)"\s*,\s*"tag"/);
+        const body = bodyMatch ? bodyMatch[1].replace(/\\"/g,'"').replace(/\\n/g,'\n') : '';
+        const tagMatch = txt.match(/"tag"\s*:\s*"([^"]+)"/);
+        note = {
+          title: getField('title', txt),
+          subtitle: getField('subtitle', txt),
+          body: body || getField('body', txt),
+          tag: tagMatch ? tagMatch[1] : 'macro'
+        };
+        if(!note.title) throw new Error('no title');
+      } catch(e2) {
+        throw new Error('Error procesando respuesta de Claude. Intentá de nuevo.');
       }
     }
 
