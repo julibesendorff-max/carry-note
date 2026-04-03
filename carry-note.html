@@ -411,16 +411,41 @@ function setTicker(id, price, pct, fmt) {
   if(c2){c2.textContent=chgText;c2.className=cls;}
 }
 
+async function loadForex() {
+  try {
+    // EUR/USD
+    const eurRes = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
+    const eurData = await eurRes.json();
+    if(eurData.rates && eurData.rates.USD) {
+      const rate = eurData.rates.USD;
+      setTicker('eur', rate, 0, 'fx');
+    }
+    // USD/ARS
+    const arsRes = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+    const arsData = await arsRes.json();
+    if(arsData.rates && arsData.rates.ARS) {
+      const rate = arsData.rates.ARS;
+      setTicker('ars', rate, 0, 'fx');
+    }
+  } catch(e) {
+    console.log('Forex fetch error:', e);
+  }
+}
+
 async function loadTicker() {
   const status = document.getElementById('tickerStatus');
   try {
-    const quotes = await Promise.all(tickerSymbols.map(s => fetchQuote(s.sym)));
+    // Load Finnhub symbols (excluding forex)
+    const finnhubSymbols = tickerSymbols.filter(s => s.id !== 'eur' && s.id !== 'ars');
+    const quotes = await Promise.all(finnhubSymbols.map(s => fetchQuote(s.sym)));
     quotes.forEach((q, i) => {
       if (q && q.c) {
         const pct = ((q.c - q.pc) / q.pc) * 100;
-        setTicker(tickerSymbols[i].id, q.c, pct, tickerSymbols[i].fmt);
+        setTicker(finnhubSymbols[i].id, q.c, pct, finnhubSymbols[i].fmt);
       }
     });
+    // Load forex separately
+    await loadForex();
     status.textContent = '● EN VIVO';
     status.className = 'ticker-status live';
   } catch(e) {
