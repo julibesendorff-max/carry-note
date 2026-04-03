@@ -50,7 +50,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 
 /* TICKER */
 .ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 0;overflow:hidden;font-family:var(--mono);font-size:0.65rem;position:relative}
-.ticker-inner{display:flex;gap:2rem;animation:scroll 60s linear infinite;white-space:nowrap;width:max-content}
+.ticker-inner{display:flex;gap:2rem;animation:scroll 25s linear infinite;white-space:nowrap;width:max-content}
 .ticker-inner:hover{animation-play-state:paused}
 .t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem}
 .t-lbl{color:var(--muted)}.t-val{color:var(--text)}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border2);padding:0 0.3rem}
@@ -354,15 +354,15 @@ let selT = 'Fed y política monetaria en 2025: tasas, dot plot y perspectivas';
 
 // ── TICKER ──────────────────────────────────────────────────
 const tickerSymbols = [
-  { id:'spx',  sym:'SPY',      lbl:'S&P 500',  fmt:'price' },
-  { id:'ndx',  sym:'QQQ',      lbl:'NASDAQ',   fmt:'price' },
-  { id:'tlt',  sym:'TLT',      lbl:'10Y UST',  fmt:'price' },
-  { id:'dxy',  sym:'UUP',      lbl:'DXY',      fmt:'price' },
-  { id:'eur',  sym:'EURUSD',   lbl:'EUR/USD',  fmt:'fx'    },
-  { id:'ars',  sym:'USDARSFX', lbl:'USD/ARS',  fmt:'fx'    },
-  { id:'wti',  sym:'USO',      lbl:'WTI',      fmt:'price' },
-  { id:'gld',  sym:'GLD',      lbl:'GOLD',     fmt:'price' },
-  { id:'btc',  sym:'BINANCE:BTCUSDT', lbl:'BTC', fmt:'crypto' },
+  { id:'spx',  sym:'SPY',               lbl:'S&P 500',  fmt:'price'  },
+  { id:'ndx',  sym:'QQQ',               lbl:'NASDAQ',   fmt:'price'  },
+  { id:'tlt',  sym:'TLT',               lbl:'10Y UST',  fmt:'price'  },
+  { id:'dxy',  sym:'UUP',               lbl:'DXY',      fmt:'price'  },
+  { id:'eur',  sym:'OANDA:EUR_USD',      lbl:'EUR/USD',  fmt:'fx'     },
+  { id:'ars',  sym:'OANDA:USD_ARS',      lbl:'USD/ARS',  fmt:'fx'     },
+  { id:'wti',  sym:'USO',               lbl:'WTI',      fmt:'price'  },
+  { id:'gld',  sym:'GLD',               lbl:'GOLD',     fmt:'price'  },
+  { id:'btc',  sym:'BINANCE:BTCUSDT',   lbl:'BTC',      fmt:'crypto' },
 ];
 
 async function fetchQuote(symbol) {
