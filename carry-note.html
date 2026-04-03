@@ -358,7 +358,7 @@ const EDITOR_PIN   = 'carrynote2025';
 const FINNHUB_KEY  = 'd74n2ihr01qg1eo64720d74n2ihr01qg1eo6472g';
 
 let isEditor = false;
-let ANTHRO_KEY = localStorage.getItem('cn_akey') || '';
+let ANTHRO_KEY = (localStorage.getItem('cn_akey') || '').trim();
 let allNotes = [];
 let activeFilter = 'all';
 let noteCount = 0;
@@ -590,7 +590,7 @@ function saveAnthroKey(){
   const v=document.getElementById('anthroKey').value.trim();
   const s=document.getElementById('anthroStatus');
   if(!v.startsWith('sk-ant-')){s.textContent='✗ Formato incorrecto';s.className='eb-status err';return;}
-  ANTHRO_KEY=v;localStorage.setItem('cn_akey',v);
+  ANTHRO_KEY=v.trim();localStorage.setItem('cn_akey',v.trim());
   s.textContent='✓ Key guardada';s.className='eb-status ok';
   document.getElementById('anthroKey').value=v.slice(0,16)+'••••••••••';
 }
@@ -630,12 +630,13 @@ async function genAI(){
 
     let res;
     try {
+      const cleanKey = ANTHRO_KEY.trim().replace(/[^a-zA-Z0-9_\-]/g, '');
       res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': ANTHRO_KEY,
+          'x-api-key': cleanKey,
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
@@ -668,7 +669,17 @@ async function genAI(){
 
     let note;
     try { note = JSON.parse(txt); }
-    catch(e) { throw new Error('Error parseando respuesta de Claude. Intentá de nuevo.'); }
+    catch(e) {
+      console.error('RAW RESPONSE:', txt);
+      // Try to extract JSON from response if wrapped in text
+      const jsonMatch = txt.match(/\{[\s\S]*\}/);
+      if(jsonMatch) {
+        try { note = JSON.parse(jsonMatch[0]); }
+        catch(e2) { throw new Error('Error parseando respuesta. Respuesta en consola (F12).'); }
+      } else {
+        throw new Error('Error parseando respuesta. Respuesta en consola (F12).');
+      }
+    }
 
     document.getElementById(lid)?.remove();
     const manualTag = document.getElementById('aiTag').value;
