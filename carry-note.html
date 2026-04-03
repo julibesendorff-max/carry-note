@@ -642,11 +642,8 @@ async function genAI(){
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 1800,
-          system: `Sos un economista senior y analista de mercados con base en Buenos Aires, especializado en macroeconomía global, política monetaria de la Fed y geopolítica económica. Escribís para Carry Note, una publicación de análisis económico de alto nivel dirigida a profesionales con formación en ciencias económicas, finanzas y política económica.
-
-Estilo: análisis denso y bien argumentado, con posición propia clara y fundamentada. Usás terminología técnica precisa sin sobre-explicar. Tono de research note profesional: conciso, directo, sin relleno. Cifras específicas. Respondé ÚNICAMENTE con JSON válido, sin texto extra ni bloques markdown:
-{"title":"Título en estilo research note (máx 10 palabras)","subtitle":"Bajada que amplía la tesis (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>dato clave</div>. Mínimo 6 párrafos. El primero establece la tesis. Cerrá con implicancias para tomadores de decisión.","tag":"macro|geo|markets|policy|latam"}`,
-          messages: [{role:'user', content:`Escribí una nota de análisis para Carry Note sobre: "${topic}". Fecha: ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}. Usá datos concretos, tomá posición.`}]
+          system: "You are a senior economist and markets analyst based in Buenos Aires, specializing in global macroeconomics, Fed monetary policy, and economic geopolitics. You write for Carry Note, a high-level economic analysis publication aimed at professionals with training in economics, finance, and economic policy. Style: dense, well-argued analysis with a clear and well-founded position. Use precise technical terminology without over-explaining. Professional research note tone: concise, direct, no filler. Specific figures. Respond ONLY with valid JSON, no extra text, no markdown blocks: {\"title\":\"Research note style title (max 10 words)\",\"subtitle\":\"Subtitle expanding the thesis (max 35 words)\",\"body\":\"HTML with <p>, <h3>, <div class='key-stat'>key data</div>. Minimum 6 paragraphs. First one establishes the thesis. Close with implications for decision makers.\",\"tag\":\"macro|geo|markets|policy|latam\"}",
+          messages: [{role:'user', content:'Write an economic analysis note for Carry Note about: "' + topic + '". Date: ' + new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) + '. Use concrete data, take a position. Write the analysis in Spanish.'}]
         })
       });
       clearTimeout(timeout);
@@ -702,8 +699,8 @@ async function polishNote(){
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
-      system:`Sos editor de Carry Note. Tu tarea: tomar el borrador del economista y pulirlo — mejorar estructura, afinar prosa, asegurarte que la tesis quede clara en el primer párrafo, cerrar con implicancias concretas. No cambiés las ideas. Respondé ÚNICAMENTE con JSON válido sin markdown: {"title":"título pulido","subtitle":"bajada (máx 35 palabras)","body":"HTML con <p>, <h3>, <div class='key-stat'>stat</div>"}`,
-      messages:[{role:'user',content:`Título: ${title||'(sin título)'}\n\nBorrador:\n${body}`}]})});
+      system:"You are the editor of Carry Note. Your task: take the economist's draft and polish it - improve structure, refine prose, make sure the thesis is clear in the first paragraph, close with concrete implications. Do not change the ideas. Respond ONLY with valid JSON without markdown: {\"title\":\"polished title\",\"subtitle\":\"subtitle (max 35 words)\",\"body\":\"HTML with <p>, <h3>, <div class='key-stat'>stat</div>\"}",
+      messages:[{role:'user',content:'Title: ' + (title||'(no title)') + '\n\nDraft:\n' + body}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message);}
     const data=await res.json();
     const txt=data.content.map(i=>i.type==='text'?i.text:'').join('').trim().replace(/^```json\s*/,'').replace(/\s*```$/,'');
