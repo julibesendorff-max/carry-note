@@ -655,7 +655,7 @@ Respond using EXACTLY this format with these exact delimiters on their own lines
 (HTML body here with <p> tags for paragraphs, <h3> for section headers, <div class='key-stat'>important statistic</div> for key data. Minimum 6 paragraphs. Start with the central thesis. End with implications for decision makers.)
 ===TAG===
 (one of: macro, geo, markets, policy, latam)`,
-          messages: [{role:'user', content:'Write a Carry Note analysis about: "' + topic + '". Today: ' + new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) + '. Be specific with data and take a clear position.'}]
+          messages: [{role:'user', content:'Write a Carry Note analysis about: "' + topic + '". Today: ' + new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) + '. Use these current macro data points (April 2026): Fed Funds Rate 3.50-3.75%, US CPI YoY 2.8%, Core PCE YoY 2.7%, US Unemployment 4.4%, US GDP Q4 2025 +2.4%, 10Y-2Y Spread +18bp, ISM Manufacturing 49.8, Brent Oil ~$110/barrel, Gold ~$3050/oz, S&P 500 ~5700. Be specific with data and take a clear position.'}]
         })
       });
       clearTimeout(timeout);
