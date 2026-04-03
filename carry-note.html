@@ -469,25 +469,28 @@ function renderNotes() {
   const filtered = activeFilter === 'all' ? allNotes : allNotes.filter(n => n.tag === activeFilter);
 
   if (allNotes.length === 0) {
-    empty.style.display = 'block';
-    document.getElementById('emptyMsg').textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera desde el modo editor!' : 'Las notas aparecerán aquí pronto.';
-    noRes.style.display = 'none';
-    header.style.display = 'none';
+    if(empty) { empty.style.display = 'block'; }
+    const emptyMsg = document.getElementById('emptyMsg');
+    if(emptyMsg) emptyMsg.textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera desde el modo editor!' : 'Las notas aparecerán aquí pronto.';
+    if(noRes) noRes.style.display = 'none';
+    if(header) header.style.display = 'none';
     feed.innerHTML = '';
-    feed.appendChild(empty);
+    if(empty) feed.appendChild(empty);
     return;
   }
 
-  empty.style.display = 'none';
+  if(empty) empty.style.display = 'none';
   feed.innerHTML = '';
 
   if (filtered.length === 0) {
-    noRes.style.display = 'block';
-    header.style.display = 'none';
+    if(noRes) noRes.style.display = 'block';
+    if(header) header.style.display = 'none';
   } else {
-    noRes.style.display = 'none';
-    header.style.display = 'flex';
-    const catName = activeFilter === 'all' ? '' : ' · ' + {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal'}[activeFilter]; countEl.textContent = filtered.length + (filtered.length === 1 ? ' nota' : ' notas') + (catName||'');
+    if(noRes) noRes.style.display = 'none';
+    if(header) header.style.display = 'flex';
+    const catLabels = {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal',latam:'EM & Latam'};
+    const catName = activeFilter === 'all' ? '' : ' · ' + (catLabels[activeFilter]||activeFilter);
+    if(countEl) countEl.textContent = filtered.length + (filtered.length === 1 ? ' nota' : ' notas') + (catName||'');
     noteCount = allNotes.length;
     filtered.forEach((n, i) => {
       const globalIdx = allNotes.findIndex(x => x.id === n.id);
@@ -615,7 +618,8 @@ async function genAI(){
   const topic=document.getElementById('customT').value.trim()||selT;
   const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='Generando...';
   const feed=document.getElementById('feed');
-  document.getElementById('emptyState').style.display='none';
+  const emptyEl=document.getElementById('emptyState');
+  if(emptyEl) emptyEl.style.display='none';
   const lid='l'+Date.now();const lel=document.createElement('div');lel.className='loading-card';lel.id=lid;
   lel.innerHTML=`<div class="skel" style="height:10px;width:90px;margin-bottom:14px"></div><div class="skel" style="height:30px;width:75%"></div><div class="skel" style="height:30px;width:50%;margin-bottom:16px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:100%;margin-bottom:5px"></div><div class="skel" style="height:9px;width:60%"></div><div class="load-msg"><span class="ell">Generando nota de análisis</span></div>`;
   feed.insertBefore(lel,feed.firstChild);
