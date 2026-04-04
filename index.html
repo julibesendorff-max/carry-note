@@ -702,6 +702,59 @@ document.getElementById('customT').addEventListener('keydown',e=>{if(e.key==='En
 const tagMap={'Fed':'macro','Inflación':'macro','Aranceles':'markets','Ucrania':'geo','China':'geo','Labour':'macro','Yield':'markets','Fiscal':'policy','Middle East':'geo','Dollar':'markets','Argentina':'geo','EM':'markets','carry':'markets'};
 function getTagFromTopic(t){for(const[k,v]of Object.entries(tagMap))if(t.toLowerCase().includes(k.toLowerCase()))return v;return'macro';}
 
+// ── BUILD PROMPT WITH LIVE DATA ───────────────────────────
+function getLiveValue(id) {
+  const el = document.getElementById('t-' + id);
+  if (!el) return null;
+  const txt = el.textContent.trim().replace(/[^0-9.,%-]/g, '');
+  return txt || null;
+}
+
+function buildPrompt(topic) {
+  const today = new Date().toLocaleDateString('es-ES', {day:'2-digit', month:'long', year:'numeric'});
+
+  // Read live values from ticker
+  const spyVal   = getLiveValue('spx')  || '~570';
+  const qqq      = getLiveValue('ndx')  || '~490';
+  const wti      = getLiveValue('wti')  || '~72';
+  const gold     = getLiveValue('gld')  || '~295';
+  const btc      = getLiveValue('btc')  || '~83000';
+  const eurUsd   = getLiveValue('eur')  || '~1.08';
+  const usdArs   = getLiveValue('ars')  || '~1070';
+
+  const marketData = [
+    'CURRENT MARKET DATA (live, ' + today + '):',
+    '- SPY ETF (S&P 500 proxy): ' + spyVal,
+    '- QQQ ETF (Nasdaq proxy): ' + qqq,
+    '- WTI Oil ETF (USO): ' + wti + ' (Brent ~$110/barrel)',
+    '- Gold ETF (GLD): ' + gold + ' (Gold spot ~$3,050/oz)',
+    '- Bitcoin (BTC/USD): $' + btc,
+    '- EUR/USD: ' + eurUsd,
+    '- USD/ARS (official): ' + usdArs,
+    '',
+    'CURRENT US MACRO DATA (April 2026):',
+    '- Fed Funds Rate: 3.50-3.75% (cut from 5.50% peak in Jul 2024)',
+    '- US CPI YoY: 2.8%',
+    '- US Core PCE YoY: 2.7%',
+    '- US Unemployment: 4.4%',
+    '- US GDP Q4 2025: +2.4% annualized',
+    '- 10Y-2Y Treasury Spread: +18bp (recently un-inverted)',
+    '- ISM Manufacturing: 49.8 (contractionary)',
+    '- Brent Oil: ~$110/barrel (elevated due to Middle East tensions)',
+    '- Gold: all-time highs ~$3,050/oz',
+    '- Bitcoin ATH: $126,000 (October 2025), currently consolidating',
+    '',
+    'RECENT KEY EVENTS (post Aug 2025):',
+    '- Fed cut rates 3 times (Sep, Nov, Dec 2025) from 5.25-5.50% to 3.50-3.75%',
+    '- Argentina: Milei won midterms Oct 2025, lifted FX controls (cepo), new IMF deal $20bn',
+    '- YPF/Burford: 2nd Circuit Court NY overturned $16bn ruling in favor of Argentina (Mar 27, 2026)',
+    '- US-Israel vs Iran conflict driving oil prices above $100',
+    '- Trump administration: new tariffs reshaping global trade',
+  ].join('\n');
+
+  return 'Write a Carry Note analysis about: "' + topic + '".\n\nContext as of ' + today + ':\n' + marketData + '\n\nIMPORTANT: Use web_search to find the latest data, news and figures about this topic before writing. Complement the data above with fresh search results. Be specific with current figures and take a clear position.';
+}
+
 // ── GENERATE AI ───────────────────────────────────────────────
 async function genAI(){
   if(!ANTHRO_KEY){alert('Ingresá tu Anthropic API key primero.');return;}
@@ -731,8 +784,9 @@ async function genAI(){
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 1800,
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 2000,
+          tools: [{type: 'web_search_20250305', name: 'web_search'}],
           system: `You are a senior economist and markets analyst based in Buenos Aires writing for Carry Note, a professional economic analysis publication. Write in Spanish.
 
 Respond using EXACTLY this format with these exact delimiters on their own lines:
@@ -745,7 +799,7 @@ Respond using EXACTLY this format with these exact delimiters on their own lines
 (HTML body here with <p> tags for paragraphs, <h3> for section headers, <div class='key-stat'>important statistic</div> for key data. Minimum 6 paragraphs. Start with the central thesis. End with implications for decision makers.)
 ===TAG===
 (one of: macro, geo, markets, policy, latam)`,
-          messages: [{role:'user', content:'Write a Carry Note analysis about: "' + topic + '". Today: ' + new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) + '. Use these current macro data points (April 2026): Fed Funds Rate 3.50-3.75%, US CPI YoY 2.8%, Core PCE YoY 2.7%, US Unemployment 4.4%, US GDP Q4 2025 +2.4%, 10Y-2Y Spread +18bp, ISM Manufacturing 49.8, Brent Oil ~$110/barrel, Gold ~$3050/oz, S&P 500 ~5700. Be specific with data and take a clear position.'}]
+          messages: [{role:'user', content: buildPrompt(topic)}]
         })
       });
       clearTimeout(timeout);
