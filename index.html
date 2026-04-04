@@ -853,6 +853,39 @@ async function publishWritten(){
 
 
 
+// ── NEWSLETTER ────────────────────────────────────────────
+async function subscribeNewsletter() {
+  const email = document.getElementById('nlEmail').value.trim();
+  const msg = document.getElementById('nlMsg');
+  if(!email || !email.includes('@')) {
+    msg.textContent = '✗ Ingresá un email válido.';
+    msg.style.color = 'var(--red)';
+    msg.style.display = 'block';
+    return;
+  }
+  try {
+    const res = await sbFetch('/rest/v1/subscribers', {
+      method: 'POST',
+      headers: {'Prefer': 'return=minimal'},
+      body: JSON.stringify({email})
+    });
+    if(res.status === 409) {
+      msg.textContent = '✓ Ya estás suscripto.';
+      msg.style.color = 'var(--green)';
+    } else if(res.ok) {
+      msg.textContent = '✓ Suscripto. Te escribimos cuando salga la próxima nota.';
+      msg.style.color = 'var(--green)';
+      document.getElementById('nlEmail').value = '';
+    } else {
+      throw new Error();
+    }
+  } catch(e) {
+    msg.textContent = '✗ Error. Intentá de nuevo.';
+    msg.style.color = 'var(--red)';
+  }
+  msg.style.display = 'block';
+}
+
 // ── INIT ──────────────────────────────────────────────────────
 window.addEventListener('load',()=>{ loadNotes(); });
 </script>
