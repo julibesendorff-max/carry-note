@@ -790,6 +790,7 @@ Respond using EXACTLY this format with these exact delimiters on their own lines
     const manualTag = document.getElementById('aiTag').value;
     const finalTag = manualTag !== 'auto' ? manualTag : (note.tag||getTagFromTopic(topic));
     await saveNote({title:note.title, subtitle:note.subtitle, body:note.body, tag:finalTag});
+    await sendNewsletter(note.title, note.subtitle);
     await loadNotes();
   } catch(err) {
     document.getElementById(lid)?.remove();
@@ -839,6 +840,7 @@ async function publishWritten(){
   const body=rawBody.startsWith('<')?rawBody:rawBody.split('\n\n').map(p=>`<p>${p}</p>`).join('');
   try{
     await saveNote({title,subtitle,body,tag});
+    await sendNewsletter(title, subtitle);
     document.getElementById('wTitle').value='';
     document.getElementById('wSubtitle').value='';
     document.getElementById('wBody').value='';
@@ -852,6 +854,19 @@ async function publishWritten(){
 
 
 
+
+// ── SEND NEWSLETTER ───────────────────────────────────────
+async function sendNewsletter(title, subtitle) {
+  try {
+    await fetch('/api/notify', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({pin: 'carrynote2025', title, subtitle})
+    });
+  } catch(e) {
+    console.log('Newsletter error:', e);
+  }
+}
 
 // ── NEWSLETTER ────────────────────────────────────────────
 async function subscribeNewsletter() {
