@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Carry Note — Análisis Macroeconómico</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -58,7 +59,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:3rem}
+main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:200px 1fr 320px;gap:2.5rem}
 
 .editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
 .editor-panel.visible{display:block}
@@ -114,7 +115,7 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-num{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto;letter-spacing:0.1em}
 .note-title{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
 .note-title:hover{color:var(--gold)}
-.note-sub{font-family:var(--serif);font-size:1rem;font-style:italic;color:var(--muted);line-height:1.55;margin-bottom:1.1rem}
+.note-sub{font-family:var(--sans);font-size:0.88rem;font-style:normal;color:#9d99a8;line-height:1.6;margin-bottom:1.1rem;font-weight:300;letter-spacing:0.01em}
 .note-body{display:none}.note-body.open{display:block}
 .note-body p{font-size:0.9rem;line-height:1.78;color:#c8c4bc;font-weight:300;margin-bottom:1rem}
 .note-body h3{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin:1.5rem 0 0.5rem}
@@ -157,19 +158,31 @@ main{max-width:1360px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .cal-row:last-child{border-bottom:none}
 .cal-date{color:var(--gold);min-width:50px}.cal-ev{color:var(--muted)}
 
+.about-col{padding-top:0.5rem}
+.about-avatar{width:72px;height:72px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);margin-bottom:1rem;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.about-avatar svg{width:40px;height:40px;opacity:0.3}
+.about-name{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:0.2rem}
+.about-role{font-family:var(--mono);font-size:0.58rem;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;line-height:1.5}
+.about-bio{font-size:0.78rem;color:var(--muted);line-height:1.65;font-weight:300;margin-bottom:1.2rem}
+.about-divider{border:none;border-top:1px solid var(--border2);margin:1rem 0}
+.about-item{display:flex;flex-direction:column;gap:0.1rem;margin-bottom:0.75rem}
+.about-item-label{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase}
+.about-item-val{font-size:0.78rem;color:var(--muted);font-weight:300}
+.about-link{font-family:var(--mono);font-size:0.6rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;display:inline-block;margin-top:0.5rem;border-bottom:1px solid transparent;transition:border-color 0.2s}
+.about-link:hover{border-bottom-color:var(--gold)}
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
 
-@media(max-width:960px){main{grid-template-columns:1fr}.sidebar{display:none}.logo-name{font-size:2rem}.header-main,.eyebrow,.editor-bar{padding-left:1.5rem;padding-right:1.5rem}main{padding:1.5rem}}
+@media(max-width:960px){main{grid-template-columns:1fr}.sidebar{display:none}.about-col{display:none}.logo-name{font-size:2rem}.header-main,.eyebrow,.editor-bar{padding-left:1.5rem;padding-right:1.5rem}main{padding:1.5rem}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="eyebrow">
-    <div><span id="live-clock">—</span><span class="dot">·</span><span>Buenos Aires</span><span class="dot">·</span><span>Vol. I</span></div>
-    <div>Análisis Macroeconómico &amp; Geopolítica</div>
+    <div><span id="live-clock">—</span></div>
+    <div></div>
   </div>
   <div class="header-main">
     <div>
@@ -180,12 +193,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   </div>
   <nav class="nav-strip" id="navStrip">
     <a class="active" data-filter="all">Todas</a>
-    <a data-filter="macro">Macro US</a>
     <a data-filter="macro">Fed &amp; Tasas</a>
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
     <a data-filter="latam">EM &amp; Latam</a>
-    <a data-filter="markets">Commodities</a>
+    <a data-filter="policy">Política Fiscal</a>
   </nav>
 </header>
 
@@ -214,8 +226,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner" id="tickerInner">
-    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val" id="t-spx"> —</span><span id="t-spx-c"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">NASDAQ</span><span class="t-val" id="t-ndx"> —</span><span id="t-ndx-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">SPY</span><span class="t-val" id="t-spx"> —</span><span id="t-spx-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">QQQ</span><span class="t-val" id="t-ndx"> —</span><span id="t-ndx-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val" id="t-tlt"> —</span><span id="t-tlt-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val" id="t-dxy"> —</span><span id="t-dxy-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur"> —</span><span id="t-eur-c"> —</span></span><span class="t-sep">·</span>
@@ -224,8 +236,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val" id="t-gld"> —</span><span id="t-gld-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">BTC</span><span class="t-val" id="t-btc"> —</span><span id="t-btc-c"> —</span></span><span class="t-sep">·</span>
     <!-- duplicate for seamless loop -->
-    <span class="t-item"><span class="t-lbl">S&amp;P 500</span><span class="t-val" id="t-spx2"> —</span><span id="t-spx-c2"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">NASDAQ</span><span class="t-val" id="t-ndx2"> —</span><span id="t-ndx-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">SPY</span><span class="t-val" id="t-spx2"> —</span><span id="t-spx-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">QQQ</span><span class="t-val" id="t-ndx2"> —</span><span id="t-ndx-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val" id="t-tlt2"> —</span><span id="t-tlt-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val" id="t-dxy2"> —</span><span id="t-dxy-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur2"> —</span><span id="t-eur-c2"> —</span></span><span class="t-sep">·</span>
@@ -238,6 +250,35 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 </div>
 
 <main>
+  <!-- ABOUT COLUMN -->
+  <aside class="about-col">
+    <div class="about-avatar">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4" stroke="#c9a84c" stroke-width="1.5"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#c9a84c" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </div>
+    <div class="about-name">Julián Besendorff</div>
+    <div class="about-role">Margin &amp; Collateral Sr. Analyst<br>J.P. Morgan Chase</div>
+    <div class="about-bio">Licenciado en Administración (UBA). Cursando Master en Economía en UCEMA. En J.P. Morgan trabajo diariamente con fondos de inversión de Nueva York en derivados FX, renta fija y commodities. Carry Note es mi espacio de análisis independiente.</div>
+    <hr class="about-divider">
+    <div class="about-item">
+      <span class="about-item-label">Experiencia</span>
+      <span class="about-item-val">J.P. Morgan · KPMG · HSBC</span>
+    </div>
+    <div class="about-item">
+      <span class="about-item-label">Especialidad</span>
+      <span class="about-item-val">Macro · Derivados · Mercados de capitales</span>
+    </div>
+    <div class="about-item">
+      <span class="about-item-label">Certificación</span>
+      <span class="about-item-val">Idóneo CNV 2025</span>
+    </div>
+    <div class="about-item">
+      <span class="about-item-label">Contacto</span>
+      <span class="about-item-val">julibesendorff@gmail.com</span>
+    </div>
+    <a href="https://linkedin.com" target="_blank" class="about-link">LinkedIn →</a>
+    <br>
+    <a href="mailto:julibesendorff@gmail.com" class="about-link" style="margin-top:0.3rem">julibesendorff@gmail.com →</a>
+  </aside>
   <section>
     <div class="editor-panel" id="editorPanel">
       <div class="ep-label">▸ Nueva nota</div>
@@ -306,6 +347,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="no-results" id="noResults">
       <p>No hay notas en esta categoría todavía.</p>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
+      <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;font-weight:300">Análisis macroeconómico y geopolítico cuando sale. Sin spam.</p>
+      <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+        <input type="email" id="nlEmail" placeholder="tu@email.com" style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.6rem 0.8rem;outline:none"/>
+        <button onclick="subscribeNewsletter()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.2rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap">Suscribirme ▸</button>
+      </div>
+      <div id="nlMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.6rem;display:none"></div>
     </div>
   </section>
 
@@ -413,19 +465,37 @@ function setTicker(id, price, pct, fmt) {
 
 async function loadForex() {
   try {
-    // EUR/USD
+    // EUR/USD bid/ask
     const eurRes = await fetch('https://api.exchangerate-api.com/v4/latest/EUR');
     const eurData = await eurRes.json();
     if(eurData.rates && eurData.rates.USD) {
-      const rate = eurData.rates.USD;
-      setTicker('eur', rate, 0, 'fx');
+      const mid = eurData.rates.USD;
+      const spread = 0.0003;
+      const bid = (mid - spread).toFixed(4);
+      const ask = (mid + spread).toFixed(4);
+      // Update EUR manually with bid/ask
+      ['eur','eur2'].forEach((id,i) => {
+        const suffix = i===1 ? '2' : '';
+        const vEl = document.getElementById('t-eur'+(i===1?'2':''));
+        const cEl = document.getElementById('t-eur-c'+(i===1?'2':''));
+        if(vEl) vEl.textContent = ' ' + bid + ' / ' + ask;
+        if(cEl) { cEl.textContent = ''; cEl.className = ''; }
+      });
     }
-    // USD/ARS
+    // USD/ARS bid/ask
     const arsRes = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
     const arsData = await arsRes.json();
     if(arsData.rates && arsData.rates.ARS) {
-      const rate = arsData.rates.ARS;
-      setTicker('ars', rate, 0, 'fx');
+      const mid = arsData.rates.ARS;
+      const spread = mid * 0.002;
+      const bid = Math.round(mid - spread);
+      const ask = Math.round(mid + spread);
+      ['ars','ars2'].forEach((id,i) => {
+        const vEl = document.getElementById('t-ars'+(i===1?'2':''));
+        const cEl = document.getElementById('t-ars-c'+(i===1?'2':''));
+        if(vEl) vEl.textContent = ' ' + bid + ' / ' + ask;
+        if(cEl) { cEl.textContent = ''; cEl.className = ''; }
+      });
     }
   } catch(e) {
     console.log('Forex fetch error:', e);
@@ -533,6 +603,7 @@ function buildCard(n, num) {
   card.dataset.tag = n.tag;
   const ds = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(n.created_at).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   const aid = 'nb'+n.id;
+  const disclaimer = '<p style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2);border-top:1px solid var(--border2);padding-top:0.75rem;margin-top:1.5rem;letter-spacing:0.04em">⚠ No es recomendación de inversión. El análisis es de carácter informativo.</p>';
   card.innerHTML = `
     <div class="note-meta">
       <span class="note-tag ${n.tag}" onclick="filterByTag('${n.tag}')" title="Filtrar por categoría">${tagLabel(n.tag)}</span>
@@ -541,7 +612,7 @@ function buildCard(n, num) {
     </div>
     <div class="note-title" onclick="toggleNote('${aid}')">${n.title}</div>
     <div class="note-sub">${n.subtitle||''}</div>
-    <div class="note-body" id="${aid}">${n.body}</div>
+    <div class="note-body" id="${aid}">${n.body}${disclaimer}</div>
     <div class="note-footer">
       <button class="read-toggle" id="b${aid}" onclick="toggleNote('${aid}')">Leer nota ▸</button>
       <button class="del-btn" onclick="confirmDelete('${n.id}',this)">✕ Eliminar nota</button>
