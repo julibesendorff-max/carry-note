@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    { "src": "carry-note.html", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/(.*)", "dest": "/carry-note.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
