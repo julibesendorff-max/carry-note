@@ -194,6 +194,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="markets">Mercados</a>
     <a data-filter="latam">EM &amp; Latam</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
+    <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
   </nav>
 </header>
 
@@ -375,6 +376,226 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
     </div>
 
+
+    <!-- APRENDER PANEL -->
+    <div id="aprenderPanel" style="display:none;margin-bottom:2rem">
+
+      <!-- HEADER -->
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">▸ Centro de aprendizaje</div>
+        <div style="font-family:var(--serif);font-size:1.8rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Invertir con criterio</div>
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:600px">Contenido educativo para el inversor argentino, desde conceptos básicos hasta estrategias intermedias. Sin jerga innecesaria, con ejemplos concretos.</div>
+      </div>
+
+      <!-- NIVEL SELECTOR -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap">
+        <button onclick="showNivel('basico')" id="btn-basico" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Nivel Básico</button>
+        <button onclick="showNivel('intermedio')" id="btn-intermedio" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">Nivel Intermedio</button>
+        <button onclick="showNivel('glosario')" id="btn-glosario" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">Glosario</button>
+      </div>
+
+      <!-- BASICO -->
+      <div id="nivel-basico">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem">
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l1')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 01 · Básico</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">¿Por qué invertir?</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">El impacto de la inflación en los ahorros y por qué no invertir tiene un costo real.</div>
+            <div id="l1" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">En Argentina, mantener pesos en efectivo o en una cuenta sin rendimiento implica perder poder adquisitivo todos los meses. Con una inflación del 54% anual (INDEC, 2025), $100.000 de hoy equivalen a aproximadamente $64.900 en poder de compra dentro de un año si no los invertís.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Invertir no es especular ni apostar. Es tomar una decisión consciente de dónde ponés tus ahorros para que al menos preserven su valor. La inflación es el costo de no hacerlo.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">\$100.000 sin invertir → vale \$64.900 en un año (inflación 54% anual · Fuente: INDEC)</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El primer objetivo de cualquier inversión no es ganar dinero sino no perderlo. Vencer a la inflación es la meta básica. Todo lo que supere ese umbral es ganancia real.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Las opciones más simples para empezar: Fondos Money Market (liquidez inmediata, rinden similar a la tasa BCRA), plazos fijos (tasa fija garantizada) o FCIs de renta fija en pesos. Ninguna de estas requiere conocimiento técnico avanzado.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l2')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 02 · Básico</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Riesgo y retorno</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">La relación fundamental de las finanzas: a mayor rendimiento esperado, mayor riesgo asumido.</div>
+            <div id="l2" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">No existe el activo que rinde mucho y tiene riesgo bajo. Si alguien te ofrece eso, es una señal de alerta. El mercado es eficiente en el largo plazo: los activos más riesgosos ofrecen mayor retorno potencial precisamente para compensar ese riesgo.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Money Market (~29% TNA) → Acciones Merval (~188% anual) · Mayor retorno = mayor volatilidad</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El riesgo no es malo en sí mismo — es algo que hay que gestionar. La clave es entender cuánto riesgo podés tolerar en función de tu horizonte de inversión y tu situación financiera.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Si necesitás el dinero en 3 meses, no pongas todo en acciones. Si tenés 10 años de horizonte, el riesgo de corto plazo importa menos. El tiempo es el principal aliado del inversor.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l3')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 03 · Básico</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo empezar a invertir</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Paso a paso: abrir una cuenta en un broker, elegir el primer instrumento y ejecutar la primera operación.</div>
+            <div id="l3" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Paso 1: Abrí una cuenta en un broker.</strong> En Argentina los principales son Balanz, IOL (InvertirOnline), Bull Market y PPI. Todos son regulados por la CNV. El proceso es 100% online y tarda entre 24 y 48 horas. Necesitás DNI, CUIL y una cuenta bancaria.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Paso 2: Transferí fondos.</strong> Una vez aprobada la cuenta, transferís pesos desde tu banco al CVU del broker. El dinero está disponible en minutos.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Paso 3: Primera inversión.</strong> Para empezar, lo más simple es un Fondo Money Market. Liquidez inmediata, sin plazo mínimo, y rinde similar a la tasa de política monetaria del BCRA (~29% TNA).</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Brokers regulados CNV: Balanz · IOL · Bull Market · PPI · Cocos Capital</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">No hay monto mínimo obligatorio en la mayoría de los brokers. Podés empezar con cualquier suma.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l4')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 04 · Básico</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Diversificación</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Por qué no conviene poner todos los huevos en la misma canasta y cómo diversificar con poco capital.</div>
+            <div id="l4" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Diversificar significa distribuir el capital entre distintos activos para que el mal desempeño de uno no destruya toda la cartera. No elimina el riesgo pero lo reduce significativamente.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Ejemplo: 40% Money Market · 30% Renta Fija CER · 20% ON hard dollar · 10% Acciones</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">En Argentina, la diversificación también implica diversificar en moneda: tener parte en pesos (para cubrir gastos cotidianos) y parte en dólares (para preservar valor a largo plazo).</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">La diversificación no significa tener 30 activos distintos. Con 3 o 4 instrumentos bien elegidos ya se logra una cartera razonablemente diversificada.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- INTERMEDIO -->
+      <div id="nivel-intermedio" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin-bottom:2rem">
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m1')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 01 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Renta fija: bonos y letras</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Cómo funcionan los instrumentos de renta fija, qué es la duration y cómo leer una curva de rendimientos.</div>
+            <div id="m1" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Un bono es un préstamo que hacés al emisor (Estado o empresa). A cambio, te pagan un cupón periódico y devuelven el capital al vencimiento. La tasa de interés que recibís se llama rendimiento o TIR (Tasa Interna de Retorno).</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Precio del bono sube → rendimiento baja · Precio baja → rendimiento sube</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">La <strong style="color:var(--text)">duration</strong> mide la sensibilidad del precio de un bono ante cambios en las tasas de interés. Un bono con duration de 5 años pierde aproximadamente 5% de precio si las tasas suben 1%. Por eso en contexto de suba de tasas conviene privilegiar bonos cortos.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">En Argentina los principales instrumentos son: Lecaps (letras del Tesoro en pesos, corto plazo), Boncaps (bonos en pesos a tasa fija), Boncer/Lecer (ajustados por CER/inflación) y bonos soberanos en dólares (Globales y Bonares).</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m2')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 02 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">El tipo de cambio y tus inversiones</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Oficial, blue, MEP y CCL: qué es cada uno y cómo impactan en las decisiones de inversión.</div>
+            <div id="m2" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Dólar oficial:</strong> el tipo de cambio que fija el BCRA. Accesible para importaciones y algunas transacciones reguladas. Para el ahorrista individual tiene el límite del cepo.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Dólar MEP (o bolsa):</strong> se obtiene comprando un bono en pesos y vendiéndolo en dólares dentro del mercado local. Es legal, no tiene límite de monto y es la forma más eficiente de dolarizarse para el inversor. La brecha con el oficial refleja la prima de riesgo del sistema.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Dólar blue:</strong> mercado informal, ilegal. Su precio refleja la demanda de cobertura cambiaria pero conlleva riesgo legal y operacional.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Para dolarizarse legalmente: MEP vía bono AL30 o GD30 a través de cualquier broker regulado por CNV</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m3')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 03 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo armar una cartera</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Metodología para construir un portafolio acorde a tu perfil de riesgo y horizonte de inversión.</div>
+            <div id="m3" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Antes de elegir activos, definí tres cosas: <strong style="color:var(--text)">(1) horizonte temporal</strong> — ¿cuándo vas a necesitar el dinero?, <strong style="color:var(--text)">(2) tolerancia al riesgo</strong> — ¿podés soportar ver tu cartera bajar 20% sin vender?, <strong style="color:var(--text)">(3) objetivo</strong> — ¿preservar capital, crecer en términos reales o generar renta?</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Conservador: 60% renta fija · 30% dólares (MEP/ON) · 10% acciones<br>Moderado: 40% renta fija · 35% dólares · 25% acciones<br>Agresivo: 20% renta fija · 30% dólares · 50% acciones</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Estas son referencias orientativas. Una cartera personalizada requiere analizar tu situación fiscal, tu flujo de ingresos y tu contexto particular.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m4')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 04 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Carry trade en Argentina</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué es el carry, por qué es atractivo y cuáles son sus riesgos reales en el contexto actual.</div>
+            <div id="m4" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El carry trade consiste en tomar deuda en una moneda de baja tasa e invertir en una moneda de alta tasa, capturando el diferencial. En Argentina implica vender dólares, invertir en pesos a tasas altas y recomprar dólares al vencimiento, ganando si el tipo de cambio no se mueve más de lo que rindió la tasa en pesos.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Carry positivo: tasa en pesos (~29% TNA) > depreciación esperada del peso</div>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El riesgo es un salto cambiario abrupto (devaluación) que licúe la ganancia en pesos. En el contexto actual con banda cambiaria y acuerdo FMI, el carry tiene menor riesgo de cola que en años anteriores — pero el riesgo nunca es cero.</p>
+              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Es una estrategia de corto plazo. No es adecuada como base de una cartera de largo plazo.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- GLOSARIO -->
+      <div id="nivel-glosario" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-bottom:2rem">
+          
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">TIR</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Tasa Interna de Retorno. El rendimiento anualizado de un bono si se mantiene hasta el vencimiento.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Duration</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Sensibilidad del precio de un bono ante cambios en la tasa de interés. A mayor duration, mayor volatilidad.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">CER</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Coeficiente de Estabilización de Referencia. Índice que mide la inflación en Argentina, publicado por el BCRA.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">BADLAR</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Tasa de interés para depósitos a plazo fijo de más de $1M. Referencia para fondos y bonos de tasa variable.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">ON</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Obligación Negociable. Bono emitido por empresas privadas. Las hay en pesos y en dólares (hard dollar).</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">FCI</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Fondo Común de Inversión. Vehículo de inversión colectiva administrado por una sociedad gerente regulada por la CNV.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">MEP</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Mercado Electrónico de Pagos. Tipo de cambio implícito que surge de comprar un bono en pesos y venderlo en dólares.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">CCL</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Contado con Liquidación. Similar al MEP pero la operación se liquida en el exterior. Genera dólares fuera del país.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">EMBI+</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Emerging Markets Bond Index. Índice de JP Morgan que mide el spread (prima de riesgo) de la deuda soberana emergente sobre el Treasury de EEUU. El riesgo país argentino se expresa en este índice.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Lecap</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Letra de Capitalización del Tesoro. Bono de corto plazo en pesos a tasa fija que capitaliza intereses al vencimiento.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Spread</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Diferencial de rendimiento entre dos activos. Por ejemplo entre un bono corporativo y un bono soberano del mismo plazo.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">TNA / TEA</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Tasa Nominal Anual vs Tasa Efectiva Anual. La TEA incluye el efecto de la capitalización de intereses.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Cartera conservadora</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Portafolio con predominio de instrumentos de renta fija y baja volatilidad. Prioriza la preservación del capital.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Carry trade</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Estrategia que consiste en invertir en activos de alta tasa financiados con deuda en moneda de baja tasa.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Benchmark</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Índice de referencia contra el que se compara el rendimiento de un fondo o cartera. Ejemplo: el S&P Merval para fondos de renta variable argentina.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Volatilidad</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Medida estadística de la variabilidad de los retornos de un activo. A mayor volatilidad, mayor incertidumbre sobre el precio futuro.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div>
+          <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.3rem">¿Querés asesoramiento personalizado?</div>
+          <div style="font-size:0.82rem;color:var(--muted);line-height:1.5">Analizamos tu situación, perfil de riesgo y objetivos para armar una estrategia a tu medida.</div>
+        </div>
+        <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.5rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap;transition:background 0.2s" onmouseover="this.style.background='#e8c96a'" onmouseout="this.style.background='var(--gold)'">Contactar a Julián ▸</a>
+      </div>
+
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem">⚠ El contenido es educativo e informativo. No constituye asesoramiento financiero ni recomendación de inversión. · Fuente: Carry Note / Julián Besendorff</div>
+
+    </div>
     <!-- NEWSLETTER -->
     <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
@@ -683,8 +904,12 @@ function filterByTag(tag) {
 document.querySelectorAll('.nav-strip a').forEach(a => {
   a.addEventListener('click', () => {
     if(a.id === 'fciTab') return; // handled by showFCI
-    // Restore feed, hide FCI
-    document.getElementById('fciPanel').style.display = 'none';
+    if(a.id === 'aprenderTab') return; // handled by showAprender
+    // Restore feed, hide special panels
+    ['fciPanel','aprenderPanel'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.style.display = 'none';
+    });
     ['feed','newsletterBlock'].forEach(id => {
       const el = document.getElementById(id);
       if(el) el.style.display = '';
@@ -1234,6 +1459,38 @@ function loadCalendar() {
     const accent = isToday ? 'var(--red)' : isSoon ? 'var(--gold)' : 'var(--blue)';
     return '<div class="cal-row"><span class="cal-date" style="color:'+accent+'">'+label+'</span><span class="cal-ev">'+e.ev+'</span></div>';
   }).join('');
+}
+
+
+// ── APRENDER ────────────────────────────────────────────────
+function showAprender(e) {
+  e && e.preventDefault();
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  document.getElementById('aprenderPanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
+  document.getElementById('aprenderTab').classList.add('active');
+  showNivel('basico');
+}
+
+function showNivel(nivel) {
+  ['basico','intermedio','glosario'].forEach(n => {
+    document.getElementById('nivel-'+n).style.display = n === nivel ? 'block' : 'none';
+    const btn = document.getElementById('btn-'+n);
+    if(btn) {
+      btn.style.background = n === nivel ? 'var(--gold)' : 'transparent';
+      btn.style.color = n === nivel ? 'var(--bg)' : 'var(--muted)';
+      btn.style.border = n === nivel ? 'none' : '1px solid var(--border)';
+    }
+  });
+}
+
+function toggleLesson(id) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
 // ── INIT ──────────────────────────────────────────────────────
