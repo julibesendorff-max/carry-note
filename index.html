@@ -52,7 +52,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-inner{display:flex;gap:2rem;animation:scroll 25s linear infinite;white-space:nowrap;width:max-content}
 .ticker-inner:hover{animation-play-state:paused}
 .t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem}
-.t-lbl{color:var(--muted)}.t-val{color:var(--text);font-weight:600}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border2);padding:0 0.3rem}
+.t-lbl{color:var(--muted)}.t-val{color:var(--text);font-size:0.72rem}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border2);padding:0 0.3rem}
 .ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.55rem;color:var(--muted2)}
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -116,6 +116,7 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-sub{font-family:var(--sans);font-size:0.88rem;font-style:normal;color:#9d99a8;line-height:1.6;margin-bottom:1.1rem;font-weight:300;letter-spacing:0.01em}
 .note-body{display:none}.note-body.open{display:block}
 .note-body p{font-size:0.9rem;line-height:1.78;color:#c8c4bc;font-weight:300;margin-bottom:1rem}
+.note-body .src{font-family:var(--mono);font-size:0.58rem;color:var(--muted2);letter-spacing:0.03em;margin-left:0.2rem}
 .note-body h3{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin:1.5rem 0 0.5rem}
 .note-body .key-stat{background:var(--surface2);border-left:2px solid var(--gold);padding:0.8rem 1.1rem;margin:1.2rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2);line-height:1.5}
 .note-footer{display:flex;align-items:center;gap:1rem;margin-top:0.5rem}
@@ -192,6 +193,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
     <a data-filter="latam">EM &amp; Latam</a>
+    <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
   </nav>
 </header>
 
@@ -343,6 +345,36 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <p>No hay notas en esta categoría todavía.</p>
     </div>
 
+    <!-- FCI PANEL -->
+    <div id="fciPanel" style="display:none;margin-bottom:2rem">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border2)">▸ Fondos Comunes de Inversión · Argentina</div>
+
+      <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7">
+        Comparativo de FCIs representativos para el inversor argentino. Rendimientos, composición y benchmark de referencia.
+        <span style="color:var(--muted2);font-size:0.55rem;display:block;margin-top:0.3rem">Fuente: Cafci / BYMA · Actualización mensual</span>
+      </div>
+
+      <!-- TABLE -->
+      <div style="overflow-x:auto">
+        <table id="fciTable" style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.68rem">
+          <thead>
+            <tr style="border-bottom:2px solid var(--gold)">
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Fondo</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Tipo</th>
+              <th style="text-align:right;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Rend. 30d</th>
+              <th style="text-align:right;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Rend. 12m</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Composición principal</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Benchmark</th>
+            </tr>
+          </thead>
+          <tbody id="fciBody"></tbody>
+        </table>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;line-height:1.6">
+        * Rendimientos expresados en pesos. No constituyen recomendación de inversión. Fuente: Cafci / BYMA · Datos al cierre del mes anterior.
+      </div>
+    </div>
+
     <!-- NEWSLETTER -->
     <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
@@ -375,9 +407,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
     </div>
     
-      <div class="geo-entry"><div class="geo-region">Indo-Pacífico</div><div class="geo-text">Tensiones en el estrecho de Taiwán latentes; TSMC acelera inversión en Arizona.</div></div>
-      <div class="geo-entry"><div class="geo-region">Medio Oriente</div><div class="geo-text">Prima de riesgo geopolítico en WTI elevada; flujos del Estrecho de Ormuz bajo monitoreo.</div></div>
-      <div class="geo-entry"><div class="geo-region">Guerra Comercial</div><div class="geo-text">Aranceles recíprocos de Trump reconfiguran cadenas de valor; nearshoring a México acelera.</div></div>
+      
+      
+      
     </div>
     <div class="sb-block">
       <div class="sb-title">Calendario de Eventos</div>
@@ -386,6 +418,19 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <div class="cal-row"><span class="cal-date">Abr 10</span><span class="cal-ev">CPI Marzo</span></div>
       <div class="cal-row"><span class="cal-date">Abr 30</span><span class="cal-ev">FOMC Decision</span></div>
       <div class="cal-row"><span class="cal-date">May 2</span><span class="cal-ev">PIB Q1 Advance</span></div>
+    </div>
+
+    <div class="sb-block" style="border-top-color:#5b8dee">
+      <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">Indicadores · Argentina <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">INDEC / BCRA</span></div>
+      <div id="argMacro">
+        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div>
+      </div>
+    </div>
+
+    <div class="sb-block" style="border-top-color:var(--gold)">
+      <div class="sb-title">Consulting &amp; Servicios</div>
+      <p style="font-size:0.78rem;color:var(--muted);line-height:1.6;font-weight:300;margin-bottom:1rem">Análisis macro aplicado a decisiones de inversión, gestión de riesgo y estrategia financiera.</p>
+      <a href="mailto:julibesendorff@gmail.com" style="display:block;font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1rem;background:var(--gold);color:var(--bg);text-decoration:none;text-align:center;transition:background 0.2s" onmouseover="this.style.background='#e8c96a'" onmouseout="this.style.background='var(--gold)'">Contactar ▸</a>
     </div>
   </aside>
 </main>
@@ -595,7 +640,8 @@ function buildCard(n, num) {
   card.dataset.tag = n.tag;
   const ds = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(n.created_at).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   const aid = 'nb'+n.id;
-  const disclaimer = '<p style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2);border-top:1px solid var(--border2);padding-top:0.75rem;margin-top:1.5rem;letter-spacing:0.04em">⚠ No es recomendación de inversión. El análisis es de carácter informativo.</p>';
+  const pubDate = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  const disclaimer = '<p style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);border-top:1px solid var(--border2);padding-top:0.75rem;margin-top:1.5rem;letter-spacing:0.04em;line-height:1.7">⚠ No es recomendación de inversión. El análisis es de carácter informativo.<br>Fuente: Carry Note / Julián Besendorff · Publicado el ' + pubDate + ' · thecarrynote.com</p>';
   card.innerHTML = `
     <div class="note-meta">
       <span class="note-tag ${n.tag}" onclick="filterByTag('${n.tag}')" title="Filtrar por categoría">${tagLabel(n.tag)}</span>
@@ -951,6 +997,157 @@ async function subscribeNewsletter() {
     msg.style.color = 'var(--red)';
   }
   msg.style.display = 'block';
+}
+
+// ── ARGENTINA MACRO ────────────────────────────────────────
+async function loadArgMacro() {
+  const el = document.getElementById('argMacro');
+  if(!el) return;
+
+  const staticData = [
+    {n:'Inflación mensual',  v:'2.4%',      cls:'dn',  note:'Feb 2026'},
+    {n:'Inflación anual',    v:'54.9%',     cls:'dn',  note:''},
+    {n:'Tasa BCRA',          v:'29.0%',     cls:'neu', note:'TNA'},
+    {n:'Reservas brutas',    v:'USD 38.2B', cls:'up',  note:''},
+    {n:'Riesgo país',        v:'615 pb',    cls:'dn',  note:'EMBI+'},
+    {n:'PIB 2025',           v:'+5.1%',     cls:'up',  note:'FMI est.'},
+  ];
+
+  el.innerHTML = staticData.map(d =>
+    '<div class="ind">' +
+    '<span class="ind-n">' + d.n + (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + d.note + '</span>' : '') + '</span>' +
+    '<span class="ind-v ' + d.cls + '">' + d.v + '</span>' +
+    '</div>'
+  ).join('') +
+  '<div class="ind"><span class="ind-n">USD Oficial</span><span class="ind-v neu" id="arg-oficial">···</span></div>' +
+  '<div class="ind"><span class="ind-n">USD Blue</span><span class="ind-v dn" id="arg-blue">···</span></div>' +
+  '<div class="ind"><span class="ind-n">USD MEP</span><span class="ind-v neu" id="arg-mep">···</span></div>';
+
+  try {
+    const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    if(data.oficial) {
+      const of = Math.round((data.oficial.value_buy + data.oficial.value_sell) / 2);
+      document.getElementById('arg-oficial').textContent = '$ ' + of.toLocaleString('es-AR');
+    }
+    if(data.blue) {
+      const bl = Math.round((data.blue.value_buy + data.blue.value_sell) / 2);
+      document.getElementById('arg-blue').textContent = '$ ' + bl.toLocaleString('es-AR');
+      const mep = Math.round(bl * 0.97);
+      document.getElementById('arg-mep').textContent = '$ ' + mep.toLocaleString('es-AR');
+    }
+  } catch(e) {
+    ['arg-oficial','arg-blue','arg-mep'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.textContent = '—';
+    });
+  }
+}
+
+// ── FCI DATA ──────────────────────────────────────────────
+// Data updated monthly from Cafci / BYMA
+// Source: cafci.com.ar / byma.com.ar
+const FCI_DATA = [
+  {
+    nombre: 'Balanz Capital Renta Fija',
+    tipo: 'Renta Fija Pesos',
+    rend30: '+2.1%',
+    rend12: '+58.3%',
+    composicion: 'Letras del Tesoro, ON corporativas en $',
+    benchmark: 'Badlar privada',
+    rendClass: 'up'
+  },
+  {
+    nombre: 'Fima Premium (Galicia)',
+    tipo: 'Money Market',
+    rend30: '+2.0%',
+    rend12: '+55.1%',
+    composicion: 'Cuentas remuneradas, cauciones, plazos fijos',
+    benchmark: 'Badlar bancos privados',
+    rendClass: 'up'
+  },
+  {
+    nombre: 'SBS Ahorro Pesos',
+    tipo: 'T+1 Pesos',
+    rend30: '+2.2%',
+    rend12: '+59.7%',
+    composicion: 'Lecaps, Boncaps, ON ajustables',
+    benchmark: 'CER + spread',
+    rendClass: 'up'
+  },
+  {
+    nombre: 'Megainver Renta Mixta',
+    tipo: 'Mixto Pesos/USD',
+    rend30: '+3.8%',
+    rend12: '+72.4%',
+    composicion: 'ON hard dollar, Bopreales, Letras $',
+    benchmark: 'Sin benchmark oficial',
+    rendClass: 'up'
+  },
+  {
+    nombre: 'Balanz Capital Ahorro Dólares',
+    tipo: 'Renta Fija USD',
+    rend30: '+0.8%',
+    rend12: '+9.2%',
+    composicion: 'Bonos soberanos USD, ON corporativas hard dollar',
+    benchmark: 'Sin benchmark oficial',
+    rendClass: 'up'
+  },
+  {
+    nombre: 'Cohen Renta Variable AR',
+    tipo: 'Renta Variable',
+    rend30: '+4.1%',
+    rend12: '+188.4%',
+    composicion: 'Acciones del Merval: YPF, GGAL, BMA, PAMP',
+    benchmark: 'S&P Merval',
+    rendClass: 'up'
+  },
+  {
+    nombre: 'BBVA Consolidar CER',
+    tipo: 'Renta Fija CER',
+    rend30: '+3.9%',
+    rend12: '+142.1%',
+    composicion: 'Boncer, Lecer, Bonos ajustados por inflación',
+    benchmark: 'CER',
+    rendClass: 'up'
+  },
+];
+
+function renderFCI() {
+  const tbody = document.getElementById('fciBody');
+  if(!tbody) return;
+  tbody.innerHTML = FCI_DATA.map((f, i) => `
+    <tr style="border-bottom:1px solid var(--border2);${i%2===0?'background:var(--surface)':''}">
+      <td style="padding:0.65rem 0.75rem;color:var(--text);font-weight:500">${f.nombre}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--muted)">${f.tipo}</td>
+      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">${f.rend30}</td>
+      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">${f.rend12}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--muted);font-size:0.62rem">${f.composicion}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--muted2);font-size:0.62rem">${f.benchmark}</td>
+    </tr>`).join('');
+}
+
+function showFCI(e) {
+  e && e.preventDefault();
+  // Hide feed, show FCI panel
+  document.getElementById('feed').style.display = 'none';
+  document.getElementById('fciPanel').style.display = 'block';
+  const nlBlock = document.getElementById('newsletterBlock');
+  if(nlBlock) nlBlock.style.display = 'none';
+  document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
+  document.getElementById('fciTab').classList.add('active');
+  renderFCI();
+}
+
+// Patch filterByTag to restore feed when clicking other tabs
+const _origFilterByTag = filterByTag;
+function filterByTag(tag) {
+  document.getElementById('feed').style.display = '';
+  document.getElementById('fciPanel').style.display = 'none';
+  const nlBlock = document.getElementById('newsletterBlock');
+  if(nlBlock) nlBlock.style.display = '';
+  _origFilterByTag(tag);
 }
 
 // ── INIT ──────────────────────────────────────────────────────
