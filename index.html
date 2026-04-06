@@ -413,12 +413,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="sb-block">
       <div class="sb-title">Calendario de Eventos</div>
-      <div class="cal-row"><span class="cal-date">Mar 28</span><span class="cal-ev">PCE Core Feb</span></div>
-      <div class="cal-row"><span class="cal-date">Abr 4</span><span class="cal-ev">NFP Marzo</span></div>
-      <div class="cal-row"><span class="cal-date">Abr 10</span><span class="cal-ev">CPI Marzo</span></div>
-      <div class="cal-row"><span class="cal-date">Abr 30</span><span class="cal-ev">FOMC Decision</span></div>
-      <div class="cal-row"><span class="cal-date">May 2</span><span class="cal-ev">PIB Q1 Advance</span></div>
-    </div>
+      <div id="calendarFeed"><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div></div>
+      </div>
 
     <div class="sb-block" style="border-top-color:#5b8dee">
       <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">Indicadores · Argentina <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">INDEC / BCRA</span></div>
@@ -1180,6 +1176,57 @@ function filterByTag(tag) {
   const nlBlock = document.getElementById('newsletterBlock');
   if(nlBlock) nlBlock.style.display = '';
   _origFilterByTag(tag);
+}
+
+
+// ── DYNAMIC CALENDAR ───────────────────────────────────────
+const MACRO_EVENTS = [
+  {date:'2026-04-04', ev:'NFP Marzo · EEUU'},
+  {date:'2026-04-07', ev:'RBA Decision · Australia'},
+  {date:'2026-04-09', ev:'BCE Actas · Eurozona'},
+  {date:'2026-04-10', ev:'CPI Marzo · EEUU'},
+  {date:'2026-04-11', ev:'PPI Marzo · EEUU'},
+  {date:'2026-04-14', ev:'PIB Q1 · China'},
+  {date:'2026-04-15', ev:'CPI Marzo · Eurozona'},
+  {date:'2026-04-16', ev:'Ventas minoristas · EEUU'},
+  {date:'2026-04-22', ev:'PMI Manufacturero · Global'},
+  {date:'2026-04-24', ev:'Decisión de tasas · BCE'},
+  {date:'2026-04-25', ev:'PIB Q1 Advance · EEUU'},
+  {date:'2026-04-28', ev:'Core PCE Marzo · EEUU'},
+  {date:'2026-04-30', ev:'FOMC Decision · Fed'},
+  {date:'2026-04-30', ev:'IPC Marzo · Argentina'},
+  {date:'2026-05-02', ev:'NFP Abril · EEUU'},
+  {date:'2026-05-07', ev:'Decisión de tasas · BoE'},
+  {date:'2026-05-13', ev:'CPI Abril · EEUU'},
+  {date:'2026-05-14', ev:'PIB Q1 · Eurozona'},
+  {date:'2026-05-20', ev:'EMAE Marzo · Argentina'},
+  {date:'2026-05-22', ev:'Actas FOMC · Fed'},
+  {date:'2026-05-29', ev:'Core PCE Abril · EEUU'},
+  {date:'2026-06-05', ev:'NFP Mayo · EEUU'},
+  {date:'2026-06-06', ev:'Decisión de tasas · BCE'},
+  {date:'2026-06-11', ev:'CPI Mayo · EEUU'},
+  {date:'2026-06-17', ev:'FOMC Decision · Fed'},
+  {date:'2026-06-19', ev:'Decisión de tasas · BoJ · Japón'},
+  {date:'2026-06-25', ev:'IPC Mayo · Argentina'},
+  {date:'2026-06-26', ev:'Core PCE Mayo · EEUU'},
+];
+
+function loadCalendar() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const upcoming = MACRO_EVENTS
+    .filter(e => new Date(e.date + 'T12:00:00') >= now)
+    .slice(0, 8);
+  const feed = document.getElementById('calendarFeed');
+  if(!feed) return;
+  if(!upcoming.length) { feed.innerHTML = '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Sin eventos próximos.</div>'; return; }
+  feed.innerHTML = upcoming.map(e => {
+    const d = new Date(e.date + 'T12:00:00');
+    const label = d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+    const isToday = d.toDateString() === new Date().toDateString();
+    const isSoon = (d - now) < 3*24*60*60*1000;
+    const accent = isToday ? 'var(--red)' : isSoon ? 'var(--gold)' : 'var(--blue)';
+    return '<div class="cal-row"><span class="cal-date" style="color:'+accent+'">'+label+'</span><span class="cal-ev">'+e.ev+'</span></div>';
+  }).join('');
 }
 
 // ── INIT ──────────────────────────────────────────────────────
