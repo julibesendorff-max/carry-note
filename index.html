@@ -48,12 +48,12 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 #loginModal.open{display:flex}
 
 /* TICKER */
-.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.4rem 0;overflow:hidden;font-family:var(--mono);font-size:0.65rem;position:relative}
-.ticker-inner{display:flex;gap:2rem;animation:scroll 25s linear infinite;white-space:nowrap;width:max-content}
+.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.65rem 0;overflow:hidden;font-family:var(--mono);font-size:0.82rem;position:relative}
+.ticker-inner{display:flex;gap:2.5rem;animation:scroll 45s linear infinite;white-space:nowrap;width:max-content}
 .ticker-inner:hover{animation-play-state:paused}
-.t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem}
-.t-lbl{color:var(--muted)}.t-val{color:var(--text);font-size:0.72rem}.t-up{color:var(--green)}.t-dn{color:var(--red)}.t-sep{color:var(--border2);padding:0 0.3rem}
-.ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.55rem;color:var(--muted2)}
+.t-item{display:inline-flex;gap:0.5rem;align-items:center;padding:0 0.6rem}
+.t-lbl{color:var(--muted);font-size:0.72rem}.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em}.t-up{color:var(--green);font-size:0.75rem}.t-dn{color:var(--red);font-size:0.75rem}.t-sep{color:var(--border2);padding:0 0.3rem}
+.ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)}
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
@@ -225,23 +225,60 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div class="ticker-inner" id="tickerInner">
     <span class="t-item"><span class="t-lbl">SPY</span><span class="t-val" id="t-spx"> —</span><span id="t-spx-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">QQQ</span><span class="t-val" id="t-ndx"> —</span><span id="t-ndx-c"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val" id="t-tlt"> —</span><span id="t-tlt-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">IWM</span><span class="t-val" id="t-iwm"> —</span><span id="t-iwm-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">VIX ETF</span><span class="t-val" id="t-vix"> —</span><span id="t-vix-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">TLT</span><span class="t-val" id="t-tlt"> —</span><span id="t-tlt-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val" id="t-dxy"> —</span><span id="t-dxy-c"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur"> —</span><span id="t-eur-c"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars"> —</span><span id="t-ars-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val" id="t-wti"> —</span><span id="t-wti-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val" id="t-gld"> —</span><span id="t-gld-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">SILVER</span><span class="t-val" id="t-slv"> —</span><span id="t-slv-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">COPPER</span><span class="t-val" id="t-cop"> —</span><span id="t-cop-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">BTC</span><span class="t-val" id="t-btc"> —</span><span id="t-btc-c"> —</span></span><span class="t-sep">·</span>
-    <!-- duplicate for seamless loop -->
+    <span class="t-item"><span class="t-lbl">ETH</span><span class="t-val" id="t-eth"> —</span><span id="t-eth-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">NVDA</span><span class="t-val" id="t-nvda"> —</span><span id="t-nvda-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">TSLA</span><span class="t-val" id="t-tsla"> —</span><span id="t-tsla-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">META</span><span class="t-val" id="t-meta"> —</span><span id="t-meta-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">AAPL</span><span class="t-val" id="t-aapl"> —</span><span id="t-aapl-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">AMZN</span><span class="t-val" id="t-amzn"> —</span><span id="t-amzn-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">MSTR</span><span class="t-val" id="t-mstr"> —</span><span id="t-mstr-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">ARM</span><span class="t-val" id="t-arm"> —</span><span id="t-arm-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">YPF</span><span class="t-val" id="t-ypf"> —</span><span id="t-ypf-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal"> —</span><span id="t-ggal-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">BMA</span><span class="t-val" id="t-bma"> —</span><span id="t-bma-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">PAMP</span><span class="t-val" id="t-pamp"> —</span><span id="t-pamp-c"> —</span></span>
+    <span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur"> —</span><span id="t-eur-c"> —</span></span>
+    <span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars"> —</span><span id="t-ars-c"> —</span></span>
+    <span class="t-sep">·</span>
+    <!-- duplicate -->
     <span class="t-item"><span class="t-lbl">SPY</span><span class="t-val" id="t-spx2"> —</span><span id="t-spx-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">QQQ</span><span class="t-val" id="t-ndx2"> —</span><span id="t-ndx-c2"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">10Y UST</span><span class="t-val" id="t-tlt2"> —</span><span id="t-tlt-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">IWM</span><span class="t-val" id="t-iwm2"> —</span><span id="t-iwm-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">VIX ETF</span><span class="t-val" id="t-vix2"> —</span><span id="t-vix-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">TLT</span><span class="t-val" id="t-tlt2"> —</span><span id="t-tlt-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">DXY</span><span class="t-val" id="t-dxy2"> —</span><span id="t-dxy-c2"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur2"> —</span><span id="t-eur-c2"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars2"> —</span><span id="t-ars-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">WTI</span><span class="t-val" id="t-wti2"> —</span><span id="t-wti-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">GOLD</span><span class="t-val" id="t-gld2"> —</span><span id="t-gld-c2"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">BTC</span><span class="t-val" id="t-btc2"> —</span><span id="t-btc-c2"> —</span></span>
+    <span class="t-item"><span class="t-lbl">SILVER</span><span class="t-val" id="t-slv2"> —</span><span id="t-slv-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">COPPER</span><span class="t-val" id="t-cop2"> —</span><span id="t-cop-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">BTC</span><span class="t-val" id="t-btc2"> —</span><span id="t-btc-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">ETH</span><span class="t-val" id="t-eth2"> —</span><span id="t-eth-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">NVDA</span><span class="t-val" id="t-nvda2"> —</span><span id="t-nvda-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">TSLA</span><span class="t-val" id="t-tsla2"> —</span><span id="t-tsla-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">META</span><span class="t-val" id="t-meta2"> —</span><span id="t-meta-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">AAPL</span><span class="t-val" id="t-aapl2"> —</span><span id="t-aapl-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">AMZN</span><span class="t-val" id="t-amzn2"> —</span><span id="t-amzn-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">MSTR</span><span class="t-val" id="t-mstr2"> —</span><span id="t-mstr-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">ARM</span><span class="t-val" id="t-arm2"> —</span><span id="t-arm-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">YPF</span><span class="t-val" id="t-ypf2"> —</span><span id="t-ypf-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal2"> —</span><span id="t-ggal-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">BMA</span><span class="t-val" id="t-bma2"> —</span><span id="t-bma-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">PAMP</span><span class="t-val" id="t-pamp2"> —</span><span id="t-pamp-c2"> —</span></span>
+    <span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur2"> —</span><span id="t-eur-c2"> —</span></span>
+    <span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars2"> —</span><span id="t-ars-c2"> —</span></span>
   </div>
   <div class="ticker-status" id="tickerStatus">··· cargando</div>
 </div>
@@ -672,15 +709,34 @@ let selT = 'Fed y política monetaria en 2025: tasas, dot plot y perspectivas';
 
 // ── TICKER ──────────────────────────────────────────────────
 const tickerSymbols = [
-  { id:'spx',  sym:'SPY',               lbl:'S&P 500',  fmt:'price'  },
-  { id:'ndx',  sym:'QQQ',               lbl:'NASDAQ',   fmt:'price'  },
-  { id:'tlt',  sym:'TLT',               lbl:'10Y UST',  fmt:'price'  },
-  { id:'dxy',  sym:'UUP',               lbl:'DXY',      fmt:'price'  },
-  { id:'eur',  sym:'OANDA:EUR_USD',      lbl:'EUR/USD',  fmt:'fx'     },
-  { id:'ars',  sym:'OANDA:USD_ARS',      lbl:'USD/ARS',  fmt:'fx'     },
-  { id:'wti',  sym:'USO',               lbl:'WTI',      fmt:'price'  },
-  { id:'gld',  sym:'GLD',               lbl:'GOLD',     fmt:'price'  },
-  { id:'btc',  sym:'BINANCE:BTCUSDT',   lbl:'BTC',      fmt:'crypto' },
+  // Indices & Macro
+  { id:'spx',  sym:'SPY',               lbl:'SPY',       fmt:'price'  },
+  { id:'ndx',  sym:'QQQ',               lbl:'QQQ',       fmt:'price'  },
+  { id:'iwm',  sym:'IWM',               lbl:'IWM',       fmt:'price'  },
+  { id:'vix',  sym:'VIXY',              lbl:'VIX ETF',   fmt:'price'  },
+  { id:'tlt',  sym:'TLT',               lbl:'TLT (10Y)', fmt:'price'  },
+  { id:'dxy',  sym:'UUP',               lbl:'DXY',       fmt:'price'  },
+  // Commodities
+  { id:'wti',  sym:'USO',               lbl:'WTI',       fmt:'price'  },
+  { id:'gld',  sym:'GLD',               lbl:'GOLD',      fmt:'price'  },
+  { id:'slv',  sym:'SLV',               lbl:'SILVER',    fmt:'price'  },
+  { id:'cop',  sym:'COPX',              lbl:'COPPER',    fmt:'price'  },
+  // Crypto
+  { id:'btc',  sym:'BINANCE:BTCUSDT',   lbl:'BTC',       fmt:'crypto' },
+  { id:'eth',  sym:'BINANCE:ETHUSDT',   lbl:'ETH',       fmt:'crypto' },
+  // High volatility / trending stocks
+  { id:'nvda', sym:'NVDA',              lbl:'NVDA',      fmt:'price'  },
+  { id:'tsla', sym:'TSLA',              lbl:'TSLA',      fmt:'price'  },
+  { id:'meta', sym:'META',              lbl:'META',      fmt:'price'  },
+  { id:'aapl', sym:'AAPL',              lbl:'AAPL',      fmt:'price'  },
+  { id:'amzn', sym:'AMZN',              lbl:'AMZN',      fmt:'price'  },
+  { id:'mstr', sym:'MSTR',              lbl:'MSTR',      fmt:'price'  },
+  { id:'arm',  sym:'ARM',               lbl:'ARM',       fmt:'price'  },
+  // Argentina ADRs
+  { id:'ypf',  sym:'YPF',               lbl:'YPF',       fmt:'price'  },
+  { id:'ggal', sym:'GGAL',              lbl:'GGAL',      fmt:'price'  },
+  { id:'bma',  sym:'BMA',               lbl:'BMA',       fmt:'price'  },
+  { id:'pamp', sym:'PAM',               lbl:'PAMP',      fmt:'price'  },
 ];
 
 async function fetchQuote(symbol) {
@@ -697,24 +753,16 @@ function fmtPrice(v, fmt) {
 
 function setTicker(id, price, pct, fmt) {
   const val = fmtPrice(price, fmt);
-  const sign = pct >= 0 ? '+' : '';
   const cls = pct >= 0 ? 't-up' : 't-dn';
   const arr = pct >= 0 ? '▲' : '▼';
-  const chgText = ` ${arr}${Math.abs(pct).toFixed(2)}%`;
-  [id, id+'2'].forEach(i => {
-    const vEl = document.getElementById('t-'+i.replace('2','')+(i.endsWith('2')?'2':''));
-    const cEl = document.getElementById('t-'+i.replace('2','').replace(/\d$/,'')+(i.endsWith('2')?'-c2':'-c'));
-    // simpler approach:
+  const chgText = ' ' + arr + Math.abs(pct).toFixed(2) + '%';
+  [id, id+'2'].forEach(suffix => {
+    const isDouble = suffix.endsWith('2');
+    const vEl = document.getElementById('t-' + suffix);
+    const cEl = document.getElementById('t-' + id + '-c' + (isDouble ? '2' : ''));
+    if(vEl) vEl.textContent = ' ' + val;
+    if(cEl) { cEl.textContent = chgText; cEl.className = cls; }
   });
-  // Direct approach
-  const v1 = document.getElementById('t-'+id);
-  const c1 = document.getElementById('t-'+id+'-c');
-  const v2 = document.getElementById('t-'+id+'2');
-  const c2 = document.getElementById('t-'+id+'-c2');
-  if(v1){v1.textContent=' '+val;}
-  if(c1){c1.textContent=chgText;c1.className=cls;}
-  if(v2){v2.textContent=' '+val;}
-  if(c2){c2.textContent=chgText;c2.className=cls;}
 }
 
 async function loadForex() {
@@ -779,7 +827,7 @@ async function loadTicker() {
 
 // Refresh ticker every 2 minutes
 loadTicker();
-setInterval(loadTicker, 120000);
+setInterval(loadTicker, 60000); // refresh every minute
 
 // ── SUPABASE ─────────────────────────────────────────────────
 async function sbFetch(path, opts={}) {
