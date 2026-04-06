@@ -1023,25 +1023,54 @@ async function loadArgMacro() {
   '<div class="ind"><span class="ind-n">USD Blue</span><span class="ind-v dn" id="arg-blue">···</span></div>' +
   '<div class="ind"><span class="ind-n">USD MEP</span><span class="ind-v neu" id="arg-mep">···</span></div>';
 
+  // Try multiple sources for Argentina FX
+  const tryFetch = async (url) => {
+    const res = await fetch(url, {mode: 'cors'});
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  };
+
   try {
-    const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
-    if(!res.ok) throw new Error();
-    const data = await res.json();
-    if(data.oficial) {
-      const of = Math.round((data.oficial.value_buy + data.oficial.value_sell) / 2);
-      document.getElementById('arg-oficial').textContent = '$ ' + of.toLocaleString('es-AR');
+    // Try dolarapi.com first (reliable CORS)
+    const data = await tryFetch('https://dolarapi.com/v1/dolares');
+    // data is an array of exchange rates
+    const oficial = data.find(d => d.casa === 'oficial');
+    const blue = data.find(d => d.casa === 'blue');
+    const mep = data.find(d => d.casa === 'bolsa');
+
+    if(oficial) {
+      const mid = ((oficial.compra || 0) + (oficial.venta || 0)) / 2;
+      document.getElementById('arg-oficial').textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
     }
-    if(data.blue) {
-      const bl = Math.round((data.blue.value_buy + data.blue.value_sell) / 2);
-      document.getElementById('arg-blue').textContent = '$ ' + bl.toLocaleString('es-AR');
-      const mep = Math.round(bl * 0.97);
-      document.getElementById('arg-mep').textContent = '$ ' + mep.toLocaleString('es-AR');
+    if(blue) {
+      const mid = ((blue.compra || 0) + (blue.venta || 0)) / 2;
+      document.getElementById('arg-blue').textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
     }
-  } catch(e) {
-    ['arg-oficial','arg-blue','arg-mep'].forEach(id => {
-      const el = document.getElementById(id);
-      if(el) el.textContent = '—';
-    });
+    if(mep) {
+      const mid = ((mep.compra || 0) + (mep.venta || 0)) / 2;
+      document.getElementById('arg-mep').textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
+    }
+  } catch(e1) {
+    // Fallback: try bluelytics
+    try {
+      const data = await tryFetch('https://api.bluelytics.com.ar/v2/latest');
+      if(data.oficial) {
+        const of = Math.round((data.oficial.value_buy + data.oficial.value_sell) / 2);
+        document.getElementById('arg-oficial').textContent = '$ ' + of.toLocaleString('es-AR');
+      }
+      if(data.blue) {
+        const bl = Math.round((data.blue.value_buy + data.blue.value_sell) / 2);
+        document.getElementById('arg-blue').textContent = '$ ' + bl.toLocaleString('es-AR');
+        document.getElementById('arg-mep').textContent = '$ ' + Math.round(bl * 0.97).toLocaleString('es-AR');
+      }
+    } catch(e2) {
+      // Both failed — show static fallback values
+      const fallback = {'arg-oficial':'$ 1.080', 'arg-blue':'$ 1.320', 'arg-mep':'$ 1.290'};
+      Object.entries(fallback).forEach(([id, val]) => {
+        const el = document.getElementById(id);
+        if(el) { el.textContent = val; el.style.opacity = '0.5'; }
+      });
+    }
   }
 }
 
@@ -1130,11 +1159,14 @@ function renderFCI() {
 
 function showFCI(e) {
   e && e.preventDefault();
-  // Hide feed, show FCI panel
   document.getElementById('feed').style.display = 'none';
   document.getElementById('fciPanel').style.display = 'block';
   const nlBlock = document.getElementById('newsletterBlock');
   if(nlBlock) nlBlock.style.display = 'none';
+  const noRes = document.getElementById('noResults');
+  if(noRes) noRes.style.display = 'none';
+  const feedHeader = document.getElementById('feedHeader');
+  if(feedHeader) feedHeader.style.display = 'none';
   document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
   document.getElementById('fciTab').classList.add('active');
   renderFCI();
