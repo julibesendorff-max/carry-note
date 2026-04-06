@@ -682,6 +682,13 @@ function filterByTag(tag) {
 
 document.querySelectorAll('.nav-strip a').forEach(a => {
   a.addEventListener('click', () => {
+    if(a.id === 'fciTab') return; // handled by showFCI
+    // Restore feed, hide FCI
+    document.getElementById('fciPanel').style.display = 'none';
+    ['feed','newsletterBlock'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) el.style.display = '';
+    });
     document.querySelectorAll('.nav-strip a').forEach(x => x.classList.remove('active'));
     a.classList.add('active');
     activeFilter = a.dataset.filter || 'all';
@@ -1155,14 +1162,12 @@ function renderFCI() {
 
 function showFCI(e) {
   e && e.preventDefault();
-  document.getElementById('feed').style.display = 'none';
+  // Hide everything feed-related
+  ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
   document.getElementById('fciPanel').style.display = 'block';
-  const nlBlock = document.getElementById('newsletterBlock');
-  if(nlBlock) nlBlock.style.display = 'none';
-  const noRes = document.getElementById('noResults');
-  if(noRes) noRes.style.display = 'none';
-  const feedHeader = document.getElementById('feedHeader');
-  if(feedHeader) feedHeader.style.display = 'none';
   document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
   document.getElementById('fciTab').classList.add('active');
   renderFCI();
@@ -1171,10 +1176,12 @@ function showFCI(e) {
 // Patch filterByTag to restore feed when clicking other tabs
 const _origFilterByTag = filterByTag;
 function filterByTag(tag) {
-  document.getElementById('feed').style.display = '';
+  // Restore feed elements
+  ['feed','newsletterBlock'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.style.display = '';
+  });
   document.getElementById('fciPanel').style.display = 'none';
-  const nlBlock = document.getElementById('newsletterBlock');
-  if(nlBlock) nlBlock.style.display = '';
   _origFilterByTag(tag);
 }
 
