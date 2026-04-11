@@ -195,6 +195,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="latam">EM &amp; Latam</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
+    <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--gold)">▸ Diagnóstico</a>
   </nav>
 </header>
 
@@ -307,11 +308,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="about-item">
       <span class="about-item-label">Contacto</span>
-      <span class="about-item-val">julibesendorff@gmail.com</span>
+      <span class="about-item-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="315b445d58535442545f555e43575771565c50585d1f525e5c">[email&#160;protected]</a></span>
     </div>
     <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" class="about-link">LinkedIn →</a>
     <br>
-    <a href="mailto:julibesendorff@gmail.com" class="about-link" style="margin-top:0.3rem">julibesendorff@gmail.com →</a>
+    <a href="/cdn-cgi/l/email-protection#8fe5fae3e6edeafceae1ebe0fde9e9cfe8e2eee6e3a1ece0e2" class="about-link" style="margin-top:0.3rem"><span class="__cf_email__" data-cfemail="650f10090c070016000b010a170303250208040c094b060a08">[email&#160;protected]</span> →</a>
   </aside>
   <section>
     <div class="editor-panel" id="editorPanel">
@@ -633,6 +634,44 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem">⚠ El contenido es educativo e informativo. No constituye asesoramiento financiero ni recomendación de inversión. · Fuente: Carry Note / Julián Besendorff</div>
 
     </div>
+
+    <!-- DIAGNOSTICO PANEL -->
+    <div id="diagPanel" style="display:none;margin-bottom:2rem">
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">&#9658; Herramienta exclusiva · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Diagn&#243;stico de cartera</div>
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Ingres&#225; tus activos actuales y recib&#237; un an&#225;lisis instant&#225;neo en el contexto macroecon&#243;mico actual. Gratis, en segundos.</div>
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Tu perfil de inversor</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+          <div>
+            <label style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:0.4rem">Horizonte de inversi&#243;n</label>
+            <select id="diagHorizonte" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;cursor:pointer">
+              <option value="corto">Corto plazo (menos de 1 a&#241;o)</option>
+              <option value="medio" selected>Mediano plazo (1 a 3 a&#241;os)</option>
+              <option value="largo">Largo plazo (m&#225;s de 3 a&#241;os)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;display:block;margin-bottom:0.4rem">Tolerancia al riesgo</label>
+            <select id="diagRiesgo" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;cursor:pointer">
+              <option value="conservador">Conservador</option>
+              <option value="moderado" selected>Moderado</option>
+              <option value="agresivo">Agresivo</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style="margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Tus activos actuales</div>
+        <div id="diagAssets" style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1rem"></div>
+        <button onclick="addAsset()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.45rem 1rem;background:transparent;color:var(--muted);border:1px dashed var(--border);cursor:pointer;width:100%">+ Agregar activo</button>
+      </div>
+      <button id="diagBtn" onclick="runDiag()" style="width:100%;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:2rem">Analizar mi cartera &#9658;</button>
+      <div id="diagResult" style="display:none"></div>
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es educativo e informativo. No constituye asesoramiento financiero. · Carry Note / Juli&#225;n Besendorff</div>
+    </div>
     <!-- NEWSLETTER -->
     <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
@@ -694,7 +733,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div>© 2025 · No constituye asesoramiento financiero ni de inversión</div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const SUPABASE_URL = 'https://fhswsvjkkmnhlbdnozoe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_HCwgAA7wQJIJj45eU_MhvQ_gVklccHK';
 const EDITOR_PIN   = 'carrynote2025';
@@ -740,15 +779,25 @@ const tickerSymbols = [
 ];
 
 async function fetchQuote(symbol) {
-  const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_KEY}`);
-  return await res.json();
+  try {
+    const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${FINNHUB_KEY}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data;
+  } catch(e) {
+    return null;
+  }
 }
 
 function fmtPrice(v, fmt) {
   if (!v || v === 0) return '—';
-  if (fmt === 'crypto') return '$' + v.toLocaleString('en-US', {maximumFractionDigits:0});
+  if (fmt === 'crypto') {
+    if (v > 1000) return '$' + v.toLocaleString('en-US', {maximumFractionDigits:0});
+    return '$' + v.toFixed(2);
+  }
   if (fmt === 'fx') return v.toFixed(4);
-  return v.toFixed(2);
+  if (v >= 1000) return '$' + v.toLocaleString('en-US', {maximumFractionDigits:0});
+  return '$' + v.toFixed(2);
 }
 
 function setTicker(id, price, pct, fmt) {
@@ -809,11 +858,20 @@ async function loadTicker() {
   try {
     // Load Finnhub symbols (excluding forex)
     const finnhubSymbols = tickerSymbols.filter(s => s.id !== 'eur' && s.id !== 'ars');
-    const quotes = await Promise.all(finnhubSymbols.map(s => fetchQuote(s.sym)));
+    // Batch requests to avoid rate limiting on free Finnhub plan
+    const quotes = [];
+    for(let i = 0; i < finnhubSymbols.length; i++) {
+      const q = await fetchQuote(finnhubSymbols[i].sym);
+      quotes.push(q);
+      if(i % 5 === 4) await new Promise(r => setTimeout(r, 300)); // pause every 5 requests
+    }
     quotes.forEach((q, i) => {
-      if (q && q.c) {
+      if (q && q.c && q.c > 0 && q.pc && q.pc > 0) {
         const pct = ((q.c - q.pc) / q.pc) * 100;
         setTicker(finnhubSymbols[i].id, q.c, pct, finnhubSymbols[i].fmt);
+      } else {
+        // Show label with dashes for unavailable symbols
+        console.log('No data for:', finnhubSymbols[i].sym, q);
       }
     });
     // Load forex separately
@@ -954,7 +1012,7 @@ document.querySelectorAll('.nav-strip a').forEach(a => {
     if(a.id === 'fciTab') return; // handled by showFCI
     if(a.id === 'aprenderTab') return; // handled by showAprender
     // Restore feed, hide special panels
-    ['fciPanel','aprenderPanel'].forEach(id => {
+    ['fciPanel','aprenderPanel','diagPanel'].forEach(id => {
       const el = document.getElementById(id);
       if(el) el.style.display = 'none';
     });
@@ -1538,11 +1596,156 @@ function showNivel(nivel) {
 function toggleLesson(id) {
   const el = document.getElementById(id);
   if(!el) return;
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  le.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
-// ── INIT ──────────────────────────────────────────────────────
-window.addEventListener('load',()=>{ loadNotes(); loadCalendar(); loadArgMacro(); loadTicker(); loadForex(); });
+// ── DIAGNOSTICO DE CARTERA ─────────────────────────────────
+const ASSET_TYPES = [
+  {v:'plazo_fijo',l:'Plazo fijo'},{v:'money_market',l:'FCI Money Market'},
+  {v:'fci_pesos',l:'FCI Renta Fija Pesos'},{v:'fci_cer',l:'FCI / Bono CER'},
+  {v:'bono_dollar',l:'Bono / ON Hard Dollar'},{v:'dolar_mep',l:'Dolar MEP / CCL'},
+  {v:'dolar_billete',l:'Dolares billete'},{v:'acciones_ar',l:'Acciones argentinas'},
+  {v:'cedears',l:'CEDEARs'},{v:'etf_eeuu',l:'ETFs EEUU'},
+  {v:'acciones_eeuu',l:'Acciones EEUU'},{v:'bitcoin',l:'Bitcoin / Crypto'},
+  {v:'oro',l:'Oro'},{v:'otro',l:'Otro'},
+];
+let assetCount = 0;
+
+function addAsset() {
+  assetCount++;
+  const id = 'asset-' + assetCount;
+  const div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.innerHTML =
+    '<select style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none">' +
+    ASSET_TYPES.map(function(a){return '<option value="'+a.v+'">'+a.l+'</option>';}).join('') +
+    '</select>' +
+    '<input type="number" placeholder="Monto" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none;width:100%"/>' +
+    '<select style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none"><option value="ARS">ARS $</option><option value="USD">USD $</option></select>' +
+    '<button onclick="document.getElementById(''+id+'').remove()" style="background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:0.8rem;padding:0.3rem 0.6rem">x</button>';
+  document.getElementById('diagAssets').appendChild(div);
+}
+
+async function runDiag() {
+  const assets = [];
+  document.querySelectorAll('#diagAssets > div').forEach(function(row) {
+    const selects = row.querySelectorAll('select');
+    const input = row.querySelector('input');
+    if(selects[0] && input && input.value) {
+      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:parseFloat(input.value), moneda:selects[1]?selects[1].value:'ARS'});
+    }
+  });
+  if(!assets.length){alert('Agrega al menos un activo.');return;}
+  const horizonte = document.getElementById('diagHorizonte').value;
+  const riesgo = document.getElementById('diagRiesgo').value;
+  const btn = document.getElementById('diagBtn');
+  btn.disabled=true; btn.textContent='Analizando...';
+  const result = document.getElementById('diagResult');
+  result.style.display='block';
+  result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--gold)">Claude analizando tu cartera...</div>';
+  const horizonMap={corto:'corto plazo (menos de 1 ano)',medio:'mediano plazo (1-3 anos)',largo:'largo plazo (mas de 3 anos)'};
+  const riesgoMap={conservador:'conservador',moderado:'moderado',agresivo:'agresivo'};
+  const portfolioText = assets.map(function(a){return '- '+a.tipo+': '+(a.moneda==='ARS'?'$':'')+a.monto.toLocaleString()+' '+a.moneda;}).join('\n');
+  const key=(localStorage.getItem('cn_akey')||'').trim().replace(/[^a-zA-Z0-9_-]/g,'');
+  if(!key){
+    result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Necesitas ingresar tu API key en el modo editor (...).</div>';
+    btn.disabled=false; btn.textContent='Analizar mi cartera'; return;
+  }
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,
+    system:'You are a senior financial analyst specializing in Argentine and global markets. Provide educational portfolio diagnostic. Write in Spanish using HTML. Current context April 2026: Fed 3.50-3.75%, Argentina inflation 54.9% annual (INDEC), USD/ARS official ~1080, Blue ~1320, MEP ~1290, risk country 615bp (EMBI+), SP500 ~5700, Gold ~$3050, BTC ~$69000, Brent ~$110. Respond ONLY with this exact HTML: <div class="ds"><h3>Composicion actual</h3><p>[analysis of current allocation]</p></div><div class="ds dg"><h3>Fortalezas</h3><ul><li>[strength 1]</li><li>[strength 2]</li><li>[strength 3]</li></ul></div><div class="ds dr"><h3>Riesgos identificados</h3><ul><li>[risk 1]</li><li>[risk 2]</li><li>[risk 3]</li></ul></div><div class="ds dy"><h3>Sugerencias de ajuste</h3><ul><li>[concrete suggestion 1]</li><li>[concrete suggestion 2]</li><li>[concrete suggestion 3]</li></ul></div><div class="dscore"><b>[X]/10</b><span>[Bien/Parcialmente/Des] alineado con perfil [conservador/moderado/agresivo]</span></div>',
+    messages:[{role:'user',content:'Perfil: horizonte '+horizonMap[horizonte]+', riesgo '+riesgoMap[riesgo]+'.\n\nCartera:\n'+portfolioText+'\n\nFecha: '+new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}]})});
+    if(!res.ok){const e=await res.json();throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+res.status);}
+    const data=await res.json();
+    const txt=data.content.map(function(i){return i.type==='text'?i.text:'';}).join('').trim();
+    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.85rem;color:#c8c4bc;line-height:1.75}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
+    txt+
+    '<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:0.5rem">'+
+    '<div><div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">Queres profundizar el analisis?</div>'+
+    '<div style="font-size:0.78rem;color:var(--muted)">Julian puede armar una estrategia personalizada para tu situacion.</div></div>'+
+    '<a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap">Contactar a Julian</a></div>';
+  }catch(err){
+    result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
+  }
+  btn.disabled=false; btn.textContent='Analizar de nuevo';
+}
+
+function showDiag(e) {
+  e && e.preventDefault();
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel'].forEach(function(id){
+    const el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  document.getElementById('diagPanel').style.display='block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
+  document.getElementById('diagTab').classList.add('active');
+  if(document.getElementById('diagAssets').children.length===0){addAsset();addAsset();addAsset();}
+}
+
+// ── NEWSLETTER ────────────────────────────────────────────────────────────────
+async function subscribeNewsletter() {
+  const email = document.getElementById('nlEmail').value.trim();
+  const msg = document.getElementById('nlMsg');
+  if(!email || !email.includes('@')) {
+    msg.textContent = 'Ingresa un email valido.';
+    msg.style.color = 'var(--red)';
+    msg.style.display = 'block';
+    return;
+  }
+  try {
+    const res = await sbFetch('/rest/v1/subscribers', {
+      method: 'POST',
+      headers: {'Prefer': 'return=minimal'},
+      body: JSON.stringify({email: email})
+    });
+    if(res.status === 409) {
+      msg.textContent = 'Ya estas suscripto.';
+      msg.style.color = 'var(--green)';
+    } else if(res.ok) {
+      msg.textContent = 'Suscripto. Te escribimos cuando salga la proxima nota.';
+      msg.style.color = 'var(--green)';
+      document.getElementById('nlEmail').value = '';
+    } else {
+      throw new Error();
+    }
+  } catch(e) {
+    msg.textContent = 'Error. Intenta de nuevo.';
+    msg.style.color = 'var(--red)';
+  }
+  msg.style.display = 'block';
+}
+
+// ── SEND NEWSLETTER ────────────────────────────────────────────────────────
+async function sendNewsletter(title, subtitle) {
+  try {
+    await fetch('/api/notify', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({pin: 'carrynote2025', title: title, subtitle: subtitle})
+    });
+  } catch(e) {
+    console.log('Newsletter error:', e);
+  }
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────────────────
+function updateClock(){
+  document.getElementById('live-clock').textContent=
+    new Date().toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+
+    ' - '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+}
+setInterval(updateClock,1000); updateClock();
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+window.addEventListener('load', function(){
+  loadNotes();
+  loadCalendar();
+  loadArgMacro();
+  loadTicker();
+  loadForex();
+});
 </script>
 </body>
 </html>
