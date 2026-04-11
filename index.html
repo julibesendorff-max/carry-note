@@ -308,7 +308,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="about-item">
       <span class="about-item-label">Contacto</span>
-      <span class="about-item-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="315b445d58535442545f555e43575771565c50585d1f525e5c">[email&#160;protected]</a></span>
+      <span class="about-item-val" id="about-email">julibesendorff [at] gmail [punto] com</span>
     </div>
     <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" class="about-link">LinkedIn →</a>
     <br>
@@ -1011,6 +1011,7 @@ document.querySelectorAll('.nav-strip a').forEach(a => {
   a.addEventListener('click', () => {
     if(a.id === 'fciTab') return; // handled by showFCI
     if(a.id === 'aprenderTab') return; // handled by showAprender
+    if(a.id === 'diagTab') return; // handled by showDiag
     // Restore feed, hide special panels
     ['fciPanel','aprenderPanel','diagPanel'].forEach(id => {
       const el = document.getElementById(id);
@@ -1691,13 +1692,25 @@ async function runDiag() {
 
 function showDiag(e) {
   e && e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel'].forEach(function(id){
-    const el=document.getElementById(id); if(el) el.style.display='none';
+  // Hide all content panels
+  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel'];
+  toHide.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = 'none';
   });
-  document.getElementById('diagPanel').style.display='block';
-  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
-  document.getElementById('diagTab').classList.add('active');
-  if(document.getElementById('diagAssets').children.length===0){addAsset();addAsset();addAsset();}
+  // Show diag panel
+  var dp = document.getElementById('diagPanel');
+  if(dp) dp.style.display = 'block';
+  else { console.error('diagPanel not found!'); return; }
+  // Update nav
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('diagTab');
+  if(tab) tab.classList.add('active');
+  // Add default assets if empty
+  var assets = document.getElementById('diagAssets');
+  if(assets && assets.children.length === 0) {
+    addAsset(); addAsset(); addAsset();
+  }
 }
 
 // ── NEWSLETTER ────────────────────────────────────────────────────────────────
@@ -1712,6 +1725,9 @@ function updateClock(){
 
 // ── INIT ─────────────────────────────────────────────────────────────────
 window.addEventListener('load', function(){
+  // Set email via JS to avoid Cloudflare obfuscation
+  var emailEl = document.getElementById('about-email');
+  if(emailEl) emailEl.textContent = ['julibesendorff','gmail.com'].join('@');
   loadNotes();
   loadCalendar();
   loadArgMacro();
