@@ -1685,58 +1685,16 @@ function showDiag(e) {
 }
 
 // ── NEWSLETTER ────────────────────────────────────────────────────────────────
-async function subscribeNewsletter() {
-  const email = document.getElementById('nlEmail').value.trim();
-  const msg = document.getElementById('nlMsg');
-  if(!email || !email.includes('@')) {
-    msg.textContent = 'Ingresa un email valido.';
-    msg.style.color = 'var(--red)';
-    msg.style.display = 'block';
-    return;
-  }
-  try {
-    const res = await sbFetch('/rest/v1/subscribers', {
-      method: 'POST',
-      headers: {'Prefer': 'return=minimal'},
-      body: JSON.stringify({email: email})
-    });
-    if(res.status === 409) {
-      msg.textContent = 'Ya estas suscripto.';
-      msg.style.color = 'var(--green)';
-    } else if(res.ok) {
-      msg.textContent = 'Suscripto. Te escribimos cuando salga la proxima nota.';
-      msg.style.color = 'var(--green)';
-      document.getElementById('nlEmail').value = '';
-    } else {
-      throw new Error();
-    }
-  } catch(e) {
-    msg.textContent = 'Error. Intenta de nuevo.';
-    msg.style.color = 'var(--red)';
-  }
-  msg.style.display = 'block';
-}
-
+async 
 // ── SEND NEWSLETTER ────────────────────────────────────────────────────────
-async function sendNewsletter(title, subtitle) {
-  try {
-    await fetch('/api/notify', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({pin: 'carrynote2025', title: title, subtitle: subtitle})
-    });
-  } catch(e) {
-    console.log('Newsletter error:', e);
-  }
-}
-
+async 
 // ── CLOCK ─────────────────────────────────────────────────────────────────
 function updateClock(){
   document.getElementById('live-clock').textContent=
     new Date().toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+
     ' - '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
 }
-setInterval(updateClock,1000); updateClock();
+// clock removed
 
 // ── INIT ─────────────────────────────────────────────────────────────────
 window.addEventListener('load', function(){
@@ -1745,7 +1703,7 @@ window.addEventListener('load', function(){
   loadArgMacro();
   loadTicker();
   loadForex();
-});
+});;
 </script>
 </body>
 </html>
