@@ -1679,8 +1679,44 @@ async function runDiag() {
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
     headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,
-    system:'You are a senior financial analyst specializing in Argentine and global markets. Provide educational portfolio diagnostic. Write in Spanish using HTML. Current context April 2026: Fed 3.50-3.75%, Argentina inflation 54.9% annual (INDEC), USD/ARS official ~1080, Blue ~1320, MEP ~1290, risk country 615bp (EMBI+), SP500 ~5700, Gold ~$3050, BTC ~$69000, Brent ~$110. Respond ONLY with this exact HTML: <div class="ds"><h3>Composicion actual</h3><p>[analysis of current allocation]</p></div><div class="ds dg"><h3>Fortalezas</h3><ul><li>[strength 1]</li><li>[strength 2]</li><li>[strength 3]</li></ul></div><div class="ds dr"><h3>Riesgos identificados</h3><ul><li>[risk 1]</li><li>[risk 2]</li><li>[risk 3]</li></ul></div><div class="ds dy"><h3>Sugerencias de ajuste</h3><ul><li>[concrete suggestion 1]</li><li>[concrete suggestion 2]</li><li>[concrete suggestion 3]</li></ul></div><div class="dscore"><b>[X]/10</b><span>[Bien/Parcialmente/Des] alineado con perfil [conservador/moderado/agresivo]</span></div>',
-    messages:[{role:'user',content:'Perfil: horizonte '+horizonMap[horizonte]+', riesgo '+riesgoMap[riesgo]+'.\n\nCartera:\n'+portfolioText+'\n\nFecha: '+new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}]})});
+    system: 'You are a senior financial analyst specializing in Argentine and global markets. Provide educational portfolio diagnostic. Write in Spanish using HTML. Use the LIVE market data provided by the user — do not use any other figures. Respond ONLY with this exact HTML: <div class="ds"><h3>Composicion actual</h3><p>[analysis]</p></div><div class="ds dg"><h3>Fortalezas</h3><ul><li>[strength 1]</li><li>[strength 2]</li><li>[strength 3]</li></ul></div><div class="ds dr"><h3>Riesgos identificados</h3><ul><li>[risk 1]</li><li>[risk 2]</li><li>[risk 3]</li></ul></div><div class="ds dy"><h3>Sugerencias de ajuste</h3><ul><li>[concrete suggestion 1]</li><li>[concrete suggestion 2]</li><li>[concrete suggestion 3]</li></ul></div><div class="dscore"><b>[X]/10</b><span>[Bien/Parcialmente/Des] alineado con perfil [conservador/moderado/agresivo]</span></div>',
+    messages:[{role:'user',content: (function(){
+      var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+      var spyVal = (document.getElementById('t-spx')||{}).textContent || '~570';
+      var wtiVal = (document.getElementById('t-wti')||{}).textContent || '~72';
+      var goldVal = (document.getElementById('t-gld')||{}).textContent || '~295';
+      var btcVal = (document.getElementById('t-btc')||{}).textContent || '~69000';
+      var eurVal = (document.getElementById('t-eur')||{}).textContent || '~1.08';
+      var arsVal = (document.getElementById('t-ars')||{}).textContent || '~1080';
+      var nvdaVal = (document.getElementById('t-nvda')||{}).textContent || '—';
+      var tslaVal = (document.getElementById('t-tsla')||{}).textContent || '—';
+      var ypfVal = (document.getElementById('t-ypf')||{}).textContent || '—';
+      var liveData = [
+        'DATOS DE MERCADO EN VIVO (' + today + '):',
+        '- SPY (S&P 500 proxy): ' + spyVal,
+        '- WTI (USO ETF): ' + wtiVal,
+        '- Gold (GLD ETF): ' + goldVal,
+        '- Bitcoin: ' + btcVal,
+        '- EUR/USD: ' + eurVal,
+        '- USD/ARS oficial: ' + arsVal,
+        '- NVDA: ' + nvdaVal,
+        '- TSLA: ' + tslaVal,
+        '- YPF ADR: ' + ypfVal,
+        '',
+        'MACRO ARGENTINA (datos estaticos actualizados):',
+        '- Inflacion mensual Feb 2026: 2.9% (INDEC)',
+        '- Inflacion interanual Feb 2026: 33.1% (INDEC)',
+        '- Reservas brutas BCRA: USD 45.4B (Abr 2026)',
+        '- Compras BCRA 2026: USD 5.4B acumulados',
+        '- Riesgo pais: ~615pb (EMBI+ JPMorgan)',
+        '',
+        'MACRO EEUU:',
+        '- Fed Funds Rate: 3.50-3.75%',
+        '- CPI YoY: 2.8% | Core PCE: 2.7%',
+        '- Desempleo: 4.4%',
+      ].join('\n');
+      return 'Perfil: horizonte ' + horizonMap[horizonte] + ', riesgo ' + riesgoMap[riesgo] + '.\n\nCartera:\n' + portfolioText + '\n\n' + liveData;
+    })()}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+res.status);}
     const data=await res.json();
     const txt=data.content.map(function(i){return i.type==='text'?i.text:'';}).join('').trim();
