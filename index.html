@@ -964,7 +964,11 @@ function buildCard(n, num) {
   const ds = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(n.created_at).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   const aid = 'nb'+n.id;
   const pubDate = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  const disclaimer = '<p style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);border-top:1px solid var(--border2);padding-top:0.75rem;margin-top:1.5rem;letter-spacing:0.04em;line-height:1.7">⚠ No es recomendación de inversión. El análisis es de carácter informativo.<br>Fuente: Carry Note / Julián Besendorff · Publicado el ' + pubDate + ' · thecarrynote.com</p>';
+  const disclaimer = '<div style="margin-top:2rem;padding:1rem 1.25rem;background:#1a0a00;border:1px solid #c8401a;border-left:4px solid #c8401a">' +
+    '<div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:#e05252;letter-spacing:0.06em;margin-bottom:0.3rem">⚠ AVISO IMPORTANTE</div>' +
+    '<div style="font-family:var(--mono);font-size:0.68rem;color:#c8a090;line-height:1.7">Este análisis es de carácter <strong style="color:#e8e6e0">estrictamente informativo y educativo</strong>. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del lector.</div>' +
+    '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);margin-top:0.5rem">Fuente: Carry Note / Julián Besendorff · ' + pubDate + ' · thecarrynote.com</div>' +
+    '</div>';
   card.innerHTML = `
     <div class="note-meta">
       <span class="note-tag ${n.tag}" onclick="filterByTag('${n.tag}')" title="Filtrar por categoría">${tagLabel(n.tag)}</span>
@@ -1340,12 +1344,14 @@ async function loadArgMacro() {
   if(!el) return;
 
   const staticData = [
-    {n:'Inflación mensual',  v:'2.4%',      cls:'dn',  note:'Feb 2026'},
-    {n:'Inflación anual',    v:'54.9%',     cls:'dn',  note:''},
-    {n:'Tasa BCRA',          v:'29.0%',     cls:'neu', note:'TNA'},
-    {n:'Reservas brutas',    v:'USD 38.2B', cls:'up',  note:''},
-    {n:'Riesgo país',        v:'615 pb',    cls:'dn',  note:'EMBI+'},
-    {n:'PIB 2025',           v:'+5.1%',     cls:'up',  note:'FMI est.'},
+    {n:'Inflación mensual',   v:'2.9%',      cls:'dn',  note:'Feb 2026 · INDEC'},
+    {n:'Inflación interanual',v:'33.1%',     cls:'dn',  note:'Feb 2026 · INDEC'},
+    {n:'Inflación anual 2025',v:'31.5%',     cls:'dn',  note:'Dic 2025 · INDEC'},
+    {n:'Tasa BCRA',           v:'mercado',   cls:'neu', note:'sin ref. fija'},
+    {n:'Reservas brutas',     v:'USD 45.4B', cls:'up',  note:'Abr 2026 · BCRA'},
+    {n:'Compras BCRA 2026',   v:'USD 5.4B',  cls:'up',  note:'acum. 2026 · BCRA'},
+    {n:'Riesgo país',         v:'615 pb',    cls:'dn',  note:'EMBI+ · JPM'},
+    {n:'PIB 2025',            v:'+5.1%',     cls:'up',  note:'FMI est.'},
   ];
 
   el.innerHTML = staticData.map(d =>
