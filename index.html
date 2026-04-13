@@ -719,15 +719,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div>
       </div>
     </div>
-
-    <div class="sb-block" style="border-top-color:#4caf7d">
-      <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">
-        BCRA · Diario
-        <span style="font-size:0.5rem;color:var(--muted2)" id="bcraUpdateTime">cargando...</span>
-      </div>
-      <div id="bcraData">
-        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div>
-      </div>
     </div>
 
     <div class="sb-block" style="border-top-color:var(--gold)">
@@ -1616,82 +1607,6 @@ function toggleLesson(id) {
   le.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
-
-// ── BCRA DAILY DATA ────────────────────────────────────────
-async function loadBCRAData() {
-  const el = document.getElementById('bcraData');
-  const timeEl = document.getElementById('bcraUpdateTime');
-  if(!el) return;
-
-  // BCRA API via corsproxy.io to avoid CORS
-  const fetchBCRA = async (varId) => {
-    try {
-      const url = 'https://api.bcra.gob.ar/estadisticas/v3.0/datosvariable/' + varId + '/2/1';
-      const proxy = 'https://corsproxy.io/?' + encodeURIComponent(url);
-      const res = await fetch(proxy);
-      if(!res.ok) return null;
-      const data = await res.json();
-      return data.results && data.results[0] ? data.results[0] : null;
-    } catch(e) { return null; }
-  };
-
-  try {
-    // Fetch key BCRA variables in parallel
-    // 1=Compras MLC, 15=BADLAR priv, 6=TAMAR, 27=TM20 plazo fijo
-    const [compras, badlar, tamar, tm20] = await Promise.all([
-      fetchBCRA(1),   // Compras netas BCRA en MLC
-      fetchBCRA(15),  // BADLAR bancos privados
-      fetchBCRA(6),   // TAMAR
-      fetchBCRA(27),  // Tasa PF 30-44 dias
-    ]);
-
-    const rows = [];
-
-    if(compras) {
-      const v = parseFloat(compras.valor);
-      const cls = v >= 0 ? 'up' : 'dn';
-      const sign = v >= 0 ? '+' : '';
-      rows.push({n:'Compras BCRA (MLC)', v: sign + v.toFixed(0) + ' MUSD', cls, note: compras.fecha});
-    }
-
-    if(badlar) {
-      rows.push({n:'BADLAR priv.', v: parseFloat(badlar.valor).toFixed(2) + '%', cls:'neu', note: 'TNA · ' + badlar.fecha});
-    }
-
-    if(tamar) {
-      rows.push({n:'TAMAR', v: parseFloat(tamar.valor).toFixed(2) + '%', cls:'neu', note: 'TNA · ' + tamar.fecha});
-    }
-
-    if(tm20) {
-      rows.push({n:'PF 30-44 días', v: parseFloat(tm20.valor).toFixed(2) + '%', cls:'neu', note: 'TNA · ' + tm20.fecha});
-    }
-
-    if(rows.length === 0) throw new Error('no data');
-
-    el.innerHTML = rows.map(function(r) {
-      return '<div class="ind">' +
-        '<span class="ind-n">' + r.n + (r.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + r.note + '</span>' : '') + '</span>' +
-        '<span class="ind-v ' + r.cls + '">' + r.v + '</span>' +
-        '</div>';
-    }).join('');
-
-    if(timeEl) timeEl.textContent = 'BCRA API · ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-
-  } catch(e) {
-    // Fallback to static values if BCRA API fails
-    el.innerHTML = [
-      {n:'BADLAR priv.', v:'28.50%', cls:'neu', note:'TNA'},
-      {n:'TAMAR', v:'31.20%', cls:'neu', note:'TNA'},
-      {n:'PF 30-44 días', v:'27.00%', cls:'neu', note:'TNA ref.'},
-    ].map(function(r) {
-      return '<div class="ind">' +
-        '<span class="ind-n">' + r.n + (r.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + r.note + '</span>' : '') + '</span>' +
-        '<span class="ind-v ' + r.cls + '">' + r.v + '</span>' +
-        '</div>';
-    }).join('') + '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.5rem">CORS: datos estaticos de referencia</div>';
-    if(timeEl) timeEl.textContent = 'sin conexion';
-  }
-}
 
 // ── DIAGNOSTICO DE CARTERA ─────────────────────────────────
 const ASSET_TYPES = [
