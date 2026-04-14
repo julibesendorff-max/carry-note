@@ -1710,7 +1710,8 @@ function addAsset() {
   sel1.innerHTML = opts;
 
   const inp = document.createElement('input');
-  inp.type = 'number';
+  inp.type = 'text';
+  inp.inputMode = 'decimal';
   inp.placeholder = 'Monto';
   inp.style.cssText = 'background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none;width:100%';
 
