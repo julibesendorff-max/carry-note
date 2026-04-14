@@ -935,7 +935,7 @@ function renderNotes() {
   const filtered = activeFilter === 'all' ? allNotes : allNotes.filter(n => n.tag === activeFilter);
 
   if (allNotes.length === 0) {
-    if(empty) { empty.styel.style.le.display = 'block'; }
+    if(empty) { empty.style.display = 'block'; }
     const emptyMsg = document.getElementById('emptyMsg');
     if(emptyMsg) emptyMsg.textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera desde el modo editor!' : 'Las notas aparecerán aquí pronto.';
     if(noRes) noRes.style.display = 'none';
