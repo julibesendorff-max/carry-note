@@ -1698,7 +1698,7 @@ function addAsset() {
   const id = 'asset-' + assetCount;
   const div = document.createElement('div');
   div.id = id;
-  div.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.style.cssText = 'display:grid;grid-template-columns:2fr 120px 80px 32px;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
   const opts = ASSET_TYPES.map(function(a){ return '<option value="' + a.v + '">' + a.l + '</option>'; }).join('');
   const removeBtn = document.createElement('button');
   removeBtn.textContent = 'x';
@@ -1850,6 +1850,4 @@ window.addEventListener('load', function(){
   loadTicker();
   loadForex();
 });
-  </script>
-</body>
-</html>
+   </script></body></html>
