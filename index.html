@@ -1730,8 +1730,9 @@ async function runDiag() {
   document.querySelectorAll('#diagAssets > div').forEach(function(row) {
     const selects = row.querySelectorAll('select');
     const input = row.querySelector('input');
-    if(selects[0] && input && input.value) {
-      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:parseFloat(input.value), moneda:selects[1]?selects[1].value:'ARS'});
+    var montoVal = parseFloat((input.value||'').replace(/[^0-9.]/g,''));
+    if(selects[0] && input && montoVal > 0) {
+      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:montoVal, moneda:selects[1]?selects[1].value:'ARS'});
     }
   });
   if(!assets.length){alert('Agrega al menos un activo.');return;}
@@ -1850,4 +1851,6 @@ window.addEventListener('load', function(){
   loadTicker();
   loadForex();
 });
-   </script></body></html>
+</script>
+</body>
+</html>
