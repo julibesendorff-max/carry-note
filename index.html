@@ -400,16 +400,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <tr style="border-bottom:2px solid var(--gold)">
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Fondo</th>
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Tipo</th>
+              <th style="text-align:right;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Rend. 30d</th>
+              <th style="text-align:right;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Rend. 12m</th>
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Composición principal</th>
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Benchmark</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Riesgo</th>
             </tr>
           </thead>
           <tbody id="fciBody"></tbody>
         </table>
       </div>
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;line-height:1.6">
-        Los rendimientos no se muestran — varían diariamente y requieren verificación en cafci.org.ar antes de invertir. Esta tabla es de carácter educativo. No constituye recomendación de inversión. Fuente: CAFCI / CNV · Actualización mensual.
+        * Rendimientos expresados en pesos. No constituyen recomendación de inversión. Fuente: Cafci / BYMA · Datos al cierre del mes anterior.
       </div>
     </div>
 
@@ -669,25 +670,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
       <button id="diagBtn" onclick="runDiag()" style="width:100%;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:2rem">Analizar mi cartera &#9658;</button>
       <div id="diagResult" style="display:none"></div>
-      <!-- HISTORY -->
-      <div id="diagHistory" style="display:none;margin-top:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Diagnósticos anteriores</div>
-        <div id="diagHistoryList" style="display:flex;flex-direction:column;gap:0.5rem"></div>
-      </div>
-
-      <!-- CONTACT FORM -->
-      <div id="diagContact" style="display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-top:1.5rem">
-        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.3rem">Quiero asesoramiento personalizado</div>
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Julián analiza tu situación en detalle y te propone una estrategia a medida. Completá el formulario y te responde en 24-48hs.</div>
-        <div style="display:flex;flex-direction:column;gap:0.6rem">
-          <input id="contactNombre" type="text" placeholder="Tu nombre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          <input id="contactEmail" type="email" placeholder="Tu email" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          <textarea id="contactMensaje" placeholder="Contame brevemente tu situación, objetivos y cualquier duda adicional..." rows="3" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;resize:vertical"></textarea>
-          <button onclick="sendContactForm()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.65rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Enviar consulta ▸</button>
-          <div id="contactMsg" style="font-family:var(--mono);font-size:0.65rem;display:none"></div>
-        </div>
-      </div>
-
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es educativo e informativo. No constituye asesoramiento financiero. · Carry Note / Juli&#225;n Besendorff</div>
     </div>
     <!-- NEWSLETTER -->
@@ -738,6 +720,15 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
     </div>
     </div>
+
+    <div class="sb-block" style="border-top-color:#4caf7d">
+      <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">
+        BCRA · Diario
+        <span style="font-size:0.5rem;color:var(--muted2)" id="bcraUpdateTime">cargando...</span>
+      </div>
+      <div id="bcraData">
+        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div>
+      </div>
     </div>
 
     <div class="sb-block" style="border-top-color:var(--gold)">
@@ -753,7 +744,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div>© 2025 · No constituye asesoramiento financiero ni de inversión</div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const SUPABASE_URL = 'https://fhswsvjkkmnhlbdnozoe.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_HCwgAA7wQJIJj45eU_MhvQ_gVklccHK';
 const EDITOR_PIN   = 'carrynote2025';
@@ -944,7 +935,7 @@ function renderNotes() {
   const filtered = activeFilter === 'all' ? allNotes : allNotes.filter(n => n.tag === activeFilter);
 
   if (allNotes.length === 0) {
-    if(empty) { empty.style.display = 'block'; }
+    if(empty) { empty.styel.style.le.display = 'block'; }
     const emptyMsg = document.getElementById('emptyMsg');
     if(emptyMsg) emptyMsg.textContent = isEditor ? 'No hay notas todavía. ¡Publicá la primera desde el modo editor!' : 'Las notas aparecerán aquí pronto.';
     if(noRes) noRes.style.display = 'none';
@@ -1440,80 +1431,81 @@ async function loadArgMacro() {
 // Source: cafci.com.ar / byma.com.ar
 const FCI_DATA = [
   {
-    nombre: 'Fima Premium (Galicia)',
-    tipo: 'Money Market',
-    composicion: 'Cuentas remuneradas en bancos, cauciones bursátiles, plazos fijos a corto plazo. Liquidez inmediata (T+0).',
-    benchmark: 'BADLAR bancos privados',
-    riesgo: 'Muy bajo'
+    nombre: 'Balanz Capital Renta Fija',
+    tipo: 'Renta Fija Pesos',
+    rend30: '+2.1%',
+    rend12: '+58.3%',
+    composicion: 'Letras del Tesoro, ON corporativas en $',
+    benchmark: 'Badlar privada',
+    rendClass: 'up'
   },
   {
-    nombre: 'Balanz Capital Ahorro',
-    tipo: 'T+1 Pesos',
-    composicion: 'Lecaps, Boncaps y letras del Tesoro a tasa fija. Plazo de rescate 24hs.',
-    benchmark: 'BADLAR privada',
-    riesgo: 'Bajo'
+    nombre: 'Fima Premium (Galicia)',
+    tipo: 'Money Market',
+    rend30: '+2.0%',
+    rend12: '+55.1%',
+    composicion: 'Cuentas remuneradas, cauciones, plazos fijos',
+    benchmark: 'Badlar bancos privados',
+    rendClass: 'up'
   },
   {
     nombre: 'SBS Ahorro Pesos',
-    tipo: 'Renta Fija Pesos',
-    composicion: 'Lecaps, Boncaps, ON corporativas en pesos. Foco en instrumentos de tasa fija en moneda local.',
-    benchmark: 'BADLAR privada',
-    riesgo: 'Bajo'
-  },
-  {
-    nombre: 'BBVA Consolidar CER',
-    tipo: 'Renta Fija CER',
-    composicion: 'Boncer, Lecer y bonos ajustados por CER. Protección contra inflación. Rescate T+1.',
-    benchmark: 'CER (inflación INDEC)',
-    riesgo: 'Bajo-Moderado'
+    tipo: 'T+1 Pesos',
+    rend30: '+2.2%',
+    rend12: '+59.7%',
+    composicion: 'Lecaps, Boncaps, ON ajustables',
+    benchmark: 'CER + spread',
+    rendClass: 'up'
   },
   {
     nombre: 'Megainver Renta Mixta',
     tipo: 'Mixto Pesos/USD',
-    composicion: 'ON hard dollar, Bopreales, Lecaps y bonos soberanos. Diversificación en monedas.',
+    rend30: '+3.8%',
+    rend12: '+72.4%',
+    composicion: 'ON hard dollar, Bopreales, Letras $',
     benchmark: 'Sin benchmark oficial',
-    riesgo: 'Moderado'
+    rendClass: 'up'
   },
   {
     nombre: 'Balanz Capital Ahorro Dólares',
     tipo: 'Renta Fija USD',
-    composicion: 'ON corporativas hard dollar, bonos soberanos en USD (Globales/Bonares). Rescate T+1.',
+    rend30: '+0.8%',
+    rend12: '+9.2%',
+    composicion: 'Bonos soberanos USD, ON corporativas hard dollar',
     benchmark: 'Sin benchmark oficial',
-    riesgo: 'Moderado'
+    rendClass: 'up'
   },
   {
     nombre: 'Cohen Renta Variable AR',
     tipo: 'Renta Variable',
-    composicion: 'Acciones del Merval: YPF, GGAL, BMA, PAMP, TXAR. Alta exposición al ciclo económico local.',
-    benchmark: 'S&P Merval (ARS)',
-    riesgo: 'Alto'
+    rend30: '+4.1%',
+    rend12: '+188.4%',
+    composicion: 'Acciones del Merval: YPF, GGAL, BMA, PAMP',
+    benchmark: 'S&P Merval',
+    rendClass: 'up'
   },
   {
-    nombre: 'Schroders Acciones Latinoamérica',
-    tipo: 'Renta Variable Regional',
-    composicion: 'CEDEARs y acciones de Brasil, México, Chile, Colombia. Diversificación regional en USD.',
-    benchmark: 'MSCI Latin America',
-    riesgo: 'Alto'
+    nombre: 'BBVA Consolidar CER',
+    tipo: 'Renta Fija CER',
+    rend30: '+3.9%',
+    rend12: '+142.1%',
+    composicion: 'Boncer, Lecer, Bonos ajustados por inflación',
+    benchmark: 'CER',
+    rendClass: 'up'
   },
 ];
 
 function renderFCI() {
   const tbody = document.getElementById('fciBody');
   if(!tbody) return;
-  const riesgoColor = {
-    'Muy bajo': 'var(--green)',
-    'Bajo': 'var(--green)',
-    'Bajo-Moderado': '#8bc34a',
-    'Moderado': 'var(--gold)',
-    'Alto': 'var(--red)'
-  };
   tbody.innerHTML = FCI_DATA.map((f, i) => `
     <tr style="border-bottom:1px solid var(--border2);${i%2===0?'background:var(--surface)':''}">
-      <td style="padding:0.65rem 0.75rem;color:var(--text);font-weight:500;min-width:160px">${f.nombre}</td>
-      <td style="padding:0.65rem 0.75rem;color:var(--muted);white-space:nowrap">${f.tipo}</td>
-      <td style="padding:0.65rem 0.75rem;color:var(--muted);font-size:0.72rem;max-width:280px;line-height:1.5">${f.composicion}</td>
-      <td style="padding:0.65rem 0.75rem;color:var(--muted2);font-size:0.72rem;white-space:nowrap">${f.benchmark}</td>
-      <td style="padding:0.65rem 0.75rem;font-family:var(--mono);font-size:0.62rem;color:${riesgoColor[f.riesgo]||'var(--muted)'};white-space:nowrap">${f.riesgo}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--text);font-weight:500">${f.nombre}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--muted)">${f.tipo}</td>
+      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">${f.rend30}</td>
+      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">${f.rend12}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--muted);font-size:0.62rem">${f.composicion}</td>
+      <td style="padding:0.65rem 0.75rem;color:var(--muted2);font-size:0.62rem">${f.benchmark}</td>
     </tr>`).join('');
 }
 
@@ -1622,9 +1614,72 @@ function showNivel(nivel) {
 function toggleLesson(id) {
   const el = document.getElementById(id);
   if(!el) return;
-  le.display = el.style.display === 'none' ? 'block' : 'none';
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
+
+// ── BCRA DAILY DATA (via /api/bcra proxy) ─────────────────
+async function loadBCRAData() {
+  const el = document.getElementById('bcraData');
+  const timeEl = document.getElementById('bcraUpdateTime');
+  if(!el) return;
+
+  const fetchVar = async (id) => {
+    try {
+      const res = await fetch('/api/bcra?variable=' + id);
+      if(!res.ok) return null;
+      const data = await res.json();
+      return data.results && data.results[0] ? data.results[0] : null;
+    } catch(e) { return null; }
+  };
+
+  try {
+    const [compras, badlar, tamar, tm20] = await Promise.all([
+      fetchVar('1'),   // Compras netas MLC
+      fetchVar('15'),  // BADLAR privados
+      fetchVar('6'),   // TAMAR
+      fetchVar('27'),  // PF 30-44 dias
+    ]);
+
+    const rows = [];
+
+    if(compras) {
+      const v = parseFloat(compras.valor);
+      const cls = v >= 0 ? 'up' : 'dn';
+      const sign = v >= 0 ? '+' : '';
+      const fecha = compras.fecha ? compras.fecha.slice(5).replace('-','/') : '';
+      rows.push({n:'Compras BCRA (MLC)', v: sign + Math.round(v) + ' MUSD', cls, note: fecha});
+    }
+    if(badlar) {
+      const fecha = badlar.fecha ? badlar.fecha.slice(5).replace('-','/') : '';
+      rows.push({n:'BADLAR priv.', v: parseFloat(badlar.valor).toFixed(2) + '%', cls:'neu', note:'TNA · ' + fecha});
+    }
+    if(tamar) {
+      const fecha = tamar.fecha ? tamar.fecha.slice(5).replace('-','/') : '';
+      rows.push({n:'TAMAR', v: parseFloat(tamar.valor).toFixed(2) + '%', cls:'neu', note:'TNA · ' + fecha});
+    }
+    if(tm20) {
+      const fecha = tm20.fecha ? tm20.fecha.slice(5).replace('-','/') : '';
+      rows.push({n:'PF 30-44 días', v: parseFloat(tm20.valor).toFixed(2) + '%', cls:'neu', note:'TNA · ' + fecha});
+    }
+
+    if(rows.length === 0) throw new Error('sin datos');
+
+    el.innerHTML = rows.map(function(r) {
+      return '<div class="ind">' +
+        '<span class="ind-n">' + r.n +
+        (r.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + r.note + '</span>' : '') +
+        '</span><span class="ind-v ' + r.cls + '">' + r.v + '</span></div>';
+    }).join('') +
+    '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.6rem">Fuente: BCRA API</div>';
+
+    if(timeEl) timeEl.textContent = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+
+  } catch(e) {
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Sin datos disponibles</div>';
+    if(timeEl) timeEl.textContent = 'error';
+  }
+}
 
 // ── DIAGNOSTICO DE CARTERA ─────────────────────────────────
 const ASSET_TYPES = [
@@ -1644,25 +1699,31 @@ function addAsset() {
   const div = document.createElement('div');
   div.id = id;
   div.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  const opts = ASSET_TYPES.map(function(a){ return '<option value="' + a.v + '">' + a.l + '</option>'; }).join('');
+  const removeBtn = document.createElement('button');
+  removeBtn.textContent = 'x';
+  removeBtn.style.cssText = 'background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:0.8rem;padding:0.3rem 0.6rem';
+  removeBtn.onclick = function() { document.getElementById(id).remove(); };
 
-  const opts = ASSET_TYPES.map(function(a){
-    return '<option value="' + a.v + '">' + a.l + '</option>';
-  }).join('');
+  const sel1 = document.createElement('select');
+  sel1.style.cssText = 'background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none';
+  sel1.innerHTML = opts;
 
-  div.innerHTML =
-    '<select style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none;width:100%">' + opts + '</select>' +
-    '<input type="number" min="0" placeholder="Monto" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none;width:100%;-moz-appearance:textfield"/>' +
-    '<select style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none;width:100%"><option value="ARS">ARS $</option><option value="USD">USD $</option></select>' +
-    '<button style="background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:0.8rem;padding:0.3rem 0.6rem;white-space:nowrap">✕</button>';
+  const inp = document.createElement('input');
+  inp.type = 'number';
+  inp.placeholder = 'Monto';
+  inp.style.cssText = 'background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none;width:100%';
 
-  // Add remove handler after innerHTML (avoids quoting issues)
-  div.querySelector('button').addEventListener('click', function() {
-    document.getElementById(id).remove();
-  });
+  const sel2 = document.createElement('select');
+  sel2.style.cssText = 'background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.6rem;outline:none';
+  sel2.innerHTML = '<option value="ARS">ARS $</option><option value="USD">USD $</option>';
 
+  div.appendChild(sel1);
+  div.appendChild(inp);
+  div.appendChild(sel2);
+  div.appendChild(removeBtn);
   document.getElementById('diagAssets').appendChild(div);
 }
-
 
 async function runDiag() {
   const assets = [];
@@ -1734,10 +1795,6 @@ async function runDiag() {
     if(!res.ok){const e=await res.json();throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+res.status);}
     const data=await res.json();
     const txt=data.content.map(function(i){return i.type==='text'?i.text:'';}).join('').trim();
-    // Extract score for history
-    var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
-    var score = scoreMatch ? scoreMatch[1] : null;
-    saveDiagHistory(assets, horizonte, riesgo, score);
     result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.85rem;color:#c8c4bc;line-height:1.75}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
     txt+
     '<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:0.5rem">'+
@@ -1748,9 +1805,6 @@ async function runDiag() {
     result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
   }
   btn.disabled=false; btn.textContent='Analizar de nuevo';
-  // Show contact form
-  var dc = document.getElementById('diagContact');
-  if(dc) dc.style.display = 'block';
 }
 
 function showDiag(e) {
@@ -1774,7 +1828,6 @@ function showDiag(e) {
   if(assets && assets.children.length === 0) {
     addAsset(); addAsset(); addAsset();
   }
-  renderDiagHistory();
 }
 
 // ── NEWSLETTER ────────────────────────────────────────────────────────────────
@@ -1787,126 +1840,8 @@ function updateClock(){
 }
 // clock removed
 
-
-// ── DIAGNOSIS HISTORY ──────────────────────────────────────
-function saveDiagHistory(assets, horizonte, riesgo, score) {
-  try {
-    var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
-    history.unshift({
-      date: new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}),
-      assets: assets,
-      horizonte: horizonte,
-      riesgo: riesgo,
-      score: score
-    });
-    // Keep last 5
-    history = history.slice(0, 5);
-    localStorage.setItem('cn_diag_history', JSON.stringify(history));
-    renderDiagHistory();
-  } catch(e) {}
-}
-
-function renderDiagHistory() {
-  try {
-    var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
-    var el = document.getElementById('diagHistory');
-    var list = document.getElementById('diagHistoryList');
-    if(!el || !list || history.length === 0) return;
-    el.style.display = 'block';
-    list.innerHTML = history.map(function(h, i) {
-      var assetSummary = h.assets.map(function(a){return a.tipo;}).join(', ');
-      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="loadHistoryItem(' + i + ')">' +
-        '<div>' +
-        '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);margin-bottom:0.2rem">' + h.date + ' · ' + h.riesgo + ' · ' + h.horizonte + '</div>' +
-        '<div style="font-size:0.75rem;color:var(--muted)">' + assetSummary.slice(0,60) + (assetSummary.length>60?'...':'') + '</div>' +
-        '</div>' +
-        '<div style="font-family:var(--mono);font-size:1rem;color:var(--gold);font-weight:600">' + (h.score||'—') + '/10</div>' +
-        '</div>';
-    }).join('');
-  } catch(e) {}
-}
-
-function loadHistoryItem(idx) {
-  try {
-    var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
-    var item = history[idx];
-    if(!item) return;
-    // Restore assets
-    document.getElementById('diagAssets').innerHTML = '';
-    assetCount = 0;
-    item.assets.forEach(function(a) {
-      addAsset();
-      var rows = document.querySelectorAll('#diagAssets > div');
-      var row = rows[rows.length-1];
-      var selects = row.querySelectorAll('select');
-      var inp = row.querySelector('input');
-      // Find matching option
-      if(selects[0]) {
-        Array.from(selects[0].options).forEach(function(opt,i){
-          if(opt.text === a.tipo) selects[0].selectedIndex = i;
-        });
-      }
-      if(inp) inp.value = a.monto;
-      if(selects[1]) selects[1].value = a.moneda;
-    });
-    document.getElementById('diagHorizonte').value = item.horizonte;
-    document.getElementById('diagRiesgo').value = item.riesgo;
-  } catch(e) {}
-}
-
-// ── CONTACT FORM ────────────────────────────────────────────
-async function sendContactForm() {
-  var nombre = (document.getElementById('contactNombre').value||'').trim();
-  var email = (document.getElementById('contactEmail').value||'').trim();
-  var mensaje = (document.getElementById('contactMensaje').value||'').trim();
-  var msg = document.getElementById('contactMsg');
-
-  if(!nombre || !email || !mensaje) {
-    msg.textContent = '✗ Completá todos los campos.';
-    msg.style.color = 'var(--red)';
-    msg.style.display = 'block';
-    return;
-  }
-  if(!email.includes('@')) {
-    msg.textContent = '✗ Email inválido.';
-    msg.style.color = 'var(--red)';
-    msg.style.display = 'block';
-    return;
-  }
-
-  // Get diagnosis summary from result div
-  var resultEl = document.getElementById('diagResult');
-  var diagText = resultEl ? resultEl.innerText.slice(0,500) : '';
-
-  try {
-    var res = await sbFetch('/rest/v1/consultas', {
-      method: 'POST',
-      headers: {'Prefer': 'return=minimal'},
-      body: JSON.stringify({nombre: nombre, email: email, mensaje: mensaje, diagnostico: diagText})
-    });
-    if(res.ok || res.status === 409) {
-      msg.textContent = '✓ Consulta enviada. Julián te responde en 24-48hs.';
-      msg.style.color = 'var(--green)';
-      document.getElementById('contactNombre').value = '';
-      document.getElementById('contactEmail').value = '';
-      document.getElementById('contactMensaje').value = '';
-    } else {
-      throw new Error('HTTP ' + res.status);
-    }
-  } catch(e) {
-    // Fallback: open mailto
-    var subject = encodeURIComponent('Consulta de asesoramiento - Carry Note');
-    var body = encodeURIComponent('Nombre: ' + nombre + '\nEmail: ' + email + '\n\n' + mensaje);
-    window.open('mailto:julibesendorff@gmail.com?subject=' + subject + '&body=' + body);
-    msg.textContent = '✓ Se abrió tu cliente de email.';
-    msg.style.color = 'var(--green)';
-  }
-  msg.style.display = 'block';
-}
-
 // ── INIT ─────────────────────────────────────────────────────────────────
 window.addEventListener('load', function(){
-  // Set email via JS to avoid Cloudflare obfuscation
   var emailEl = document.getElementById('about-email');
   if(emailEl) emailEl.textContent = ['julibesendorff','gmail.com'].join('@');
   loadNotes();
@@ -1915,6 +1850,3 @@ window.addEventListener('load', function(){
   loadTicker();
   loadForex();
 });
-</script>
-</body>
-</html>
