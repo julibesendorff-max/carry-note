@@ -169,6 +169,9 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .about-item-val{font-size:0.78rem;color:var(--muted);font-weight:300}
 .about-link{font-family:var(--mono);font-size:0.6rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;display:inline-block;margin-top:0.5rem;border-bottom:1px solid transparent;transition:border-color 0.2s}
 .about-link:hover{border-bottom-color:var(--gold)}
+.scen-btn{font-family:var(--mono);font-size:0.62rem;padding:0.35rem 0.75rem;background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
+.scen-btn:hover{border-color:var(--gold);color:var(--gold)}
+.scen-btn.loading{opacity:0.5;cursor:not-allowed}
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
@@ -1686,6 +1689,9 @@ async function runDiag() {
   }
   btn.disabled=false; btn.textContent='Analizar de nuevo';
   var dc=document.getElementById('diagContact'); if(dc) dc.style.display='block';
+  // Show scenario + comparison panels
+  var ds=document.getElementById('diagScenarios'); if(ds) ds.style.display='block';
+  var dcomp=document.getElementById('diagComparison'); if(dcomp) dcomp.style.display='block';
 }
 
 // ── DIAGNOSIS HISTORY ──────────────────────────────────────
@@ -1731,6 +1737,106 @@ function loadHistoryItem(idx) {
   } catch(e) {}
 }
 
+
+
+// ── SCENARIO SIMULATION ─────────────────────────────────────
+const SCENARIOS = {
+  devaluacion: 'Escenario: DEVALUACIÓN ABRUPTA DEL PESO (+30% en el tipo de cambio oficial en los próximos 30 días). Analizá el impacto específico en cada activo de la cartera. ¿Qué activos se benefician, cuáles pierden valor real, y qué ajustes urgentes recomendás?',
+  suba_tasas: 'Escenario: SUBA DE TASAS DE LA FED (+100pb adicionales en los próximos 6 meses). Analizá el impacto en bonos, acciones y activos dolarizados de la cartera. ¿Cómo cambia la estrategia óptima?',
+  caida_mercados: 'Escenario: CAÍDA DE MERCADOS GLOBALES (-20% S&P 500, -15% Merval en los próximos 3 meses). Analizá el impacto en cada activo y el nivel de protección actual de la cartera.',
+  inflacion_alta: 'Escenario: ACELERACIÓN INFLACIONARIA EN ARGENTINA (inflación mensual >5% sostenida por 6 meses). Analizá qué activos de la cartera preservan valor real y cuáles pierden poder adquisitivo.',
+  riesgo_pais: 'Escenario: SUBA DEL RIESGO PAÍS ARGENTINO (+300pb, volviendo a niveles de 900pb). Analizá el impacto en bonos soberanos, acciones y el costo de financiamiento. ¿Qué cambios urgentes recomendás?',
+  boom_merval: 'Escenario: RALLY DEL MERVAL (+40% en pesos en los próximos 6 meses, impulsado por flujo de capitales post-cepo). Analizá si la cartera está bien posicionada para capturar este upside o si hay oportunidades de rebalanceo.'
+};
+
+async function runScenario(tipo) {
+  const scenResult = document.getElementById('scenResult');
+  const btns = document.querySelectorAll('.scen-btn');
+  btns.forEach(b => b.classList.add('loading'));
+  scenResult.style.display = 'block';
+  scenResult.innerHTML = '<div style="font-family:var(--mono);font-size:0.7rem;color:var(--gold);padding:1rem">Analizando escenario...</div>';
+
+  // Get current portfolio
+  const assets = [];
+  document.querySelectorAll('#diagAssets > div').forEach(function(row) {
+    const selects = row.querySelectorAll('select');
+    const input = row.querySelector('input');
+    var mv = parseFloat(((input ? input.value : '') || '').replace(/[^0-9.]/g,''));
+    if(selects[0] && mv > 0) {
+      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:mv, moneda:selects[1]?selects[1].value:'ARS'});
+    }
+  });
+
+  const horizonte = document.getElementById('diagHorizonte').value;
+  const riesgo = document.getElementById('diagRiesgo').value;
+  const scenario = SCENARIOS[tipo];
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS '+arsVal+', Inflacion AR 2.9% mensual, Riesgo pais 615pb, Fed 3.50-3.75%';
+
+  try {
+    const res = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        assets, horizonte, riesgo, liveData,
+        scenario: scenario,
+        mode: 'scenario'
+      })
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
+    const data = await res.json();
+    scenResult.innerHTML =
+      '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem 1.5rem">' +
+      '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem">Análisis de escenario</div>' +
+      '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">' + (data.result||'') + '</div></div>';
+  } catch(err) {
+    scenResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
+  }
+  btns.forEach(b => b.classList.remove('loading'));
+}
+
+// ── PORTFOLIO COMPARISON ────────────────────────────────────
+async function runComparison() {
+  const compResult = document.getElementById('compResult');
+  const btn = document.getElementById('compBtn');
+  btn.disabled = true; btn.textContent = 'Generando...';
+  compResult.style.display = 'block';
+  compResult.innerHTML = '<div style="font-family:var(--mono);font-size:0.7rem;color:var(--gold);padding:1rem">Claude armando cartera alternativa...</div>';
+
+  const assets = [];
+  document.querySelectorAll('#diagAssets > div').forEach(function(row) {
+    const selects = row.querySelectorAll('select');
+    const input = row.querySelector('input');
+    var mv = parseFloat(((input ? input.value : '') || '').replace(/[^0-9.]/g,''));
+    if(selects[0] && mv > 0) {
+      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:mv, moneda:selects[1]?selects[1].value:'ARS'});
+    }
+  });
+
+  const horizonte = document.getElementById('diagHorizonte').value;
+  const riesgo = document.getElementById('diagRiesgo').value;
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS '+arsVal+', Inflacion AR 2.9% mensual, Riesgo pais 615pb, Fed 3.50-3.75%';
+
+  try {
+    const res = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({assets, horizonte, riesgo, liveData, mode: 'comparison'})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
+    const data = await res.json();
+    compResult.innerHTML =
+      '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--green);padding:1.25rem 1.5rem">' +
+      '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem">Cartera sugerida vs actual</div>' +
+      '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">' + (data.result||'') + '</div></div>';
+  } catch(err) {
+    compResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
+  }
+  btn.disabled = false; btn.textContent = 'Generar cartera alternativa ▸';
+}
 
 function showDiag(e) {
   e && e.preventDefault();
