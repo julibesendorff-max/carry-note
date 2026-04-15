@@ -671,6 +671,41 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
       <button id="diagBtn" onclick="runDiag()" style="width:100%;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:2rem">Analizar mi cartera &#9658;</button>
       <div id="diagResult" style="display:none"></div>
+
+      <!-- SCENARIOS -->
+      <div id="diagScenarios" style="display:none;margin-top:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Simular escenario macro</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem">
+          <button onclick="runScenario('devaluacion')" class="scen-btn">Devaluacion +30%</button>
+          <button onclick="runScenario('suba_tasas')" class="scen-btn">Suba tasas Fed</button>
+          <button onclick="runScenario('caida_mercados')" class="scen-btn">Caida mercados -20%</button>
+          <button onclick="runScenario('inflacion_alta')" class="scen-btn">Inflacion AR +5%</button>
+          <button onclick="runScenario('riesgo_pais')" class="scen-btn">Riesgo pais +300pb</button>
+          <button onclick="runScenario('boom_merval')" class="scen-btn">Rally Merval +40%</button>
+        </div>
+        <div id="scenResult" style="display:none"></div>
+      </div>
+
+      <!-- COMPARISON -->
+      <div id="diagComparison" style="display:none;margin-top:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Cartera alternativa sugerida</div>
+        <button onclick="runComparison()" id="compBtn" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface);color:var(--gold);border:1px solid var(--gold);cursor:pointer;margin-bottom:0.75rem">Generar cartera alternativa ▸</button>
+        <div id="compResult" style="display:none"></div>
+      </div>
+
+      <!-- CONTACT -->
+      <div id="diagContact" style="display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-top:1.5rem">
+        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.3rem">Queres asesoramiento personalizado?</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Julian analiza tu situacion en detalle y te propone una estrategia a medida.</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem">
+          <input id="contactNombre" type="text" placeholder="Tu nombre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+          <input id="contactEmail" type="email" placeholder="Tu email" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+          <textarea id="contactMensaje" placeholder="Contame tu situacion y objetivos..." rows="3" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;resize:vertical"></textarea>
+          <button onclick="sendContactForm()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.65rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Enviar consulta</button>
+          <div id="contactMsg" style="font-family:var(--mono);font-size:0.65rem;display:none"></div>
+        </div>
+      </div>
+
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es educativo e informativo. No constituye asesoramiento financiero. · Carry Note / Juli&#225;n Besendorff</div>
     </div>
     <!-- NEWSLETTER -->
@@ -1821,6 +1856,18 @@ async function runComparison() {
   btn.disabled = false; btn.textContent = 'Generar cartera alternativa ▸';
 }
 
+
+async function sendContactForm() {
+  var nombre=(document.getElementById('contactNombre').value||'').trim();
+  var email=(document.getElementById('contactEmail').value||'').trim();
+  var mensaje=(document.getElementById('contactMensaje').value||'').trim();
+  var msg=document.getElementById('contactMsg');
+  if(!nombre||!email||!mensaje){msg.textContent='Completa todos los campos.';msg.style.color='var(--red)';msg.style.display='block';return;}
+  var subject=encodeURIComponent('Consulta - Carry Note');
+  var body=encodeURIComponent('Nombre: '+nombre+'\nEmail: '+email+'\n\n'+mensaje);
+  window.open('mailto:julibesendorff@gmail.com?subject='+subject+'&body='+body);
+  msg.textContent='Se abrio tu cliente de email.';msg.style.color='var(--green)';msg.style.display='block';
+}
 function showDiag(e) {
   e && e.preventDefault();
   // Hide all content panels
