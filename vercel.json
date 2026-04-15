@@ -2,10 +2,12 @@
   "version": 2,
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
-    { "src": "api/notify.js", "use": "@vercel/node" }
+    { "src": "api/notify.js", "use": "@vercel/node" },
+    { "src": "api/diagnose.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/notify", "dest": "/api/notify.js" },
+    { "src": "/api/diagnose", "dest": "/api/diagnose.js" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
