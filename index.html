@@ -747,34 +747,17 @@ let selT = 'Fed y política monetaria en 2025: tasas, dot plot y perspectivas';
 
 // ── TICKER ──────────────────────────────────────────────────
 const tickerSymbols = [
-  // Indices & Macro
-  { id:'spx',  sym:'SPY',               lbl:'SPY',       fmt:'price'  },
-  { id:'ndx',  sym:'QQQ',               lbl:'QQQ',       fmt:'price'  },
-  { id:'iwm',  sym:'IWM',               lbl:'IWM',       fmt:'price'  },
-  { id:'vix',  sym:'VIXY',              lbl:'VIX ETF',   fmt:'price'  },
-  { id:'tlt',  sym:'TLT',               lbl:'TLT (10Y)', fmt:'price'  },
-  { id:'dxy',  sym:'UUP',               lbl:'DXY',       fmt:'price'  },
-  // Commodities
-  { id:'wti',  sym:'USO',               lbl:'WTI',       fmt:'price'  },
-  { id:'gld',  sym:'GLD',               lbl:'GOLD',      fmt:'price'  },
-  { id:'slv',  sym:'SLV',               lbl:'SILVER',    fmt:'price'  },
-  { id:'cop',  sym:'COPX',              lbl:'COPPER',    fmt:'price'  },
-  // Crypto
-  { id:'btc',  sym:'BINANCE:BTCUSDT',   lbl:'BTC',       fmt:'crypto' },
-  { id:'eth',  sym:'BINANCE:ETHUSDT',   lbl:'ETH',       fmt:'crypto' },
-  // High volatility / trending stocks
-  { id:'nvda', sym:'NVDA',              lbl:'NVDA',      fmt:'price'  },
-  { id:'tsla', sym:'TSLA',              lbl:'TSLA',      fmt:'price'  },
-  { id:'meta', sym:'META',              lbl:'META',      fmt:'price'  },
-  { id:'aapl', sym:'AAPL',              lbl:'AAPL',      fmt:'price'  },
-  { id:'amzn', sym:'AMZN',              lbl:'AMZN',      fmt:'price'  },
-  { id:'mstr', sym:'MSTR',              lbl:'MSTR',      fmt:'price'  },
-  { id:'arm',  sym:'ARM',               lbl:'ARM',       fmt:'price'  },
-  // Argentina ADRs
-  { id:'ypf',  sym:'YPF',               lbl:'YPF',       fmt:'price'  },
-  { id:'ggal', sym:'GGAL',              lbl:'GGAL',      fmt:'price'  },
-  { id:'bma',  sym:'BMA',               lbl:'BMA',       fmt:'price'  },
-  { id:'pamp', sym:'PAM',               lbl:'PAMP',      fmt:'price'  },
+  { id:'spx',  sym:'SPY',             lbl:'SPY',     fmt:'price'  },
+  { id:'ndx',  sym:'QQQ',             lbl:'QQQ',     fmt:'price'  },
+  { id:'vix',  sym:'VIXY',            lbl:'VIX ETF', fmt:'price'  },
+  { id:'tlt',  sym:'TLT',             lbl:'TLT',     fmt:'price'  },
+  { id:'wti',  sym:'USO',             lbl:'WTI',     fmt:'price'  },
+  { id:'gld',  sym:'GLD',             lbl:'GOLD',    fmt:'price'  },
+  { id:'btc',  sym:'BINANCE:BTCUSDT', lbl:'BTC',     fmt:'crypto' },
+  { id:'nvda', sym:'NVDA',            lbl:'NVDA',    fmt:'price'  },
+  { id:'tsla', sym:'TSLA',            lbl:'TSLA',    fmt:'price'  },
+  { id:'ypf',  sym:'YPF',             lbl:'YPF',     fmt:'price'  },
+  { id:'ggal', sym:'GGAL',            lbl:'GGAL',    fmt:'price'  },
 ];
 
 async function fetchQuote(symbol) {
@@ -1668,7 +1651,7 @@ async function runDiag() {
   btn.disabled=true; btn.textContent='Analizando...';
   const result = document.getElementById('diagResult');
   result.style.display='block';
-  result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--gold)">Claude analizando tu cartera...</div>';
+  result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--gold)">Carry Note analizando tu cartera...</div>';
   var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
   var spyVal = (document.getElementById('t-spx')||{}).textContent||'~570';
   var btcVal = (document.getElementById('t-btc')||{}).textContent||'~69000';
