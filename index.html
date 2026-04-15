@@ -1731,12 +1731,13 @@ async function runDiag() {
   document.querySelectorAll('#diagAssets > div').forEach(function(row) {
     const selects = row.querySelectorAll('select');
     const input = row.querySelector('input');
-    var montoVal = parseFloat((input.value||'').replace(/[^0-9.]/g,''));
-    if(selects[0] && input && montoVal > 0) {
-      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:montoVal, moneda:selects[1]?selects[1].value:'ARS'});
+    var mv = parseFloat((input ? input.value || '' : '').replace(/[^0-9.]/g,''));
+    if(selects[0] && mv > 0) {
+      assets.push({tipo:selects[0].options[selects[0].selectedIndex].text, monto:mv, moneda:selects[1]?selects[1].value:'ARS'});
     }
   });
-  if(!assets.length){alert('Agrega al menos un activo.');return;}
+  if(!assets.length){alert('Agrega al menos un activo con monto.');return;}
+
   const horizonte = document.getElementById('diagHorizonte').value;
   const riesgo = document.getElementById('diagRiesgo').value;
   const btn = document.getElementById('diagBtn');
@@ -1744,70 +1745,41 @@ async function runDiag() {
   const result = document.getElementById('diagResult');
   result.style.display='block';
   result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--gold)">Claude analizando tu cartera...</div>';
-  const horizonMap={corto:'corto plazo (menos de 1 ano)',medio:'mediano plazo (1-3 anos)',largo:'largo plazo (mas de 3 anos)'};
-  const riesgoMap={conservador:'conservador',moderado:'moderado',agresivo:'agresivo'};
-  const portfolioText = assets.map(function(a){return '- '+a.tipo+': '+(a.moneda==='ARS'?'$':'')+a.monto.toLocaleString()+' '+a.moneda;}).join('\n');
-  const key=(localStorage.getItem('cn_akey')||'').trim().replace(/[^a-zA-Z0-9_-]/g,'');
-  if(!key){
-    result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Necesitas ingresar tu API key en el modo editor (...).</div>';
-    btn.disabled=false; btn.textContent='Analizar mi cartera'; return;
-  }
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
-    headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,
-    system: 'You are a senior financial analyst specializing in Argentine and global markets. Provide educational portfolio diagnostic. Write in Spanish using HTML. Use the LIVE market data provided by the user — do not use any other figures. Respond ONLY with this exact HTML: <div class="ds"><h3>Composicion actual</h3><p>[analysis]</p></div><div class="ds dg"><h3>Fortalezas</h3><ul><li>[strength 1]</li><li>[strength 2]</li><li>[strength 3]</li></ul></div><div class="ds dr"><h3>Riesgos identificados</h3><ul><li>[risk 1]</li><li>[risk 2]</li><li>[risk 3]</li></ul></div><div class="ds dy"><h3>Sugerencias de ajuste</h3><ul><li>[concrete suggestion 1]</li><li>[concrete suggestion 2]</li><li>[concrete suggestion 3]</li></ul></div><div class="dscore"><b>[X]/10</b><span>[Bien/Parcialmente/Des] alineado con perfil [conservador/moderado/agresivo]</span></div>',
-    messages:[{role:'user',content: (function(){
-      var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-      var spyVal = (document.getElementById('t-spx')||{}).textContent || '~570';
-      var wtiVal = (document.getElementById('t-wti')||{}).textContent || '~72';
-      var goldVal = (document.getElementById('t-gld')||{}).textContent || '~295';
-      var btcVal = (document.getElementById('t-btc')||{}).textContent || '~69000';
-      var eurVal = (document.getElementById('t-eur')||{}).textContent || '~1.08';
-      var arsVal = (document.getElementById('t-ars')||{}).textContent || '~1080';
-      var nvdaVal = (document.getElementById('t-nvda')||{}).textContent || '—';
-      var tslaVal = (document.getElementById('t-tsla')||{}).textContent || '—';
-      var ypfVal = (document.getElementById('t-ypf')||{}).textContent || '—';
-      var liveData = [
-        'DATOS DE MERCADO EN VIVO (' + today + '):',
-        '- SPY (S&P 500 proxy): ' + spyVal,
-        '- WTI (USO ETF): ' + wtiVal,
-        '- Gold (GLD ETF): ' + goldVal,
-        '- Bitcoin: ' + btcVal,
-        '- EUR/USD: ' + eurVal,
-        '- USD/ARS oficial: ' + arsVal,
-        '- NVDA: ' + nvdaVal,
-        '- TSLA: ' + tslaVal,
-        '- YPF ADR: ' + ypfVal,
-        '',
-        'MACRO ARGENTINA (datos estaticos actualizados):',
-        '- Inflacion mensual Feb 2026: 2.9% (INDEC)',
-        '- Inflacion interanual Feb 2026: 33.1% (INDEC)',
-        '- Reservas brutas BCRA: USD 45.4B (Abr 2026)',
-        '- Compras BCRA 2026: USD 5.4B acumulados',
-        '- Riesgo pais: ~615pb (EMBI+ JPMorgan)',
-        '',
-        'MACRO EEUU:',
-        '- Fed Funds Rate: 3.50-3.75%',
-        '- CPI YoY: 2.8% | Core PCE: 2.7%',
-        '- Desempleo: 4.4%',
-      ].join('\n');
-      return 'Perfil: horizonte ' + horizonMap[horizonte] + ', riesgo ' + riesgoMap[riesgo] + '.\n\nCartera:\n' + portfolioText + '\n\n' + liveData;
-    })()}]})});
-    if(!res.ok){const e=await res.json();throw new Error(e.error&&e.error.message?e.error.message:'HTTP '+res.status);}
-    const data=await res.json();
-    const txt=data.content.map(function(i){return i.type==='text'?i.text:'';}).join('').trim();
+
+  // Build live data string
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var spyVal = (document.getElementById('t-spx')||{}).textContent || '~570';
+  var btcVal = (document.getElementById('t-btc')||{}).textContent || '~69000';
+  var arsVal = (document.getElementById('t-ars')||{}).textContent || '~1080';
+  var goldVal = (document.getElementById('t-gld')||{}).textContent || '~295';
+  var liveData = 'DATOS EN VIVO (' + today + '):\n- SPY: ' + spyVal + '\n- BTC: ' + btcVal + '\n- USD/ARS: ' + arsVal + '\n- Gold (GLD): ' + goldVal + '\nMACRO ARG: Inflacion 2.9% mensual (INDEC), Reservas USD 45.4B, Riesgo pais 615pb\nMACRO EEUU: Fed 3.50-3.75%, CPI 2.8%, Desempleo 4.4%';
+
+  try {
+    const res = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({assets, horizonte, riesgo, liveData})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
+    const data = await res.json();
+    const txt = data.result || '';
+    var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
+    var score = scoreMatch ? scoreMatch[1] : null;
+    saveDiagHistory(assets, horizonte, riesgo, score);
     result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.85rem;color:#c8c4bc;line-height:1.75}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
     txt+
     '<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:0.5rem">'+
-    '<div><div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">Queres profundizar el analisis?</div>'+
-    '<div style="font-size:0.78rem;color:var(--muted)">Julian puede armar una estrategia personalizada para tu situacion.</div></div>'+
-    '<a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap">Contactar a Julian</a></div>';
-  }catch(err){
+    '<div><div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">¿Querés profundizar el análisis?</div>'+
+    '<div style="font-size:0.78rem;color:var(--muted)">Julián puede armar una estrategia personalizada para tu situación.</div></div>'+
+    '<a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap">Contactar a Julián ▸</a></div>';
+  } catch(err) {
     result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
   }
   btn.disabled=false; btn.textContent='Analizar de nuevo';
+  var dc = document.getElementById('diagContact');
+  if(dc) dc.style.display = 'block';
 }
+
 
 function showDiag(e) {
   e && e.preventDefault();
