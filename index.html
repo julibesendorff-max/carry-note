@@ -1781,6 +1781,60 @@ async function runDiag() {
 }
 
 
+
+// ── DIAGNOSIS HISTORY ──────────────────────────────────────
+function saveDiagHistory(assets, horizonte, riesgo, score) {
+  try {
+    var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
+    history.unshift({
+      date: new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}),
+      assets: assets, horizonte: horizonte, riesgo: riesgo, score: score
+    });
+    history = history.slice(0, 5);
+    localStorage.setItem('cn_diag_history', JSON.stringify(history));
+    renderDiagHistory();
+  } catch(e) {}
+}
+
+function renderDiagHistory() {
+  try {
+    var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
+    var el = document.getElementById('diagHistory');
+    var list = document.getElementById('diagHistoryList');
+    if(!el || !list || history.length === 0) return;
+    el.style.display = 'block';
+    list.innerHTML = history.map(function(h, i) {
+      var summary = h.assets.map(function(a){return a.tipo;}).join(', ');
+      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:0.4rem" onclick="loadHistoryItem('+i+')">' +
+        '<div><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);margin-bottom:0.2rem">'+h.date+' · '+h.riesgo+'</div>' +
+        '<div style="font-size:0.75rem;color:var(--muted)">'+summary.slice(0,60)+'</div></div>' +
+        '<div style="font-family:var(--mono);font-size:1rem;color:var(--gold);font-weight:600">'+(h.score||'—')+'/10</div></div>';
+    }).join('');
+  } catch(e) {}
+}
+
+function loadHistoryItem(idx) {
+  try {
+    var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
+    var item = history[idx];
+    if(!item) return;
+    document.getElementById('diagAssets').innerHTML = '';
+    assetCount = 0;
+    item.assets.forEach(function(a) {
+      addAsset();
+      var rows = document.querySelectorAll('#diagAssets > div');
+      var row = rows[rows.length-1];
+      var selects = row.querySelectorAll('select');
+      var inp = row.querySelector('input');
+      if(selects[0]) Array.from(selects[0].options).forEach(function(opt,i){ if(opt.text===a.tipo) selects[0].selectedIndex=i; });
+      if(inp) inp.value = a.monto;
+      if(selects[1]) selects[1].value = a.moneda;
+    });
+    document.getElementById('diagHorizonte').value = item.horizonte;
+    document.getElementById('diagRiesgo').value = item.riesgo;
+  } catch(e) {}
+}
+
 function showDiag(e) {
   e && e.preventDefault();
   // Hide all content panels
@@ -1802,6 +1856,7 @@ function showDiag(e) {
   if(assets && assets.children.length === 0) {
     addAsset(); addAsset(); addAsset();
   }
+  renderDiagHistory();
 }
 
 // ── NEWSLETTER ────────────────────────────────────────────────────────────────
