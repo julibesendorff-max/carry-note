@@ -52,7 +52,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-inner{display:flex;gap:2.5rem;animation:scroll 45s linear infinite;white-space:nowrap;width:max-content}
 .ticker-inner:hover{animation-play-state:paused}
 .t-item{display:inline-flex;gap:0.5rem;align-items:center;padding:0 0.6rem}
-.t-lbl{color:var(--muted);font-size:0.72rem}.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em}.t-up{color:var(--green);font-size:0.75rem}.t-dn{color:var(--red);font-size:0.75rem}.t-sep{color:var(--border2);padding:0 0.3rem}
+.t-lbl{color:var(--muted);font-size:0.72rem}.t-item.no-data{display:none}.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em}.t-up{color:var(--green);font-size:0.75rem}.t-dn{color:var(--red);font-size:0.75rem}.t-sep{color:var(--border2);padding:0 0.3rem}
 .ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)}
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -675,13 +675,35 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <!-- SCENARIOS -->
       <div id="diagScenarios" style="display:none;margin-top:1.5rem">
         <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Simular escenario macro</div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem">Argentina</div>
         <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem">
           <button onclick="runScenario('devaluacion')" class="scen-btn">Devaluacion +30%</button>
-          <button onclick="runScenario('suba_tasas')" class="scen-btn">Suba tasas Fed</button>
-          <button onclick="runScenario('caida_mercados')" class="scen-btn">Caida mercados -20%</button>
-          <button onclick="runScenario('inflacion_alta')" class="scen-btn">Inflacion AR +5%</button>
+          <button onclick="runScenario('devaluacion_fuerte')" class="scen-btn">Devaluacion +80%</button>
+          <button onclick="runScenario('cepo_vuelta')" class="scen-btn">Vuelta del cepo</button>
+          <button onclick="runScenario('inflacion_alta')" class="scen-btn">Inflacion +5% mens.</button>
           <button onclick="runScenario('riesgo_pais')" class="scen-btn">Riesgo pais +300pb</button>
+          <button onclick="runScenario('default_ar')" class="scen-btn">Riesgo default</button>
           <button onclick="runScenario('boom_merval')" class="scen-btn">Rally Merval +40%</button>
+          <button onclick="runScenario('acuerdo_fmi')" class="scen-btn">Exito FMI</button>
+        </div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem">Global · Fed & tasas</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem">
+          <button onclick="runScenario('suba_tasas')" class="scen-btn">Suba tasas Fed</button>
+          <button onclick="runScenario('baja_tasas')" class="scen-btn">Baja tasas Fed -200pb</button>
+          <button onclick="runScenario('recesion_eeuu')" class="scen-btn">Recesion EEUU</button>
+        </div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem">Mercados</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem">
+          <button onclick="runScenario('caida_mercados')" class="scen-btn">Caida mercados -20%</button>
+          <button onclick="runScenario('crash_tech')" class="scen-btn">Crash tech -40%</button>
+          <button onclick="runScenario('rally_global')" class="scen-btn">Rally global +25%</button>
+        </div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem">Geopolitica & commodities</div>
+        <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:0.75rem">
+          <button onclick="runScenario('escalada_oriente')" class="scen-btn">Petroleo USD 150</button>
+          <button onclick="runScenario('caida_petroleo')" class="scen-btn">Petroleo USD 50</button>
+          <button onclick="runScenario('crypto_crash')" class="scen-btn">Crypto crash -60%</button>
+          <button onclick="runScenario('oro_rally')" class="scen-btn">Oro USD 4.000</button>
         </div>
         <div id="scenResult" style="display:none"></div>
       </div>
@@ -826,7 +848,12 @@ function setTicker(id, price, pct, fmt) {
     const isDouble = suffix.endsWith('2');
     const vEl = document.getElementById('t-' + suffix);
     const cEl = document.getElementById('t-' + id + '-c' + (isDouble ? '2' : ''));
-    if(vEl) vEl.textContent = ' ' + val;
+    if(vEl) {
+      vEl.textContent = ' ' + val;
+      // Show or hide parent t-item based on data
+      const item = vEl.closest('.t-item');
+      if(item) item.classList.toggle('no-data', val === '—');
+    }
     if(cEl) { cEl.textContent = chgText; cEl.className = cls; }
   });
 }
