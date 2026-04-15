@@ -52,7 +52,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-inner{display:flex;gap:2.5rem;animation:scroll 45s linear infinite;white-space:nowrap;width:max-content}
 .ticker-inner:hover{animation-play-state:paused}
 .t-item{display:inline-flex;gap:0.5rem;align-items:center;padding:0 0.6rem}
-.t-lbl{color:var(--muted);font-size:0.72rem}.t-item.no-data{display:none}.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em}.t-up{color:var(--green);font-size:0.75rem}.t-dn{color:var(--red);font-size:0.75rem}.t-sep{color:var(--border2);padding:0 0.3rem}
+.t-lbl{color:var(--muted);font-size:0.72rem}.t-item.no-data{display:none}.t-item.no-data + .t-sep{display:none}.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em}.t-up{color:var(--green);font-size:0.75rem}.t-dn{color:var(--red);font-size:0.75rem}.t-sep{color:var(--border2);padding:0 0.3rem}
 .ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)}
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -1890,10 +1890,37 @@ async function sendContactForm() {
   var mensaje=(document.getElementById('contactMensaje').value||'').trim();
   var msg=document.getElementById('contactMsg');
   if(!nombre||!email||!mensaje){msg.textContent='Completa todos los campos.';msg.style.color='var(--red)';msg.style.display='block';return;}
-  var subject=encodeURIComponent('Consulta - Carry Note');
-  var body=encodeURIComponent('Nombre: '+nombre+'\nEmail: '+email+'\n\n'+mensaje);
-  window.open('mailto:julibesendorff@gmail.com?subject='+subject+'&body='+body);
-  msg.textContent='Se abrio tu cliente de email.';msg.style.color='var(--green)';msg.style.display='block';
+  if(!email.includes('@')){msg.textContent='Email invalido.';msg.style.color='var(--red)';msg.style.display='block';return;}
+  var btn=document.querySelector('#diagContact button[onclick]');
+  if(btn){btn.disabled=true;btn.textContent='Enviando...';}
+  // Get diagnosis summary
+  var diagEl=document.getElementById('diagResult');
+  var diagText=diagEl?diagEl.innerText.slice(0,800):'';
+  try {
+    var res = await sbFetch('/rest/v1/consultas', {
+      method:'POST',
+      headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({nombre:nombre, email:email, mensaje:mensaje, diagnostico:diagText})
+    });
+    if(res.ok||res.status===409){
+      msg.textContent='Consulta enviada. Julian te responde en 24-48hs.';
+      msg.style.color='var(--green)';
+      document.getElementById('contactNombre').value='';
+      document.getElementById('contactEmail').value='';
+      document.getElementById('contactMensaje').value='';
+    } else {
+      throw new Error('HTTP '+res.status);
+    }
+  } catch(e) {
+    // Fallback to mailto
+    var subject=encodeURIComponent('Consulta de asesoramiento - Carry Note');
+    var body=encodeURIComponent('Nombre: '+nombre+'\nEmail: '+email+'\n\n'+mensaje);
+    window.open('mailto:julibesendorff@gmail.com?subject='+subject+'&body='+body);
+    msg.textContent='Se abrio tu cliente de email.';
+    msg.style.color='var(--green)';
+  }
+  msg.style.display='block';
+  if(btn){btn.disabled=false;btn.textContent='Enviar consulta';}
 }
 function showDiag(e) {
   e && e.preventDefault();
