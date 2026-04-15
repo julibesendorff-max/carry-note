@@ -720,10 +720,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.3rem">Queres asesoramiento personalizado?</div>
         <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Julian analiza tu situacion en detalle y te propone una estrategia a medida.</div>
         <div style="display:flex;flex-direction:column;gap:0.6rem">
-          <input id="contactNombre" type="text" placeholder="Tu nombre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          <input id="contactEmail" type="email" placeholder="Tu email" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+            <input id="contactNombre" type="text" placeholder="Tu nombre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+            <input id="contactEdad" type="number" min="18" max="99" placeholder="Edad" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
+            <input id="contactEmail" type="email" placeholder="Tu email" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+            <input id="contactProfesion" type="text" placeholder="Profesion / ocupacion" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+          </div>
           <textarea id="contactMensaje" placeholder="Contame tu situacion y objetivos..." rows="3" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;resize:vertical"></textarea>
           <button onclick="sendContactForm()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.65rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Enviar consulta</button>
+          <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.6">Al enviar aceptas que tus datos sean utilizados para contactarte sobre servicios de asesoramiento financiero. Ley 25.326.</div>
           <div id="contactMsg" style="font-family:var(--mono);font-size:0.65rem;display:none"></div>
         </div>
       </div>
@@ -1900,7 +1907,7 @@ async function sendContactForm() {
     var res = await sbFetch('/rest/v1/consultas', {
       method:'POST',
       headers:{'Prefer':'return=minimal'},
-      body:JSON.stringify({nombre:nombre, email:email, mensaje:mensaje, diagnostico:diagText})
+      body:JSON.stringify({nombre:nombre, email:email, edad:parseInt(document.getElementById('contactEdad').value)||null, profesion:(document.getElementById('contactProfesion').value||'').trim(), mensaje:mensaje, diagnostico:diagText})
     });
     if(res.ok||res.status===409){
       msg.textContent='Consulta enviada. Julian te responde en 24-48hs.';
