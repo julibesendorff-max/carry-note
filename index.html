@@ -3,7 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Carry Note — Análisis Macroeconómico</title>
+<title>Carry Note — Análisis Macroeconómico y Geopolítico</title>
+<meta name="description" content="Análisis macroeconómico, geopolítico y de mercados financieros para el inversor sofisticado. Cobertura de Fed, Argentina, mercados globales y economías emergentes.">
+<meta name="keywords" content="macro, análisis económico, inversiones, Argentina, Fed, bonos, mercados financieros, carry trade, riesgo país, FCI">
+<meta name="author" content="Julián Besendorff">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.thecarrynote.com">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.thecarrynote.com">
+<meta property="og:title" content="Carry Note — Análisis Macroeconómico y Geopolítico">
+<meta property="og:description" content="Análisis macro, geopolítica y mercados financieros para el inversor sofisticado. Cobertura de Fed, Argentina y economías emergentes.">
+<meta property="og:image" content="https://www.thecarrynote.com/og-image.png">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Carry Note">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Carry Note — Análisis Macroeconómico">
+<meta name="twitter:description" content="Análisis macro, geopolítica y mercados para el inversor sofisticado.">
+<meta name="twitter:image" content="https://www.thecarrynote.com/og-image.png">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Carry Note",
+  "url": "https://www.thecarrynote.com",
+  "description": "Análisis macroeconómico, geopolítico y de mercados financieros",
+  "author": {
+    "@type": "Person",
+    "name": "Julián Besendorff",
+    "jobTitle": "Analista Macroeconómico",
+    "worksFor": {"@type": "Organization", "name": "J.P. Morgan"}
+  }
+}
+</script>
+
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -1456,76 +1494,67 @@ async function loadArgMacro() {
   if(!el) return;
 
   const staticData = [
-    {n:'Inflación mensual',   v:'3.4%',      cls:'dn',  note:'Mar 2026 · INDEC'},
-    {n:'Inflación interanual',v:'32.6%',     cls:'dn',  note:'Mar 2026 · INDEC'},
-    {n:'Acumulado 2026',      v:'9.4%',      cls:'dn',  note:'ene-mar · INDEC'},
-    {n:'TAMAR proyectada',    v:'26.8% TNA', cls:'neu', note:'abr 2026 · REM BCRA'},
-    {n:'Reservas brutas',     v:'USD 45.4B', cls:'up',  note:'Abr 2026 · BCRA'},
-    {n:'Compras BCRA 2026',   v:'USD 5.8B',  cls:'up',  note:'acum. 2026 · BCRA'},
-    {n:'Riesgo país',         v:'~615 pb',   cls:'dn',  note:'EMBI+ · JPM'},
-    {n:'PIB 2025',            v:'+5.1%',     cls:'up',  note:'FMI est.'},
+    {n:'IPC mensual',        v:'3.4%',      cls:'dn', note:'Mar 2026 · INDEC'},
+    {n:'IPC interanual',     v:'32.6%',     cls:'dn', note:'Mar 2026 · INDEC'},
+    {n:'Acumulado 2026',     v:'9.4%',      cls:'dn', note:'ene-mar · INDEC'},
+    {n:'TAMAR abr.',         v:'26.8% TNA', cls:'neu',note:'REM BCRA'},
+    {n:'Reservas brutas',    v:'USD 45.4B', cls:'up', note:'BCRA'},
+    {n:'Compras BCRA 2026',  v:'USD 5.8B',  cls:'up', note:'acum.'},
+    {n:'Riesgo país',        v:'~615 pb',   cls:'dn', note:'EMBI+ JPM'},
   ];
 
   el.innerHTML = staticData.map(d =>
     '<div class="ind">' +
-    '<span class="ind-n">' + d.n + (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + d.note + '</span>' : '') + '</span>' +
+    '<span class="ind-n">' + d.n +
+      (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + d.note + '</span>' : '') +
+    '</span>' +
     '<span class="ind-v ' + d.cls + '">' + d.v + '</span>' +
     '</div>'
   ).join('') +
-  '<div class="ind"><span class="ind-n">USD Oficial</span><span class="ind-v neu" id="arg-oficial">···</span></div>' +
-  '<div class="ind"><span class="ind-n">USD Blue</span><span class="ind-v dn" id="arg-blue">···</span></div>' +
-  '<div class="ind"><span class="ind-n">USD MEP</span><span class="ind-v neu" id="arg-mep">···</span></div>';
+  // FX live section
+  '<div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border2)">' +
+  '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Tipos de cambio · en vivo</div>' +
+  '<div class="ind"><span class="ind-n">Oficial</span><span class="ind-v neu" id="arg-oficial">···</span></div>' +
+  '<div class="ind"><span class="ind-n">Blue</span><span class="ind-v dn" id="arg-blue">···</span></div>' +
+  '<div class="ind"><span class="ind-n">MEP (bolsa)</span><span class="ind-v neu" id="arg-mep">···</span></div>' +
+  '<div class="ind"><span class="ind-n">CCL</span><span class="ind-v neu" id="arg-ccl">···</span></div>' +
+  '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.4rem">Fuente: dolarapi.com</div>' +
+  '</div>';
 
-  // Try multiple sources for Argentina FX
-  const tryFetch = async (url) => {
-    const res = await fetch(url, {mode: 'cors'});
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    return res.json();
-  };
-
+  // Fetch live FX
   try {
-    // Try dolarapi.com first (reliable CORS)
-    const data = await tryFetch('https://dolarapi.com/v1/dolares');
-    // data is an array of exchange rates
-    const oficial = data.find(d => d.casa === 'oficial');
-    const blue = data.find(d => d.casa === 'blue');
-    const mep = data.find(d => d.casa === 'bolsa');
+    const res = await fetch('https://dolarapi.com/v1/dolares');
+    if(!res.ok) throw new Error();
+    const data = await res.json();
 
-    if(oficial) {
-      const mid = ((oficial.compra || 0) + (oficial.venta || 0)) / 2;
-      document.getElementById('arg-oficial').textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
-    }
-    if(blue) {
-      const mid = ((blue.compra || 0) + (blue.venta || 0)) / 2;
-      document.getElementById('arg-blue').textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
-    }
-    if(mep) {
-      const mid = ((mep.compra || 0) + (mep.venta || 0)) / 2;
-      document.getElementById('arg-mep').textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
-    }
-  } catch(e1) {
-    // Fallback: try bluelytics
-    try {
-      const data = await tryFetch('https://api.bluelytics.com.ar/v2/latest');
-      if(data.oficial) {
-        const of = Math.round((data.oficial.value_buy + data.oficial.value_sell) / 2);
-        document.getElementById('arg-oficial').textContent = '$ ' + of.toLocaleString('es-AR');
-      }
-      if(data.blue) {
-        const bl = Math.round((data.blue.value_buy + data.blue.value_sell) / 2);
-        document.getElementById('arg-blue').textContent = '$ ' + bl.toLocaleString('es-AR');
-        document.getElementById('arg-mep').textContent = '$ ' + Math.round(bl * 0.97).toLocaleString('es-AR');
-      }
-    } catch(e2) {
-      // Both failed — show static fallback values
-      const fallback = {'arg-oficial':'$ 1.080', 'arg-blue':'$ 1.320', 'arg-mep':'$ 1.290'};
-      Object.entries(fallback).forEach(([id, val]) => {
-        const el = document.getElementById(id);
-        if(el) { el.textContent = val; el.style.opacity = '0.5'; }
-      });
-    }
+    const set = (id, obj, cls) => {
+      const el = document.getElementById(id);
+      if(!el || !obj) return;
+      const mid = ((obj.compra||0) + (obj.venta||0)) / 2;
+      el.textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
+      el.className = 'ind-v ' + cls;
+    };
+
+    set('arg-oficial', data.find(d => d.casa === 'oficial'), 'neu');
+    set('arg-blue',    data.find(d => d.casa === 'blue'),    'dn');
+    set('arg-mep',     data.find(d => d.casa === 'bolsa'),   'neu');
+    set('arg-ccl',     data.find(d => d.casa === 'contadoconliqui'), 'neu');
+
+  } catch(e) {
+    // Static fallback
+    const fallbacks = {
+      'arg-oficial': '$ 1.080',
+      'arg-blue':    '$ 1.290',
+      'arg-mep':     '$ 1.270',
+      'arg-ccl':     '$ 1.295'
+    };
+    Object.entries(fallbacks).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if(el) { el.textContent = val; el.style.opacity = '0.5'; }
+    });
   }
 }
+
 
 // ── FCI DATA ──────────────────────────────────────────────
 // Data updated monthly from Cafci / BYMA
