@@ -367,13 +367,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
       <!-- TABLE -->
       <div style="overflow-x:auto">
-        <table id="fciTable" style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.68rem">
+        <table id="fciTable" style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.68rem;table-layout:fixed">
           <thead>
             <tr style="border-bottom:2px solid var(--gold)">
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Fondo</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Tipo</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Composición principal</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Benchmark</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:28%">Fondo</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:18%">Tipo</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:38%">Composición principal</th>
+              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:16%">Benchmark</th>
             </tr>
           </thead>
           <tbody id="fciBody"></tbody>
@@ -715,32 +715,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Herramienta educativa gratuita. Ingres&#225; tus datos para acceder al an&#225;lisis instant&#225;neo de tu cartera en el contexto macroecon&#243;mico actual.</div>
       </div>
 
-      <!-- GATE FORM -->
-      <div id="diagGate" style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.75rem;margin-bottom:2rem">
-        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Antes de continuar</div>
-        <p style="font-size:0.82rem;color:var(--muted);line-height:1.6;margin-bottom:1.25rem">Esta herramienta tiene fines <strong style="color:var(--text)">estrictamente educativos</strong>. No constituye asesoramiento financiero ni recomendación de inversión. Los resultados son orientativos y no reemplazan el análisis profesional.</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
-          <input id="gateNombre" type="text" placeholder="Tu nombre *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          <input id="gateEdad" type="text" inputmode="numeric" placeholder="Edad *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
-          <input id="gateEmail" type="email" placeholder="Tu email *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          <input id="gateProfesion" type="text" placeholder="Profesion / ocupacion *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-        </div>
-        <div style="background:var(--surface2);border:1px solid var(--border2);padding:0.85rem 1rem;margin-bottom:1rem;font-family:var(--mono);font-size:0.58rem;color:var(--muted2);line-height:1.7">
-          <strong style="color:var(--muted)">Aviso legal · Ley 25.326 de Protección de Datos Personales (Argentina)</strong><br>
-          Al continuar, consentís expresamente que Carry Note recopile y almacene los datos personales ingresados (nombre, edad, email, profesión) con fines exclusivamente educativos y estadísticos. Tus datos no serán compartidos con terceros ni utilizados con fines comerciales. Podés solicitar la eliminación de tus datos en cualquier momento escribiendo a julibesendorff@gmail.com. Los datos se almacenan en servidores seguros (Supabase / AWS).
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:1rem">
-          <input type="checkbox" id="gateConsent" style="margin-top:3px;cursor:pointer;accent-color:var(--gold)"/>
-          <label for="gateConsent" style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);line-height:1.5;cursor:pointer">Leí y acepto el aviso legal. Entiendo que esta herramienta es educativa y no constituye asesoramiento financiero.</label>
-        </div>
-        <button onclick="submitGate()" style="width:100%;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Acceder al diagnóstico ▸</button>
-        <div id="gateMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.5rem;display:none"></div>
-      </div>
-
-      <!-- DIAGNOSTIC FORM (hidden until gate is passed) -->
-      <div id="diagForm" style="display:none">
       <div style="margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Tu perfil de inversor</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
@@ -833,7 +807,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         </div>
       </div>
 
-      </div><!-- end diagForm -->
+
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es de car&#225;cter educativo e informativo. No constituye asesoramiento financiero, recomendaci&#243;n de inversi&#243;n ni oferta de compra o venta de ning&#250;n activo. · Carry Note</div>
     </div>
     <!-- NEWSLETTER -->
@@ -850,11 +824,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
   <aside class="sidebar">
     <div class="sb-block">
-      <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· mar 2026</span></div>
+      <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· abr 2026</span></div>
       <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">3.50–3.75%</span></div>
-      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v dn">2.8%</span></div>
+      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v dn">3.3%</span></div>
+      <div class="ind"><span class="ind-n">Core CPI YoY</span><span class="ind-v dn">2.6%</span></div>
       <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v dn">2.7%</span></div>
-      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v neu">4.4%</span></div>
+      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v neu">4.3%</span></div>
       <div class="ind"><span class="ind-n">PIB Q4 '25</span><span class="ind-v up">+2.4%</span></div>
       <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v up">+18bp</span></div>
       <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.8</span></div>
@@ -1494,13 +1469,13 @@ async function loadArgMacro() {
   if(!el) return;
 
   const staticData = [
-    {n:'Inflación mensual',   v:'2.9%',      cls:'dn',  note:'Feb 2026 · INDEC'},
-    {n:'Inflación interanual',v:'33.1%',     cls:'dn',  note:'Feb 2026 · INDEC'},
-    {n:'Inflación anual 2025',v:'31.5%',     cls:'dn',  note:'Dic 2025 · INDEC'},
-    {n:'Tasa BCRA',           v:'mercado',   cls:'neu', note:'sin ref. fija'},
+    {n:'Inflación mensual',   v:'3.4%',      cls:'dn',  note:'Mar 2026 · INDEC'},
+    {n:'Inflación interanual',v:'32.6%',     cls:'dn',  note:'Mar 2026 · INDEC'},
+    {n:'Acumulado 2026',      v:'9.4%',      cls:'dn',  note:'ene-mar · INDEC'},
+    {n:'TAMAR proyectada',    v:'26.8% TNA', cls:'neu', note:'abr 2026 · REM BCRA'},
     {n:'Reservas brutas',     v:'USD 45.4B', cls:'up',  note:'Abr 2026 · BCRA'},
-    {n:'Compras BCRA 2026',   v:'USD 5.4B',  cls:'up',  note:'acum. 2026 · BCRA'},
-    {n:'Riesgo país',         v:'615 pb',    cls:'dn',  note:'EMBI+ · JPM'},
+    {n:'Compras BCRA 2026',   v:'USD 5.8B',  cls:'up',  note:'acum. 2026 · BCRA'},
+    {n:'Riesgo país',         v:'~615 pb',   cls:'dn',  note:'EMBI+ · JPM'},
     {n:'PIB 2025',            v:'+5.1%',     cls:'up',  note:'FMI est.'},
   ];
 
@@ -1819,6 +1794,12 @@ function addAsset() {
 }
 
 async function runDiag() {
+  // Check if gate already passed
+  if(!localStorage.getItem('cn_gate')) {
+    // Store pending analysis intent
+    document.getElementById('gateModal').style.display = 'flex';
+    return;
+  }
   const assets = [];
   document.querySelectorAll('#diagAssets > div').forEach(function(row) {
     const selects = row.querySelectorAll('select');
@@ -2086,19 +2067,17 @@ async function submitGate() {
   // Store locally so user doesn't have to fill again
   localStorage.setItem('cn_gate', JSON.stringify({nombre, email, edad, profesion}));
 
-  // Show diagnostic form
-  document.getElementById('diagGate').style.display = 'none';
-  document.getElementById('diagForm').style.display = 'block';
+  // Close modal and run analysis
+  document.getElementById('gateModal').style.display = 'none';
 
-  // Pre-fill contact form with gate data
-  var cn = document.getElementById('contactNombre');
-  var ce = document.getElementById('contactEmail');
-  var ced = document.getElementById('contactEdad');
-  var cp = document.getElementById('contactProfesion');
-  if(cn) cn.value = nombre;
-  if(ce) ce.value = email;
-  if(ced) ced.value = edad;
-  if(cp) cp.value = profesion;
+  // Pre-fill contact form
+  var cn=document.getElementById('contactNombre'), ce=document.getElementById('contactEmail');
+  var ced=document.getElementById('contactEdad'), cp=document.getElementById('contactProfesion');
+  if(cn) cn.value=nombre; if(ce) ce.value=email;
+  if(ced) ced.value=edad; if(cp) cp.value=profesion;
+
+  // Now run the actual analysis
+  runDiag();
 }
 
 function showDiag(e) {
@@ -2145,5 +2124,33 @@ window.addEventListener('load', function(){
   loadForex();
 });
 </script>
+
+<!-- GATE MODAL -->
+<div id="gateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;width:min(520px,90vw);font-family:var(--mono);max-height:90vh;overflow-y:auto">
+    <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Antes de continuar</div>
+    <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.75rem">Un paso previo</div>
+    <p style="font-size:0.8rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem">Esta herramienta tiene fines <strong style="color:var(--text)">estrictamente educativos</strong>. No constituye asesoramiento financiero ni recomendación de inversión.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+      <input id="gateNombre" type="text" placeholder="Tu nombre *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+      <input id="gateEdad" type="text" inputmode="numeric" placeholder="Edad *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+      <input id="gateEmail" type="email" placeholder="Tu email *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+      <input id="gateProfesion" type="text" placeholder="Profesión *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border2);padding:0.85rem 1rem;margin-bottom:1rem;font-size:0.58rem;color:var(--muted2);line-height:1.7">
+      <strong style="color:var(--muted)">Aviso legal · Ley 25.326</strong><br>
+      Al continuar, consentís que Carry Note almacene tus datos personales con fines educativos y estadísticos. No serán compartidos con terceros ni usados con fines comerciales. Podés solicitar su eliminación escribiendo a julibesendorff@gmail.com.
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:1rem">
+      <input type="checkbox" id="gateConsent" style="margin-top:3px;cursor:pointer;accent-color:var(--gold)"/>
+      <label for="gateConsent" style="font-size:0.65rem;color:var(--muted);line-height:1.5;cursor:pointer">Acepto el aviso legal y entiendo que esta herramienta es educativa.</label>
+    </div>
+    <button onclick="submitGate()" style="width:100%;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:0.5rem">Ver mi diagnóstico ▸</button>
+    <button onclick="document.getElementById('gateModal').style.display='none'" style="width:100%;font-family:var(--mono);font-size:0.65rem;padding:0.5rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer">Cancelar</button>
+    <div id="gateMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.5rem;display:none"></div>
+  </div>
+</div>
 </body>
 </html>
