@@ -1794,12 +1794,14 @@ function addAsset() {
 }
 
 async function runDiag() {
-  // Check if gate already passed
   if(!localStorage.getItem('cn_gate')) {
-    // Store pending analysis intent
     document.getElementById('gateModal').style.display = 'flex';
     return;
   }
+  runDiagCore();
+}
+
+async function runDiagCore() {
   const assets = [];
   document.querySelectorAll('#diagAssets > div').forEach(function(row) {
     const selects = row.querySelectorAll('select');
@@ -2077,7 +2079,7 @@ async function submitGate() {
   if(ced) ced.value=edad; if(cp) cp.value=profesion;
 
   // Now run the actual analysis
-  runDiag();
+  runDiagCore();
 }
 
 function showDiag(e) {
