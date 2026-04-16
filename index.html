@@ -365,20 +365,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <span style="color:var(--muted2);font-size:0.55rem;display:block;margin-top:0.3rem">Fuente: Cafci / BYMA · Actualización mensual</span>
       </div>
 
-      <!-- TABLE -->
-      <div style="overflow-x:auto">
-        <table id="fciTable" style="width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.68rem;table-layout:fixed">
-          <thead>
-            <tr style="border-bottom:2px solid var(--gold)">
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:28%">Fondo</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:18%">Tipo</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:38%">Composición principal</th>
-              <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase;width:16%">Benchmark</th>
-            </tr>
-          </thead>
-          <tbody id="fciBody"></tbody>
-        </table>
-      </div>
+      <div id="fciBody" style="display:flex;flex-direction:column;gap:0"></div>
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;line-height:1.6">
         * Rendimientos expresados en pesos. No constituyen recomendación de inversión. Fuente: Cafci / BYMA · Datos al cierre del mes anterior.
       </div>
@@ -1619,17 +1606,28 @@ const FCI_DATA = [
 ];
 
 function renderFCI() {
-  const tbody = document.getElementById('fciBody');
-  if(!tbody) return;
-  tbody.innerHTML = FCI_DATA.map((f, i) => `
-    <tr style="border-bottom:1px solid var(--border2);${i%2===0?'background:var(--surface)':''}">
-      <td style="padding:0.65rem 0.75rem;color:var(--text);font-weight:500">${f.nombre}</td>
-      <td style="padding:0.65rem 0.75rem;color:var(--muted)">${f.tipo}</td>
-      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">
-      <td style="padding:0.65rem 0.75rem;color:var(--muted);font-size:0.62rem">${f.composicion}</td>
-      <td style="padding:0.65rem 0.75rem;color:var(--muted2);font-size:0.62rem">${f.benchmark}</td>
-    </tr>`).join('');
+  const el = document.getElementById('fciBody');
+  if(!el) return;
+  el.innerHTML = FCI_DATA.map((f, i) => {
+    const bg = i % 2 === 0 ? 'background:var(--surface)' : 'background:var(--surface2)';
+    return '<div style="' + bg + ';border-bottom:1px solid var(--border2);padding:0.85rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem">' +
+      '<div style="grid-column:1/-1;font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.25rem">' + f.nombre + '</div>' +
+      '<div>' +
+        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Tipo</div>' +
+        '<div style="font-size:0.72rem;color:var(--muted)">' + f.tipo + '</div>' +
+      '</div>' +
+      '<div>' +
+        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Benchmark</div>' +
+        '<div style="font-size:0.72rem;color:var(--muted2)">' + f.benchmark + '</div>' +
+      '</div>' +
+      '<div style="grid-column:1/-1">' +
+        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Composición</div>' +
+        '<div style="font-size:0.72rem;color:var(--muted);line-height:1.55">' + f.composicion + '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
 }
+
 
 function showFCI(e) {
   e && e.preventDefault();
