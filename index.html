@@ -281,10 +281,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <span class="about-item-val">Macro · Derivados · Mercados de capitales</span>
     </div>
     <div class="about-item">
-      <span class="about-item-label">Certificación</span>
-      <span class="about-item-val">Idóneo CNV 2025</span>
-    </div>
-    <div class="about-item">
       <span class="about-item-label">Contacto</span>
       <span class="about-item-val" id="about-email">julibesendorff [at] gmail [punto] com</span>
     </div>
@@ -376,8 +372,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <tr style="border-bottom:2px solid var(--gold)">
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Fondo</th>
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Tipo</th>
-              <th style="text-align:right;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Rend. 30d</th>
-              <th style="text-align:right;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Rend. 12m</th>
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Composición principal</th>
               <th style="text-align:left;padding:0.6rem 0.75rem;color:var(--gold);letter-spacing:0.08em;font-size:0.58rem;text-transform:uppercase">Benchmark</th>
             </tr>
@@ -406,6 +400,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <button onclick="showNivel('basico')" id="btn-basico" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Nivel Básico</button>
         <button onclick="showNivel('intermedio')" id="btn-intermedio" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">Nivel Intermedio</button>
         <button onclick="showNivel('glosario')" id="btn-glosario" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">Glosario</button>
+        <button onclick="showNivel('avanzado')" id="btn-avanzado" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border);cursor:pointer">Términos Avanzados</button>
       </div>
 
       <!-- BASICO -->
@@ -598,6 +593,107 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         </div>
       </div>
 
+
+      <div id="nivel-avanzado" style="display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-bottom:2rem">
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Delta</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Sensibilidad del precio de una opción ante cambios en el precio del activo subyacente. Un delta de 0.5 significa que la opción sube $0.50 por cada $1 que suba el subyacente.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Convexidad</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Medida de la curvatura en la relación precio-rendimiento de un bono. A mayor convexidad, menor pérdida ante subas de tasas y mayor ganancia ante bajas.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Sharpe Ratio</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Rendimiento excedente por unidad de riesgo. Se calcula como (retorno - tasa libre de riesgo) / desvío estándar. Un Sharpe mayor a 1 se considera aceptable.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Beta</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Sensibilidad de un activo respecto al mercado. Beta = 1.2 significa que si el mercado sube 10%, el activo sube 12%. Un beta negativo actúa como cobertura.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Alpha</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Retorno de una inversión por encima del esperado dado su nivel de riesgo (beta). Un alpha positivo indica que el gestor o activo agrega valor sobre el mercado.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">VaR</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Value at Risk. Pérdida máxima esperada en un período dado con cierto nivel de confianza. Ej: VaR 95% de $10.000 significa que hay 5% de probabilidad de perder más de $10.000 en un día.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Drawdown</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Caída desde el máximo histórico de una cartera hasta el mínimo posterior. Un drawdown máximo del 30% implica que en algún momento la cartera perdió 30% desde su pico.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Correlación</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Medida estadística de cómo se mueven dos activos entre sí. Correlación +1 = se mueven igual. Correlación -1 = se mueven opuesto. Correlación 0 = independientes.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Spread de crédito</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Diferencial de rendimiento entre un bono corporativo y un bono soberano del mismo plazo. Refleja la prima que paga el emisor privado por su mayor riesgo de default.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Haircut</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Descuento aplicado al valor de un activo usado como garantía colateral. Un haircut del 20% sobre un bono de $100 significa que sirve como garantía por $80.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Repo</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Acuerdo de recompra. Una parte vende un activo con el compromiso de recomprarlo a un precio mayor en el futuro. Es esencialmente un préstamo con activos como garantía.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Swap de tasas</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Contrato donde dos partes intercambian flujos de interés. El más común es fixed-for-floating: una parte paga tasa fija y recibe tasa variable, cubriendo el riesgo de tasa.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Curva de rendimientos</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Representación gráfica de los rendimientos de bonos del mismo emisor a distintos plazos. Una curva invertida (corto > largo) históricamente anticipa recesiones.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Inflación implícita</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Expectativa de inflación que surge de la diferencia entre rendimientos de bonos nominales y bonos ajustados por inflación (CER en Argentina, TIPS en EEUU).</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Carry negativo</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Cuando el costo de mantener una posición supera el rendimiento que genera. Ej: financiarse en dólares al 5% para invertir en activos que rinden 3% genera carry negativo.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Momentum</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Estrategia que consiste en comprar activos que han subido recientemente y vender los que han bajado, bajo la hipótesis de que las tendencias tienden a persistir en el corto plazo.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Rebalanceo</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Proceso de ajustar la composición de una cartera para volver a los pesos objetivo. Implica vender lo que subió y comprar lo que bajó, forzando una disciplina de comprar barato.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Eficiencia de mercado</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Hipótesis de que los precios reflejan toda la información disponible. En mercados eficientes, no es posible obtener retornos superiores de forma consistente sin asumir más riesgo.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Liquidez</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Facilidad y velocidad con la que un activo puede convertirse en efectivo sin afectar significativamente su precio. Los bonos soberanos son más líquidos que las acciones de baja capitalización.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Horizonte de inversión</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Período de tiempo durante el cual un inversor planea mantener una posición. A mayor horizonte, mayor tolerancia a la volatilidad de corto plazo y mayor potencial de retorno real.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Tasa real</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Rendimiento de una inversión ajustado por inflación. Si un plazo fijo rinde 28% TNA y la inflación es 30% anual, la tasa real es aproximadamente -2%.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Leverage</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Uso de deuda para amplificar el tamaño de una inversión. Un leverage de 2x significa que se invierte el doble del capital propio. Amplifica tanto ganancias como pérdidas.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Riesgo de contraparte</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Riesgo de que la otra parte en una transacción financiera no cumpla con sus obligaciones. Especialmente relevante en derivados OTC y operaciones de repo.</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border2);padding:1rem">
+            <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);margin-bottom:0.3rem">Duration modificada</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.55">Versión de la duration que mide directamente el cambio porcentual en precio ante un cambio de 1% en la tasa de interés. Duration modificada de 4 años = -4% precio por +1% tasa.</div>
+          </div>
+        </div>
+      </div>
       <!-- CTA -->
       <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
         <div>
@@ -1554,8 +1650,7 @@ function renderFCI() {
     <tr style="border-bottom:1px solid var(--border2);${i%2===0?'background:var(--surface)':''}">
       <td style="padding:0.65rem 0.75rem;color:var(--text);font-weight:500">${f.nombre}</td>
       <td style="padding:0.65rem 0.75rem;color:var(--muted)">${f.tipo}</td>
-      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">${f.rend30}</td>
-      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">${f.rend12}</td>
+      <td style="padding:0.65rem 0.75rem;text-align:right;color:var(--green)">
       <td style="padding:0.65rem 0.75rem;color:var(--muted);font-size:0.62rem">${f.composicion}</td>
       <td style="padding:0.65rem 0.75rem;color:var(--muted2);font-size:0.62rem">${f.benchmark}</td>
     </tr>`).join('');
@@ -1652,7 +1747,7 @@ function showAprender(e) {
 }
 
 function showNivel(nivel) {
-  ['basico','intermedio','glosario'].forEach(n => {
+  ['basico','intermedio','glosario','avanzado'].forEach(n => {
     document.getElementById('nivel-'+n).style.display = n === nivel ? 'block' : 'none';
     const btn = document.getElementById('btn-'+n);
     if(btn) {
@@ -1676,10 +1771,18 @@ const ASSET_TYPES = [
   {v:'plazo_fijo',l:'Plazo fijo'},{v:'money_market',l:'FCI Money Market'},
   {v:'fci_pesos',l:'FCI Renta Fija Pesos'},{v:'fci_cer',l:'FCI / Bono CER'},
   {v:'bono_dollar',l:'Bono / ON Hard Dollar'},{v:'dolar_mep',l:'Dolar MEP / CCL'},
-  {v:'dolar_billete',l:'Dolares billete'},{v:'acciones_ar',l:'Acciones argentinas'},
-  {v:'cedears',l:'CEDEARs'},{v:'etf_eeuu',l:'ETFs EEUU'},
-  {v:'acciones_eeuu',l:'Acciones EEUU'},{v:'bitcoin',l:'Bitcoin / Crypto'},
-  {v:'oro',l:'Oro'},{v:'otro',l:'Otro'},
+  {v:'dolar_billete',l:'Dolares billete'},{v:'acciones_ar',l:'Acciones argentinas (generico)'},
+  {v:'ggal',l:'GGAL (Grupo Galicia)'},{v:'ypf_ar',l:'YPF'},
+  {v:'bma',l:'BMA (Banco Macro)'},{v:'pamp',l:'PAMP (Pampa Energia)'},
+  {v:'txar',l:'TXAR (Ternium Argentina)'},{v:'come',l:'COME (Sociedad Comercial del Plata)'},
+  {v:'cedears',l:'CEDEARs (general)'},{v:'aapl_cedr',l:'CEDEAR: Apple (AAPL)'},
+  {v:'nvda_cedr',l:'CEDEAR: NVIDIA (NVDA)'},{v:'tsla_cedr',l:'CEDEAR: Tesla (TSLA)'},
+  {v:'msft_cedr',l:'CEDEAR: Microsoft (MSFT)'},{v:'amzn_cedr',l:'CEDEAR: Amazon (AMZN)'},
+  {v:'googl_cedr',l:'CEDEAR: Alphabet (GOOGL)'},{v:'meta_cedr',l:'CEDEAR: Meta (META)'},
+  {v:'etf_eeuu',l:'ETFs EEUU (SPY, QQQ, etc.)'},{v:'acciones_eeuu',l:'Acciones EEUU (general)'},
+  {v:'bitcoin',l:'Bitcoin (BTC)'},{v:'ethereum',l:'Ethereum (ETH)'},
+  {v:'crypto_otro',l:'Crypto (otras)'},{v:'oro',l:'Oro'},
+  {v:'otro',l:'Otro'},
 ];
 let assetCount = 0;
 
