@@ -1515,7 +1515,7 @@ async function loadArgMacro() {
   try {
     const [fxRes, rpRes] = await Promise.all([
       fetch('https://dolarapi.com/v1/dolares'),
-      fetch('https://dolarapi.com/v1/indices/riesgo-pais')
+      fetch('https://api.argentinadatos.com/v1/finanzas/indices/riesgo-pais/ultimo')
     ]);
 
     if(fxRes.ok) {
@@ -1536,9 +1536,10 @@ async function loadArgMacro() {
     if(rpRes.ok) {
       const rpData = await rpRes.json();
       const rpEl = document.getElementById('arg-riesgo');
-      if(rpEl && rpData.valor) {
-        rpEl.textContent = Math.round(rpData.valor) + ' pb';
-        rpEl.className = rpData.valor > 800 ? 'ind-v dn' : 'ind-v neu';
+      const rpVal = rpData.valor || rpData.value || (Array.isArray(rpData) ? rpData[rpData.length-1]?.valor : null);
+      if(rpEl && rpVal) {
+        rpEl.textContent = Math.round(rpVal) + ' pb';
+        rpEl.className = rpVal > 800 ? 'ind-v dn' : 'ind-v neu';
       }
     }
 
