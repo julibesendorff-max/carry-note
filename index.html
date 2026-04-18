@@ -1487,24 +1487,21 @@ async function loadArgMacro() {
   if(!el) return;
 
   const staticData = [
-    {n:'IPC mensual',        v:'3.4%',      cls:'dn', note:'Mar 2026 · INDEC'},
-    {n:'IPC interanual',     v:'32.6%',     cls:'dn', note:'Mar 2026 · INDEC'},
-    {n:'Acumulado 2026',     v:'9.4%',      cls:'dn', note:'ene-mar · INDEC'},
-    {n:'TAMAR abr.',         v:'26.8% TNA', cls:'neu',note:'REM BCRA'},
-    {n:'Reservas brutas',    v:'USD 45.4B', cls:'up', note:'BCRA'},
-    {n:'Compras BCRA 2026',  v:'USD 5.8B',  cls:'up', note:'acum.'},
-    {n:'Riesgo país',        v:'~615 pb',   cls:'dn', note:'EMBI+ JPM'},
+    {n:'IPC mensual',       v:'3.4%',      cls:'dn',  note:'Mar 2026 · INDEC'},
+    {n:'IPC interanual',    v:'32.6%',     cls:'dn',  note:'Mar 2026 · INDEC'},
+    {n:'Acumulado 2026',    v:'9.4%',      cls:'dn',  note:'ene-mar · INDEC'},
+    {n:'TAMAR abr.',        v:'26.8% TNA', cls:'neu', note:'REM BCRA'},
+    {n:'Reservas brutas',   v:'USD 45.4B', cls:'up',  note:'BCRA'},
+    {n:'Compras BCRA 2026', v:'USD 5.8B',  cls:'up',  note:'acum.'},
   ];
 
   el.innerHTML = staticData.map(d =>
     '<div class="ind">' +
     '<span class="ind-n">' + d.n +
       (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + d.note + '</span>' : '') +
-    '</span>' +
-    '<span class="ind-v ' + d.cls + '">' + d.v + '</span>' +
-    '</div>'
+    '</span><span class="ind-v ' + d.cls + '">' + d.v + '</span></div>'
   ).join('') +
-  // FX live section
+  '<div class="ind"><span class="ind-n">Riesgo país <span style="font-size:0.5rem;color:var(--muted2)">EMBI+ JPM</span></span><span class="ind-v dn" id="arg-riesgo">···</span></div>' +
   '<div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border2)">' +
   '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Tipos de cambio · en vivo</div>' +
   '<div class="ind"><span class="ind-n">Oficial</span><span class="ind-v neu" id="arg-oficial">···</span></div>' +
@@ -1514,33 +1511,40 @@ async function loadArgMacro() {
   '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.4rem">Fuente: dolarapi.com</div>' +
   '</div>';
 
-  // Fetch live FX
+  // Fetch FX + riesgo pais from dolarapi
   try {
-    const res = await fetch('https://dolarapi.com/v1/dolares');
-    if(!res.ok) throw new Error();
-    const data = await res.json();
+    const [fxRes, rpRes] = await Promise.all([
+      fetch('https://dolarapi.com/v1/dolares'),
+      fetch('https://dolarapi.com/v1/indices/riesgo-pais')
+    ]);
 
-    const set = (id, obj, cls) => {
-      const el = document.getElementById(id);
-      if(!el || !obj) return;
-      const mid = ((obj.compra||0) + (obj.venta||0)) / 2;
-      el.textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
-      el.className = 'ind-v ' + cls;
-    };
+    if(fxRes.ok) {
+      const data = await fxRes.json();
+      const setFX = (id, obj, cls) => {
+        const e = document.getElementById(id);
+        if(!e || !obj) return;
+        const mid = ((obj.compra||0) + (obj.venta||0)) / 2;
+        e.textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
+        e.className = 'ind-v ' + cls;
+      };
+      setFX('arg-oficial', data.find(d => d.casa === 'oficial'), 'neu');
+      setFX('arg-blue',    data.find(d => d.casa === 'blue'),    'dn');
+      setFX('arg-mep',     data.find(d => d.casa === 'bolsa'),   'neu');
+      setFX('arg-ccl',     data.find(d => d.casa === 'contadoconliqui'), 'neu');
+    }
 
-    set('arg-oficial', data.find(d => d.casa === 'oficial'), 'neu');
-    set('arg-blue',    data.find(d => d.casa === 'blue'),    'dn');
-    set('arg-mep',     data.find(d => d.casa === 'bolsa'),   'neu');
-    set('arg-ccl',     data.find(d => d.casa === 'contadoconliqui'), 'neu');
+    if(rpRes.ok) {
+      const rpData = await rpRes.json();
+      const rpEl = document.getElementById('arg-riesgo');
+      if(rpEl && rpData.valor) {
+        rpEl.textContent = Math.round(rpData.valor) + ' pb';
+        rpEl.className = rpData.valor > 800 ? 'ind-v dn' : 'ind-v neu';
+      }
+    }
 
   } catch(e) {
     // Static fallback
-    const fallbacks = {
-      'arg-oficial': '$ 1.080',
-      'arg-blue':    '$ 1.290',
-      'arg-mep':     '$ 1.270',
-      'arg-ccl':     '$ 1.295'
-    };
+    const fallbacks = {'arg-oficial':'$ 1.080','arg-blue':'$ 1.290','arg-mep':'$ 1.270','arg-ccl':'$ 1.295','arg-riesgo':'~500 pb'};
     Object.entries(fallbacks).forEach(([id, val]) => {
       const el = document.getElementById(id);
       if(el) { el.textContent = val; el.style.opacity = '0.5'; }
