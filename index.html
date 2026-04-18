@@ -249,7 +249,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <button class="eb-btn eb-logout" onclick="logout()" style="margin-left:auto">Salir del editor ✕</button>
 </div>
 
-<div class="login-toggle" id="loginToggle" onclick="showLogin()" title="Acceso editor">· · ·</div>
+<div class="login-toggle" id="loginToggle" style="display:none"></div>
 
 <div id="loginModal">
   <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;width:340px;font-family:var(--mono)">
@@ -2145,6 +2145,10 @@ function updateClock(){
 
 // ── INIT ─────────────────────────────────────────────────────────────────
 window.addEventListener('load', function(){
+  // Check for editor URL param: ?editor=true
+  if(new URLSearchParams(window.location.search).get('editor') === 'true') {
+    showLogin();
+  }
   var emailEl = document.getElementById('about-email');
   if(emailEl) emailEl.textContent = ['julibesendorff','gmail.com'].join('@');
   loadNotes();
