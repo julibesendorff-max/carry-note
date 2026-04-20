@@ -238,6 +238,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--gold)">▸ Diagnóstico</a>
+    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
   </nav>
 </header>
 
@@ -301,64 +302,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div class="ticker-status" id="tickerStatus">··· cargando</div>
 </div>
 
-<div id="radarBand" style="background:#0f0f12;border-bottom:1px solid var(--border);padding:1.1rem 2.5rem;display:flex;align-items:stretch;gap:2.5rem;overflow-x:auto">
-
-  <!-- SIGNAL INDICATOR -->
-  <div style="display:flex;align-items:center;gap:1rem;min-width:280px;flex-shrink:0">
-    <div id="radarOrb" style="width:48px;height:48px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.6s">
-      <div id="radarOrbInner" style="width:16px;height:16px;border-radius:50%;background:var(--muted2);transition:all 0.6s"></div>
-    </div>
-    <div>
-      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem">▸ Radar Macro</div>
-      <div id="radarSignalText" style="font-family:var(--mono);font-size:0.8rem;font-weight:500;color:#e8e6e0;line-height:1.4;max-width:240px">Esperando ticker...</div>
-    </div>
-  </div>
-
-  <!-- DIVIDER -->
-  <div style="width:1px;background:var(--border);flex-shrink:0"></div>
-
-  <!-- ACTIVE ALERTS -->
-  <div style="flex:1;min-width:210px">
-    <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#9d99a8;margin-bottom:0.5rem">Señales activas</div>
-    <div id="radarAlerts" style="display:flex;flex-direction:column;gap:0.3rem">
-      <div style="font-family:var(--mono);font-size:0.68rem;color:#6b6875">···</div>
-    </div>
-  </div>
-
-  <!-- DIVIDER -->
-  <div style="width:1px;background:var(--border);flex-shrink:0"></div>
-
-  <!-- CORRELATIONS -->
-  <div style="flex:1;min-width:230px">
-    <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#9d99a8;margin-bottom:0.5rem">Correlaciones · variación hoy</div>
-    <div id="radarCorr" style="display:flex;flex-direction:column;gap:0.3rem">
-      <div style="font-family:var(--mono);font-size:0.68rem;color:#6b6875">···</div>
-    </div>
-  </div>
-
-  <!-- DIVIDER -->
-  <div style="width:1px;background:var(--border);flex-shrink:0"></div>
-
-  <!-- METHODOLOGY -->
-  <div style="min-width:200px;flex-shrink:0">
-    <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#9d99a8;margin-bottom:0.5rem">Metodología</div>
-    <div style="font-family:var(--mono);font-size:0.66rem;color:#9d99a8;line-height:1.75">
-      Detecta correlaciones entre activos en tiempo real.<br>
-      <span style="color:#c8c4bc">· Umbral de señal: ±0.3% en el día</span><br>
-      <span style="color:#c8c4bc">· Movimiento simultáneo de activos</span><br>
-      <span style="color:#c8c4bc">· Fuente: Finnhub · ExchangeRate API</span><br>
-      <span style="color:#9d99a8">· Actualización: cada 5 min</span>
-    </div>
-  </div>
-
-</div>
 
 <main>
   <!-- ABOUT COLUMN -->
   <aside class="about-col">
-    <div class="about-avatar" style="width:88px;height:88px;border-radius:50%;overflow:hidden;border:2px solid var(--gold);margin-bottom:1rem">
-      <img src="data:image/jpeg;base64,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" style="width:100%;height:100%;object-fit:cover;object-position:center top" alt="Julián Besendorff"/>
-    </div>
     <div class="about-name">Julián Besendorff</div>
 
     <div class="about-bio">Licenciado en Administración (UBA). Cursando Master en Economía en UCEMA. Actualmente analista en J.P. Morgan.</div>
@@ -904,6 +851,67 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es de car&#225;cter educativo e informativo. No constituye asesoramiento financiero, recomendaci&#243;n de inversi&#243;n ni oferta de compra o venta de ning&#250;n activo. · Carry Note</div>
     </div>
+    <!-- RADAR PANEL -->
+    <div id="radarPanel" style="display:none;margin-bottom:2rem">
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);margin-bottom:0.5rem">◉ Sistema de detección · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Radar Macro</div>
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Detección de patrones de correlación entre activos globales y argentinos en tiempo real. El sistema identifica señales cuando múltiples activos se mueven simultáneamente en la misma dirección.</div>
+      </div>
+
+      <!-- MAIN SIGNAL -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--red);padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem">
+        <div id="radarOrbLarge" style="width:64px;height:64px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.6s">
+          <div id="radarOrbInnerLarge" style="width:24px;height:24px;border-radius:50%;background:var(--muted2);transition:all 0.6s"></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.4rem">Estado actual del mercado</div>
+          <div id="radarSignalLarge" style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text);line-height:1.3">Esperando datos del ticker...</div>
+          <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-top:0.4rem">Actualizado cada 5 minutos · Fuente: Finnhub + ExchangeRate API</div>
+        </div>
+      </div>
+
+      <!-- SIGNALS GRID -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+        <div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Alertas activas</div>
+          <div id="radarAlertsLarge" style="display:flex;flex-direction:column;gap:0.5rem">
+            <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted2)">Calculando...</div>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Señales positivas</div>
+          <div id="radarPositiveLarge" style="display:flex;flex-direction:column;gap:0.5rem">
+            <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted2)">Calculando...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CORRELATIONS TABLE -->
+      <div style="margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Correlaciones · variación del día</div>
+        <div id="radarCorrLarge" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+      </div>
+
+      <!-- METHODOLOGY -->
+      <div style="background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Metodología del sistema</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.75">
+          <div>
+            <div style="color:var(--text);margin-bottom:0.3rem">¿Cómo detecta señales?</div>
+            El sistema monitorea 10 patrones de correlación. Una señal se activa cuando todos los activos del patrón se mueven en la misma dirección con una variación mínima de ±0.3% en el día.
+          </div>
+          <div>
+            <div style="color:var(--text);margin-bottom:0.3rem">Patrones monitoreados</div>
+            Risk-off global (VIX+Oro+TLT) · Risk-on (SPY+QQQ+BTC) · Presión inflacionaria (WTI+Oro) · Flight to quality (TLT+Oro) · Tech liderando (QQQ+NVDA) · Argentina rally/estrés (YPF+GGAL) · Dólar débil (Oro+BTC) · Mercado en caída (SPY+QQQ)
+          </div>
+        </div>
+        <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border2);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">
+          ⚠ El Radar Macro es una herramienta informativa. No constituye predicción de mercados ni asesoramiento financiero. Los patrones de correlación son históricos y no garantizan comportamientos futuros.
+        </div>
+      </div>
+    </div>
+
     <!-- NEWSLETTER -->
     <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
@@ -2329,6 +2337,78 @@ async function loadCommunityFeed() {
   } catch(e) {
     el.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">No se pudieron cargar los diagnósticos.</div>';
   }
+}
+
+
+function showRadar(e) {
+  e && e.preventDefault();
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  document.getElementById('radarPanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  document.getElementById('radarTab').classList.add('active');
+  updateRadarLarge();
+}
+
+function updateRadarLarge() {
+  var signalEl  = document.getElementById('radarSignalLarge');
+  var alertsEl  = document.getElementById('radarAlertsLarge');
+  var positiveEl= document.getElementById('radarPositiveLarge');
+  var corrEl    = document.getElementById('radarCorrLarge');
+  var orbEl     = document.getElementById('radarOrbLarge');
+  var orbInner  = document.getElementById('radarOrbInnerLarge');
+  if(!signalEl) return;
+
+  var active = [], rows = [];
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){return x===null;})) return;
+    var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
+    var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
+    rows.push({name:p.name, avg:avg, color:p.color, active:match, level:p.level, desc:p.desc, assets:p.assets});
+    if(match) active.push(p);
+  });
+
+  var alerts   = active.filter(function(s){return s.level==='alerta';});
+  var positive = active.filter(function(s){return s.level==='positivo'||s.level==='atencion';});
+  var tone, toneColor, orbColor, orbBorder;
+  if(alerts.length>=2)    { tone='Estrés de mercado — múltiples alertas activas';      toneColor='#e05252'; orbColor='rgba(224,82,82,0.2)';  orbBorder='#e05252'; }
+  else if(alerts.length)  { tone='Cautela — señal de riesgo detectada';                toneColor='#c9a84c'; orbColor='rgba(201,168,76,0.2)'; orbBorder='#c9a84c'; }
+  else if(positive.length>=2){ tone='Apetito de riesgo — momentum positivo generalizado'; toneColor='#4caf7d'; orbColor='rgba(76,175,125,0.2)'; orbBorder='#4caf7d'; }
+  else if(positive.length){ tone='Mercado mixto — señal positiva aislada';             toneColor='#5b8dee'; orbColor='rgba(91,141,238,0.2)'; orbBorder='#5b8dee'; }
+  else                    { tone='Sin señales claras — mercado lateral';               toneColor='#9d99a8'; orbColor='var(--surface2)';       orbBorder='var(--border)'; }
+
+  signalEl.textContent = tone;
+  signalEl.style.color = toneColor;
+  if(orbEl)    { orbEl.style.background=orbColor; orbEl.style.borderColor=orbBorder; }
+  if(orbInner) { orbInner.style.background=toneColor; }
+
+  alertsEl.innerHTML = alerts.length ? alerts.map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.6rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2)">' +
+      '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:1px">●</span>' +
+      '<span style="font-family:var(--mono);font-size:0.72rem;color:#e8e6e0;line-height:1.5">'+s.desc+'</span></div>';
+  }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin alertas activas en este momento</div>';
+
+  positiveEl.innerHTML = positive.length ? positive.map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.6rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2)">' +
+      '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:1px">●</span>' +
+      '<span style="font-family:var(--mono);font-size:0.72rem;color:#e8e6e0;line-height:1.5">'+s.desc+'</span></div>';
+  }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
+
+  rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
+  corrEl.innerHTML = rows.map(function(r){
+    var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
+    var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
+    var bg    = r.active ? 'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
+      '<div>' +
+        '<span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.5rem">('+r.assets.join(', ')+')</span>' +
+      '</div>' +
+      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
+    '</div>';
+  }).join('');
 }
 
 function showDiag(e) {
