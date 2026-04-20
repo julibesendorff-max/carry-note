@@ -762,6 +762,19 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <button id="diagBtn" onclick="runDiag()" style="width:100%;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:2rem">Analizar mi cartera &#9658;</button>
       <div id="diagResult" style="display:none"></div>
 
+      <!-- ACTION BUTTONS -->
+      <div id="diagActions" style="display:none;gap:0.6rem;flex-wrap:wrap;margin-bottom:1.5rem">
+        <button onclick="downloadPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.1rem;background:var(--surface);color:var(--text);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:0.4rem">
+          ↓ Descargar PDF
+        </button>
+        <button onclick="shareWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.1rem;background:#25D366;color:#fff;border:none;cursor:pointer">
+          WhatsApp ↗
+        </button>
+        <button onclick="shareLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">
+          LinkedIn ↗
+        </button>
+      </div>
+
       <!-- SCENARIOS -->
       <div id="diagScenarios" style="display:none;margin-top:1.5rem">
         <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Simular escenario macro</div>
@@ -825,6 +838,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         </div>
       </div>
 
+
+      <!-- COMMUNITY FEED -->
+      <div id="diagCommunity" style="margin-top:2rem">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center">
+          <span>Carteras de la comunidad</span>
+          <span style="font-size:0.52rem;color:var(--muted2)">Datos anonimizados</span>
+        </div>
+        <div id="communityFeed" style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">Cargando...</div>
+        </div>
+      </div>
 
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es de car&#225;cter educativo e informativo. No constituye asesoramiento financiero, recomendaci&#243;n de inversi&#243;n ni oferta de compra o venta de ning&#250;n activo. · Carry Note</div>
     </div>
@@ -1857,6 +1881,15 @@ async function runDiagCore() {
     const txt = data.result||'';
     var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
     saveDiagHistory(assets, horizonte, riesgo, scoreMatch?scoreMatch[1]:null);
+    // Save anonymized result to community feed
+    var gateData = JSON.parse(localStorage.getItem('cn_gate')||'{}');
+    if(gateData.email) {
+      sbFetch('/rest/v1/consultas?email=eq.' + encodeURIComponent(gateData.email) + '&order=created_at.desc&limit=1', {
+        method: 'PATCH',
+        headers: {'Prefer': 'return=minimal'},
+        body: JSON.stringify({diagnostico: txt.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,800)})
+      }).catch(function(){});
+    }
     result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.85rem;color:#c8c4bc;line-height:1.75}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
     txt+'<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:0.5rem"><div><div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">Querés profundizar el análisis?</div><div style="font-size:0.78rem;color:var(--muted)">Julián puede armar una estrategia personalizada.</div></div><a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap">Contactar a Julián ▸</a></div>';
   } catch(err) {
@@ -1864,6 +1897,8 @@ async function runDiagCore() {
   }
   btn.disabled=false; btn.textContent='Analizar de nuevo';
   var dc=document.getElementById('diagContact'); if(dc) dc.style.display='block';
+  // Show action buttons
+  var dab=document.getElementById('diagActions'); if(dab) dab.style.display='flex';
   // Show scenario + comparison panels
   var ds=document.getElementById('diagScenarios'); if(ds) ds.style.display='block';
   var dcomp=document.getElementById('diagComparison'); if(dcomp) dcomp.style.display='block';
@@ -2105,6 +2140,139 @@ async function submitGate() {
 
   // Now run the actual analysis
   runDiagCore();
+}
+
+
+// ── SHARE & PDF ────────────────────────────────────────────
+function getShareText() {
+  var scoreEl = document.querySelector('.dscore b');
+  var score = scoreEl ? scoreEl.textContent : '?/10';
+  var assets = [];
+  document.querySelectorAll('#diagAssets > div').forEach(function(row) {
+    var sel = row.querySelector('select');
+    var inp = row.querySelector('input');
+    var mv = parseFloat(((inp?inp.value:'')||'').replace(/[^0-9.]/g,''));
+    if(sel && mv > 0) assets.push(sel.options[sel.selectedIndex].text);
+  });
+  var riesgo = document.getElementById('diagRiesgo').value;
+  return 'Acabo de analizar mi cartera en Carry Note y obtuve ' + score + ' (' + riesgo + '). Activos: ' + assets.slice(0,3).join(', ') + (assets.length > 3 ? ' y más' : '') + '. Analizá la tuya en thecarrynote.com';
+}
+
+function shareWhatsApp() {
+  var text = encodeURIComponent(getShareText());
+  window.open('https://wa.me/?text=' + text, '_blank');
+}
+
+function shareLinkedIn() {
+  var url = encodeURIComponent('https://thecarrynote.com');
+  var summary = encodeURIComponent(getShareText());
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + summary, '_blank');
+}
+
+function downloadPDF() {
+  var resultEl = document.getElementById('diagResult');
+  if(!resultEl) return;
+
+  // Build a clean printable HTML
+  var scoreEl = document.querySelector('.dscore b');
+  var score = scoreEl ? scoreEl.textContent : '';
+  var riesgo = document.getElementById('diagRiesgo').value;
+  var horizonte = document.getElementById('diagHorizonte').value;
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+
+  var assets = [];
+  document.querySelectorAll('#diagAssets > div').forEach(function(row) {
+    var sels = row.querySelectorAll('select');
+    var inp = row.querySelector('input');
+    var mv = parseFloat(((inp?inp.value:'')||'').replace(/[^0-9.]/g,''));
+    if(sels[0] && mv > 0) {
+      assets.push(sels[0].options[sels[0].selectedIndex].text + ': ' + mv.toLocaleString() + ' ' + (sels[1]?sels[1].value:'ARS'));
+    }
+  });
+
+  var printWin = window.open('', '_blank');
+  printWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>Diagnóstico Carry Note · ${today}</title>
+  <style>
+    body{font-family:Georgia,serif;max-width:750px;margin:40px auto;color:#1a1a1a;background:#fff;padding:0 20px}
+    h1{font-size:2rem;margin-bottom:0.25rem;color:#1a1a1a}
+    .gold{color:#b8860b}.mono{font-family:'Courier New',monospace;font-size:0.85rem}
+    .tag{display:inline-block;font-family:'Courier New',monospace;font-size:0.7rem;padding:0.2rem 0.5rem;border:1px solid #b8860b;color:#b8860b;margin-bottom:1rem}
+    .divider{border:none;border-top:1px solid #ddd;margin:1.5rem 0}
+    .section{margin-bottom:1.5rem}
+    .section h2{font-family:'Courier New',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.75rem;border-bottom:1px solid #eee;padding-bottom:0.4rem}
+    .asset-row{display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;font-family:'Courier New',monospace;font-size:0.85rem}
+    .score-box{background:#f9f5eb;border:1px solid #b8860b;border-left:4px solid #b8860b;padding:1rem 1.25rem;margin:1.5rem 0;display:flex;justify-content:space-between;align-items:center}
+    .score-num{font-size:2.5rem;font-weight:bold;color:#b8860b;font-family:'Courier New',monospace}
+    .result-content p{line-height:1.75;margin-bottom:0.75rem;font-size:0.92rem;color:#333}
+    .result-content h3{font-family:'Courier New',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin:1.25rem 0 0.5rem}
+    .result-content ul{padding-left:1.2rem;margin-bottom:0.75rem}
+    .result-content li{line-height:1.65;font-size:0.92rem;color:#333;margin-bottom:0.35rem}
+    .footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd;font-family:'Courier New',monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}
+    .disclaimer{background:#fff8f8;border:1px solid #e8c8c8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:'Courier New',monospace;font-size:0.72rem;color:#666;line-height:1.6}
+    @media print{body{margin:20px}}
+  </style></head><body>
+  <div class="tag">▸ CARRY NOTE · DIAGNÓSTICO DE CARTERA</div>
+  <h1>Diagnóstico <span class="gold">macroeconómico</span></h1>
+  <p class="mono" style="color:#888;margin-bottom:1.5rem">${today} · Perfil ${riesgo} · Horizonte ${horizonte}</p>
+  <hr class="divider">
+  <div class="section">
+    <h2>Cartera analizada</h2>
+    ${assets.map(a => '<div class="asset-row"><span>' + a + '</span></div>').join('')}
+  </div>
+  <div class="score-box">
+    <div>
+      <div style="font-family:'Courier New',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.3rem">Puntuación</div>
+      <div style="font-size:0.9rem;color:#555">Alineación con perfil ${riesgo}</div>
+    </div>
+    <div class="score-num">${score}</div>
+  </div>
+  <div class="section result-content">
+    <h2>Análisis completo</h2>
+    ${resultEl.innerHTML.replace(/<style>.*?<\/style>/s,'').replace(/class="ds[^"]*"/g,'').replace(/class="dscore[^"]*"/g,'')}
+  </div>
+  <div class="disclaimer">⚠ Este diagnóstico es de carácter educativo e informativo. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del inversor.</div>
+  <div class="footer">
+    <span>Carry Note · thecarrynote.com</span>
+    <span>Julián Besendorff · Análisis Macroeconómico</span>
+  </div>
+  <script>window.onload=function(){window.print();}<\/script>
+  </body></html>`);
+  printWin.document.close();
+}
+
+// ── COMMUNITY FEED ──────────────────────────────────────────
+async function loadCommunityFeed() {
+  const el = document.getElementById('communityFeed');
+  if(!el) return;
+  try {
+    // Load last 10 diagnostics from Supabase (anonymized)
+    const res = await sbFetch('/rest/v1/consultas?select=edad,profesion,diagnostico,created_at&order=created_at.desc&limit=8');
+    if(!res.ok) throw new Error();
+    const data = await res.json();
+    if(!data.length) { el.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">Aún no hay diagnósticos de la comunidad.</div>'; return; }
+    el.innerHTML = data.filter(d => d.diagnostico && d.diagnostico.length > 20).map(function(d) {
+      var prof = d.profesion || 'Inversor';
+      var edad = d.edad ? d.edad + ' años' : '';
+      var score = (d.diagnostico.match(/(\d+)\/10/) || [])[1];
+      var date = new Date(d.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+      // Extract first meaningful sentence from diagnostico
+      var preview = d.diagnostico.replace(/[#*]/g,'').split('.').filter(s=>s.trim().length>20)[0] || '';
+      preview = preview.trim().slice(0,120) + (preview.length > 120 ? '...' : '.');
+      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.85rem 1rem;border-left:2px solid var(--border)">' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">' +
+          '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted)">' + prof + (edad ? ' · ' + edad : '') + '</span>' +
+          '<div style="display:flex;align-items:center;gap:0.5rem">' +
+            (score ? '<span style="font-family:var(--mono);font-size:0.8rem;color:var(--gold);font-weight:600">' + score + '/10</span>' : '') +
+            '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + date + '</span>' +
+          '</div>' +
+        '</div>' +
+        (preview ? '<div style="font-size:0.75rem;color:var(--muted);line-height:1.55">' + preview + '</div>' : '') +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">No se pudieron cargar los diagnósticos.</div>';
+  }
 }
 
 function showDiag(e) {
