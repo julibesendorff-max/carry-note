@@ -301,6 +301,58 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div class="ticker-status" id="tickerStatus">··· cargando</div>
 </div>
 
+<div id="radarBand" style="background:var(--surface);border-bottom:1px solid var(--border);padding:0.9rem 2.5rem;display:flex;align-items:stretch;gap:2rem;overflow-x:auto">
+
+  <!-- SIGNAL INDICATOR -->
+  <div style="display:flex;align-items:center;gap:0.75rem;min-width:260px;flex-shrink:0">
+    <div id="radarOrb" style="width:42px;height:42px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.6s">
+      <div id="radarOrbInner" style="width:14px;height:14px;border-radius:50%;background:var(--muted2);transition:all 0.6s"></div>
+    </div>
+    <div>
+      <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.2rem">▸ Radar Macro</div>
+      <div id="radarSignalText" style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--muted);line-height:1.3;max-width:220px">Esperando ticker...</div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div style="width:1px;background:var(--border2);flex-shrink:0"></div>
+
+  <!-- ACTIVE ALERTS -->
+  <div style="flex:1;min-width:200px">
+    <div style="font-family:var(--mono);font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.45rem">Señales activas</div>
+    <div id="radarAlerts" style="display:flex;flex-direction:column;gap:0.25rem">
+      <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">···</div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div style="width:1px;background:var(--border2);flex-shrink:0"></div>
+
+  <!-- CORRELATIONS -->
+  <div style="flex:1;min-width:220px">
+    <div style="font-family:var(--mono);font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.45rem">Correlaciones · variación hoy</div>
+    <div id="radarCorr" style="display:flex;flex-direction:column;gap:0.2rem">
+      <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">···</div>
+    </div>
+  </div>
+
+  <!-- DIVIDER -->
+  <div style="width:1px;background:var(--border2);flex-shrink:0"></div>
+
+  <!-- METHODOLOGY -->
+  <div style="min-width:180px;flex-shrink:0">
+    <div style="font-family:var(--mono);font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.45rem">Metodología</div>
+    <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);line-height:1.6">
+      Detecta patrones de correlación entre activos en tiempo real. Basado en:<br>
+      · Movimiento simultáneo de activos correlacionados<br>
+      · Umbral de señal: ±0.3% en el día<br>
+      · Fuente: Finnhub · ExchangeRate API<br>
+      · Actualización: cada 5 min
+    </div>
+  </div>
+
+</div>
+
 <main>
   <!-- ABOUT COLUMN -->
   <aside class="about-col">
@@ -2356,7 +2408,8 @@ function updateRadar() {
   var signalEl = document.getElementById('radarSignalText');
   var alertsEl = document.getElementById('radarAlerts');
   var corrEl   = document.getElementById('radarCorr');
-  var dotEl    = document.getElementById('radarDot');
+  var orbEl    = document.getElementById('radarOrb');
+  var orbInner = document.getElementById('radarOrbInner');
   if(!signalEl) return;
 
   var active = [], rows = [];
@@ -2370,33 +2423,39 @@ function updateRadar() {
     if(match) active.push(p);
   });
 
-  // Overall tone
   var alerts   = active.filter(function(s){return s.level==='alerta';}).length;
   var positive = active.filter(function(s){return s.level==='positivo';}).length;
-  var tone, toneColor, dot;
-  if(alerts>=2)           { tone='Estres de mercado — multiples alertas activas';    toneColor='var(--red)';   dot='#e05252'; }
-  else if(alerts===1)     { tone='Cautela — señal de riesgo detectada';              toneColor='var(--gold)';  dot='#c9a84c'; }
-  else if(positive>=2)    { tone='Apetito de riesgo — momentum positivo generalizado'; toneColor='var(--green)'; dot='#4caf7d'; }
-  else if(positive===1)   { tone='Mercado mixto — señal positiva aislada';           toneColor='var(--blue)';  dot='#5b8dee'; }
-  else                    { tone='Sin señales claras — mercado lateral';             toneColor='var(--muted)'; dot='#6b6875'; }
+  var tone, toneColor, orbColor, orbBorder;
+  if(alerts>=2)        { tone='Estrés de mercado · múltiples alertas activas';       toneColor='#e05252'; orbColor='rgba(224,82,82,0.15)';  orbBorder='#e05252'; }
+  else if(alerts===1)  { tone='Cautela · señal de riesgo detectada';                 toneColor='#c9a84c'; orbColor='rgba(201,168,76,0.15)'; orbBorder='#c9a84c'; }
+  else if(positive>=2) { tone='Apetito de riesgo · momentum positivo generalizado';  toneColor='#4caf7d'; orbColor='rgba(76,175,125,0.15)'; orbBorder='#4caf7d'; }
+  else if(positive===1){ tone='Mercado mixto · señal positiva aislada';              toneColor='#5b8dee'; orbColor='rgba(91,141,238,0.15)'; orbBorder='#5b8dee'; }
+  else                 { tone='Sin señales claras · mercado lateral o datos insuf.'; toneColor='#6b6875'; orbColor='var(--surface2)';        orbBorder='var(--border)'; }
 
   signalEl.textContent = tone;
   signalEl.style.color = toneColor;
-  if(dotEl) dotEl.style.background = dot;
+  if(orbEl)    { orbEl.style.background = orbColor; orbEl.style.borderColor = orbBorder; }
+  if(orbInner) { orbInner.style.background = toneColor; }
 
-  alertsEl.innerHTML = active.slice(0,3).map(function(s){
-    return '<div style="display:flex;gap:0.4rem;padding:0.35rem 0;border-bottom:1px solid var(--border2)">' +
-      '<span style="color:'+s.color+';font-size:0.65rem">●</span>' +
-      '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);line-height:1.5">'+s.desc+'</span></div>';
-  }).join('');
+  if(active.length > 0) {
+    alertsEl.innerHTML = active.slice(0,3).map(function(s){
+      return '<div style="display:flex;align-items:center;gap:0.35rem">' +
+        '<span style="color:'+s.color+';font-size:0.6rem;flex-shrink:0">●</span>' +
+        '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);line-height:1.4">'+s.desc+'</span></div>';
+    }).join('');
+  } else {
+    alertsEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Sin alertas activas</div>';
+  }
 
   rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
-  corrEl.innerHTML = rows.slice(0,5).map(function(r){
+  corrEl.innerHTML = rows.slice(0,4).map(function(r){
     var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
-    var cls   = r.avg>0.3?'var(--green)':r.avg<-0.3?'var(--red)':'var(--muted)';
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.3rem 0;border-bottom:1px solid var(--border2)">' +
-      '<span style="font-family:var(--mono);font-size:0.58rem;color:'+(r.active?r.color:'var(--muted)')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
-      '<span style="font-family:var(--mono);font-size:0.62rem;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(1)+'%</span>' +
+    var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'var(--muted2)';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem">' +
+      '<span style="font-family:var(--mono);font-size:0.6rem;color:'+(r.active?r.color:'var(--muted)')+'">'+
+        (r.active?'● ':'○ ')+r.name+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.62rem;color:'+cls+';white-space:nowrap">'+
+        arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(1)+'%</span>' +
     '</div>';
   }).join('');
 }
