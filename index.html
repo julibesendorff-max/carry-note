@@ -893,6 +893,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div id="radarCorrLarge" style="display:flex;flex-direction:column;gap:0.4rem"></div>
       </div>
 
+      <!-- AI SUGGESTION -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">▸ Sugerencia macro · IA</div>
+          <button onclick="generateRadarSuggestion()" id="radarSugBtn" style="font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 0.9rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Generar análisis ▸</button>
+        </div>
+        <div id="radarSuggestion" style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.7">
+          Presioná "Generar análisis" para obtener una interpretación de las señales actuales y una sugerencia de posicionamiento de cartera basada en el contexto macro del momento.
+        </div>
+      </div>
+
       <!-- METHODOLOGY -->
       <div style="background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Metodología del sistema</div>
@@ -1364,7 +1375,7 @@ function buildPrompt(topic) {
     '- YPF/Burford: 2nd Circuit Court NY overturned $16bn ruling in favor of Argentina (Mar 27, 2026)',
     '- US-Israel vs Iran conflict driving oil prices above $100',
     '- Trump administration: new tariffs reshaping global trade',
-  ].join('\n');
+  ].join('\\n');
 
   return 'Write a Carry Note analysis about: "' + topic + '".\n\nContext as of ' + today + ':\n' + marketData + '\n\nIMPORTANT: Use web_search to find the latest data, news and figures about this topic before writing. Complement the data above with fresh search results. Be specific with current figures and take a clear position.';
 }
@@ -2340,9 +2351,73 @@ async function loadCommunityFeed() {
 }
 
 
+
+async function generateRadarSuggestion() {
+  var btn = document.getElementById('radarSugBtn');
+  var el  = document.getElementById('radarSuggestion');
+  if(!btn || !el) return;
+  btn.disabled = true; btn.textContent = 'Analizando...';
+  el.textContent = 'Carry Note analizando las señales del mercado...';
+  el.style.color = 'var(--gold)';
+
+  // Build context from active signals and correlations
+  var active = [], rows = [];
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){return x===null;})) return;
+    var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
+    var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
+    if(match) active.push(p.desc);
+    rows.push(p.name + ': ' + (avg>=0?'+':'') + avg.toFixed(2) + '%');
+  });
+
+  var spyPct  = getTickerChange('spx');
+  var vixPct  = getTickerChange('vix');
+  var goldPct = getTickerChange('gld');
+  var btcPct  = getTickerChange('btc');
+  var ypfPct  = getTickerChange('ypf');
+  var ggalPct = getTickerChange('ggal');
+
+  var context = 'SENALES HOY: ' + (active.length ? active.join(' | ') : 'Ninguna') +
+    ' ||| CORRELACIONES: ' + rows.join(' | ') +
+    ' ||| SPY: ' + (spyPct!==null?(spyPct>=0?'+':'')+spyPct.toFixed(2)+'%':'ND') +
+    ' VIX: ' + (vixPct!==null?(vixPct>=0?'+':'')+vixPct.toFixed(2)+'%':'ND') +
+    ' ORO: ' + (goldPct!==null?(goldPct>=0?'+':'')+goldPct.toFixed(2)+'%':'ND') +
+    ' BTC: ' + (btcPct!==null?(btcPct>=0?'+':'')+btcPct.toFixed(2)+'%':'ND') +
+    ' YPF: ' + (ypfPct!==null?(ypfPct>=0?'+':'')+ypfPct.toFixed(2)+'%':'ND') +
+    ' GGAL: ' + (ggalPct!==null?(ggalPct>=0?'+':'')+ggalPct.toFixed(2)+'%':'ND') +
+    ' ||| MACRO GLOBAL: Fed 3.50-3.75%, CPI 3.3% YoY, Core 2.6%' +
+    ' ||| MACRO AR: IPC mar 3.4%, interanual 32.6%, Riesgo pais ~500pb, Reservas USD 45.4B';
+
+  try {
+    var res = await fetch('/api/diagnose', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        assets: [{tipo:'Radar Macro', monto:0, moneda:'USD'}],
+        horizonte: 'medio',
+        riesgo: 'moderado',
+        liveData: context,
+        mode: 'scenario',
+        scenario: 'Basandote EXCLUSIVAMENTE en las señales activas y correlaciones descriptas arriba, escribi en espanol: 1) Una interpretacion de lo que esta pasando hoy en los mercados (2-3 oraciones). 2) Que implica esto para un inversor argentino con exposicion mixta (pesos + dolares + acciones). 3) Una sugerencia concreta de posicionamiento para las proximas 48-72 horas. Se directo, usa numeros cuando puedas, evita generalidades.'
+      })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var data = await res.json();
+    el.innerHTML = (data.result||'').split('\n').join('<br>');
+    el.style.color = 'var(--text)';
+    el.style.fontSize = '0.82rem';
+    el.style.lineHeight = '1.75';
+  } catch(err) {
+    el.textContent = 'Error al generar el análisis: ' + err.message;
+    el.style.color = 'var(--red)';
+  }
+  btn.disabled = false; btn.textContent = 'Actualizar análisis ▸';
+}
+
 function showRadar(e) {
   e && e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel'].forEach(function(id){
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   document.getElementById('radarPanel').style.display = 'block';
