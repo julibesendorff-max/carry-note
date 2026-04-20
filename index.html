@@ -904,7 +904,22 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
 
     
-  </aside>
+      <div class="sb-block" style="border-top-color:var(--red)">
+      <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">
+        Radar Macro
+        <span id="radarDot" style="width:8px;height:8px;border-radius:50%;background:var(--muted2);display:inline-block;transition:background 0.5s"></span>
+      </div>
+      <div id="radarSignal" style="background:var(--surface2);border:1px solid var(--border2);padding:0.7rem;margin-bottom:0.75rem">
+        <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Señal dominante</div>
+        <div id="radarSignalText" style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);line-height:1.5">Esperando datos del ticker...</div>
+      </div>
+      <div id="radarAlerts" style="margin-bottom:0.5rem"></div>
+      <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.4rem">Correlaciones activas</div>
+      <div id="radarCorr"><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">···</div></div>
+      <div style="font-family:var(--mono);font-size:0.48rem;color:var(--muted2);margin-top:0.6rem">Basado en datos del ticker en vivo</div>
+    </div>
+
+</aside>
 </main>
 
 <footer>
@@ -1045,6 +1060,8 @@ async function loadTicker() {
     await loadForex();
     status.textContent = '● EN VIVO';
     status.className = 'ticker-status live';
+    setTimeout(updateRadar, 500);
+    updateRadar();
   } catch(e) {
     status.textContent = '○ sin conexión';
   }
@@ -2309,6 +2326,81 @@ function updateClock(){
 // clock removed
 
 // ── INIT ─────────────────────────────────────────────────────────────────
+
+// ── RADAR MACRO ────────────────────────────────────────────
+var RADAR_PATTERNS = [
+  {name:'Risk-off global',    assets:['vix','gld','tlt'], dirs:[1,1,1],  desc:'VIX+Oro+TLT al alza: fuga hacia refugios',          color:'var(--red)',   level:'alerta'},
+  {name:'Risk-on global',     assets:['spx','ndx','btc'], dirs:[1,1,1],  desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado',    color:'var(--green)', level:'positivo'},
+  {name:'Presion inflac.',    assets:['wti','gld'],       dirs:[1,1],    desc:'Petroleo+Oro subiendo: presion inflacionaria',       color:'var(--gold)',  level:'atencion'},
+  {name:'Flight to quality',  assets:['tlt','gld'],       dirs:[1,1],    desc:'TLT+Oro al alza: busqueda de activos refugio',       color:'var(--gold)',  level:'atencion'},
+  {name:'Tech liderando',     assets:['ndx','nvda'],      dirs:[1,1],    desc:'QQQ+NVDA al alza: sector tech liderando mercado',    color:'var(--green)', level:'positivo'},
+  {name:'VIX elevado',        assets:['vix'],             dirs:[1],      desc:'Volatilidad alta: mercado anticipa movimientos bruscos', color:'var(--red)', level:'alerta'},
+  {name:'Argentina rally',    assets:['ypf','ggal'],      dirs:[1,1],    desc:'YPF+GGAL al alza: flujo positivo en activos AR',    color:'var(--green)', level:'positivo'},
+  {name:'Argentina estres',   assets:['ypf','ggal'],      dirs:[-1,-1],  desc:'YPF+GGAL a la baja: presion sobre activos AR',      color:'var(--red)',   level:'alerta'},
+  {name:'Dolar debil',        assets:['gld','btc'],       dirs:[1,1],    desc:'Oro+BTC al alza: dolar bajo presion global',        color:'var(--gold)',  level:'atencion'},
+  {name:'Mercado caida',      assets:['spx','ndx'],       dirs:[-1,-1],  desc:'SPY+QQQ a la baja: sell-off en renta variable',     color:'var(--red)',   level:'alerta'},
+];
+
+function getTickerChange(id) {
+  var el = document.getElementById('t-' + id + '-c');
+  if(!el) return null;
+  var txt = (el.textContent||'').trim();
+  if(!txt || txt==='—'||txt===' —') return null;
+  var m = txt.match(/(\d+\.?\d*)/);
+  if(!m) return null;
+  var v = parseFloat(m[1]);
+  return el.className.indexOf('t-dn') >= 0 ? -v : v;
+}
+
+function updateRadar() {
+  var signalEl = document.getElementById('radarSignalText');
+  var alertsEl = document.getElementById('radarAlerts');
+  var corrEl   = document.getElementById('radarCorr');
+  var dotEl    = document.getElementById('radarDot');
+  if(!signalEl) return;
+
+  var active = [], rows = [];
+
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){return x===null;})) return;
+    var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
+    var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
+    rows.push({name:p.name, avg:avg, color:p.color, active:match, level:p.level, desc:p.desc});
+    if(match) active.push(p);
+  });
+
+  // Overall tone
+  var alerts   = active.filter(function(s){return s.level==='alerta';}).length;
+  var positive = active.filter(function(s){return s.level==='positivo';}).length;
+  var tone, toneColor, dot;
+  if(alerts>=2)           { tone='Estres de mercado — multiples alertas activas';    toneColor='var(--red)';   dot='#e05252'; }
+  else if(alerts===1)     { tone='Cautela — señal de riesgo detectada';              toneColor='var(--gold)';  dot='#c9a84c'; }
+  else if(positive>=2)    { tone='Apetito de riesgo — momentum positivo generalizado'; toneColor='var(--green)'; dot='#4caf7d'; }
+  else if(positive===1)   { tone='Mercado mixto — señal positiva aislada';           toneColor='var(--blue)';  dot='#5b8dee'; }
+  else                    { tone='Sin señales claras — mercado lateral';             toneColor='var(--muted)'; dot='#6b6875'; }
+
+  signalEl.textContent = tone;
+  signalEl.style.color = toneColor;
+  if(dotEl) dotEl.style.background = dot;
+
+  alertsEl.innerHTML = active.slice(0,3).map(function(s){
+    return '<div style="display:flex;gap:0.4rem;padding:0.35rem 0;border-bottom:1px solid var(--border2)">' +
+      '<span style="color:'+s.color+';font-size:0.65rem">●</span>' +
+      '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);line-height:1.5">'+s.desc+'</span></div>';
+  }).join('');
+
+  rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
+  corrEl.innerHTML = rows.slice(0,5).map(function(r){
+    var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
+    var cls   = r.avg>0.3?'var(--green)':r.avg<-0.3?'var(--red)':'var(--muted)';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.3rem 0;border-bottom:1px solid var(--border2)">' +
+      '<span style="font-family:var(--mono);font-size:0.58rem;color:'+(r.active?r.color:'var(--muted)')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.62rem;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(1)+'%</span>' +
+    '</div>';
+  }).join('');
+}
+
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
   if(new URLSearchParams(window.location.search).get('editor') === 'true') {
