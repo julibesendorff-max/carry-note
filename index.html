@@ -896,7 +896,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <!-- AI SUGGESTION -->
       <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:1.5rem">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">▸ Sugerencia macro · IA</div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">▸ Sugerencia macro</div>
           <button onclick="generateRadarSuggestion()" id="radarSugBtn" style="font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 0.9rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Generar análisis ▸</button>
         </div>
         <div id="radarSuggestion" style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.7">
@@ -2399,12 +2399,16 @@ async function generateRadarSuggestion() {
         riesgo: 'moderado',
         liveData: context,
         mode: 'scenario',
-        scenario: 'Basandote EXCLUSIVAMENTE en las señales activas y correlaciones descriptas arriba, escribi en espanol: 1) Una interpretacion de lo que esta pasando hoy en los mercados (2-3 oraciones). 2) Que implica esto para un inversor argentino con exposicion mixta (pesos + dolares + acciones). 3) Una sugerencia concreta de posicionamiento para las proximas 48-72 horas. Se directo, usa numeros cuando puedas, evita generalidades.'
+        scenario: 'Basandote EXCLUSIVAMENTE en las senales activas y correlaciones descriptas arriba, escribi en espanol: 1) Una interpretacion de lo que esta pasando hoy en los mercados (2-3 oraciones). 2) Que implica esto para un inversor argentino con exposicion mixta (pesos + dolares + acciones). 3) Una orientacion general de posicionamiento para las proximas 48-72 horas. IMPORTANTE: Al final de cada punto, aclarando que esto NO constituye recomendacion de inversion ni asesoramiento financiero, y que toda decision de inversion es responsabilidad exclusiva del lector. Se directo y usa numeros cuando puedas.'
       })
     });
     if(!res.ok) throw new Error('HTTP '+res.status);
     var data = await res.json();
-    el.innerHTML = (data.result||'').split('\n').join('<br>');
+    var resultText = (data.result||'').split('\n').join('<br>');
+    el.innerHTML = resultText +
+      '<div style="margin-top:1rem;padding:0.75rem 1rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.25);border-left:3px solid var(--red);font-family:var(--mono);font-size:0.62rem;color:#c8a090;line-height:1.6">' +
+      '<strong style="color:#e05252">⚠ Aviso importante:</strong> Este análisis es de carácter estrictamente educativo e informativo. No constituye recomendación de inversión, asesoramiento financiero ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del inversor.' +
+      '</div>';
     el.style.color = 'var(--text)';
     el.style.fontSize = '0.82rem';
     el.style.lineHeight = '1.75';
@@ -2417,10 +2421,11 @@ async function generateRadarSuggestion() {
 
 function showRadar(e) {
   e && e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel','noResults'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   document.getElementById('radarPanel').style.display = 'block';
+  var nr = document.getElementById('noResults'); if(nr) nr.style.display = 'none';
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   document.getElementById('radarTab').classList.add('active');
   updateRadarLarge();
