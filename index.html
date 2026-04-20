@@ -2421,11 +2421,12 @@ async function generateRadarSuggestion() {
 
 function showRadar(e) {
   e && e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel','noResults'].forEach(function(id){
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
+  // Force hide all content that might show through
+  document.querySelectorAll('.note-card, .empty, .no-results, .loading-card').forEach(function(el){ el.style.display='none'; });
   document.getElementById('radarPanel').style.display = 'block';
-  var nr = document.getElementById('noResults'); if(nr) nr.style.display = 'none';
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   document.getElementById('radarTab').classList.add('active');
   updateRadarLarge();
