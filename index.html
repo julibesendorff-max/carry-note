@@ -1911,7 +1911,22 @@ async function runDiagCore() {
   var btcVal = (document.getElementById('t-btc')||{}).textContent||'~69000';
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var goldVal = (document.getElementById('t-gld')||{}).textContent||'~295';
-  var liveData = 'DATOS EN VIVO ('+today+'):\n- SPY: '+spyVal+'\n- BTC: '+btcVal+'\n- USD/ARS: '+arsVal+'\n- Gold: '+goldVal+'\nMACRO ARG: Inflacion 2.9% mensual (INDEC), Reservas USD 45.4B, Riesgo pais 615pb\nMACRO EEUU: Fed 3.50-3.75%, CPI 2.8%, Desempleo 4.4%';
+  // Build liveData only with values actually loaded in ticker/sidebar
+  var liveLines = ['DATOS EN VIVO (' + today + '):'];
+  if(spyVal && spyVal.trim() !== '—') liveLines.push('- SPY: ' + spyVal.trim());
+  if(btcVal && btcVal.trim() !== '—') liveLines.push('- BTC: ' + btcVal.trim());
+  if(arsVal && arsVal.trim() !== '—') liveLines.push('- USD/ARS oficial: ' + arsVal.trim());
+  if(goldVal && goldVal.trim() !== '—') liveLines.push('- Gold (GLD): ' + goldVal.trim());
+  var rpEl = document.getElementById('arg-riesgo');
+  var rpLive = rpEl && rpEl.textContent && rpEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? rpEl.textContent.trim() : null;
+  var blueEl = document.getElementById('arg-blue');
+  var blueLive = blueEl && blueEl.textContent && blueEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? blueEl.textContent.trim() : null;
+  var arMacro = ['IPC mar 2026: 3.4% mensual, 32.6% interanual (INDEC)', 'Reservas BCRA: USD 45.4B'];
+  if(rpLive) arMacro.push('Riesgo pais EMBI+: ' + rpLive);
+  if(blueLive) arMacro.push('USD Blue: ' + blueLive);
+  liveLines.push('MACRO AR: ' + arMacro.join(' | '));
+  liveLines.push('MACRO EEUU: Fed 3.50-3.75% | CPI mar 3.3% YoY | Core CPI 2.6% | Desempleo 4.3%');
+  var liveData = liveLines.join(' ||| ')
   try {
     const res = await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData})});
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
@@ -2019,7 +2034,9 @@ async function runScenario(tipo) {
   const scenario = SCENARIOS[tipo];
   var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS '+arsVal+', Inflacion AR 2.9% mensual, Riesgo pais 615pb, Fed 3.50-3.75%';
+  var rpEl2 = document.getElementById('arg-riesgo');
+  var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
 
   try {
     const res = await fetch('/api/diagnose', {
@@ -2065,7 +2082,9 @@ async function runComparison() {
   const riesgo = document.getElementById('diagRiesgo').value;
   var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS '+arsVal+', Inflacion AR 2.9% mensual, Riesgo pais 615pb, Fed 3.50-3.75%';
+  var rpEl2 = document.getElementById('arg-riesgo');
+  var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
 
   try {
     const res = await fetch('/api/diagnose', {
@@ -2277,8 +2296,12 @@ async function generateRadarSuggestion() {
     ' BTC: ' + (btcPct!==null?(btcPct>=0?'+':'')+btcPct.toFixed(2)+'%':'ND') +
     ' YPF: ' + (ypfPct!==null?(ypfPct>=0?'+':'')+ypfPct.toFixed(2)+'%':'ND') +
     ' GGAL: ' + (ggalPct!==null?(ggalPct>=0?'+':'')+ggalPct.toFixed(2)+'%':'ND') +
-    ' ||| MACRO GLOBAL: Fed 3.50-3.75%, CPI 3.3% YoY, Core 2.6%' +
-    ' ||| MACRO AR: IPC mar 3.4%, interanual 32.6%, Riesgo pais ~500pb, Reservas USD 45.4B';
+    ' ||| MACRO GLOBAL: Fed 3.50-3.75% | CPI mar 3.3% YoY | Core CPI 2.6% | Desempleo 4.3%' +
+    (function(){
+      var rp = document.getElementById('arg-riesgo');
+      var rpStr = rp && rp.textContent && rp.textContent.trim() !== '···' ? rp.textContent.trim() : 'ver sidebar';
+      return ' ||| MACRO AR: IPC mar 3.4% mensual | interanual 32.6% | Riesgo pais EMBI+: ' + rpStr + ' | Reservas USD 45.4B';
+    })();
 
   try {
     var res = await fetch('/api/diagnose', {
