@@ -207,6 +207,15 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .about-item-val{font-size:0.78rem;color:var(--muted);font-weight:300}
 .about-link{font-family:var(--mono);font-size:0.6rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;display:inline-block;margin-top:0.5rem;border-bottom:1px solid transparent;transition:border-color 0.2s}
 .about-link:hover{border-bottom-color:var(--gold)}
+.comp-row{display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);align-items:flex-start}
+.comp-row.comp-new{background:rgba(76,175,125,0.06);border-left:3px solid var(--green)}
+.comp-row:not(.comp-new){border-left:3px solid var(--border)}
+.comp-label{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);min-width:120px;padding-top:0.15rem;flex-shrink:0}
+.comp-val{font-size:0.82rem;color:var(--text);line-height:1.6}
+.comp-new .comp-label{color:var(--green)}
+.comp-changes{padding:1rem;background:var(--surface2)}
+.comp-changes p{font-size:0.82rem;color:#c8c4bc;line-height:1.65;margin-bottom:0.5rem}
+.comp-changes p:last-child{margin-bottom:0}
 .scen-btn{font-family:var(--mono);font-size:0.62rem;padding:0.35rem 0.75rem;background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
 .scen-btn:hover{border-color:var(--gold);color:var(--gold)}
 .scen-btn.loading{opacity:0.5;cursor:not-allowed}
@@ -2050,10 +2059,11 @@ async function runScenario(tipo) {
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
+    var cleanResult = (data.result||'').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/^#+ /gm,'');
     scenResult.innerHTML =
       '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem 1.5rem">' +
-      '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem">Análisis de escenario</div>' +
-      '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">' + (data.result||'') + '</div></div>';
+      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Análisis de escenario</div>' +
+      '<div style="font-size:0.82rem;color:#c8c4bc;line-height:1.7">' + cleanResult + '</div></div>';
   } catch(err) {
     scenResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
   }
@@ -2095,9 +2105,10 @@ async function runComparison() {
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
     compResult.innerHTML =
-      '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--green);padding:1.25rem 1.5rem">' +
-      '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem">Cartera sugerida vs actual</div>' +
-      '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">' + (data.result||'') + '</div></div>';
+      '<div style="background:var(--surface);border:1px solid var(--border2);overflow:hidden">' +
+      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--green);letter-spacing:0.12em;text-transform:uppercase;padding:0.75rem 1rem;border-bottom:1px solid var(--border2);background:rgba(76,175,125,0.05)">Cartera sugerida vs actual</div>' +
+      (data.result||'') +
+      '</div>';
   } catch(err) {
     compResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
   }
