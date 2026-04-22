@@ -2045,7 +2045,7 @@ async function runScenario(tipo) {
       body: JSON.stringify({
         assets, horizonte, riesgo, liveData,
         scenario: scenario,
-        mode: 'scenario'
+        mode: 'scenario', short: true
       })
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
@@ -2066,7 +2066,7 @@ async function runComparison() {
   const btn = document.getElementById('compBtn');
   btn.disabled = true; btn.textContent = 'Generando...';
   compResult.style.display = 'block';
-  compResult.innerHTML = '<div style="font-family:var(--mono);font-size:0.7rem;color:var(--gold);padding:1rem">Claude armando cartera alternativa...</div>';
+  compResult.innerHTML = '<div style="font-family:var(--mono);font-size:0.7rem;color:var(--gold);padding:1rem">Analizando alternativas...</div>';
 
   const assets = [];
   document.querySelectorAll('#diagAssets > div').forEach(function(row) {
@@ -2090,7 +2090,7 @@ async function runComparison() {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({assets, horizonte, riesgo, liveData, mode: 'comparison'})
+      body: JSON.stringify({assets, horizonte, riesgo, liveData, mode: 'comparison', short: true})
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
@@ -2267,7 +2267,7 @@ async function generateRadarSuggestion() {
   var el  = document.getElementById('radarSuggestion');
   if(!btn || !el) return;
   btn.disabled = true; btn.textContent = 'Analizando...';
-  el.textContent = 'Carry Note analizando las señales del mercado...';
+  el.textContent = 'Analizando señales del mercado...';
   el.style.color = 'var(--gold)';
 
   // Build context from active signals and correlations
