@@ -711,14 +711,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           </div>
         </div>
       </div>
-      <!-- CTA -->
-      <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
-        <div>
-          <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.3rem">¿Querés asesoramiento personalizado?</div>
-          <div style="font-size:0.82rem;color:var(--muted);line-height:1.5">Analizamos tu situación, perfil de riesgo y objetivos para armar una estrategia a tu medida.</div>
-        </div>
-        <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.5rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap;transition:background 0.2s" onmouseover="this.style.background='#e8c96a'" onmouseout="this.style.background='var(--gold)'">Contactar a Julián ▸</a>
-      </div>
 
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem">⚠ El contenido es educativo e informativo. No constituye asesoramiento financiero ni recomendación de inversión. · Fuente: Carry Note / Julián Besendorff</div>
 
@@ -816,25 +808,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <button onclick="runComparison()" id="compBtn" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface);color:var(--gold);border:1px solid var(--gold);cursor:pointer;margin-bottom:0.75rem">Generar cartera alternativa ▸</button>
         <div id="compResult" style="display:none"></div>
       </div>
-
-      <!-- CONTACT -->
-      <div id="diagContact" style="display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-top:1.5rem">
-        <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.3rem">Queres asesoramiento personalizado?</div>
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">Julian analiza tu situacion en detalle y te propone una estrategia a medida.</div>
-        <div style="display:flex;flex-direction:column;gap:0.6rem">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
-            <input id="contactNombre" type="text" placeholder="Tu nombre" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-            <input id="contactEdad" type="number" min="18" max="99" placeholder="Edad" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
-            <input id="contactEmail" type="email" placeholder="Tu email" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-            <input id="contactProfesion" type="text" placeholder="Profesion / ocupacion" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-          </div>
-          <textarea id="contactMensaje" placeholder="Contame tu situacion y objetivos..." rows="3" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;resize:vertical"></textarea>
-          <button onclick="sendContactForm()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.65rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Enviar consulta</button>
-          <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.6">Al enviar aceptas que tus datos sean utilizados para contactarte sobre servicios de asesoramiento financiero. Ley 25.326.</div>
-          <div id="contactMsg" style="font-family:var(--mono);font-size:0.65rem;display:none"></div>
-        </div>
       </div>
       </div>
 
@@ -1956,12 +1929,11 @@ async function runDiagCore() {
       }).catch(function(){});
     }
     result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.85rem;color:#c8c4bc;line-height:1.75}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
-    txt+'<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:0.5rem"><div><div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">Querés profundizar el análisis?</div><div style="font-size:0.78rem;color:var(--muted)">Julián puede armar una estrategia personalizada.</div></div><a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.4rem;background:var(--gold);color:var(--bg);text-decoration:none;white-space:nowrap">Contactar a Julián ▸</a></div>';
+    txt+'';
   } catch(err) {
     result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
   }
   btn.disabled=false; btn.textContent='Analizar de nuevo';
-  var dc=document.getElementById('diagContact'); if(dc) dc.style.display='block';
   // Show action buttons
   var dab=document.getElementById('diagActions'); if(dab) dab.style.display='flex';
   // Show scenario + comparison panels
@@ -2114,44 +2086,6 @@ async function runComparison() {
 }
 
 
-async function sendContactForm() {
-  var nombre=(document.getElementById('contactNombre').value||'').trim();
-  var email=(document.getElementById('contactEmail').value||'').trim();
-  var mensaje=(document.getElementById('contactMensaje').value||'').trim();
-  var msg=document.getElementById('contactMsg');
-  if(!nombre||!email||!mensaje){msg.textContent='Completa todos los campos.';msg.style.color='var(--red)';msg.style.display='block';return;}
-  if(!email.includes('@')){msg.textContent='Email invalido.';msg.style.color='var(--red)';msg.style.display='block';return;}
-  var btn=document.querySelector('#diagContact button[onclick]');
-  if(btn){btn.disabled=true;btn.textContent='Enviando...';}
-  // Get diagnosis summary
-  var diagEl=document.getElementById('diagResult');
-  var diagText=diagEl?diagEl.innerText.slice(0,800):'';
-  try {
-    var res = await sbFetch('/rest/v1/consultas', {
-      method:'POST',
-      headers:{'Prefer':'return=minimal'},
-      body:JSON.stringify({nombre:nombre, email:email, edad:parseInt(document.getElementById('contactEdad').value)||null, profesion:(document.getElementById('contactProfesion').value||'').trim(), mensaje:mensaje, diagnostico:diagText})
-    });
-    if(res.ok||res.status===409){
-      msg.textContent='Consulta enviada. Julian te responde en 24-48hs.';
-      msg.style.color='var(--green)';
-      document.getElementById('contactNombre').value='';
-      document.getElementById('contactEmail').value='';
-      document.getElementById('contactMensaje').value='';
-    } else {
-      throw new Error('HTTP '+res.status);
-    }
-  } catch(e) {
-    // Fallback to mailto
-    var subject=encodeURIComponent('Consulta de asesoramiento - Carry Note');
-    var body=encodeURIComponent('Nombre: '+nombre+'\nEmail: '+email+'\n\n'+mensaje);
-    window.open('mailto:julibesendorff@gmail.com?subject='+subject+'&body='+body);
-    msg.textContent='Se abrio tu cliente de email.';
-    msg.style.color='var(--green)';
-  }
-  msg.style.display='block';
-  if(btn){btn.disabled=false;btn.textContent='Enviar consulta';}
-}
 
 // ── DIAGNOSTIC GATE ────────────────────────────────────────
 async function submitGate() {
