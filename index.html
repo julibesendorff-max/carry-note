@@ -1841,7 +1841,7 @@ const ASSET_TYPES = [
   {v:'nvda_cedr',l:'CEDEAR: NVIDIA (NVDA)'},{v:'tsla_cedr',l:'CEDEAR: Tesla (TSLA)'},
   {v:'msft_cedr',l:'CEDEAR: Microsoft (MSFT)'},{v:'amzn_cedr',l:'CEDEAR: Amazon (AMZN)'},
   {v:'googl_cedr',l:'CEDEAR: Alphabet (GOOGL)'},{v:'meta_cedr',l:'CEDEAR: Meta (META)'},
-  {v:'etf_eeuu',l:'ETFs EEUU (SPY, QQQ, etc.)'},{v:'acciones_eeuu',l:'Acciones EEUU (general)'},
+  {v:'sp500',l:'S&P 500 (SPY ETF)'},{v:'nasdaq',l:'Nasdaq (QQQ ETF)'},{v:'etf_eeuu',l:'ETFs EEUU (otros)'},{v:'acciones_eeuu',l:'Acciones EEUU (general)'},
   {v:'bitcoin',l:'Bitcoin (BTC)'},{v:'ethereum',l:'Ethereum (ETH)'},
   {v:'crypto_otro',l:'Crypto (otras)'},{v:'oro',l:'Oro'},
   {v:'otro',l:'Otro'},
@@ -1931,7 +1931,7 @@ async function runDiagCore() {
     const res = await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData})});
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
-    const txt = data.result||'';
+    const txt = (data.result||'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
     saveDiagHistory(assets, horizonte, riesgo, scoreMatch?scoreMatch[1]:null);
     // Save anonymized result to community feed
