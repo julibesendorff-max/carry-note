@@ -836,17 +836,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           <div id="contactMsg" style="font-family:var(--mono);font-size:0.65rem;display:none"></div>
         </div>
       </div>
-
-
-      <!-- COMMUNITY FEED -->
-      <div id="diagCommunity" style="margin-top:2rem">
-        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;display:flex;justify-content:space-between;align-items:center">
-          <span>Carteras de la comunidad</span>
-          <span style="font-size:0.52rem;color:var(--muted2)">Datos anonimizados</span>
-        </div>
-        <div id="communityFeed" style="display:flex;flex-direction:column;gap:0.5rem">
-          <div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">Cargando...</div>
-        </div>
       </div>
 
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es de car&#225;cter educativo e informativo. No constituye asesoramiento financiero, recomendaci&#243;n de inversi&#243;n ni oferta de compra o venta de ning&#250;n activo. · Carry Note</div>
@@ -896,7 +885,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <!-- AI SUGGESTION -->
       <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:1.5rem">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">▸ Sugerencia macro · IA</div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">▸ Sugerencia macro</div>
           <button onclick="generateRadarSuggestion()" id="radarSugBtn" style="font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 0.9rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Generar análisis ▸</button>
         </div>
         <div id="radarSuggestion" style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.7">
@@ -2317,39 +2306,6 @@ function downloadPDF() {
   printWin.document.close();
 }
 
-// ── COMMUNITY FEED ──────────────────────────────────────────
-async function loadCommunityFeed() {
-  const el = document.getElementById('communityFeed');
-  if(!el) return;
-  try {
-    // Load last 10 diagnostics from Supabase (anonymized)
-    const res = await sbFetch('/rest/v1/consultas?select=edad,profesion,diagnostico,created_at&order=created_at.desc&limit=8');
-    if(!res.ok) throw new Error();
-    const data = await res.json();
-    if(!data.length) { el.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">Aún no hay diagnósticos de la comunidad.</div>'; return; }
-    el.innerHTML = data.filter(d => d.diagnostico && d.diagnostico.length > 20).map(function(d) {
-      var prof = d.profesion || 'Inversor';
-      var edad = d.edad ? d.edad + ' años' : '';
-      var score = (d.diagnostico.match(/(\d+)\/10/) || [])[1];
-      var date = new Date(d.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
-      // Extract first meaningful sentence from diagnostico
-      var preview = d.diagnostico.replace(/[#*]/g,'').split('.').filter(s=>s.trim().length>20)[0] || '';
-      preview = preview.trim().slice(0,120) + (preview.length > 120 ? '...' : '.');
-      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.85rem 1rem;border-left:2px solid var(--border)">' +
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">' +
-          '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted)">' + prof + (edad ? ' · ' + edad : '') + '</span>' +
-          '<div style="display:flex;align-items:center;gap:0.5rem">' +
-            (score ? '<span style="font-family:var(--mono);font-size:0.8rem;color:var(--gold);font-weight:600">' + score + '/10</span>' : '') +
-            '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + date + '</span>' +
-          '</div>' +
-        '</div>' +
-        (preview ? '<div style="font-size:0.75rem;color:var(--muted);line-height:1.55">' + preview + '</div>' : '') +
-      '</div>';
-    }).join('');
-  } catch(e) {
-    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">No se pudieron cargar los diagnósticos.</div>';
-  }
-}
 
 
 
