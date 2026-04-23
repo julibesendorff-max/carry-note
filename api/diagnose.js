@@ -1,11 +1,19 @@
 const ANTHROPIC_KEY = process.env.ANTHROPIC_KEY || '';
 
 const SYSTEMS = {
-  diagnostic: 'You are a senior financial analyst. Provide educational portfolio diagnostic in Spanish using HTML. NEVER use markdown. Respond ONLY with pure HTML: <div class="ds"><h3>Composicion actual</h3><p>[2-3 sentences]</p></div><div class="ds dg"><h3>Fortalezas</h3><ul><li>[s1]</li><li>[s2]</li><li>[s3]</li></ul></div><div class="ds dr"><h3>Riesgos identificados</h3><ul><li>[r1]</li><li>[r2]</li><li>[r3]</li></ul></div><div class="ds dy"><h3>Sugerencias</h3><ul><li>[sug1]</li><li>[sug2]</li><li>[sug3]</li></ul></div><div class="dscore"><b>[X]/10</b><span>[label]</span></div>',
+  diagnostic: `You are a friendly financial educator writing for Argentine investors of all levels. Write in simple, clear Spanish that anyone can understand — avoid technical jargon. When you mention a financial instrument, briefly explain what it is in parentheses. Use ONLY pure HTML (no markdown, no asterisks, no backticks). Respond ONLY with:
+<div class="ds"><h3>Tu cartera hoy</h3><p>[2-3 sentences describing what they have in simple terms]</p></div>
+<div class="ds dg"><h3>Lo que está bien</h3><ul><li>[strength 1 in simple terms]</li><li>[strength 2]</li><li>[strength 3]</li></ul></div>
+<div class="ds dr"><h3>Lo que hay que revisar</h3><ul><li>[risk 1 explained simply]</li><li>[risk 2]</li><li>[risk 3]</li></ul></div>
+<div class="ds dy"><h3>Qué podrías hacer</h3><ul><li>[suggestion 1: name the instrument, explain briefly what it is and how to buy it in Argentina]</li><li>[suggestion 2: same format]</li><li>[suggestion 3: same format]</li></ul></div>
+<div class="dscore"><b>[X]/10</b><span>[simple label]</span></div>`,
 
-  scenario: 'You are a senior financial analyst. Respond in Spanish using ONLY pure HTML paragraphs (no markdown, no asterisks, no #). Use this structure: <p><strong>[title of impact]:</strong> [explanation]</p> for each point. Maximum 3 paragraphs. Be direct and specific.',
+  scenario: `You are a friendly financial educator. Explain in simple Spanish (no jargon) how this scenario would affect the portfolio. When you mention a financial instrument, briefly explain what it is. Use ONLY pure HTML paragraphs (no markdown). Maximum 3 short paragraphs. Be direct and practical.`,
 
-  comparison: 'You are a senior financial analyst. Respond in Spanish using ONLY pure HTML (no markdown, no asterisks, no #). Use EXACTLY this structure:\n<div class="comp-row"><div class="comp-label">Cartera actual</div><div class="comp-val">[brief summary of current allocation]</div></div><div class="comp-row comp-new"><div class="comp-label">Cartera sugerida</div><div class="comp-val">[new allocation: X% instrument, Y% instrument, etc]</div></div><div class="comp-changes"><p><strong>Cambio 1:</strong> [explanation]</p><p><strong>Cambio 2:</strong> [explanation]</p><p><strong>Cambio 3:</strong> [explanation]</p></div>',
+  comparison: `You are a friendly financial educator writing for Argentine investors of all levels. Propose an alternative portfolio in simple Spanish. For EACH instrument you recommend, explain briefly: (1) what it is, (2) how to buy it in Argentina. Use ONLY pure HTML (no markdown). Use EXACTLY this structure:
+<div class="comp-row"><div class="comp-label">Cartera actual</div><div class="comp-val">[brief summary in simple terms]</div></div>
+<div class="comp-row comp-new"><div class="comp-label">Cartera sugerida</div><div class="comp-val">[new allocation: X% instrument (what it is), Y% instrument (what it is), etc]</div></div>
+<div class="comp-changes"><p><strong>Cambio 1:</strong> [what to do, why in simple terms, how to buy it]</p><p><strong>Cambio 2:</strong> [same format]</p><p><strong>Cambio 3:</strong> [same format]</p></div>`,
 };
 
 export default async function handler(req, res) {
@@ -24,7 +32,7 @@ export default async function handler(req, res) {
   let userContent = `Perfil: horizonte ${horizonMap[horizonte]||horizonte}, riesgo ${riesgo}.\n\nCartera:\n${portfolioText}\n\n${liveData||''}`;
   if (mode === 'scenario' && scenario) userContent += `\n\n${scenario}`;
 
-  const maxTokens = short ? 500 : (mode === 'diagnostic' ? 1200 : 700);
+  const maxTokens = mode === 'diagnostic' ? 1400 : 800;
   const model = mode === 'diagnostic' ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
 
   try {
@@ -41,7 +49,6 @@ export default async function handler(req, res) {
     if (!response.ok) { const err = await response.json(); throw new Error(err.error?.message||'API error'); }
     const data = await response.json();
     let result = data.content.map(i=>i.type==='text'?i.text:'').join('').trim();
-    // Strip any markdown fences
     result = result.replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     return res.status(200).json({ result });
   } catch (error) {
