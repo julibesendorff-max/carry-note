@@ -95,7 +95,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:200px 1fr 320px;gap:2.5rem}
+main{max-width:1400px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:2.5rem}
 
 .editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
 .editor-panel.visible{display:block}
@@ -195,17 +195,17 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .cal-row:last-child{border-bottom:none}
 .cal-date{color:var(--gold);min-width:50px}.cal-ev{color:var(--muted)}
 
-.about-col{padding-top:0.5rem}
-.about-avatar{width:72px;height:72px;border-radius:50%;background:var(--surface2);border:2px solid var(--border);margin-bottom:1rem;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.about-avatar svg{width:40px;height:40px;opacity:0.3}
-.about-name{font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);line-height:1.2;margin-bottom:0.2rem}
-.about-role{font-family:var(--mono);font-size:0.58rem;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1rem;line-height:1.5}
-.about-bio{font-size:0.78rem;color:var(--muted);line-height:1.65;font-weight:300;margin-bottom:1.2rem}
-.about-divider{border:none;border-top:1px solid var(--border2);margin:1rem 0}
-.about-item{display:flex;flex-direction:column;gap:0.1rem;margin-bottom:0.75rem}
-.about-item-label{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase}
-.about-item-val{font-size:0.78rem;color:var(--muted);font-weight:300}
-.about-link{font-family:var(--mono);font-size:0.6rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;display:inline-block;margin-top:0.5rem;border-bottom:1px solid transparent;transition:border-color 0.2s}
+
+
+
+
+
+
+
+
+
+
+
 .about-link:hover{border-bottom-color:var(--gold)}
 .comp-row{display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);align-items:flex-start}
 .comp-row.comp-new{background:rgba(76,175,125,0.06);border-left:3px solid var(--green)}
@@ -224,10 +224,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
 
 @media(max-width:960px){
-  main{grid-template-columns:1fr;padding:1rem}
+  main{grid-template-columns:1fr;padding:1rem;gap:1.5rem}
   .sidebar{display:block}
   .sidebar .sb-block{margin-bottom:1rem}
-  .about-col{display:none}
+  
   .logo-name{font-size:2rem}
   .header-main,.editor-bar{padding-left:1.2rem;padding-right:1.2rem}
   .chart-box{height:60px}
@@ -257,6 +257,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
+    <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
 </header>
 
@@ -327,19 +328,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
 
 <main>
-  <!-- ABOUT COLUMN -->
-  <aside class="about-col">
-    <div class="about-name">Julián Besendorff</div>
-
-    <div class="about-bio">Licenciado en Administración (UBA). Cursando Master en Economía en UCEMA. Actualmente analista en J.P. Morgan.</div>
-    <hr class="about-divider">
-    <div class="about-item">
-      <span class="about-item-label">Experiencia</span>
-      <span class="about-item-val">J.P. Morgan · KPMG · HSBC</span>
-    </div>
-    <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" class="about-link">LinkedIn →</a>
-  </aside>
-  <section>
+<section>
     <div class="editor-panel" id="editorPanel">
       <div class="ep-label">▸ Nueva nota</div>
       <div class="ep-tabs">
@@ -954,6 +943,20 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
     </div>
 
+    <!-- SOBRE MI PANEL -->
+    <div id="sobrePanel" style="display:none;margin-bottom:2rem;max-width:580px">
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="font-family:var(--serif);font-size:2rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Julián Besendorff</div>
+        <div style="font-size:0.9rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem">Licenciado en Administración (UBA). Cursando Master en Economía en UCEMA. Actualmente analista en J.P. Morgan.</div>
+        <hr style="border:none;border-top:1px solid var(--border2);margin:1.25rem 0">
+        <div style="margin-bottom:0.75rem">
+          <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Experiencia</div>
+          <div style="font-size:0.82rem;color:var(--muted)">J.P. Morgan · KPMG · HSBC</div>
+        </div>
+        <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.62rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;border-bottom:1px solid transparent;transition:border-color 0.2s" onmouseover="this.style.borderBottomColor='var(--gold)'" onmouseout="this.style.borderBottomColor='transparent'">LinkedIn →</a>
+      </div>
+    </div>
+
     <!-- NEWSLETTER -->
     <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
@@ -1303,7 +1306,7 @@ document.querySelectorAll('.nav-strip a').forEach(a => {
     if(a.id === 'diagTab') return; // handled by showDiag
     if(a.id === 'radarTab') return; // handled by showRadar
     // Restore feed, hide special panels
-    ['fciPanel','aprenderPanel','diagPanel','radarPanel'].forEach(id => {
+    ['fciPanel','aprenderPanel','diagPanel','radarPanel','sobrePanel'].forEach(id => {
       const el = document.getElementById(id);
       if(el) el.style.display = 'none';
     });
@@ -2504,7 +2507,7 @@ function updateRadarLarge() {
 function showDiag(e) {
   e && e.preventDefault();
   // Hide all content panels
-  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel'];
+  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','sobrePanel'];
   toHide.forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
@@ -2915,9 +2918,21 @@ function logAlert(id, msg) {
   logEl.insertBefore(div, logEl.firstChild);
 }
 
+
+function showSobre(e) {
+  e && e.preventDefault();
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel','sobrePanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  document.querySelectorAll('.note-card, .empty, .loading-card, #emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
+  document.getElementById('sobrePanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  document.getElementById('sobreTab').classList.add('active');
+}
+
 function showWatchlist(e) {
   e && e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel'].forEach(function(id){
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   document.querySelectorAll('.note-card, .empty, .loading-card, #emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
