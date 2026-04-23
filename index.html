@@ -256,6 +256,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
+    <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
   </nav>
 </header>
 
@@ -907,6 +908,61 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
     </div>
 
+    <!-- WATCHLIST PANEL -->
+    <div id="watchlistPanel" style="display:none;margin-bottom:2rem">
+
+      <!-- HEADER -->
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem">☆ Watchlist personal · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Mi Watchlist</div>
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Seguí los activos que te interesan con precios en vivo y alertas personalizadas. Tu selección se guarda en este dispositivo.</div>
+      </div>
+
+      <!-- ADD ASSET -->
+      <div style="background:var(--surface);border:1px solid var(--border);padding:1.25rem;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Agregar activo</div>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:flex-end">
+          <div style="flex:1;min-width:180px">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Activo</div>
+            <select id="wlSymbol" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none;cursor:pointer">
+              <option value="">— Seleccioná un activo —</option>
+              <option value="spx">SPY (S&P 500 ETF)</option>
+              <option value="ndx">QQQ (Nasdaq ETF)</option>
+              <option value="vix">VIXY (VIX ETF)</option>
+              <option value="tlt">TLT (Bonos 20Y EEUU)</option>
+              <option value="wti">USO (WTI Petróleo ETF)</option>
+              <option value="gld">GLD (Oro ETF)</option>
+              <option value="btc">BTC (Bitcoin)</option>
+              <option value="nvda">NVDA (NVIDIA)</option>
+              <option value="tsla">TSLA (Tesla)</option>
+              <option value="ypf">YPF</option>
+              <option value="ggal">GGAL (Grupo Galicia)</option>
+            </select>
+          </div>
+          <div style="min-width:120px">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Alerta baja (%)</div>
+            <input type="number" id="wlAlertLow" placeholder="ej: -3" step="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
+          </div>
+          <div style="min-width:120px">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Alerta suba (%)</div>
+            <input type="number" id="wlAlertHigh" placeholder="ej: +3" step="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
+          </div>
+          <button onclick="addToWatchlist()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--blue);color:#fff;border:none;cursor:pointer;white-space:nowrap">+ Agregar</button>
+        </div>
+      </div>
+
+      <!-- WATCHLIST TABLE -->
+      <div id="wlList" style="display:flex;flex-direction:column;gap:0"></div>
+      <div id="wlEmpty" style="font-family:var(--mono);font-size:0.7rem;color:var(--muted2);text-align:center;padding:3rem;display:none">No tenés activos en tu watchlist todavía. Agregá uno arriba.</div>
+
+      <!-- ALERTS LOG -->
+      <div id="wlAlertsLog" style="margin-top:1.5rem;display:none">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Alertas activadas hoy</div>
+        <div id="wlAlertsList" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+      </div>
+
+    </div>
+
     <!-- NEWSLETTER -->
     <div id="newsletterBlock" style="margin-top:3rem;border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;background:var(--surface)">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Carry Note en tu inbox</div>
@@ -1114,6 +1170,7 @@ async function loadTicker() {
     status.className = 'ticker-status live';
     setTimeout(updateRadar, 500);
     updateRadar();
+    if(document.getElementById('watchlistPanel') && document.getElementById('watchlistPanel').style.display !== 'none') renderWatchlist();
   } catch(e) {
     status.textContent = '○ sin conexión';
   }
@@ -1761,7 +1818,7 @@ function renderFCI() {
 function showFCI(e) {
   e && e.preventDefault();
   // Hide everything feed-related
-  ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
+  ['feed','newsletterBlock','noResults','feedHeader','watchlistPanel'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
@@ -2656,6 +2713,147 @@ async function loadPreMarket() {
   } catch(e) {
     console.log('Pre-market error:', e);
   }
+}
+
+
+// ── WATCHLIST ──────────────────────────────────────────────
+var WL_LABELS = {
+  spx:'SPY · S&P 500 ETF', ndx:'QQQ · Nasdaq ETF', vix:'VIXY · VIX ETF',
+  tlt:'TLT · Bonos 20Y', wti:'USO · WTI Petróleo', gld:'GLD · Oro ETF',
+  btc:'BTC · Bitcoin', nvda:'NVDA · NVIDIA', tsla:'TSLA · Tesla',
+  ypf:'YPF', ggal:'GGAL · Grupo Galicia'
+};
+var wlAlertsFired = {};
+
+function getWatchlist() {
+  try { return JSON.parse(localStorage.getItem('cn_watchlist')||'[]'); } catch(e) { return []; }
+}
+function saveWatchlist(wl) {
+  localStorage.setItem('cn_watchlist', JSON.stringify(wl));
+}
+
+function addToWatchlist() {
+  var sym = document.getElementById('wlSymbol').value;
+  if(!sym) { alert('Seleccioná un activo.'); return; }
+  var wl = getWatchlist();
+  if(wl.find(function(x){ return x.id === sym; })) { alert('Ya está en tu watchlist.'); return; }
+  var low  = parseFloat(document.getElementById('wlAlertLow').value) || null;
+  var high = parseFloat(document.getElementById('wlAlertHigh').value) || null;
+  wl.push({id: sym, alertLow: low, alertHigh: high});
+  saveWatchlist(wl);
+  document.getElementById('wlSymbol').value = '';
+  document.getElementById('wlAlertLow').value = '';
+  document.getElementById('wlAlertHigh').value = '';
+  renderWatchlist();
+}
+
+function removeFromWatchlist(id) {
+  var wl = getWatchlist().filter(function(x){ return x.id !== id; });
+  saveWatchlist(wl);
+  renderWatchlist();
+}
+
+function updateWlAlert(id, field, val) {
+  var wl = getWatchlist();
+  var item = wl.find(function(x){ return x.id === id; });
+  if(item) { item[field] = val ? parseFloat(val) : null; saveWatchlist(wl); }
+}
+
+function renderWatchlist() {
+  var wl = getWatchlist();
+  var listEl = document.getElementById('wlList');
+  var emptyEl = document.getElementById('wlEmpty');
+  if(!listEl) return;
+
+  if(wl.length === 0) {
+    listEl.innerHTML = '';
+    if(emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  if(emptyEl) emptyEl.style.display = 'none';
+
+  // Event delegation
+  listEl.addEventListener('change', function(e) {
+    if(e.target.classList.contains('wl-alert-input')) {
+      updateWlAlert(e.target.dataset.id, e.target.dataset.field, e.target.value);
+    }
+  });
+  listEl.addEventListener('click', function(e) {
+    if(e.target.classList.contains('wl-remove-btn')) {
+      removeFromWatchlist(e.target.dataset.remove);
+    }
+  });
+
+  listEl.innerHTML = wl.map(function(item) {
+    var pct = getTickerChange(item.id);
+    var priceEl = document.getElementById('t-' + item.id);
+    var price = priceEl ? priceEl.textContent.trim() : '—';
+    var pctStr = pct !== null ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : '—';
+    var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
+    var arrow = pct === null ? '' : pct > 0 ? '▲ ' : pct < 0 ? '▼ ' : '';
+
+    // Alert check
+    var alertMsg = '';
+    var alertBg = '';
+    if(pct !== null) {
+      if(item.alertHigh !== null && pct >= item.alertHigh) {
+        alertMsg = '⚡ Alerta suba: +' + item.alertHigh + '%';
+        alertBg = 'background:rgba(76,175,125,0.08);border-left:3px solid var(--green)';
+        if(!wlAlertsFired[item.id+'_high_'+Math.floor(pct)]) {
+          wlAlertsFired[item.id+'_high_'+Math.floor(pct)] = true;
+          logAlert(item.id, '⬆ ' + WL_LABELS[item.id] + ' superó alerta de suba (' + pctStr + ')');
+        }
+      } else if(item.alertLow !== null && pct <= item.alertLow) {
+        alertMsg = '⚡ Alerta baja: ' + item.alertLow + '%';
+        alertBg = 'background:rgba(224,82,82,0.08);border-left:3px solid var(--red)';
+        if(!wlAlertsFired[item.id+'_low_'+Math.floor(pct)]) {
+          wlAlertsFired[item.id+'_low_'+Math.floor(pct)] = true;
+          logAlert(item.id, '⬇ ' + WL_LABELS[item.id] + ' superó alerta de baja (' + pctStr + ')');
+        }
+      }
+    }
+
+    var lowVal = item.alertLow !== null ? item.alertLow : '';
+    var highVal = item.alertHigh !== null ? item.alertHigh : '';
+
+    return '<div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem 1rem;align-items:center;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);' + alertBg + '">' +
+      '<div>' +
+        '<div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text)">' + (WL_LABELS[item.id]||item.id) + '</div>' +
+        (alertMsg ? '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--gold);margin-top:0.2rem">' + alertMsg + '</div>' : '') +
+      '</div>' +
+      '<div style="font-family:var(--mono);font-size:0.88rem;font-weight:500;color:var(--text);text-align:right">' + price + '</div>' +
+      '<div style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:' + pctColor + ';text-align:right;min-width:70px">' + arrow + pctStr + '</div>' +
+      '<div style="display:flex;gap:0.3rem;align-items:center">' +
+        '<input type="number" placeholder="▼%" value="' + lowVal + '" step="0.5" data-id="' + item.id + '" data-field="alertLow" class="wl-alert-input" style="width:55px;background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:0.62rem;padding:0.25rem 0.4rem;outline:none;text-align:center"/>' +
+        '<input type="number" placeholder="▲%" value="' + highVal + '" step="0.5" data-id="' + item.id + '" data-field="alertHigh" class="wl-alert-input" style="width:55px;background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:0.62rem;padding:0.25rem 0.4rem;outline:none;text-align:center"/>' +
+            '</div>' +
+      '<button data-remove="' + item.id + '" class="wl-remove-btn" style="background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:0.7rem;padding:0.2rem 0.5rem;font-family:var(--mono)">✕</button>' +
+    '</div>';
+  }).join('');
+}
+
+function logAlert(id, msg) {
+  var logEl = document.getElementById('wlAlertsList');
+  var logWrap = document.getElementById('wlAlertsLog');
+  if(!logEl || !logWrap) return;
+  logWrap.style.display = 'block';
+  var time = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  var div = document.createElement('div');
+  div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);font-family:var(--mono);font-size:0.68rem';
+  div.innerHTML = '<span style="color:var(--gold)">' + msg + '</span><span style="color:var(--muted2)">' + time + '</span>';
+  logEl.insertBefore(div, logEl.firstChild);
+}
+
+function showWatchlist(e) {
+  e && e.preventDefault();
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  document.querySelectorAll('#emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
+  document.getElementById('watchlistPanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  document.getElementById('watchlistTab').classList.add('active');
+  renderWatchlist();
 }
 
 window.addEventListener('load', function(){
