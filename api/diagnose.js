@@ -1,23 +1,33 @@
 const ANTHROPIC_KEY = process.env.ANTHROPIC_KEY || '';
 
+const BG1 = 'display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid #2a2a32;align-items:flex-start;background:#111114;border-left:3px solid #2a2a32';
+const BG2 = 'display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid #2a2a32;align-items:flex-start;background:#0d1f14;border-left:3px solid #4caf7d';
+const LBL = 'font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#6b6875;min-width:120px;flex-shrink:0;font-family:monospace';
+const LBL2 = 'font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4caf7d;min-width:120px;flex-shrink:0;font-family:monospace';
+const VAL = 'font-size:0.83rem;color:#e8e6e0;line-height:1.7';
+const CHG = 'padding:1.1rem 1.25rem;background:#18181d;border-top:1px solid #2a2a32';
+const P = 'font-size:0.83rem;color:#c8c4bc;line-height:1.7;margin-bottom:0.6rem';
+const STR = 'color:#e8e6e0';
+
 const SYSTEMS = {
-  diagnostic: `You are a friendly financial educator writing for Argentine investors of all levels. Write in simple, clear Spanish that anyone can understand. When you mention a financial instrument, briefly explain what it is in parentheses. Use ONLY pure HTML (no markdown, no asterisks, no backticks). Respond ONLY with this exact structure:
-<div class="ds"><h3>Tu cartera hoy</h3><p>[2-3 sentences describing what they have in simple terms]</p></div>
-<div class="ds dg"><h3>Lo que está bien</h3><ul><li>[strength 1]</li><li>[strength 2]</li><li>[strength 3]</li></ul></div>
-<div class="ds dr"><h3>Lo que hay que revisar</h3><ul><li>[risk 1 explained simply]</li><li>[risk 2]</li><li>[risk 3]</li></ul></div>
-<div class="ds dy"><h3>Qué podrías hacer</h3><ul><li>[suggestion 1: name instrument, explain what it is, how to buy it in Argentina]</li><li>[suggestion 2]</li><li>[suggestion 3]</li></ul></div>
-<div class="dscore"><b>[X]/10</b><span>[simple label]</span></div>`,
+  diagnostic: `Eres un educador financiero amigable escribiendo para inversores argentinos de todo nivel. Usa español simple. Cuando menciones un instrumento, explica brevemente qué es entre paréntesis. Solo HTML puro, sin markdown ni asteriscos.
 
-  scenario: `You are a friendly financial educator. Explain in simple Spanish (no jargon) how this scenario affects the portfolio. Use ONLY pure HTML paragraphs like <p>text</p>. No markdown, no asterisks. Maximum 3 short paragraphs. Be direct and practical.`,
+Responde EXACTAMENTE con esta estructura:
+<div class="ds"><h3>Tu cartera hoy</h3><p>[2-3 oraciones simples]</p></div>
+<div class="ds dg"><h3>Lo que está bien</h3><ul><li>[fortaleza 1]</li><li>[fortaleza 2]</li><li>[fortaleza 3]</li></ul></div>
+<div class="ds dr"><h3>Lo que hay que revisar</h3><ul><li>[riesgo 1 explicado simple]</li><li>[riesgo 2]</li><li>[riesgo 3]</li></ul></div>
+<div class="ds dy"><h3>Qué podrías hacer</h3><ul><li>[sugerencia 1: instrumento, qué es, cómo comprarlo en Argentina]</li><li>[sugerencia 2]</li><li>[sugerencia 3]</li></ul></div>
+<div class="dscore"><b>[X]/10</b><span>[etiqueta simple]</span></div>`,
 
-  comparison: `You are a friendly financial educator writing for Argentine investors. Propose an alternative portfolio in simple Spanish. For EACH instrument you recommend, briefly explain what it is and how to buy it in Argentina. 
+  scenario: `Educador financiero. Explica en español simple cómo este escenario afecta la cartera. Solo HTML con etiquetas <p>. Sin markdown. Máximo 3 párrafos cortos y directos.`,
 
-CRITICAL: Use ONLY these exact HTML elements with ONLY inline styles. No CSS classes. No markdown.
+  comparison: `Educador financiero argentino. Propone cartera alternativa en español simple. Para cada instrumento: qué es y cómo comprarlo en Argentina. Solo HTML con estilos inline. Sin clases CSS ni markdown.
 
-Respond with EXACTLY this structure:
-<div style="display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid #2a2a32;align-items:flex-start;background:#111114;border-left:3px solid #2a2a32"><div style="font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#6b6875;min-width:120px;flex-shrink:0;font-family:monospace">Cartera actual</div><div style="font-size:0.83rem;color:#e8e6e0;line-height:1.7">[brief summary of current portfolio in simple terms]</div></div>
-<div style="display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid #2a2a32;align-items:flex-start;background:#0d1f14;border-left:3px solid #4caf7d"><div style="font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4caf7d;min-width:120px;flex-shrink:0;font-family:monospace">Cartera sugerida</div><div style="font-size:0.83rem;color:#e8e6e0;line-height:1.7">[new allocation: X% instrument (what it is), Y% instrument (what it is), etc]</div></div>
-<div style="padding:1.1rem 1.25rem;background:#18181d;border-top:1px solid #2a2a32"><p style="font-size:0.83rem;color:#c8c4bc;line-height:1.7;margin-bottom:0.6rem"><strong style="color:#e8e6e0">Cambio 1:</strong> [what to do and why in simple terms, how to buy it]</p><p style="font-size:0.83rem;color:#c8c4bc;line-height:1.7;margin-bottom:0.6rem"><strong style="color:#e8e6e0">Cambio 2:</strong> [same format]</p><p style="font-size:0.83rem;color:#c8c4bc;line-height:1.7"><strong style="color:#e8e6e0">Cambio 3:</strong> [same format]</p></div>`,
+USA EXACTAMENTE este HTML (copia la estructura, reemplaza solo el contenido entre corchetes):
+
+<div style="${BG1}"><div style="${LBL}">Cartera actual</div><div style="${VAL}">[resumen simple de cartera actual con porcentajes]</div></div>
+<div style="${BG2}"><div style="${LBL2}">Cartera sugerida</div><div style="${VAL}">[nueva asignación: X% instrumento (qué es), Y% instrumento (qué es), Z% instrumento (qué es)]</div></div>
+<div style="${CHG}"><p style="${P}"><strong style="${STR}">Cambio 1:</strong> [qué hacer, por qué en términos simples, cómo comprarlo]</p><p style="${P}"><strong style="${STR}">Cambio 2:</strong> [ídem]</p><p style="${P}"><strong style="${STR}">Cambio 3:</strong> [ídem]</p></div>`,
 };
 
 export default async function handler(req, res) {
@@ -36,7 +46,7 @@ export default async function handler(req, res) {
   let userContent = `Perfil: horizonte ${horizonMap[horizonte]||horizonte}, riesgo ${riesgo}.\n\nCartera:\n${portfolioText}\n\n${liveData||''}`;
   if (mode === 'scenario' && scenario) userContent += `\n\n${scenario}`;
 
-  const maxTokens = mode === 'diagnostic' ? 1400 : 950;
+  const maxTokens = mode === 'diagnostic' ? 1400 : 1100;
   const model = mode === 'diagnostic' ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
 
   try {
