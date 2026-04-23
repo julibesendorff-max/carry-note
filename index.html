@@ -220,6 +220,8 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .scen-btn{font-family:var(--mono);font-size:0.62rem;padding:0.35rem 0.75rem;background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
 .scen-btn:hover{border-color:var(--gold);color:var(--gold)}
 .scen-btn.loading{opacity:0.5;cursor:not-allowed}
+#watchlistPanel[style*="display:none"] *,
+#watchlistPanel:not([style*="display:block"]) * { visibility:hidden !important; }
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
@@ -248,7 +250,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip" id="navStrip">
-    <a class="active" data-filter="all">Todas</a>
+    <a class="active" data-filter="all">Inicio</a>
     <a data-filter="macro">Macro</a>
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
@@ -1802,6 +1804,9 @@ function showFCI(e) {
 // Patch filterByTag to restore feed when clicking other tabs
 const _origFilterByTag = filterByTag;
 function filterByTag(tag) {
+  // Clear watchlist
+  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
+  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   // Restore feed elements
   ['feed','newsletterBlock'].forEach(id => {
     const el = document.getElementById(id);
@@ -1866,6 +1871,8 @@ function loadCalendar() {
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
   e && e.preventDefault();
+  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
+  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.style.display = 'none';
@@ -2433,6 +2440,9 @@ async function generateRadarSuggestion() {
 
 function showRadar(e) {
   e && e.preventDefault();
+  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
+  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
+  var wla=document.getElementById('wlAlertsLog'); if(wla) wla.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
@@ -2671,6 +2681,9 @@ function addToWatchlist(){
 function removeFromWatchlist(id){saveWatchlist(getWatchlist().filter(function(x){return x.id!==id;}));renderWatchlist();}
 function updateWlAlert(id,field,val){var wl=getWatchlist();var item=wl.find(function(x){return x.id===id;});if(item){item[field]=val?parseFloat(val):null;saveWatchlist(wl);}}
 function renderWatchlist(){
+  // Only render if watchlist tab is active
+  var panel=document.getElementById('watchlistPanel');
+  if(!panel||panel.style.display==='none')return;
   var wl=getWatchlist();
   var listEl=document.getElementById('wlList');
   var emptyEl=document.getElementById('wlEmpty');
@@ -2713,6 +2726,8 @@ function showWatchlist(e){
 }
 function showSobre(e){
   e&&e.preventDefault();
+  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
+  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   document.getElementById('sobrePanel').style.display='block';
