@@ -207,6 +207,7 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .about-item-val{font-size:0.78rem;color:var(--muted);font-weight:300}
 .about-link{font-family:var(--mono);font-size:0.6rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;display:inline-block;margin-top:0.5rem;border-bottom:1px solid transparent;transition:border-color 0.2s}
 .about-link:hover{border-bottom-color:var(--gold)}
+#cartModal.open{display:flex}
 .comp-row{display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);align-items:flex-start}
 .comp-row.comp-new{background:rgba(76,175,125,0.06);border-left:3px solid var(--green)}
 .comp-row:not(.comp-new){border-left:3px solid var(--border)}
@@ -2120,11 +2121,16 @@ async function runComparison() {
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
-    compResult.innerHTML =
-      '<div style="background:var(--surface);border:1px solid var(--border2);overflow:hidden">' +
-      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--green);letter-spacing:0.12em;text-transform:uppercase;padding:0.75rem 1rem;border-bottom:1px solid var(--border2);background:rgba(76,175,125,0.05)">Cartera sugerida vs actual</div>' +
-      (data.result||'') +
-      '</div>';
+    // Show in modal
+    document.getElementById('cartModalContent').innerHTML = (data.result||'');
+    document.getElementById('cartModal').classList.add('open');
+    document.getElementById('cartModal').style.display = 'flex';
+    var compBtn2 = document.createElement('div');
+    compBtn2.style.cssText = 'background:var(--surface);border:1px solid var(--border2);padding:0.85rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer';
+    compBtn2.onclick = function(){ document.getElementById('cartModal').style.display='flex'; };
+    compBtn2.innerHTML = '<span style="font-family:var(--mono);font-size:0.7rem;color:var(--text)">Cartera alternativa generada ✓</span><span style="font-family:var(--mono);font-size:0.65rem;color:var(--green)">Ver completo ▸</span>';
+    compResult.innerHTML = '';
+    compResult.appendChild(compBtn2);
   } catch(err) {
     compResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
   }
@@ -2282,7 +2288,34 @@ function downloadPDF() {
     <span>Julián Besendorff · Análisis Macroeconómico</span>
   </div>
   <script>window.onload=function(){window.print();}<\/script>
-  </body></html>`);
+  
+<!-- CARTERA MODAL -->
+<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto">
+  <div style="background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono)">
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
+        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text)">Cartera alternativa sugerida</div>
+      </div>
+      <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">✕</button>
+    </div>
+    <!-- Content -->
+    <div id="cartModalContent" style="padding:1.25rem"></div>
+    <!-- Actions -->
+    <div style="display:flex;gap:0.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border2);flex-wrap:wrap">
+      <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Descargar PDF</button>
+      <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp ↗</button>
+      <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
+      <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
+    </div>
+    <!-- Disclaimer -->
+    <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
+      ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
+    </div>
+  </div>
+</div>
+</body></html>`);
   printWin.document.close();
 }
 
@@ -2584,6 +2617,33 @@ window.addEventListener('load', function(){
     <button onclick="submitGate()" style="width:100%;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:0.5rem">Ver mi diagnóstico ▸</button>
     <button onclick="document.getElementById('gateModal').style.display='none'" style="width:100%;font-family:var(--mono);font-size:0.65rem;padding:0.5rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer">Cancelar</button>
     <div id="gateMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.5rem;display:none"></div>
+  </div>
+</div>
+
+<!-- CARTERA MODAL -->
+<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto">
+  <div style="background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono)">
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
+        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text)">Cartera alternativa sugerida</div>
+      </div>
+      <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">✕</button>
+    </div>
+    <!-- Content -->
+    <div id="cartModalContent" style="padding:1.25rem"></div>
+    <!-- Actions -->
+    <div style="display:flex;gap:0.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border2);flex-wrap:wrap">
+      <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Descargar PDF</button>
+      <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp ↗</button>
+      <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
+      <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
+    </div>
+    <!-- Disclaimer -->
+    <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
+      ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
+    </div>
   </div>
 </div>
 </body>
