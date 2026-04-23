@@ -2120,10 +2120,18 @@ async function runComparison() {
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
-    var rawResult = (data.result||'');
+    var rawResult = (data.result||'')
+      .replace(/class="comp-row comp-new"/g, 'style="display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid #2a2a32;align-items:flex-start;background:#0d1f14;border-left:3px solid #4caf7d"')
+      .replace(/class="comp-row"/g, 'style="display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid #2a2a32;align-items:flex-start;background:#111114;border-left:3px solid #2a2a32"')
+      .replace(/class="comp-label comp-new"[\s\S]*?class="comp-label"/g, 'style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4caf7d;min-width:120px;flex-shrink:0;padding-top:0.15rem"')
+      .replace(/class="comp-label"/g, 'style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#6b6875;min-width:120px;flex-shrink:0;padding-top:0.15rem"')
+      .replace(/class="comp-val"/g, 'style="font-size:0.83rem;color:#e8e6e0;line-height:1.7"')
+      .replace(/class="comp-changes"/g, 'style="padding:1.1rem 1.25rem;background:#18181d;border-top:1px solid #2a2a32"')
+      .replace(/<p>/g, '<p style="font-size:0.83rem;color:#c8c4bc;line-height:1.7;margin-bottom:0.6rem">')
+      .replace(/<strong>/g, '<strong style="color:#e8e6e0">');
     compResult.innerHTML =
-      '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--green);overflow:hidden">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--green);letter-spacing:0.12em;text-transform:uppercase;padding:0.75rem 1rem;border-bottom:1px solid var(--border2)">Cartera sugerida vs actual</div>' +
+      '<div style="background:#111114;border:1px solid #2a2a32;border-left:3px solid #4caf7d;overflow:hidden">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:#4caf7d;letter-spacing:0.12em;text-transform:uppercase;padding:0.75rem 1rem;border-bottom:1px solid #2a2a32;background:#0d1f14">Cartera sugerida vs actual</div>' +
         rawResult +
       '</div>';
   } catch(err) {
