@@ -46,8 +46,8 @@ export default async function handler(req, res) {
   let userContent = `Perfil: horizonte ${horizonMap[horizonte]||horizonte}, riesgo ${riesgo}.\n\nCartera:\n${portfolioText}\n\n${liveData||''}`;
   if (mode === 'scenario' && scenario) userContent += `\n\n${scenario}`;
 
-  const maxTokens = mode === 'diagnostic' ? 1400 : 1100;
-  const model = mode === 'diagnostic' ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
+  const maxTokens = 1600;
+  const model = 'claude-sonnet-4-20250514';
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
