@@ -95,7 +95,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:200px 1fr 320px;gap:2.5rem}
+main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:2.5rem}
 
 .editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
 .editor-panel.visible{display:block}
@@ -324,19 +324,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
 
 <main>
-  <!-- ABOUT COLUMN -->
-  <aside class="about-col">
-    <div class="about-name">Julián Besendorff</div>
-
-    <div class="about-bio">Licenciado en Administración (UBA). Cursando Master en Economía en UCEMA. Actualmente analista en J.P. Morgan.</div>
-    <hr class="about-divider">
-    <div class="about-item">
-      <span class="about-item-label">Experiencia</span>
-      <span class="about-item-val">J.P. Morgan · KPMG · HSBC</span>
-    </div>
-    <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" class="about-link">LinkedIn →</a>
-  </aside>
-  <section>
+<section>
     <div class="editor-panel" id="editorPanel">
       <div class="ep-label">▸ Nueva nota</div>
       <div class="ep-tabs">
