@@ -1222,7 +1222,8 @@ function renderNotes() {
   feed.innerHTML = '';
 
   if (filtered.length === 0) {
-    if(noRes) noRes.style.display = 'block';
+    var wlActive = document.getElementById('watchlistPanel') && document.getElementById('watchlistPanel').style.display !== 'none';
+    if(noRes) noRes.style.display = wlActive ? 'none' : 'block';
     if(header) header.style.display = 'none';
   } else {
     if(noRes) noRes.style.display = 'none';
@@ -2919,9 +2920,7 @@ function showWatchlist(e) {
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
-  document.querySelectorAll('#emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
-  var nr = document.getElementById('noResults'); if(nr) nr.style.display = 'none';
-  var feed = document.getElementById('feed'); if(feed) feed.style.display = 'none';
+  document.querySelectorAll('.note-card, .empty, .loading-card, #emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
   document.getElementById('watchlistPanel').style.display = 'block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   document.getElementById('watchlistTab').classList.add('active');
