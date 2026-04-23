@@ -36,7 +36,7 @@ export default async function handler(req, res) {
   let userContent = `Perfil: horizonte ${horizonMap[horizonte]||horizonte}, riesgo ${riesgo}.\n\nCartera:\n${portfolioText}\n\n${liveData||''}`;
   if (mode === 'scenario' && scenario) userContent += `\n\n${scenario}`;
 
-  const maxTokens = mode === 'diagnostic' ? 1400 : 700;
+  const maxTokens = mode === 'diagnostic' ? 1400 : 950;
   const model = mode === 'diagnostic' ? 'claude-sonnet-4-20250514' : 'claude-haiku-4-5-20251001';
 
   try {
