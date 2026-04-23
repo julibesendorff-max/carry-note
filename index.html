@@ -922,23 +922,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <div style="background:var(--surface);border:1px solid var(--border);padding:1.25rem;margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Agregar activo</div>
         <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:flex-end">
-          <div style="flex:1;min-width:180px">
-            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Activo</div>
-            <select id="wlSymbol" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none;cursor:pointer">
-              <option value="">— Seleccioná un activo —</option>
-              <option value="spx">SPY (S&P 500 ETF)</option>
-              <option value="ndx">QQQ (Nasdaq ETF)</option>
-              <option value="vix">VIXY (VIX ETF)</option>
-              <option value="tlt">TLT (Bonos 20Y EEUU)</option>
-              <option value="wti">USO (WTI Petróleo ETF)</option>
-              <option value="gld">GLD (Oro ETF)</option>
-              <option value="btc">BTC (Bitcoin)</option>
-              <option value="nvda">NVDA (NVIDIA)</option>
-              <option value="tsla">TSLA (Tesla)</option>
-              <option value="ypf">YPF</option>
-              <option value="ggal">GGAL (Grupo Galicia)</option>
-            </select>
+          <div style="flex:1;min-width:200px;position:relative">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Buscar activo (símbolo o nombre)</div>
+            <input type="text" id="wlSearch" placeholder="ej: AAPL, Tesla, BTC, MELI..." autocomplete="off"
+              style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
+            <div id="wlSearchResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-top:none;z-index:50;max-height:220px;overflow-y:auto"></div>
           </div>
+          <input type="hidden" id="wlSymbol" value=""/>
+          <input type="hidden" id="wlSymbolLabel" value=""/>
           <div style="min-width:120px">
             <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Alerta baja (%)</div>
             <input type="number" id="wlAlertLow" placeholder="ej: -3" step="0.5" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
@@ -2717,6 +2708,28 @@ async function loadPreMarket() {
 
 
 // ── WATCHLIST ──────────────────────────────────────────────
+var wlPriceCache = {}; // {sym: {price, pct}}
+
+async function loadWatchlistPrices() {
+  var wl = getWatchlist();
+  for(var i=0; i<wl.length; i++) {
+    var item = wl[i];
+    if(!item.custom) continue; // ticker symbols loaded from DOM
+    try {
+      var res = await fetch('https://finnhub.io/api/v1/quote?symbol=' + item.id + '&token=' + FINNHUB_KEY);
+      if(!res.ok) continue;
+      var data = await res.json();
+      if(data.c && data.pc && data.c > 0) {
+        var pct = ((data.c - data.pc) / data.pc) * 100;
+        var price = data.c >= 1000 ? '$' + data.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + data.c.toFixed(2);
+        wlPriceCache[item.id] = {price: price, pct: pct};
+      }
+      await new Promise(function(r){ setTimeout(r, 200); });
+    } catch(e) {}
+  }
+  renderWatchlist();
+}
+
 var WL_LABELS = {
   spx:'SPY · S&P 500 ETF', ndx:'QQQ · Nasdaq ETF', vix:'VIXY · VIX ETF',
   tlt:'TLT · Bonos 20Y', wti:'USO · WTI Petróleo', gld:'GLD · Oro ETF',
@@ -2732,19 +2745,70 @@ function saveWatchlist(wl) {
   localStorage.setItem('cn_watchlist', JSON.stringify(wl));
 }
 
+// Finnhub symbol search
+async function wlSearchSymbol(q) {
+  if(q.length < 1) return [];
+  try {
+    var res = await fetch('https://finnhub.io/api/v1/search?q=' + encodeURIComponent(q) + '&token=' + FINNHUB_KEY);
+    if(!res.ok) return [];
+    var data = await res.json();
+    return (data.result || []).filter(function(r){ return r.type === 'Common Stock' || r.type === 'ETP' || r.type === 'Crypto'; }).slice(0, 8);
+  } catch(e) { return []; }
+}
+
+var wlSearchTimeout = null;
+document.addEventListener('DOMContentLoaded', function() {
+  var inp = document.getElementById('wlSearch');
+  var res = document.getElementById('wlSearchResults');
+  if(!inp) return;
+  inp.addEventListener('input', function() {
+    clearTimeout(wlSearchTimeout);
+    var q = inp.value.trim();
+    if(q.length < 1) { res.style.display = 'none'; return; }
+    wlSearchTimeout = setTimeout(async function() {
+      var results = await wlSearchSymbol(q);
+      if(!results.length) { res.style.display = 'none'; return; }
+      res.innerHTML = results.map(function(r) {
+        return '<div class="wl-result" data-sym="' + r.symbol + '" data-desc="' + (r.description||r.symbol) + '" style="padding:0.5rem 0.75rem;cursor:pointer;font-family:var(--mono);font-size:0.7rem;border-bottom:1px solid var(--border2);color:var(--text)">' +
+          '<span style="color:var(--gold);margin-right:0.5rem">' + r.symbol + '</span>' +
+          '<span style="color:var(--muted)">' + (r.description||'') + '</span>' +
+        '</div>';
+      }).join('');
+      res.style.display = 'block';
+      res.querySelectorAll('.wl-result').forEach(function(el) {
+        el.addEventListener('mouseenter', function(){ el.style.background = 'var(--surface2)'; });
+        el.addEventListener('mouseleave', function(){ el.style.background = ''; });
+        el.addEventListener('click', function() {
+          document.getElementById('wlSymbol').value = el.dataset.sym;
+          document.getElementById('wlSymbolLabel').value = el.dataset.sym + ' · ' + el.dataset.desc;
+          inp.value = el.dataset.sym + ' — ' + el.dataset.desc;
+          res.style.display = 'none';
+        });
+      });
+    }, 350);
+  });
+  document.addEventListener('click', function(e) {
+    if(e.target !== inp) res.style.display = 'none';
+  });
+});
+
 function addToWatchlist() {
-  var sym = document.getElementById('wlSymbol').value;
-  if(!sym) { alert('Seleccioná un activo.'); return; }
+  var sym = document.getElementById('wlSymbol').value.trim().toUpperCase();
+  var label = document.getElementById('wlSymbolLabel').value.trim();
+  if(!sym) { alert('Buscá y seleccioná un activo primero.'); return; }
   var wl = getWatchlist();
   if(wl.find(function(x){ return x.id === sym; })) { alert('Ya está en tu watchlist.'); return; }
   var low  = parseFloat(document.getElementById('wlAlertLow').value) || null;
   var high = parseFloat(document.getElementById('wlAlertHigh').value) || null;
-  wl.push({id: sym, alertLow: low, alertHigh: high});
+  wl.push({id: sym, label: label||sym, alertLow: low, alertHigh: high, custom: true});
   saveWatchlist(wl);
   document.getElementById('wlSymbol').value = '';
+  document.getElementById('wlSymbolLabel').value = '';
+  document.getElementById('wlSearch').value = '';
   document.getElementById('wlAlertLow').value = '';
   document.getElementById('wlAlertHigh').value = '';
   renderWatchlist();
+  loadWatchlistPrices();
 }
 
 function removeFromWatchlist(id) {
@@ -2785,9 +2849,15 @@ function renderWatchlist() {
   });
 
   listEl.innerHTML = wl.map(function(item) {
-    var pct = getTickerChange(item.id);
-    var priceEl = document.getElementById('t-' + item.id);
-    var price = priceEl ? priceEl.textContent.trim() : '—';
+    var pct, price;
+    if(item.custom && wlPriceCache[item.id]) {
+      pct = wlPriceCache[item.id].pct;
+      price = wlPriceCache[item.id].price;
+    } else {
+      pct = getTickerChange(item.id);
+      var priceEl = document.getElementById('t-' + item.id);
+      price = priceEl ? priceEl.textContent.trim() : '—';
+    }
     var pctStr = pct !== null ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : '—';
     var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
     var arrow = pct === null ? '' : pct > 0 ? '▲ ' : pct < 0 ? '▼ ' : '';
@@ -2818,7 +2888,7 @@ function renderWatchlist() {
 
     return '<div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem 1rem;align-items:center;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);' + alertBg + '">' +
       '<div>' +
-        '<div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text)">' + (WL_LABELS[item.id]||item.id) + '</div>' +
+        '<div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text)">' + (item.label||WL_LABELS[item.id]||item.id) + '</div>' +
         (alertMsg ? '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--gold);margin-top:0.2rem">' + alertMsg + '</div>' : '') +
       '</div>' +
       '<div style="font-family:var(--mono);font-size:0.88rem;font-weight:500;color:var(--text);text-align:right">' + price + '</div>' +
@@ -2850,6 +2920,8 @@ function showWatchlist(e) {
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   document.querySelectorAll('#emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
+  var nr = document.getElementById('noResults'); if(nr) nr.style.display = 'none';
+  var feed = document.getElementById('feed'); if(feed) feed.style.display = 'none';
   document.getElementById('watchlistPanel').style.display = 'block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   document.getElementById('watchlistTab').classList.add('active');
@@ -2870,6 +2942,8 @@ window.addEventListener('load', function(){
   loadForex();
   loadPreMarket();
   setInterval(loadPreMarket, 120000);
+  loadWatchlistPrices();
+  setInterval(loadWatchlistPrices, 120000);
 });
 </script>
 
