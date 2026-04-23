@@ -207,7 +207,6 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .about-item-val{font-size:0.78rem;color:var(--muted);font-weight:300}
 .about-link{font-family:var(--mono);font-size:0.6rem;color:var(--gold);text-decoration:none;letter-spacing:0.06em;display:inline-block;margin-top:0.5rem;border-bottom:1px solid transparent;transition:border-color 0.2s}
 .about-link:hover{border-bottom-color:var(--gold)}
-#cartModal.open{display:flex}
 .comp-row{display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);align-items:flex-start}
 .comp-row.comp-new{background:rgba(76,175,125,0.06);border-left:3px solid var(--green)}
 .comp-row:not(.comp-new){border-left:3px solid var(--border)}
@@ -2121,28 +2120,12 @@ async function runComparison() {
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
-    // Show in modal
     var rawResult = (data.result||'');
-    // Inject scoped styles for dark modal
-    var modalStyles = '<style>' +
-      '.comp-row{background:#111114 !important;border-bottom:1px solid #2a2a32 !important}' +
-      '.comp-row.comp-new{background:rgba(76,175,125,0.1) !important;border-left:3px solid #4caf7d !important}' +
-      '.comp-label{color:#6b6875 !important}' +
-      '.comp-new .comp-label{color:#4caf7d !important}' +
-      '.comp-val{color:#e8e6e0 !important;font-size:0.85rem !important;line-height:1.7 !important}' +
-      '.comp-changes{background:#18181d !important;padding:1.25rem !important}' +
-      '.comp-changes p{color:#c8c4bc !important;font-size:0.83rem !important;line-height:1.75 !important;margin-bottom:0.6rem !important}' +
-      '.comp-changes strong{color:#e8e6e0 !important}' +
-      '</style>';
-    document.getElementById('cartModalContent').innerHTML = modalStyles + rawResult;
-    document.getElementById('cartModal').classList.add('open');
-    document.getElementById('cartModal').style.display = 'flex';
-    var compBtn2 = document.createElement('div');
-    compBtn2.style.cssText = 'background:var(--surface);border:1px solid var(--border2);padding:0.85rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer';
-    compBtn2.onclick = function(){ document.getElementById('cartModal').style.display='flex'; };
-    compBtn2.innerHTML = '<span style="font-family:var(--mono);font-size:0.7rem;color:var(--text)">Cartera alternativa generada ✓</span><span style="font-family:var(--mono);font-size:0.65rem;color:var(--green)">Ver completo ▸</span>';
-    compResult.innerHTML = '';
-    compResult.appendChild(compBtn2);
+    compResult.innerHTML =
+      '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--green);overflow:hidden">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--green);letter-spacing:0.12em;text-transform:uppercase;padding:0.75rem 1rem;border-bottom:1px solid var(--border2)">Cartera sugerida vs actual</div>' +
+        rawResult +
+      '</div>';
   } catch(err) {
     compResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
   }
@@ -2564,44 +2547,9 @@ function updateRadar() {
 }
 
 
-// ── CARTERA MODAL FUNCTIONS ──────────────────────────────────
-function closeCartModal() {
-  var m = document.getElementById('cartModal');
-  if(m) { m.style.display = 'none'; m.classList.remove('open'); }
-}
 
-function getCartText() {
-  var el = document.getElementById('cartModalContent');
-  return el ? el.innerText : '';
-}
 
-function exportCartPDF() {
-  var content = document.getElementById('cartModalContent');
-  if(!content) return;
-  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  var riesgo = (document.getElementById('diagRiesgo')||{}).value || '';
-  var horizonte = (document.getElementById('diagHorizonte')||{}).value || '';
-  var printWin2 = window.open('', '_blank');
-  printWin2.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cartera Alternativa · Carry Note</title><style>body{font-family:Georgia,serif;max-width:680px;margin:40px auto;color:#1a1a1a;padding:0 20px}.tag{font-family:Courier New,monospace;font-size:0.7rem;padding:0.2rem 0.5rem;border:1px solid #2e7d32;color:#2e7d32;display:inline-block;margin-bottom:1rem}h1{font-size:1.8rem}.divider{border:none;border-top:1px solid #ddd;margin:1.5rem 0}.comp-row{display:flex;gap:1rem;padding:0.85rem;border-bottom:1px solid #eee}.comp-row.comp-new{background:#f0faf0;border-left:3px solid #2e7d32}.comp-label{font-family:Courier New,monospace;font-size:0.65rem;text-transform:uppercase;color:#888;min-width:110px;flex-shrink:0}.comp-val{font-size:0.9rem;color:#1a1a1a;line-height:1.6}.comp-changes{padding:1rem;background:#fafafa;border:1px solid #eee;margin-top:0.5rem}.comp-changes p{font-size:0.88rem;line-height:1.7;margin-bottom:0.5rem}.footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #ddd;font-family:Courier New,monospace;font-size:0.65rem;color:#888;display:flex;justify-content:space-between}.disclaimer{background:#fff8f8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:Courier New,monospace;font-size:0.68rem;color:#666;line-height:1.6}@media print{body{margin:20px}}</style></head><body>');
-  printWin2.document.write('<div class="tag">▸ CARRY NOTE · CARTERA ALTERNATIVA</div>');
-  printWin2.document.write('<h1>Cartera <span style="color:#2e7d32">sugerida</span></h1>');
-  printWin2.document.write('<p style="font-family:Courier New,monospace;color:#888;margin-bottom:1.5rem">' + today + ' · Perfil ' + riesgo + ' · Horizonte ' + horizonte + '</p><hr class="divider">');
-  printWin2.document.write(content.innerHTML.replace(/<style>.*?<\/style>/s,''));
-  printWin2.document.write('<div class="disclaimer">⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero.</div>');
-  printWin2.document.write('<div class="footer"><span>Carry Note · thecarrynote.com</span><span>Julián Besendorff</span></div>');
-  printWin2.document.write('<script>window.onload=function(){window.print();}<\/script></body></html>');
-  printWin2.document.close();
-}
 
-function shareCartWhatsApp() {
-  var riesgo = (document.getElementById('diagRiesgo')||{}).value || 'moderado';
-  var text = 'Generé una cartera alternativa para perfil ' + riesgo + ' en Carry Note. Analizá la tuya gratis: thecarrynote.com';
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-}
-
-function shareCartLinkedIn() {
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent('https://thecarrynote.com'), '_blank');
-}
 
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
@@ -2646,31 +2594,5 @@ window.addEventListener('load', function(){
   </div>
 </div>
 
-<!-- CARTERA MODAL -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
-    <!-- Header -->
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
-      <div>
-        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
-        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text)">Cartera alternativa sugerida</div>
-      </div>
-      <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">✕</button>
-    </div>
-    <!-- Content -->
-    <div id="cartModalContent" style="padding:1.25rem;max-height:60vh;overflow-y:auto"></div>
-    <!-- Actions -->
-    <div style="display:flex;gap:0.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border2);flex-wrap:wrap">
-      <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Descargar PDF</button>
-      <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp ↗</button>
-      <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
-      <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
-    </div>
-    <!-- Disclaimer -->
-    <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
-      ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
-    </div>
-  </div>
-</div>
 </body>
 </html>
