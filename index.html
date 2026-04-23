@@ -312,6 +312,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <span class="t-item"><span class="t-lbl">YPF</span><span class="t-val" id="t-ypf2"> —</span><span id="t-ypf-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal2"> —</span><span id="t-ggal-c2"> —</span></span>
     <span class="t-sep">·</span>
+    <span class="t-item t-premarket" id="pm-spy-item"><span class="t-lbl" style="color:#a855f7">PRE SPY</span><span class="t-val" id="pm-spy"> —</span><span id="pm-spy-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item t-premarket" id="pm-qqq-item"><span class="t-lbl" style="color:#a855f7">PRE QQQ</span><span class="t-val" id="pm-qqq"> —</span><span id="pm-qqq-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item t-premarket" id="pm-nvda-item"><span class="t-lbl" style="color:#a855f7">PRE NVDA</span><span class="t-val" id="pm-nvda"> —</span><span id="pm-nvda-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item t-premarket" id="pm-tsla-item"><span class="t-lbl" style="color:#a855f7">PRE TSLA</span><span class="t-val" id="pm-tsla"> —</span><span id="pm-tsla-c"> —</span></span>
+    <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur2"> —</span><span id="t-eur-c2"> —</span></span>
     <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars2"> —</span><span id="t-ars-c2"> —</span></span>
@@ -915,6 +920,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   </section>
 
   <aside class="sidebar">
+    <div class="sb-block" id="pmBlock" style="display:none;border-top-color:#a855f7">
+      <div class="sb-title" style="color:#a855f7">Pre-Market · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300" id="pmTime"></span></div>
+      <div id="pmBody">
+        <div class="ind"><span class="ind-n">SPY <span style="font-size:0.5rem;color:var(--muted2)">(S&P 500)</span></span><span class="ind-v neu" id="pm-sb-spy">···</span></div>
+        <div class="ind"><span class="ind-n">QQQ <span style="font-size:0.5rem;color:var(--muted2)">(Nasdaq)</span></span><span class="ind-v neu" id="pm-sb-qqq">···</span></div>
+        <div class="ind"><span class="ind-n">NVDA</span><span class="ind-v neu" id="pm-sb-nvda">···</span></div>
+        <div class="ind"><span class="ind-n">TSLA</span><span class="ind-v neu" id="pm-sb-tsla">···</span></div>
+        <div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.4rem">Fuente: Finnhub · Fuera de horario regular</div>
+      </div>
+    </div>
     <div class="sb-block">
       <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· abr 2026</span></div>
       <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">3.50–3.75%</span></div>
@@ -2559,6 +2574,68 @@ function updateRadar() {
 
 
 
+
+// ── PRE-MARKET DATA ────────────────────────────────────────
+const PM_SYMBOLS = [
+  {id:'spy',  sym:'SPY',  sbId:'pm-sb-spy'},
+  {id:'qqq',  sym:'QQQ',  sbId:'pm-sb-qqq'},
+  {id:'nvda', sym:'NVDA', sbId:'pm-sb-nvda'},
+  {id:'tsla', sym:'TSLA', sbId:'pm-sb-tsla'},
+];
+
+async function loadPreMarket() {
+  try {
+    var now = new Date();
+    var estHour = (now.getUTCHours() - 5 + 24) % 24; // EST approx
+    // Pre-market: 4am-9:30am EST | After-hours: 4pm-8pm EST
+    var isPreMarket = estHour >= 4 && estHour < 9.5;
+    var isAfterHours = estHour >= 16 && estHour < 20;
+    if(!isPreMarket && !isAfterHours) {
+      // Market hours or overnight — hide block
+      document.getElementById('pmBlock').style.display = 'none';
+      document.querySelectorAll('.t-premarket').forEach(function(el){ el.style.display='none'; });
+      return;
+    }
+    var label = isPreMarket ? 'Pre-Market' : 'After-Hours';
+    var pmTimeEl = document.getElementById('pmTime');
+    if(pmTimeEl) pmTimeEl.textContent = '· ' + label;
+    document.getElementById('pmBlock').style.display = 'block';
+    document.querySelectorAll('.t-premarket').forEach(function(el){ el.style.display='inline-flex'; });
+
+    for(var i=0; i<PM_SYMBOLS.length; i++) {
+      var s = PM_SYMBOLS[i];
+      try {
+        var res = await fetch('https://finnhub.io/api/v1/quote?symbol=' + s.sym + '&token=' + FINNHUB_KEY);
+        if(!res.ok) continue;
+        var data = await res.json();
+        // dp = current price (extended hours), pc = previous close
+        var price = data.dp !== undefined ? data.dp : (data.c || null);
+        var prevClose = data.pc || null;
+        if(!price || !prevClose) continue;
+        var pct = ((price - prevClose) / prevClose) * 100;
+        var cls = pct >= 0 ? 't-up' : 't-dn';
+        var arr = pct >= 0 ? '▲' : '▼';
+        var priceStr = price >= 1000 ? '$' + price.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + price.toFixed(2);
+        var pctStr = arr + ' ' + Math.abs(pct).toFixed(2) + '%';
+        // Update ticker
+        var tickerVal = document.getElementById('pm-'+s.id);
+        var tickerChg = document.getElementById('pm-'+s.id+'-c');
+        if(tickerVal) tickerVal.textContent = ' ' + priceStr;
+        if(tickerChg) { tickerChg.textContent = ' ' + pctStr; tickerChg.className = cls; }
+        // Update sidebar
+        var sbEl = document.getElementById(s.sbId);
+        if(sbEl) {
+          sbEl.textContent = priceStr + ' ' + pctStr;
+          sbEl.className = 'ind-v ' + (pct >= 0 ? 'up' : 'dn');
+        }
+      } catch(e) {}
+      await new Promise(function(r){ setTimeout(r, 200); });
+    }
+  } catch(e) {
+    console.log('Pre-market error:', e);
+  }
+}
+
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
   if(new URLSearchParams(window.location.search).get('editor') === 'true') {
@@ -2571,6 +2648,8 @@ window.addEventListener('load', function(){
   loadArgMacro();
   loadTicker();
   loadForex();
+  loadPreMarket();
+  setInterval(loadPreMarket, 120000);
 });
 </script>
 
