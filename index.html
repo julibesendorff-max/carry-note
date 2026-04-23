@@ -223,7 +223,21 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
 
-@media(max-width:960px){main{grid-template-columns:1fr}.sidebar{display:none}.about-col{display:none}.logo-name{font-size:2rem}.header-main,.eyebrow,.editor-bar{padding-left:1.5rem;padding-right:1.5rem}main{padding:1.5rem}}
+@media(max-width:960px){
+  main{grid-template-columns:1fr;padding:1rem}
+  .sidebar{display:block}
+  .sidebar .sb-block{margin-bottom:1rem}
+  .about-col{display:block;padding:1rem;border-bottom:1px solid var(--border);margin-bottom:0.5rem}
+  .about-col .about-name{font-size:1rem;margin-bottom:0.2rem}
+  .about-col .about-bio{font-size:0.75rem;margin-bottom:0.75rem}
+  .about-col .about-divider{margin:0.5rem 0}
+  .about-col .about-item{margin-bottom:0.4rem;flex-direction:row;gap:0.5rem;align-items:baseline}
+  .about-col .about-item-label{min-width:80px}
+  .about-col .about-link{font-size:0.62rem}
+  .logo-name{font-size:2rem}
+  .header-main,.editor-bar{padding-left:1.2rem;padding-right:1.2rem}
+  .chart-box{height:60px}
+}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -1579,7 +1593,7 @@ async function loadArgMacro() {
   '<div class="ind"><span class="ind-n">Blue</span><span class="ind-v dn" id="arg-blue">···</span></div>' +
   '<div class="ind"><span class="ind-n">MEP (bolsa)</span><span class="ind-v neu" id="arg-mep">···</span></div>' +
   '<div class="ind"><span class="ind-n">CCL</span><span class="ind-v neu" id="arg-ccl">···</span></div>' +
-  '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.4rem">Fuente: dolarapi.com</div>' +
+  '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.4rem;display:flex;justify-content:space-between">' +'<span>Fuente: dolarapi.com</span>' +'<span><span style="color:var(--green)">C</span> compra · <span style="color:var(--red)">V</span> venta</span>' +'</div>' +
   '</div>';
 
   // Fetch FX + riesgo pais from dolarapi
@@ -1594,8 +1608,16 @@ async function loadArgMacro() {
       const setFX = (id, obj, cls) => {
         const e = document.getElementById(id);
         if(!e || !obj) return;
-        const mid = ((obj.compra||0) + (obj.venta||0)) / 2;
-        e.textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
+        const compra = obj.compra ? '$ ' + Math.round(obj.compra).toLocaleString('es-AR') : null;
+        const venta  = obj.venta  ? '$ ' + Math.round(obj.venta).toLocaleString('es-AR')  : null;
+        if(compra && venta) {
+          e.innerHTML = '<span style="color:var(--green);font-size:0.65rem">C</span> ' + compra +
+            ' <span style="color:var(--muted2);font-size:0.62rem">/</span> ' +
+            '<span style="color:var(--red);font-size:0.65rem">V</span> ' + venta;
+        } else {
+          const mid = ((obj.compra||0) + (obj.venta||0)) / 2;
+          e.textContent = '$ ' + Math.round(mid).toLocaleString('es-AR');
+        }
         e.className = 'ind-v ' + cls;
       };
       setFX('arg-oficial', data.find(d => d.casa === 'oficial'), 'neu');
