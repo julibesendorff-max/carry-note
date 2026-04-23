@@ -894,11 +894,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.75">
           <div>
             <div style="color:var(--text);margin-bottom:0.3rem">¿Cómo detecta señales?</div>
-            El sistema monitorea 10 patrones de correlación. Una señal se activa cuando todos los activos del patrón se mueven en la misma dirección con una variación mínima de ±0.3% en el día.
+            El sistema monitorea 20 patrones de correlación en 6 categorías. Una señal se activa cuando todos los activos del patrón se mueven en la dirección esperada con una variación mínima de ±0.3% en el día.
           </div>
           <div>
             <div style="color:var(--text);margin-bottom:0.3rem">Patrones monitoreados</div>
-            Risk-off global (VIX+Oro+TLT) · Risk-on (SPY+QQQ+BTC) · Presión inflacionaria (WTI+Oro) · Flight to quality (TLT+Oro) · Tech liderando (QQQ+NVDA) · Argentina rally/estrés (YPF+GGAL) · Dólar débil (Oro+BTC) · Mercado en caída (SPY+QQQ)
+            20 patrones en 6 categorías: Régimen de riesgo (Risk-off/on, Rally amplio, Sell-off) · Volatilidad (VIX en alza/comprimido) · Macro & Tasas (Flight to quality, Bonos bajo presión, Curva empinando) · Inflación & Commodities (Presión inflacionaria, Oil shock, Commodities en caída) · Dólar (Débil/Fuerte) · Tech & Crypto (Tech liderando/rezagado, Divergencia, Crypto)
           </div>
         </div>
         <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border2);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">
@@ -2490,16 +2490,38 @@ function updateClock(){
 
 // ── RADAR MACRO ────────────────────────────────────────────
 var RADAR_PATTERNS = [
-  {name:'Risk-off global',    assets:['vix','gld','tlt'], dirs:[1,1,1],  desc:'VIX+Oro+TLT al alza: fuga hacia refugios',          color:'var(--red)',   level:'alerta'},
-  {name:'Risk-on global',     assets:['spx','ndx','btc'], dirs:[1,1,1],  desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado',    color:'var(--green)', level:'positivo'},
-  {name:'Presion inflac.',    assets:['wti','gld'],       dirs:[1,1],    desc:'Petroleo+Oro subiendo: presion inflacionaria',       color:'var(--gold)',  level:'atencion'},
-  {name:'Flight to quality',  assets:['tlt','gld'],       dirs:[1,1],    desc:'TLT+Oro al alza: busqueda de activos refugio',       color:'var(--gold)',  level:'atencion'},
-  {name:'Tech liderando',     assets:['ndx','nvda'],      dirs:[1,1],    desc:'QQQ+NVDA al alza: sector tech liderando mercado',    color:'var(--green)', level:'positivo'},
-  {name:'VIX elevado',        assets:['vix'],             dirs:[1],      desc:'Volatilidad alta: mercado anticipa movimientos bruscos', color:'var(--red)', level:'alerta'},
-  {name:'Argentina rally',    assets:['ypf','ggal'],      dirs:[1,1],    desc:'YPF+GGAL al alza: flujo positivo en activos AR',    color:'var(--green)', level:'positivo'},
-  {name:'Argentina estres',   assets:['ypf','ggal'],      dirs:[-1,-1],  desc:'YPF+GGAL a la baja: presion sobre activos AR',      color:'var(--red)',   level:'alerta'},
-  {name:'Dolar debil',        assets:['gld','btc'],       dirs:[1,1],    desc:'Oro+BTC al alza: dolar bajo presion global',        color:'var(--gold)',  level:'atencion'},
-  {name:'Mercado caida',      assets:['spx','ndx'],       dirs:[-1,-1],  desc:'SPY+QQQ a la baja: sell-off en renta variable',     color:'var(--red)',   level:'alerta'},
+  // ── RISK REGIME ──────────────────────────────────────────
+  {name:'Risk-off global',     assets:['vix','gld','tlt'],      dirs:[1,1,1],    desc:'VIX+Oro+TLT al alza: fuga masiva hacia refugios. Señal de estrés sistémico.',           color:'var(--red)',   level:'alerta'},
+  {name:'Risk-on global',      assets:['spx','ndx','btc'],      dirs:[1,1,1],    desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado en todos los segmentos.',               color:'var(--green)', level:'positivo'},
+  {name:'Mercado en caída',    assets:['spx','ndx'],            dirs:[-1,-1],    desc:'SPY+QQQ a la baja: sell-off en renta variable de EEUU.',                               color:'var(--red)',   level:'alerta'},
+  {name:'Rally amplio',        assets:['spx','ndx','tlt'],      dirs:[1,1,1],    desc:'Acciones y bonos subiendo juntos: entorno muy favorable para activos de riesgo.',      color:'var(--green)', level:'positivo'},
+
+  // ── VOLATILIDAD ───────────────────────────────────────────
+  {name:'VIX en alza',         assets:['vix'],                  dirs:[1],        desc:'Volatilidad implícita subiendo: el mercado paga más por protección. Cautela.',         color:'var(--red)',   level:'alerta'},
+  {name:'VIX comprimido',      assets:['vix'],                  dirs:[-1],       desc:'Volatilidad implícita cayendo: el mercado está en modo complacencia.',                 color:'var(--blue)',  level:'atencion'},
+
+  // ── MACRO / TASAS ─────────────────────────────────────────
+  {name:'Flight to quality',   assets:['tlt','gld'],            dirs:[1,1],      desc:'TLT+Oro al alza: inversores buscan activos refugio ante incertidumbre macro.',        color:'var(--gold)',  level:'atencion'},
+  {name:'Bonos bajo presión',  assets:['tlt'],                  dirs:[-1],       desc:'TLT a la baja: mercado priceando tasas altas por más tiempo. Presión en duration.',   color:'var(--red)',   level:'alerta'},
+  {name:'Curva empinando',     assets:['tlt','spx'],            dirs:[-1,1],     desc:'Bonos bajan, acciones suben: reflación. Mercado anticipa crecimiento con tasas altas.',color:'var(--gold)',  level:'atencion'},
+
+  // ── INFLACIÓN / COMMODITIES ───────────────────────────────
+  {name:'Presión inflacionaria',assets:['wti','gld'],           dirs:[1,1],      desc:'Petróleo+Oro subiendo: presión inflacionaria en alza. Impacto en política de la Fed.',color:'var(--gold)',  level:'atencion'},
+  {name:'Commodities en caída',assets:['wti','gld'],            dirs:[-1,-1],    desc:'Petróleo+Oro bajando: expectativas deflacionarias o debilidad de demanda global.',    color:'var(--blue)',  level:'atencion'},
+  {name:'Oil shock',           assets:['wti'],                  dirs:[1],        desc:'WTI ETF al alza fuerte: riesgo de shock energético. Impacto en inflación y consumo.', color:'var(--red)',   level:'alerta'},
+
+  // ── DÓLAR ─────────────────────────────────────────────────
+  {name:'Dólar débil',         assets:['gld','btc'],            dirs:[1,1],      desc:'Oro+BTC al alza: dólar bajo presión. Flujo hacia activos alternativos.',             color:'var(--gold)',  level:'atencion'},
+  {name:'Dólar fuerte',        assets:['gld','spx'],            dirs:[-1,-1],    desc:'Oro y acciones cayendo juntos: fortaleza del dólar comprime activos de riesgo.',     color:'var(--red)',   level:'alerta'},
+
+  // ── TECH / CRECIMIENTO ────────────────────────────────────
+  {name:'Tech liderando',      assets:['ndx','nvda'],           dirs:[1,1],      desc:'QQQ+NVDA al alza: sector tecnológico liderando. Momentum de crecimiento.',           color:'var(--green)', level:'positivo'},
+  {name:'Tech rezagado',       assets:['ndx','nvda'],           dirs:[-1,-1],    desc:'QQQ+NVDA a la baja: rotación saliendo de tech. Riesgo de compresión de múltiplos.',  color:'var(--red)',   level:'alerta'},
+  {name:'Divergencia tech',    assets:['spx','ndx'],            dirs:[1,-1],     desc:'S&P sube pero Nasdaq cae: rotación desde growth hacia value y defensivos.',          color:'var(--gold)',  level:'atencion'},
+
+  // ── CRYPTO ───────────────────────────────────────────────
+  {name:'Crypto risk-on',      assets:['btc','ndx'],            dirs:[1,1],      desc:'BTC+QQQ al alza: apetito especulativo elevado. Correlación activos de alto beta.',   color:'var(--green)', level:'positivo'},
+  {name:'Crypto sell-off',     assets:['btc'],                  dirs:[-1],       desc:'Bitcoin cayendo: sell-off en activos especulativos. Señal de aversión al riesgo.',    color:'var(--red)',   level:'alerta'},
 ];
 
 function getTickerChange(id) {
