@@ -86,11 +86,15 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 #loginModal.open{display:flex}
 
 /* TICKER */
-.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.65rem 0;overflow:hidden;font-family:var(--mono);font-size:0.82rem;position:relative}
-.ticker-inner{display:flex;gap:2.5rem;animation:scroll 45s linear infinite;white-space:nowrap;width:max-content}
+.ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.65rem 0;overflow:hidden;font-family:var(--mono);font-size:0.82rem;position:relative;width:100%}
+.ticker-inner{display:flex;gap:2.5rem;animation:scroll 28s linear infinite;white-space:nowrap;width:max-content;min-width:200%;will-change:transform}
 .ticker-inner:hover{animation-play-state:paused}
-.t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem;flex-shrink:0;white-space:nowrap}
-.t-lbl{color:var(--muted);font-size:0.72rem}.t-item.no-data{display:none}.t-item.no-data + .t-sep{display:none}.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em}.t-up{color:var(--green);font-size:0.75rem}.t-dn{color:var(--red);font-size:0.75rem}.t-sep{color:var(--border2);padding:0 0.3rem}
+.t-item{display:inline-flex;gap:0.4rem;align-items:center;padding:0 0.5rem;flex-shrink:0 !important;white-space:nowrap;min-width:max-content}
+.t-lbl{color:var(--muted);font-size:0.72rem;flex-shrink:0}
+.t-val{color:var(--text);font-size:0.88rem;letter-spacing:0.01em;flex-shrink:0}
+.t-up{color:var(--green);font-size:0.75rem;flex-shrink:0}
+.t-dn{color:var(--red);font-size:0.75rem;flex-shrink:0}
+.t-item.no-data{display:none}.t-item.no-data + .t-sep{display:none}.t-sep{color:var(--border2);padding:0 0.3rem;flex-shrink:0}
 .ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)}
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
@@ -239,13 +243,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .nav-strip a{padding:0.55rem 0.9rem;font-size:0.56rem;letter-spacing:0.08em;white-space:nowrap;flex-shrink:0}
 
   /* ── TICKER ── */
-  .ticker{padding:0.55rem 0}
-  .ticker-inner{gap:1.2rem;padding:0 0.5rem}
-  .t-item{flex-shrink:0;padding:0 0.3rem}
-  .t-lbl{font-size:0.62rem}
-  .t-val{font-size:0.8rem}
-  .t-up,.t-dn{font-size:0.68rem}
-  .ticker-status{font-size:0.5rem;right:0.5rem}
+  .ticker{padding:0.5rem 0;overflow:hidden !important}
+  .ticker-inner{gap:1.8rem;animation-duration:22s !important}
+  .t-item{flex-shrink:0 !important;min-width:max-content !important;padding:0 0.2rem}
+  .t-lbl{font-size:0.6rem !important;flex-shrink:0 !important}
+  .t-val{font-size:0.78rem !important;flex-shrink:0 !important}
+  .t-up,.t-dn{font-size:0.65rem !important;flex-shrink:0 !important}
+  .t-sep{flex-shrink:0 !important;padding:0 0.15rem}
+  .ticker-status{display:none}
 
   /* ── MAIN LAYOUT ── */
   main{
