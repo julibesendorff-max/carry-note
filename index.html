@@ -857,6 +857,26 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         </div>
       </div>
 
+      <!-- FEAR & GREED -->
+      <div id="fearGreedEl" style="background:var(--surface2);border:1px solid var(--border);padding:1.25rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.5rem">
+        <div style="flex:1">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.4rem">Índice Fear & Greed · Carry Note</div>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <div id="fearGreedScore" style="font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--gold)">—</div>
+            <div>
+              <div id="fearGreedLabel" style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:var(--gold)">Calculando...</div>
+              <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.2rem">Basado en VIX · SPY · BTC · TLT · Oro</div>
+            </div>
+          </div>
+          <div style="margin-top:0.75rem;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
+            <div id="fearGreedBar" style="height:100%;width:50%;background:var(--gold);transition:width 0.6s,background 0.6s;border-radius:3px"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-top:0.25rem">
+            <span>Miedo extremo</span><span>Neutral</span><span>Codicia extrema</span>
+          </div>
+        </div>
+      </div>
+
       <!-- SIGNALS GRID -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
         <div>
@@ -877,6 +897,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <div style="margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Correlaciones · variación del día</div>
         <div id="radarCorrLarge" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+      </div>
+
+      <!-- SIGNAL LOG -->
+      <div id="radarSignalLogWrap" style="display:none;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Historial de señales · hoy</div>
+        <div id="radarSignalLog" style="display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--border2)"></div>
       </div>
 
       <!-- AI SUGGESTION -->
@@ -2475,6 +2501,21 @@ function showRadar(e) {
   updateRadarLarge();
 }
 
+
+function toggleRadarCat(id) {
+  var el = document.getElementById(id);
+  var arrow = document.getElementById(id + '_arrow');
+  if(!el) return;
+  var open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if(arrow) arrow.textContent = open ? '▸' : '▾';
+}
+
+document.addEventListener('click', function(e) {
+  var header = e.target.closest ? e.target.closest('.radar-cat-header') : null;
+  if(header && header.dataset.catid) toggleRadarCat(header.dataset.catid);
+});
+
 function updateRadarLarge() {
   var signalEl  = document.getElementById('radarSignalLarge');
   var alertsEl  = document.getElementById('radarAlertsLarge');
@@ -2520,18 +2561,38 @@ function updateRadarLarge() {
       '<span style="font-family:var(--mono);font-size:0.72rem;color:#e8e6e0;line-height:1.5">'+s.desc+'</span></div>';
   }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
 
-  rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
-  corrEl.innerHTML = rows.map(function(r){
-    var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
-    var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
-    var bg    = r.active ? 'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
-      '<div>' +
-        '<span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
-        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.5rem">('+r.assets.join(', ')+')</span>' +
+  // Group by category
+  var cats = {};
+  rows.forEach(function(r) {
+    if(!cats[r.cat]) cats[r.cat] = [];
+    cats[r.cat].push(r);
+  });
+  var catOrder = ['Régimen de riesgo','Volatilidad','Macro & Tasas','Inflación & Commodities','Dólar','Tech & Crypto'];
+  corrEl.innerHTML = catOrder.map(function(cat) {
+    var catRows = cats[cat] || [];
+    var catActive = catRows.filter(function(r){ return r.active; }).length;
+    var catId = 'cat_' + cat.replace(/[^a-z]/gi,'_');
+    return '<div style="margin-bottom:0.5rem">' +
+      '<div data-catid="'+catId+'" class="radar-cat-header" style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:var(--surface2);cursor:pointer;border-bottom:1px solid var(--border2)">' +
+        '<span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:'+(catActive?'var(--gold)':'var(--muted)')+'">'+cat+(catActive?' · '+catActive+' activa'+(catActive>1?'s':''):'')+'</span>' +
+        '<span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)" id="'+catId+'_arrow">▸</span>' +
       '</div>' +
-      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
-    '</div>';
+      '<div id="'+catId+'" style="display:none">' +
+      catRows.sort(function(a,b){return (b.active?1:0)-(a.active?1:0);}).map(function(r){
+        var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
+        var cls = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
+        var bg = r.active ? 'background:rgba(255,255,255,0.02);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
+        var inten = r.intensity || {dot:'●○○'};
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
+          '<div>' +
+            '<span style="font-family:var(--mono);font-size:0.7rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
+            '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:0.4rem">('+r.assets.join(', ')+')</span>' +
+            (r.active ? '<span style="font-family:var(--mono);font-size:0.55rem;color:'+r.intensity.color+';margin-left:0.5rem">'+inten.dot+'</span>' : '') +
+          '</div>' +
+          '<span style="font-family:var(--mono);font-size:0.75rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
+        '</div>';
+      }).join('') +
+      '</div></div>';
   }).join('');
 }
 
@@ -2578,16 +2639,33 @@ function updateClock(){
 
 // ── RADAR MACRO ────────────────────────────────────────────
 var RADAR_PATTERNS = [
-  {name:'Risk-off global',    assets:['vix','gld','tlt'], dirs:[1,1,1],  desc:'VIX+Oro+TLT al alza: fuga hacia refugios',          color:'var(--red)',   level:'alerta'},
-  {name:'Risk-on global',     assets:['spx','ndx','btc'], dirs:[1,1,1],  desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado',    color:'var(--green)', level:'positivo'},
-  {name:'Presion inflac.',    assets:['wti','gld'],       dirs:[1,1],    desc:'Petroleo+Oro subiendo: presion inflacionaria',       color:'var(--gold)',  level:'atencion'},
-  {name:'Flight to quality',  assets:['tlt','gld'],       dirs:[1,1],    desc:'TLT+Oro al alza: busqueda de activos refugio',       color:'var(--gold)',  level:'atencion'},
-  {name:'Tech liderando',     assets:['ndx','nvda'],      dirs:[1,1],    desc:'QQQ+NVDA al alza: sector tech liderando mercado',    color:'var(--green)', level:'positivo'},
-  {name:'VIX elevado',        assets:['vix'],             dirs:[1],      desc:'Volatilidad alta: mercado anticipa movimientos bruscos', color:'var(--red)', level:'alerta'},
-  {name:'Argentina rally',    assets:['ypf','ggal'],      dirs:[1,1],    desc:'YPF+GGAL al alza: flujo positivo en activos AR',    color:'var(--green)', level:'positivo'},
-  {name:'Argentina estres',   assets:['ypf','ggal'],      dirs:[-1,-1],  desc:'YPF+GGAL a la baja: presion sobre activos AR',      color:'var(--red)',   level:'alerta'},
-  {name:'Dolar debil',        assets:['gld','btc'],       dirs:[1,1],    desc:'Oro+BTC al alza: dolar bajo presion global',        color:'var(--gold)',  level:'atencion'},
-  {name:'Mercado caida',      assets:['spx','ndx'],       dirs:[-1,-1],  desc:'SPY+QQQ a la baja: sell-off en renta variable',     color:'var(--red)',   level:'alerta'},
+  // ── RISK REGIME ──────────────────────────────────────────
+  {name:'Risk-off global',      cat:'Régimen de riesgo', assets:['vix','gld','tlt'],  dirs:[1,1,1],   desc:'VIX+Oro+TLT al alza: fuga masiva hacia refugios. Señal de estrés sistémico.',            color:'var(--red)',   level:'alerta'},
+  {name:'Risk-on global',       cat:'Régimen de riesgo', assets:['spx','ndx','btc'],  dirs:[1,1,1],   desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado en todos los segmentos.',                color:'var(--green)', level:'positivo'},
+  {name:'Mercado en caída',     cat:'Régimen de riesgo', assets:['spx','ndx'],        dirs:[-1,-1],   desc:'SPY+QQQ a la baja: sell-off en renta variable de EEUU.',                                color:'var(--red)',   level:'alerta'},
+  {name:'Rally amplio',         cat:'Régimen de riesgo', assets:['spx','ndx','tlt'],  dirs:[1,1,1],   desc:'Acciones y bonos subiendo juntos: entorno muy favorable para activos de riesgo.',       color:'var(--green)', level:'positivo'},
+  // ── VOLATILIDAD ───────────────────────────────────────────
+  {name:'VIX en alza',          cat:'Volatilidad',       assets:['vix'],              dirs:[1],        desc:'Volatilidad implícita subiendo: el mercado paga más por protección. Cautela.',          color:'var(--red)',   level:'alerta'},
+  {name:'VIX comprimido',       cat:'Volatilidad',       assets:['vix'],              dirs:[-1],       desc:'Volatilidad implícita cayendo: el mercado está en modo complacencia.',                  color:'var(--blue)',  level:'atencion'},
+  // ── MACRO / TASAS ─────────────────────────────────────────
+  {name:'Flight to quality',    cat:'Macro & Tasas',     assets:['tlt','gld'],        dirs:[1,1],      desc:'TLT+Oro al alza: inversores buscan activos refugio ante incertidumbre macro.',         color:'var(--gold)',  level:'atencion'},
+  {name:'Bonos bajo presión',   cat:'Macro & Tasas',     assets:['tlt'],              dirs:[-1],       desc:'TLT a la baja: mercado priceando tasas altas por más tiempo. Presión en duration.',    color:'var(--red)',   level:'alerta'},
+  {name:'Curva empinando',      cat:'Macro & Tasas',     assets:['tlt','spx'],        dirs:[-1,1],     desc:'Bonos bajan, acciones suben: reflación. Mercado anticipa crecimiento con tasas altas.',color:'var(--gold)',  level:'atencion'},
+  // ── INFLACIÓN / COMMODITIES ───────────────────────────────
+  {name:'Presión inflacionaria',cat:'Inflación & Commodities', assets:['wti','gld'],  dirs:[1,1],      desc:'Petróleo+Oro subiendo: presión inflacionaria en alza. Impacto en política de la Fed.',color:'var(--gold)',  level:'atencion'},
+  {name:'Commodities en caída', cat:'Inflación & Commodities', assets:['wti','gld'],  dirs:[-1,-1],    desc:'Petróleo+Oro bajando: expectativas deflacionarias o debilidad de demanda global.',     color:'var(--blue)',  level:'atencion'},
+  {name:'Oil shock',            cat:'Inflación & Commodities', assets:['wti'],        dirs:[1],        desc:'WTI ETF al alza fuerte: riesgo de shock energético. Impacto en inflación y consumo.',  color:'var(--red)',   level:'alerta'},
+  // ── DÓLAR ─────────────────────────────────────────────────
+  {name:'Dólar débil',          cat:'Dólar',             assets:['gld','btc'],        dirs:[1,1],      desc:'Oro+BTC al alza: dólar bajo presión. Flujo hacia activos alternativos.',              color:'var(--gold)',  level:'atencion'},
+  {name:'Dólar fuerte',         cat:'Dólar',             assets:['gld','spx'],        dirs:[-1,-1],    desc:'Oro y acciones cayendo juntos: fortaleza del dólar comprime activos de riesgo.',      color:'var(--red)',   level:'alerta'},
+  // ── TECH / CRECIMIENTO ────────────────────────────────────
+  {name:'Tech liderando',       cat:'Tech & Crypto',     assets:['ndx','nvda'],       dirs:[1,1],      desc:'QQQ+NVDA al alza: sector tecnológico liderando. Momentum de crecimiento.',            color:'var(--green)', level:'positivo'},
+  {name:'Tech rezagado',        cat:'Tech & Crypto',     assets:['ndx','nvda'],       dirs:[-1,-1],    desc:'QQQ+NVDA a la baja: rotación saliendo de tech. Riesgo de compresión de múltiplos.',   color:'var(--red)',   level:'alerta'},
+  {name:'Divergencia tech',     cat:'Tech & Crypto',     assets:['spx','ndx'],        dirs:[1,-1],     desc:'S&P sube pero Nasdaq cae: rotación desde growth hacia value y defensivos.',           color:'var(--gold)',  level:'atencion'},
+  // ── CRYPTO ───────────────────────────────────────────────
+  {name:'Crypto risk-on',       cat:'Tech & Crypto',     assets:['btc','ndx'],        dirs:[1,1],      desc:'BTC+QQQ al alza: apetito especulativo elevado. Correlación activos de alto beta.',    color:'var(--green)', level:'positivo'},
+  {name:'Crypto sell-off',      cat:'Tech & Crypto',     assets:['btc'],              dirs:[-1],       desc:'Bitcoin cayendo: sell-off en activos especulativos. Señal de aversión al riesgo.',     color:'var(--red)',   level:'alerta'},
+  {name:'Divergencia BTC/SPX',  cat:'Tech & Crypto',     assets:['btc','spx'],        dirs:[1,-1],     desc:'BTC sube pero SPY cae: flujo especulativo desacoplado del equity tradicional.',       color:'var(--gold)',  level:'atencion'},
 ];
 
 function getTickerChange(id) {
@@ -2894,6 +2972,96 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+
+// ── FEAR & GREED INDEX ────────────────────────────────────
+function calcFearGreed() {
+  // Components (each 0-100):
+  // 1. VIX inverse: low VIX = greed, high VIX = fear
+  var vixPct = getTickerChange('vix');
+  var vixScore = vixPct !== null ? Math.max(0, Math.min(100, 50 - vixPct * 8)) : 50;
+
+  // 2. SPY momentum
+  var spxPct = getTickerChange('spx');
+  var spxScore = spxPct !== null ? Math.max(0, Math.min(100, 50 + spxPct * 10)) : 50;
+
+  // 3. BTC momentum (high beta risk proxy)
+  var btcPct = getTickerChange('btc');
+  var btcScore = btcPct !== null ? Math.max(0, Math.min(100, 50 + btcPct * 5)) : 50;
+
+  // 4. TLT inverse (bonds rising = fear)
+  var tltPct = getTickerChange('tlt');
+  var tltScore = tltPct !== null ? Math.max(0, Math.min(100, 50 - tltPct * 8)) : 50;
+
+  // 5. Gold inverse (gold rising = fear)
+  var gldPct = getTickerChange('gld');
+  var gldScore = gldPct !== null ? Math.max(0, Math.min(100, 50 - gldPct * 6)) : 50;
+
+  // Weighted average
+  var score = Math.round((vixScore * 0.30) + (spxScore * 0.25) + (btcScore * 0.15) + (tltScore * 0.15) + (gldScore * 0.15));
+
+  var label, color, bg;
+  if(score >= 80)       { label = 'Codicia extrema'; color = '#4caf7d'; bg = 'rgba(76,175,125,0.12)'; }
+  else if(score >= 60)  { label = 'Codicia';          color = '#8bc34a'; bg = 'rgba(139,195,74,0.10)'; }
+  else if(score >= 45)  { label = 'Neutral';           color = '#c9a84c'; bg = 'rgba(201,168,76,0.10)'; }
+  else if(score >= 25)  { label = 'Miedo';             color = '#ff9800'; bg = 'rgba(255,152,0,0.10)'; }
+  else                  { label = 'Miedo extremo';    color = '#e05252'; bg = 'rgba(224,82,82,0.12)'; }
+
+  return { score, label, color, bg };
+}
+
+function renderFearGreed() {
+  var el = document.getElementById('fearGreedEl');
+  var labelEl = document.getElementById('fearGreedLabel');
+  var barEl = document.getElementById('fearGreedBar');
+  var scoreEl = document.getElementById('fearGreedScore');
+  if(!el) return;
+  var fg = calcFearGreed();
+  el.style.background = fg.bg;
+  el.style.borderColor = fg.color;
+  if(scoreEl) { scoreEl.textContent = fg.score; scoreEl.style.color = fg.color; }
+  if(labelEl) { labelEl.textContent = fg.label; labelEl.style.color = fg.color; }
+  if(barEl)   { barEl.style.width = fg.score + '%'; barEl.style.background = fg.color; }
+}
+
+// ── SIGNAL LOG ────────────────────────────────────────────
+var radarSignalLog = [];
+
+function logRadarSignal(signalName, desc, color) {
+  var now = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+  // Avoid duplicates within same minute
+  var existing = radarSignalLog.find(function(x){ return x.name === signalName && x.time === now; });
+  if(existing) return;
+  radarSignalLog.unshift({name: signalName, desc: desc, color: color, time: now});
+  if(radarSignalLog.length > 20) radarSignalLog.pop();
+  renderSignalLog();
+}
+
+function renderSignalLog() {
+  var el = document.getElementById('radarSignalLog');
+  var wrap = document.getElementById('radarSignalLogWrap');
+  if(!el) return;
+  if(!radarSignalLog.length) {
+    if(wrap) wrap.style.display = 'none';
+    return;
+  }
+  if(wrap) wrap.style.display = 'block';
+  el.innerHTML = radarSignalLog.slice(0,10).map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border2)">' +
+      '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);white-space:nowrap;margin-top:2px">' + s.time + '</span>' +
+      '<span style="font-size:0.58rem;margin-top:3px" style="color:' + s.color + '">●</span>' +
+      '<div><div style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + ';font-weight:500">' + s.name + '</div>' +
+      '<div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);line-height:1.5">' + s.desc + '</div></div>' +
+    '</div>';
+  }).join('');
+}
+
+// ── SIGNAL INTENSITY ──────────────────────────────────────
+function getSignalIntensity(avgAbs) {
+  if(avgAbs >= 2.0) return {label:'Fuerte',  color:'#e05252', dot:'●●●'};
+  if(avgAbs >= 0.8) return {label:'Moderada',color:'#c9a84c', dot:'●●○'};
+  return              {label:'Débil',    color:'#6b6875', dot:'●○○'};
+}
 
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
