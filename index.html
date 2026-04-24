@@ -248,16 +248,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip" id="navStrip">
-    <a class="active" data-filter="all">Inicio</a>
+    <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
+    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
+    <a class="active" data-filter="all">Análisis</a>
     <a data-filter="macro">Macro</a>
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
     <a data-filter="latam">EM &amp; Latam</a>
-    <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
-    <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
-    <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
-    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
+    <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
+    <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
 </header>
