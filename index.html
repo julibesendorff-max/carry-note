@@ -250,7 +250,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <nav class="nav-strip" id="navStrip">
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
-    <a class="active" data-filter="all">Análisis</a>
+    <a data-filter="all">Análisis</a>
     <a data-filter="macro">Macro</a>
     <a data-filter="geo">Geopolítica</a>
     <a data-filter="markets">Mercados</a>
@@ -3061,6 +3061,7 @@ window.addEventListener('load', function(){
   loadForex();
   loadWatchlistPrices();
   setInterval(loadWatchlistPrices, 120000);
+  showDiag();
 });
 </script>
 
