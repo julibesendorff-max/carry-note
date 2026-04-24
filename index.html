@@ -732,6 +732,22 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Herramienta educativa gratuita. Ingres&#225; tus datos para acceder al an&#225;lisis instant&#225;neo de tu cartera en el contexto macroecon&#243;mico actual.</div>
       </div>
 
+      <!-- DAILY SUMMARY -->
+      <div id="diagDailySummary" style="display:none;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">▸ Tu cartera hoy</div>
+        <div id="diagSummaryBody" style="display:flex;flex-direction:column;gap:0"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;flex-wrap:wrap;gap:0.5rem">
+          <div id="diagLastScore" style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)"></div>
+          <button onclick="clearSavedPortfolio()" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:transparent;border:none;cursor:pointer;letter-spacing:0.06em">✕ Limpiar cartera guardada</button>
+        </div>
+      </div>
+
+      <!-- SCORE HISTORY -->
+      <div id="diagHistory" style="display:none;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Historial de scores</div>
+        <div id="diagHistoryList" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+      </div>
+
       <div style="margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Tu perfil de inversor</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
@@ -1140,6 +1156,9 @@ async function loadTicker() {
     status.className = 'ticker-status live';
     setTimeout(updateRadar, 500);
     updateRadar();
+    // Refresh daily summary prices if diag panel is open
+    var dp = document.getElementById('diagPanel');
+    if(dp && dp.style.display !== 'none') renderDailySummary();
   } catch(e) {
     status.textContent = '○ sin conexión';
   }
@@ -1974,6 +1993,8 @@ async function runDiagCore() {
   if(!assets.length){alert('Agrega al menos un activo con monto.');return;}
   const horizonte = document.getElementById('diagHorizonte').value;
   const riesgo = document.getElementById('diagRiesgo').value;
+  // Save portfolio for next visit
+  savePortfolio(assets, horizonte, riesgo);
   const btn = document.getElementById('diagBtn');
   btn.disabled=true; btn.textContent='Analizando...';
   const result = document.getElementById('diagResult');
@@ -2046,10 +2067,14 @@ function renderDiagHistory() {
     if(!el||!list||!h.length) return;
     el.style.display='block';
     list.innerHTML=h.map(function(x,i){
-      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:0.4rem" onclick="loadHistoryItem('+i+')">' +
-        '<div><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+'</div>' +
-        '<div style="font-size:0.75rem;color:var(--muted)">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,60)+'</div></div>' +
-        '<div style="font-family:var(--mono);font-size:1rem;color:var(--gold);font-weight:600">'+(x.score||'—')+'/10</div></div>';
+      var scoreCurrent = x.score ? parseInt(x.score) : null;
+      var scorePrev = (i < h.length-1 && h[i+1].score) ? parseInt(h[i+1].score) : null;
+      var diff = (scoreCurrent !== null && scorePrev !== null) ? scoreCurrent - scorePrev : null;
+      var diffStr = diff === null ? '' : diff > 0 ? '<span style="color:var(--green);font-size:0.65rem;margin-left:0.4rem">▲+'+diff+'</span>' : diff < 0 ? '<span style="color:var(--red);font-size:0.65rem;margin-left:0.4rem">▼'+diff+'</span>' : '<span style="color:var(--muted2);font-size:0.65rem;margin-left:0.4rem">→</span>';
+      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:0" onclick="loadHistoryItem('+i+')">' +
+        '<div><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+' · horizonte '+x.horizonte+'</div>' +
+        '<div style="font-size:0.72rem;color:var(--muted);margin-top:0.15rem">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,65)+'</div></div>' +
+        '<div style="font-family:var(--mono);font-size:1.1rem;color:var(--gold);font-weight:600;text-align:right">'+(x.score||'—')+'/10'+diffStr+'</div></div>';
     }).join('');
   } catch(e) {}
 }
@@ -2527,11 +2552,16 @@ function showDiag(e) {
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   var tab = document.getElementById('diagTab');
   if(tab) tab.classList.add('active');
-  // Add default assets if empty
-  var assets = document.getElementById('diagAssets');
-  if(assets && assets.children.length === 0) {
+  // Load saved portfolio or add defaults
+  var assetsEl = document.getElementById('diagAssets');
+  var saved = getSavedPortfolio();
+  if(saved && saved.assets && saved.assets.length) {
+    loadSavedPortfolioIntoForm();
+    renderDailySummary();
+  } else if(assetsEl && assetsEl.children.length === 0) {
     addAsset(); addAsset(); addAsset();
   }
+  renderDiagHistory();
 }
 
 // ── NEWSLETTER ────────────────────────────────────────────────────────────────
@@ -2728,6 +2758,88 @@ function showSobre(e){
   document.getElementById('sobrePanel').style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   document.getElementById('sobreTab').classList.add('active');
+}
+
+
+// ── SAVED PORTFOLIO & DAILY SUMMARY ───────────────────────
+function getSavedPortfolio() {
+  try { return JSON.parse(localStorage.getItem('cn_portfolio')||'null'); } catch(e) { return null; }
+}
+
+function savePortfolio(assets, horizonte, riesgo) {
+  localStorage.setItem('cn_portfolio', JSON.stringify({assets, horizonte, riesgo, savedAt: new Date().toISOString()}));
+}
+
+function clearSavedPortfolio() {
+  localStorage.removeItem('cn_portfolio');
+  document.getElementById('diagDailySummary').style.display = 'none';
+}
+
+function loadSavedPortfolioIntoForm() {
+  var saved = getSavedPortfolio();
+  if(!saved) return;
+  // Load assets into form
+  document.getElementById('diagAssets').innerHTML = '';
+  assetCount = 0;
+  saved.assets.forEach(function(a) {
+    addAsset();
+    var rows = document.querySelectorAll('#diagAssets > div');
+    var row = rows[rows.length-1];
+    var sels = row.querySelectorAll('select');
+    var inp = row.querySelector('input');
+    if(sels[0]) Array.from(sels[0].options).forEach(function(o){ if(o.text === a.tipo) sels[0].value = o.value; });
+    if(inp) inp.value = a.monto;
+    if(sels[1]) sels[1].value = a.moneda || 'ARS';
+  });
+  if(saved.horizonte) document.getElementById('diagHorizonte').value = saved.horizonte;
+  if(saved.riesgo) document.getElementById('diagRiesgo').value = saved.riesgo;
+}
+
+function renderDailySummary() {
+  var saved = getSavedPortfolio();
+  var summaryEl = document.getElementById('diagDailySummary');
+  var bodyEl = document.getElementById('diagSummaryBody');
+  var lastScoreEl = document.getElementById('diagLastScore');
+  if(!saved || !saved.assets || !saved.assets.length) {
+    if(summaryEl) summaryEl.style.display = 'none';
+    return;
+  }
+
+  // Map asset types to ticker IDs
+  var assetToTicker = {
+    'S&P 500 (SPY ETF)': 'spx', 'Nasdaq (QQQ ETF)': 'ndx',
+    'GGAL (Grupo Galicia)': 'ggal', 'YPF': 'ypf',
+    'Bitcoin (BTC)': 'btc', 'Ethereum (ETH)': 'btc',
+    'Oro': 'gld', 'CEDEARs (general)': 'spx',
+    'CEDEAR: NVIDIA (NVDA)': 'nvda', 'CEDEAR: Tesla (TSLA)': 'tsla',
+  };
+
+  var rows = saved.assets.map(function(a) {
+    var tickerId = assetToTicker[a.tipo] || null;
+    var pct = tickerId ? getTickerChange(tickerId) : null;
+    var pctStr = pct !== null ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : '—';
+    var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
+    var arrow = pct === null ? '' : pct > 0 ? '▲ ' : '▼ ';
+    var montoStr = a.moneda === 'USD' ? 'USD ' + Number(a.monto).toLocaleString('es-AR') : '$ ' + Number(a.monto).toLocaleString('es-AR');
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.75rem;border-bottom:1px solid var(--border2);background:var(--surface)">' +
+      '<div>' +
+        '<div style="font-family:var(--mono);font-size:0.68rem;color:var(--text)">' + a.tipo + '</div>' +
+        '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">' + montoStr + ' ' + a.moneda + '</div>' +
+      '</div>' +
+      '<div style="font-family:var(--mono);font-size:0.75rem;font-weight:500;color:' + pctColor + '">' + arrow + pctStr + '</div>' +
+    '</div>';
+  }).join('');
+
+  if(bodyEl) bodyEl.innerHTML = rows;
+
+  // Last score
+  var history = JSON.parse(localStorage.getItem('cn_diag_history') || '[]');
+  if(history.length && lastScoreEl) {
+    var last = history[0];
+    lastScoreEl.textContent = 'Último score: ' + (last.score || '—') + '/10 · ' + last.date;
+  }
+
+  if(summaryEl) summaryEl.style.display = 'block';
 }
 
 window.addEventListener('load', function(){
