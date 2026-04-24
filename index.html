@@ -1185,6 +1185,8 @@ async function loadTicker() {
     // Refresh daily summary prices if diag panel is open
     var dp = document.getElementById('diagPanel');
     if(dp && dp.style.display !== 'none') renderDailySummary();
+    // Update fear & greed if radar is open
+    renderFearGreed();
   } catch(e) {
     status.textContent = '○ sin conexión';
   }
@@ -2561,38 +2563,20 @@ function updateRadarLarge() {
       '<span style="font-family:var(--mono);font-size:0.72rem;color:#e8e6e0;line-height:1.5">'+s.desc+'</span></div>';
   }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
 
-  // Group by category
-  var cats = {};
-  rows.forEach(function(r) {
-    if(!cats[r.cat]) cats[r.cat] = [];
-    cats[r.cat].push(r);
-  });
-  var catOrder = ['Régimen de riesgo','Volatilidad','Macro & Tasas','Inflación & Commodities','Dólar','Tech & Crypto'];
-  corrEl.innerHTML = catOrder.map(function(cat) {
-    var catRows = cats[cat] || [];
-    var catActive = catRows.filter(function(r){ return r.active; }).length;
-    var catId = 'cat_' + cat.replace(/[^a-z]/gi,'_');
-    return '<div style="margin-bottom:0.5rem">' +
-      '<div data-catid="'+catId+'" class="radar-cat-header" style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:var(--surface2);cursor:pointer;border-bottom:1px solid var(--border2)">' +
-        '<span style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:'+(catActive?'var(--gold)':'var(--muted)')+'">'+cat+(catActive?' · '+catActive+' activa'+(catActive>1?'s':''):'')+'</span>' +
-        '<span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2)" id="'+catId+'_arrow">▸</span>' +
+  rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
+  corrEl.innerHTML = rows.map(function(r){
+    var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
+    var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
+    var bg    = r.active ? 'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
+    var inten = r.intensity || {dot:'●○○'};
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
+      '<div>' +
+        '<span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.5rem">('+r.assets.join(', ')+')</span>' +
+        (r.active ? '<span style="font-family:var(--mono);font-size:0.58rem;color:'+r.intensity.color+';margin-left:0.5rem">'+inten.dot+'</span>' : '') +
       '</div>' +
-      '<div id="'+catId+'" style="display:none">' +
-      catRows.sort(function(a,b){return (b.active?1:0)-(a.active?1:0);}).map(function(r){
-        var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
-        var cls = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
-        var bg = r.active ? 'background:rgba(255,255,255,0.02);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
-        var inten = r.intensity || {dot:'●○○'};
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
-          '<div>' +
-            '<span style="font-family:var(--mono);font-size:0.7rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
-            '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:0.4rem">('+r.assets.join(', ')+')</span>' +
-            (r.active ? '<span style="font-family:var(--mono);font-size:0.55rem;color:'+r.intensity.color+';margin-left:0.5rem">'+inten.dot+'</span>' : '') +
-          '</div>' +
-          '<span style="font-family:var(--mono);font-size:0.75rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
-        '</div>';
-      }).join('') +
-      '</div></div>';
+      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
+    '</div>';
   }).join('');
 }
 
