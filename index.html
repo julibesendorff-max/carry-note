@@ -43,17 +43,17 @@
 </script>
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 <style>
 :root {
   --bg:#0a0a0b;--surface:#111114;--surface2:#18181d;--border:#2a2a32;--border2:#1e1e24;
-  --gold:#c9a84c;--gold2:#e8c96a;--text:#e8e6e0;--muted:#6b6875;--muted2:#4a4855;
+  --gold:#c9a84c;--gold2:#e8c96a;--text:#f0ede8;--muted:#9d99a8;--muted2:#6b6875;
   --green:#4caf7d;--red:#e05252;--blue:#5b8dee;
-  --serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;--sans:'DM Sans',sans-serif;
+  --serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;--sans:'Inter',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35}
 
 header{border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100}
@@ -149,14 +149,14 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-tag.latam{border-color:#a855f7;color:#a855f7}
 .note-date{font-family:var(--mono);font-size:0.58rem;color:var(--muted)}
 .note-num{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto;letter-spacing:0.1em}
-.note-title{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
+.note-title{font-family:var(--serif);font-size:2.1rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
 .note-title:hover{color:var(--gold)}
-.note-sub{font-family:var(--sans);font-size:0.88rem;font-style:normal;color:#9d99a8;line-height:1.6;margin-bottom:1.1rem;font-weight:300;letter-spacing:0.01em}
+.note-sub{font-family:var(--sans);font-size:1rem;font-style:normal;color:#f0ede8;line-height:1.7;margin-bottom:1.2rem;font-weight:300;letter-spacing:0.01em}
 .note-body{display:none}.note-body.open{display:block}
-.note-body p{font-size:0.9rem;line-height:1.78;color:#c8c4bc;font-weight:300;margin-bottom:1rem}
+.note-body p{font-size:1.05rem;line-height:1.85;color:#f0ede8;font-weight:300;margin-bottom:1.1rem;letter-spacing:0.01em}
 .note-body .src{font-family:var(--mono);font-size:0.58rem;color:var(--muted2);letter-spacing:0.03em;margin-left:0.2rem}
-.note-body h3{font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin:1.5rem 0 0.5rem}
-.note-body .key-stat{background:var(--surface2);border-left:2px solid var(--gold);padding:0.8rem 1.1rem;margin:1.2rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2);line-height:1.5}
+.note-body h3{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--text);margin:1.6rem 0 0.6rem}
+.note-body .key-stat{background:var(--surface2);border-left:2px solid var(--gold);padding:0.9rem 1.2rem;margin:1.3rem 0;font-family:var(--mono);font-size:0.85rem;color:var(--gold2);line-height:1.55}
 .note-footer{display:flex;align-items:center;gap:1rem;margin-top:0.5rem}
 .read-toggle{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;font-weight:500;transition:color 0.2s}
 .read-toggle:hover{color:var(--gold2)}
@@ -215,7 +215,7 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .comp-val{font-size:0.82rem;color:var(--text);line-height:1.6}
 .comp-new .comp-label{color:var(--green)}
 .comp-changes{padding:1rem;background:var(--surface2)}
-.comp-changes p{font-size:0.82rem;color:#c8c4bc;line-height:1.65;margin-bottom:0.5rem}
+.comp-changes p{font-size:0.82rem;color:#f0ede8;line-height:1.7;margin-bottom:0.5rem}
 .comp-changes p:last-child{margin-bottom:0}
 .scen-btn{font-family:var(--mono);font-size:0.62rem;padding:0.35rem 0.75rem;background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
 .scen-btn:hover{border-color:var(--gold);color:var(--gold)}
@@ -437,11 +437,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">¿Por qué invertir?</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">El impacto de la inflación en los ahorros y por qué no invertir tiene un costo real.</div>
             <div id="l1" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">En Argentina, mantener pesos en efectivo o en una cuenta sin rendimiento implica perder poder adquisitivo todos los meses. Con una inflación del 54% anual (INDEC, 2025), $100.000 de hoy equivalen a aproximadamente $64.900 en poder de compra dentro de un año si no los invertís.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Invertir no es especular ni apostar. Es tomar una decisión consciente de dónde ponés tus ahorros para que al menos preserven su valor. La inflación es el costo de no hacerlo.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">En Argentina, mantener pesos en efectivo o en una cuenta sin rendimiento implica perder poder adquisitivo todos los meses. Con una inflación del 54% anual (INDEC, 2025), $100.000 de hoy equivalen a aproximadamente $64.900 en poder de compra dentro de un año si no los invertís.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Invertir no es especular ni apostar. Es tomar una decisión consciente de dónde ponés tus ahorros para que al menos preserven su valor. La inflación es el costo de no hacerlo.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">\$100.000 sin invertir → vale \$64.900 en un año (inflación 54% anual · Fuente: INDEC)</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El primer objetivo de cualquier inversión no es ganar dinero sino no perderlo. Vencer a la inflación es la meta básica. Todo lo que supere ese umbral es ganancia real.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Las opciones más simples para empezar: Fondos Money Market (liquidez inmediata, rinden similar a la tasa BCRA), plazos fijos (tasa fija garantizada) o FCIs de renta fija en pesos. Ninguna de estas requiere conocimiento técnico avanzado.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El primer objetivo de cualquier inversión no es ganar dinero sino no perderlo. Vencer a la inflación es la meta básica. Todo lo que supere ese umbral es ganancia real.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Las opciones más simples para empezar: Fondos Money Market (liquidez inmediata, rinden similar a la tasa BCRA), plazos fijos (tasa fija garantizada) o FCIs de renta fija en pesos. Ninguna de estas requiere conocimiento técnico avanzado.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -451,10 +451,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Riesgo y retorno</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">La relación fundamental de las finanzas: a mayor rendimiento esperado, mayor riesgo asumido.</div>
             <div id="l2" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">No existe el activo que rinde mucho y tiene riesgo bajo. Si alguien te ofrece eso, es una señal de alerta. El mercado es eficiente en el largo plazo: los activos más riesgosos ofrecen mayor retorno potencial precisamente para compensar ese riesgo.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">No existe el activo que rinde mucho y tiene riesgo bajo. Si alguien te ofrece eso, es una señal de alerta. El mercado es eficiente en el largo plazo: los activos más riesgosos ofrecen mayor retorno potencial precisamente para compensar ese riesgo.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Money Market (~29% TNA) → Acciones Merval (~188% anual) · Mayor retorno = mayor volatilidad</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El riesgo no es malo en sí mismo — es algo que hay que gestionar. La clave es entender cuánto riesgo podés tolerar en función de tu horizonte de inversión y tu situación financiera.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Si necesitás el dinero en 3 meses, no pongas todo en acciones. Si tenés 10 años de horizonte, el riesgo de corto plazo importa menos. El tiempo es el principal aliado del inversor.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El riesgo no es malo en sí mismo — es algo que hay que gestionar. La clave es entender cuánto riesgo podés tolerar en función de tu horizonte de inversión y tu situación financiera.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Si necesitás el dinero en 3 meses, no pongas todo en acciones. Si tenés 10 años de horizonte, el riesgo de corto plazo importa menos. El tiempo es el principal aliado del inversor.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -464,11 +464,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo empezar a invertir</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Paso a paso: abrir una cuenta en un broker, elegir el primer instrumento y ejecutar la primera operación.</div>
             <div id="l3" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Paso 1: Abrí una cuenta en un broker.</strong> En Argentina los principales son Balanz, IOL (InvertirOnline), Bull Market y PPI. Todos son regulados por la CNV. El proceso es 100% online y tarda entre 24 y 48 horas. Necesitás DNI, CUIL y una cuenta bancaria.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Paso 2: Transferí fondos.</strong> Una vez aprobada la cuenta, transferís pesos desde tu banco al CVU del broker. El dinero está disponible en minutos.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Paso 3: Primera inversión.</strong> Para empezar, lo más simple es un Fondo Money Market. Liquidez inmediata, sin plazo mínimo, y rinde similar a la tasa de política monetaria del BCRA (~29% TNA).</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 1: Abrí una cuenta en un broker.</strong> En Argentina los principales son Balanz, IOL (InvertirOnline), Bull Market y PPI. Todos son regulados por la CNV. El proceso es 100% online y tarda entre 24 y 48 horas. Necesitás DNI, CUIL y una cuenta bancaria.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 2: Transferí fondos.</strong> Una vez aprobada la cuenta, transferís pesos desde tu banco al CVU del broker. El dinero está disponible en minutos.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 3: Primera inversión.</strong> Para empezar, lo más simple es un Fondo Money Market. Liquidez inmediata, sin plazo mínimo, y rinde similar a la tasa de política monetaria del BCRA (~29% TNA).</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Brokers regulados CNV: Balanz · IOL · Bull Market · PPI · Cocos Capital</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">No hay monto mínimo obligatorio en la mayoría de los brokers. Podés empezar con cualquier suma.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">No hay monto mínimo obligatorio en la mayoría de los brokers. Podés empezar con cualquier suma.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -478,10 +478,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Diversificación</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Por qué no conviene poner todos los huevos en la misma canasta y cómo diversificar con poco capital.</div>
             <div id="l4" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Diversificar significa distribuir el capital entre distintos activos para que el mal desempeño de uno no destruya toda la cartera. No elimina el riesgo pero lo reduce significativamente.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Diversificar significa distribuir el capital entre distintos activos para que el mal desempeño de uno no destruya toda la cartera. No elimina el riesgo pero lo reduce significativamente.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Ejemplo: 40% Money Market · 30% Renta Fija CER · 20% ON hard dollar · 10% Acciones</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">En Argentina, la diversificación también implica diversificar en moneda: tener parte en pesos (para cubrir gastos cotidianos) y parte en dólares (para preservar valor a largo plazo).</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">La diversificación no significa tener 30 activos distintos. Con 3 o 4 instrumentos bien elegidos ya se logra una cartera razonablemente diversificada.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">En Argentina, la diversificación también implica diversificar en moneda: tener parte en pesos (para cubrir gastos cotidianos) y parte en dólares (para preservar valor a largo plazo).</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">La diversificación no significa tener 30 activos distintos. Con 3 o 4 instrumentos bien elegidos ya se logra una cartera razonablemente diversificada.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -498,10 +498,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Renta fija: bonos y letras</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Cómo funcionan los instrumentos de renta fija, qué es la duration y cómo leer una curva de rendimientos.</div>
             <div id="m1" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Un bono es un préstamo que hacés al emisor (Estado o empresa). A cambio, te pagan un cupón periódico y devuelven el capital al vencimiento. La tasa de interés que recibís se llama rendimiento o TIR (Tasa Interna de Retorno).</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Un bono es un préstamo que hacés al emisor (Estado o empresa). A cambio, te pagan un cupón periódico y devuelven el capital al vencimiento. La tasa de interés que recibís se llama rendimiento o TIR (Tasa Interna de Retorno).</p>
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Precio del bono sube → rendimiento baja · Precio baja → rendimiento sube</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">La <strong style="color:var(--text)">duration</strong> mide la sensibilidad del precio de un bono ante cambios en las tasas de interés. Un bono con duration de 5 años pierde aproximadamente 5% de precio si las tasas suben 1%. Por eso en contexto de suba de tasas conviene privilegiar bonos cortos.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">En Argentina los principales instrumentos son: Lecaps (letras del Tesoro en pesos, corto plazo), Boncaps (bonos en pesos a tasa fija), Boncer/Lecer (ajustados por CER/inflación) y bonos soberanos en dólares (Globales y Bonares).</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">La <strong style="color:var(--text)">duration</strong> mide la sensibilidad del precio de un bono ante cambios en las tasas de interés. Un bono con duration de 5 años pierde aproximadamente 5% de precio si las tasas suben 1%. Por eso en contexto de suba de tasas conviene privilegiar bonos cortos.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">En Argentina los principales instrumentos son: Lecaps (letras del Tesoro en pesos, corto plazo), Boncaps (bonos en pesos a tasa fija), Boncer/Lecer (ajustados por CER/inflación) y bonos soberanos en dólares (Globales y Bonares).</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -511,9 +511,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">El tipo de cambio y tus inversiones</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Oficial, blue, MEP y CCL: qué es cada uno y cómo impactan en las decisiones de inversión.</div>
             <div id="m2" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Dólar oficial:</strong> el tipo de cambio que fija el BCRA. Accesible para importaciones y algunas transacciones reguladas. Para el ahorrista individual tiene el límite del cepo.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Dólar MEP (o bolsa):</strong> se obtiene comprando un bono en pesos y vendiéndolo en dólares dentro del mercado local. Es legal, no tiene límite de monto y es la forma más eficiente de dolarizarse para el inversor. La brecha con el oficial refleja la prima de riesgo del sistema.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem"><strong style="color:var(--text)">Dólar blue:</strong> mercado informal, ilegal. Su precio refleja la demanda de cobertura cambiaria pero conlleva riesgo legal y operacional.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar oficial:</strong> el tipo de cambio que fija el BCRA. Accesible para importaciones y algunas transacciones reguladas. Para el ahorrista individual tiene el límite del cepo.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar MEP (o bolsa):</strong> se obtiene comprando un bono en pesos y vendiéndolo en dólares dentro del mercado local. Es legal, no tiene límite de monto y es la forma más eficiente de dolarizarse para el inversor. La brecha con el oficial refleja la prima de riesgo del sistema.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar blue:</strong> mercado informal, ilegal. Su precio refleja la demanda de cobertura cambiaria pero conlleva riesgo legal y operacional.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Para dolarizarse legalmente: MEP vía bono AL30 o GD30 a través de cualquier broker regulado por CNV</div>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
@@ -524,9 +524,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo armar una cartera</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Metodología para construir un portafolio acorde a tu perfil de riesgo y horizonte de inversión.</div>
             <div id="m3" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">Antes de elegir activos, definí tres cosas: <strong style="color:var(--text)">(1) horizonte temporal</strong> — ¿cuándo vas a necesitar el dinero?, <strong style="color:var(--text)">(2) tolerancia al riesgo</strong> — ¿podés soportar ver tu cartera bajar 20% sin vender?, <strong style="color:var(--text)">(3) objetivo</strong> — ¿preservar capital, crecer en términos reales o generar renta?</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Antes de elegir activos, definí tres cosas: <strong style="color:var(--text)">(1) horizonte temporal</strong> — ¿cuándo vas a necesitar el dinero?, <strong style="color:var(--text)">(2) tolerancia al riesgo</strong> — ¿podés soportar ver tu cartera bajar 20% sin vender?, <strong style="color:var(--text)">(3) objetivo</strong> — ¿preservar capital, crecer en términos reales o generar renta?</p>
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Conservador: 60% renta fija · 30% dólares (MEP/ON) · 10% acciones<br>Moderado: 40% renta fija · 35% dólares · 25% acciones<br>Agresivo: 20% renta fija · 30% dólares · 50% acciones</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Estas son referencias orientativas. Una cartera personalizada requiere analizar tu situación fiscal, tu flujo de ingresos y tu contexto particular.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Estas son referencias orientativas. Una cartera personalizada requiere analizar tu situación fiscal, tu flujo de ingresos y tu contexto particular.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -536,10 +536,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Carry trade en Argentina</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué es el carry, por qué es atractivo y cuáles son sus riesgos reales en el contexto actual.</div>
             <div id="m4" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El carry trade consiste en tomar deuda en una moneda de baja tasa e invertir en una moneda de alta tasa, capturando el diferencial. En Argentina implica vender dólares, invertir en pesos a tasas altas y recomprar dólares al vencimiento, ganando si el tipo de cambio no se mueve más de lo que rindió la tasa en pesos.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El carry trade consiste en tomar deuda en una moneda de baja tasa e invertir en una moneda de alta tasa, capturando el diferencial. En Argentina implica vender dólares, invertir en pesos a tasas altas y recomprar dólares al vencimiento, ganando si el tipo de cambio no se mueve más de lo que rindió la tasa en pesos.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Carry positivo: tasa en pesos (~29% TNA) > depreciación esperada del peso</div>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.9rem">El riesgo es un salto cambiario abrupto (devaluación) que licúe la ganancia en pesos. En el contexto actual con banda cambiaria y acuerdo FMI, el carry tiene menor riesgo de cola que en años anteriores — pero el riesgo nunca es cero.</p>
-              <p style="font-size:0.85rem;color:#c8c4bc;line-height:1.75">Es una estrategia de corto plazo. No es adecuada como base de una cartera de largo plazo.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El riesgo es un salto cambiario abrupto (devaluación) que licúe la ganancia en pesos. En el contexto actual con banda cambiaria y acuerdo FMI, el carry tiene menor riesgo de cola que en años anteriores — pero el riesgo nunca es cero.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Es una estrategia de corto plazo. No es adecuada como base de una cartera de largo plazo.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
           </div>
@@ -1275,7 +1275,7 @@ function buildCard(n, num) {
   const pubDate = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
   const disclaimer = '<div style="margin-top:2rem;padding:1rem 1.25rem;background:#1a0a00;border:1px solid #c8401a;border-left:4px solid #c8401a">' +
     '<div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:#e05252;letter-spacing:0.06em;margin-bottom:0.3rem">⚠ AVISO IMPORTANTE</div>' +
-    '<div style="font-family:var(--mono);font-size:0.68rem;color:#c8a090;line-height:1.7">Este análisis es de carácter <strong style="color:#e8e6e0">estrictamente informativo y educativo</strong>. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del lector.</div>' +
+    '<div style="font-family:var(--mono);font-size:0.68rem;color:#d4b8a8;line-height:1.7">Este análisis es de carácter <strong style="color:#e8e6e0">estrictamente informativo y educativo</strong>. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del lector.</div>' +
     '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);margin-top:0.5rem">Fuente: Carry Note / Julián Besendorff · ' + pubDate + ' · thecarrynote.com</div>' +
     '</div>';
   card.innerHTML = `
@@ -2065,7 +2065,7 @@ async function runDiagCore() {
         body: JSON.stringify({diagnostico: txt.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,800)})
       }).catch(function(){});
     }
-    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.85rem;color:#c8c4bc;line-height:1.75}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
+    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
     txt+'';
   } catch(err) {
     result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
@@ -2180,7 +2180,7 @@ async function runScenario(tipo) {
     scenResult.innerHTML =
       '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem 1.5rem">' +
       '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Análisis de escenario</div>' +
-      '<div style="font-size:0.82rem;color:#c8c4bc;line-height:1.7">' + cleanResult + '</div></div>';
+      '<div style="font-size:0.82rem;color:#f0ede8;line-height:1.7">' + cleanResult + '</div></div>';
   } catch(err) {
     scenResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
   }
