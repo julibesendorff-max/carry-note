@@ -2842,6 +2842,59 @@ function renderDailySummary() {
   if(summaryEl) summaryEl.style.display = 'block';
 }
 
+
+// ── CARTERA MODAL ──────────────────────────────────────────
+function closeCartModal() {
+  var m = document.getElementById('cartModal');
+  if(m) m.style.display = 'none';
+}
+
+function shareCartWhatsApp() {
+  var content = document.getElementById('cartModalContent');
+  var text = content ? content.innerText.replace(/\s+/g,' ').trim().slice(0,300) : '';
+  var msg = 'Mi cartera alternativa sugerida por Carry Note: ' + text + ' · thecarrynote.com';
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+function shareCartLinkedIn() {
+  var url = encodeURIComponent('https://thecarrynote.com');
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url, '_blank');
+}
+
+function exportCartPDF() {
+  var content = document.getElementById('cartModalContent');
+  if(!content) return;
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var printWin = window.open('', '_blank');
+  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cartera Alternativa · Carry Note</title>' +
+    '<style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;color:#1a1a1a;padding:0 20px}' +
+    'h1{font-size:1.6rem;margin-bottom:0.5rem}' +
+    '.mono{font-family:Courier New,monospace;font-size:0.8rem}' +
+    'p{line-height:1.75;margin-bottom:0.75rem;font-size:0.92rem}' +
+    '.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #ddd;font-family:Courier New,monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}' +
+    '.disclaimer{background:#fff8f8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:Courier New,monospace;font-size:0.72rem;color:#666;line-height:1.6}' +
+    '</style></head><body>' +
+    '<div class="mono" style="color:#888;margin-bottom:0.5rem">▸ CARRY NOTE · CARTERA ALTERNATIVA</div>' +
+    '<h1>Cartera alternativa <span style="color:#b8860b">sugerida</span></h1>' +
+    '<p class="mono" style="color:#888">' + today + '</p><hr style="border:none;border-top:1px solid #ddd;margin:1rem 0">' +
+    content.innerHTML +
+    '<div class="disclaimer">⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero.</div>' +
+    '<div class="footer"><span>Carry Note · thecarrynote.com</span><span>' + today + '</span></div>' +
+    '<script>window.onload=function(){window.print();}<\/script>' +
+    '</body></html>');
+  printWin.document.close();
+}
+
+// Close cart modal on background click
+document.addEventListener('DOMContentLoaded', function() {
+  var cartModal = document.getElementById('cartModal');
+  if(cartModal) {
+    cartModal.addEventListener('click', function(e) {
+      if(e.target === cartModal) closeCartModal();
+    });
+  }
+});
+
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
   if(new URLSearchParams(window.location.search).get('editor') === 'true') {
