@@ -136,7 +136,7 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .w-polish:disabled{opacity:0.4;cursor:not-allowed}
 
 /* FEED & FILTERS */
-.feed-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border2)}
+.feed-header{display:none !important}
 .feed-count{font-family:var(--mono);font-size:0.6rem;color:var(--muted);letter-spacing:0.08em}
 .feed{display:flex;flex-direction:column}
 
@@ -251,21 +251,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   /* ── SIDEBAR: hide on mobile entirely ── */
   .sidebar{display:none}
 
-  /* ── MOBILE MACRO STRIP ── */
-  .mobile-strip{
-    display:flex;
-    align-items:center;
-    overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
-    gap:0;
-    padding:0.55rem 1rem;
-    background:var(--surface2);
-    border-bottom:1px solid var(--border2);
-    white-space:nowrap;
-  }
-  .mobile-strip::-webkit-scrollbar{display:none}
-  .ms-item{font-size:0.62rem}
 
   /* ── EDITOR: hide on mobile ── */
   .editor-panel{display:none !important}
@@ -394,19 +379,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div class="ticker-status" id="tickerStatus">··· cargando</div>
 </div>
 
-
-<!-- MOBILE MACRO STRIP -->
-<div id="mobileMacroStrip" class="mobile-strip">
-  <span class="ms-item">Fed <span class="ms-val">3.50–3.75%</span></span>
-  <span class="ms-sep">·</span>
-  <span class="ms-item">CPI <span class="ms-val">3.3%</span></span>
-  <span class="ms-sep">·</span>
-  <span class="ms-item">Riesgo país <span class="ms-val" id="ms-rp">···</span></span>
-  <span class="ms-sep">·</span>
-  <span class="ms-item">Blue <span class="ms-val" id="ms-blue">···</span></span>
-  <span class="ms-sep">·</span>
-  <span class="ms-item">Reservas <span class="ms-val">USD 45.4B</span></span>
-</div>
 
 
 <main>
