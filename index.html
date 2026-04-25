@@ -2090,10 +2090,6 @@ function addAsset() {
 }
 
 async function runDiag() {
-  if(!localStorage.getItem('cn_gate')) {
-    document.getElementById('gateModal').style.display = 'flex';
-    return;
-  }
   runDiagCore();
 }
 
@@ -2328,59 +2324,7 @@ async function runComparison() {
 
 
 
-// ── DIAGNOSTIC GATE ────────────────────────────────────────
-async function submitGate() {
-  var nombre = (document.getElementById('gateNombre').value||'').trim();
-  var email = (document.getElementById('gateEmail').value||'').trim();
-  var edad = (document.getElementById('gateEdad').value||'').trim();
-  var profesion = (document.getElementById('gateProfesion').value||'').trim();
-  var consent = document.getElementById('gateConsent').checked;
-  var msg = document.getElementById('gateMsg');
 
-  if(!nombre||!email||!edad||!profesion){
-    msg.textContent = 'Completa todos los campos para continuar.';
-    msg.style.color = 'var(--red)'; msg.style.display = 'block'; return;
-  }
-  if(!email.includes('@')){
-    msg.textContent = 'Email invalido.';
-    msg.style.color = 'var(--red)'; msg.style.display = 'block'; return;
-  }
-  if(!consent){
-    msg.textContent = 'Debes aceptar el aviso legal para continuar.';
-    msg.style.color = 'var(--red)'; msg.style.display = 'block'; return;
-  }
-
-  // Save to Supabase
-  try {
-    await sbFetch('/rest/v1/consultas', {
-      method: 'POST',
-      headers: {'Prefer': 'return=minimal'},
-      body: JSON.stringify({
-        nombre: nombre,
-        email: email,
-        edad: parseInt(edad)||null,
-        profesion: profesion,
-        mensaje: 'Acceso al diagnostico',
-        diagnostico: ''
-      })
-    });
-  } catch(e) { /* continue even if save fails */ }
-
-  // Store locally so user doesn't have to fill again
-  localStorage.setItem('cn_gate', JSON.stringify({nombre, email, edad, profesion}));
-
-  // Close modal and run analysis
-  document.getElementById('gateModal').style.display = 'none';
-
-  // Pre-fill contact form
-  var cn=document.getElementById('contactNombre'), ce=document.getElementById('contactEmail');
-  var ced=document.getElementById('contactEdad'), cp=document.getElementById('contactProfesion');
-  if(cn) cn.value=nombre; if(ce) ce.value=email;
-  if(ced) ced.value=edad; if(cp) cp.value=profesion;
-
-  // Now run the actual analysis
-  runDiagCore();
-}
 
 
 // ── SHARE & PDF ────────────────────────────────────────────
@@ -3153,34 +3097,6 @@ window.addEventListener('load', function(){
   showDiag();
 });
 </script>
-
-<!-- GATE MODAL -->
-<div id="gateModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:500;align-items:center;justify-content:center">
-  <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;width:min(520px,90vw);font-family:var(--mono);max-height:90vh;overflow-y:auto">
-    <div style="font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">▸ Antes de continuar</div>
-    <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.75rem">Un paso previo</div>
-    <p style="font-size:0.8rem;color:var(--muted);line-height:1.65;margin-bottom:1.25rem">Esta herramienta tiene fines <strong style="color:var(--text)">estrictamente educativos</strong>. No constituye asesoramiento financiero ni recomendación de inversión.</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
-      <input id="gateNombre" type="text" placeholder="Tu nombre *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-      <input id="gateEdad" type="text" inputmode="numeric" placeholder="Edad *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
-      <input id="gateEmail" type="email" placeholder="Tu email *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-      <input id="gateProfesion" type="text" placeholder="Profesión *" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none"/>
-    </div>
-    <div style="background:var(--surface2);border:1px solid var(--border2);padding:0.85rem 1rem;margin-bottom:1rem;font-size:0.58rem;color:var(--muted2);line-height:1.7">
-      <strong style="color:var(--muted)">Aviso legal · Ley 25.326</strong><br>
-      Al continuar, consentís que Carry Note almacene tus datos personales con fines educativos y estadísticos. No serán compartidos con terceros ni usados con fines comerciales. Podés solicitar su eliminación escribiendo a julibesendorff@gmail.com.
-    </div>
-    <div style="display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:1rem">
-      <input type="checkbox" id="gateConsent" style="margin-top:3px;cursor:pointer;accent-color:var(--gold)"/>
-      <label for="gateConsent" style="font-size:0.65rem;color:var(--muted);line-height:1.5;cursor:pointer">Acepto el aviso legal y entiendo que esta herramienta es educativa.</label>
-    </div>
-    <button onclick="submitGate()" style="width:100%;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:0.5rem">Ver mi diagnóstico ▸</button>
-    <button onclick="document.getElementById('gateModal').style.display='none'" style="width:100%;font-family:var(--mono);font-size:0.65rem;padding:0.5rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer">Cancelar</button>
-    <div id="gateMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.5rem;display:none"></div>
-  </div>
-</div>
 
 <!-- CARTERA MODAL -->
 <div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
