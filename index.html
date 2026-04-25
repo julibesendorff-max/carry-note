@@ -424,9 +424,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <span class="mob-fx-lbl">USD Blue</span>
       <span class="mob-fx-val" id="mob-fx-blue" style="color:var(--red)">—</span>
     </div>
-    <div class="mob-fx-row" style="border-bottom:none">
-      <span class="mob-fx-lbl">MEP / CCL</span>
+    <div class="mob-fx-row">
+      <span class="mob-fx-lbl">MEP (bolsa)</span>
       <span class="mob-fx-val" id="mob-fx-mep">—</span>
+    </div>
+    <div class="mob-fx-row" style="border-bottom:none">
+      <span class="mob-fx-lbl">CCL</span>
+      <span class="mob-fx-val" id="mob-fx-ccl">—</span>
     </div>
   </div>
 </div>
@@ -3341,7 +3345,7 @@ function updateMobMarket() {
   });
 
   // FX rows
-  [['arg-oficial','mob-fx-oficial'],['arg-blue','mob-fx-blue'],['arg-mep','mob-fx-mep']].forEach(function(p){
+  [['arg-oficial','mob-fx-oficial'],['arg-blue','mob-fx-blue'],['arg-mep','mob-fx-mep'],['arg-ccl','mob-fx-ccl']].forEach(function(p){
     var src = document.getElementById(p[0]);
     var dst = document.getElementById(p[1]);
     if(src && dst) dst.innerHTML = src.innerHTML || '—';
