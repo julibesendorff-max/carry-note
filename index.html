@@ -224,6 +224,18 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .scen-btn{font-family:var(--mono);font-size:0.62rem;padding:0.35rem 0.75rem;background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
 .scen-btn:hover{border-color:var(--gold);color:var(--gold)}
 .scen-btn.loading{opacity:0.5;cursor:not-allowed}
+.mob-market{display:none}
+.mob-market-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.mob-card{padding:0.85rem 1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2)}
+.mob-card:nth-child(even){border-right:none}
+.mob-card-lbl{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem}
+.mob-card-price{font-family:var(--mono);font-size:1.05rem;font-weight:500;color:var(--text);margin-bottom:0.15rem}
+.mob-card-chg{font-family:var(--mono);font-size:0.68rem;font-weight:500}
+.mob-card-chg.up{color:var(--green)}.mob-card-chg.dn{color:var(--red)}.mob-card-chg.neu{color:var(--muted)}
+.mob-card-pm{font-family:var(--mono);font-size:0.55rem;color:#a855f7;margin-top:0.15rem}
+.mob-fx-row{display:flex;justify-content:space-between;padding:0.65rem 1rem;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.72rem}
+.mob-fx-lbl{color:var(--muted);font-size:0.62rem}
+.mob-fx-val{color:var(--text);font-weight:500}
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
@@ -244,6 +256,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
   /* ── TICKER: hidden on mobile ── */
   .ticker{display:none}
+
+  /* ── MOBILE MARKET WIDGET: show on mobile ── */
+  .mob-market{display:block;border-top:1px solid var(--border2);border-bottom:1px solid var(--border2)}
 
   /* ── LAYOUT ── */
   main{grid-template-columns:1fr;padding:0.85rem;gap:1rem;max-width:100%}
@@ -379,6 +394,55 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <div class="ticker-status" id="tickerStatus">··· cargando</div>
 </div>
 
+
+
+<!-- MOBILE MARKET WIDGET -->
+<div class="mob-market" id="mobMarket">
+  <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);padding:0.65rem 1rem;border-bottom:1px solid var(--border2);background:var(--surface)">Mercados · en vivo</div>
+  <div class="mob-market-grid" style="background:var(--surface)">
+    <!-- SPY -->
+    <div class="mob-card">
+      <div class="mob-card-lbl">SPY · S&P 500</div>
+      <div class="mob-card-price" id="mob-spx-price">—</div>
+      <div class="mob-card-chg neu" id="mob-spx-chg">—</div>
+      <div class="mob-card-pm" id="mob-spx-pm" style="display:none"></div>
+    </div>
+    <!-- QQQ -->
+    <div class="mob-card">
+      <div class="mob-card-lbl">QQQ · Nasdaq</div>
+      <div class="mob-card-price" id="mob-ndx-price">—</div>
+      <div class="mob-card-chg neu" id="mob-ndx-chg">—</div>
+      <div class="mob-card-pm" id="mob-ndx-pm" style="display:none"></div>
+    </div>
+    <!-- BTC -->
+    <div class="mob-card">
+      <div class="mob-card-lbl">BTC · Bitcoin</div>
+      <div class="mob-card-price" id="mob-btc-price">—</div>
+      <div class="mob-card-chg neu" id="mob-btc-chg">—</div>
+    </div>
+    <!-- placeholder for symmetry -->
+    <div class="mob-card" style="background:var(--surface2)">
+      <div class="mob-card-lbl">Riesgo país</div>
+      <div class="mob-card-price" id="mob-rp-price" style="font-size:0.95rem">—</div>
+      <div class="mob-card-chg neu" style="font-size:0.6rem">EMBI+ · JPMorgan</div>
+    </div>
+  </div>
+  <!-- FX ROWS -->
+  <div style="background:var(--surface)">
+    <div class="mob-fx-row">
+      <span class="mob-fx-lbl">USD/ARS Oficial</span>
+      <span class="mob-fx-val" id="mob-fx-oficial">—</span>
+    </div>
+    <div class="mob-fx-row">
+      <span class="mob-fx-lbl">USD Blue</span>
+      <span class="mob-fx-val" id="mob-fx-blue" style="color:var(--red)">—</span>
+    </div>
+    <div class="mob-fx-row" style="border-bottom:none">
+      <span class="mob-fx-lbl">MEP / CCL</span>
+      <span class="mob-fx-val" id="mob-fx-mep">—</span>
+    </div>
+  </div>
+</div>
 
 
 <main>
@@ -1245,6 +1309,8 @@ async function loadTicker() {
     if(dp && dp.style.display !== 'none') renderDailySummary();
     // Update fear & greed if radar is open
     renderFearGreed();
+    // Update mobile market widget
+    setTimeout(updateMobMarket, 300);
   } catch(e) {
     status.textContent = '○ sin conexión';
   }
@@ -1791,6 +1857,7 @@ async function loadArgMacro() {
       if(el) { el.textContent = val; el.style.opacity = '0.5'; }
     });
   }
+  setTimeout(updateMobMarket, 200);
 }
 
 
@@ -3052,6 +3119,64 @@ function getSignalIntensity(avgAbs) {
   if(avgAbs >= 2.0) return {label:'Fuerte',  color:'#e05252', dot:'●●●'};
   if(avgAbs >= 0.8) return {label:'Moderada',color:'#c9a84c', dot:'●●○'};
   return              {label:'Débil',    color:'#6b6875', dot:'●○○'};
+}
+
+
+// ── MOBILE MARKET WIDGET ──────────────────────────────────
+function updateMobMarket() {
+  // Only run if widget is visible
+  var widget = document.getElementById('mobMarket');
+  if(!widget || getComputedStyle(widget).display === 'none') return;
+
+  var markets = [
+    {id:'spx', priceEl:'mob-spx-price', chgEl:'mob-spx-chg', pmEl:'mob-spx-pm', pmId:'pm-spy'},
+    {id:'ndx', priceEl:'mob-ndx-price', chgEl:'mob-ndx-chg', pmEl:'mob-ndx-pm', pmId:'pm-qqq'},
+    {id:'btc', priceEl:'mob-btc-price', chgEl:'mob-btc-chg'},
+  ];
+
+  markets.forEach(function(m) {
+    var tickerPrice = document.getElementById('t-' + m.id);
+    var tickerChg   = document.getElementById('t-' + m.id + '-c');
+    var priceEl = document.getElementById(m.priceEl);
+    var chgEl   = document.getElementById(m.chgEl);
+
+    if(priceEl && tickerPrice) priceEl.textContent = tickerPrice.textContent.trim() || '—';
+    if(chgEl && tickerChg) {
+      chgEl.textContent = tickerChg.textContent.trim() || '—';
+      chgEl.className = 'mob-card-chg ' + (tickerChg.className.includes('t-up') ? 'up' : tickerChg.className.includes('t-dn') ? 'dn' : 'neu');
+    }
+
+    // Pre/after market
+    if(m.pmEl && m.pmId) {
+      var pmPrice = document.getElementById(m.pmId);
+      var pmChg   = document.getElementById(m.pmId + '-c');
+      var pmEl    = document.getElementById(m.pmEl);
+      if(pmEl && pmPrice && pmPrice.textContent.trim() && pmPrice.textContent.trim() !== '—') {
+        var pmTxt = pmPrice.textContent.trim() + ' ' + (pmChg ? pmChg.textContent.trim() : '');
+        pmEl.textContent = '⬤ Pre/After: ' + pmTxt;
+        pmEl.style.display = 'block';
+      } else if(pmEl) {
+        pmEl.style.display = 'none';
+      }
+    }
+  });
+
+  // Riesgo pais
+  var rpEl = document.getElementById('arg-riesgo');
+  var mobRp = document.getElementById('mob-rp-price');
+  if(mobRp && rpEl) mobRp.textContent = rpEl.textContent.trim() || '—';
+
+  // FX
+  var pairs = [
+    {src:'arg-oficial', dst:'mob-fx-oficial'},
+    {src:'arg-blue',    dst:'mob-fx-blue'},
+    {src:'arg-mep',     dst:'mob-fx-mep'},
+  ];
+  pairs.forEach(function(p) {
+    var src = document.getElementById(p.src);
+    var dst = document.getElementById(p.dst);
+    if(src && dst) dst.innerHTML = src.innerHTML || '—';
+  });
 }
 
 window.addEventListener('load', function(){
