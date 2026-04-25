@@ -398,35 +398,22 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
 <!-- MOBILE MARKET WIDGET -->
 <div class="mob-market" id="mobMarket">
-  <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);padding:0.65rem 1rem;border-bottom:1px solid var(--border2);background:var(--surface)">Mercados · en vivo</div>
-  <div class="mob-market-grid" style="background:var(--surface)">
-    <!-- SPY -->
-    <div class="mob-card">
-      <div class="mob-card-lbl">SPY · S&P 500</div>
-      <div class="mob-card-price" id="mob-spx-price">—</div>
-      <div class="mob-card-chg neu" id="mob-spx-chg">—</div>
-      <div class="mob-card-pm" id="mob-spx-pm" style="display:none"></div>
-    </div>
-    <!-- QQQ -->
-    <div class="mob-card">
-      <div class="mob-card-lbl">QQQ · Nasdaq</div>
-      <div class="mob-card-price" id="mob-ndx-price">—</div>
-      <div class="mob-card-chg neu" id="mob-ndx-chg">—</div>
-      <div class="mob-card-pm" id="mob-ndx-pm" style="display:none"></div>
-    </div>
-    <!-- BTC -->
-    <div class="mob-card">
-      <div class="mob-card-lbl">BTC · Bitcoin</div>
-      <div class="mob-card-price" id="mob-btc-price">—</div>
-      <div class="mob-card-chg neu" id="mob-btc-chg">—</div>
-    </div>
-    <!-- placeholder for symmetry -->
-    <div class="mob-card" style="background:var(--surface2)">
-      <div class="mob-card-lbl">Riesgo país</div>
-      <div class="mob-card-price" id="mob-rp-price" style="font-size:0.95rem">—</div>
-      <div class="mob-card-chg neu" style="font-size:0.6rem">EMBI+ · JPMorgan</div>
-    </div>
+  <!-- HEADER -->
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.65rem 1rem;border-bottom:1px solid var(--border2);background:var(--surface)">
+    <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold)">Mercados · en vivo</div>
+    <button onclick="toggleMobConfig()" style="font-family:var(--mono);font-size:0.52rem;color:var(--muted);background:transparent;border:1px solid var(--border2);padding:0.2rem 0.5rem;cursor:pointer;letter-spacing:0.06em">⚙ Configurar</button>
   </div>
+
+  <!-- CONFIG PANEL (hidden by default) -->
+  <div id="mobConfigPanel" style="display:none;background:var(--surface2);border-bottom:1px solid var(--border2);padding:0.75rem 1rem">
+    <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted);margin-bottom:0.6rem;letter-spacing:0.08em;text-transform:uppercase">Seleccioná hasta 4 activos</div>
+    <div id="mobAssetSelector" style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-bottom:0.6rem"></div>
+    <div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);margin-top:0.4rem">Los tipos de cambio siempre se muestran abajo</div>
+  </div>
+
+  <!-- CARDS GRID -->
+  <div class="mob-market-grid" id="mobCardsGrid" style="background:var(--surface)"></div>
+
   <!-- FX ROWS -->
   <div style="background:var(--surface)">
     <div class="mob-fx-row">
@@ -1069,7 +1056,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:flex-end">
           <div style="flex:1;min-width:200px;position:relative">
             <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Buscar activo (símbolo o nombre)</div>
-            <input type="text" id="wlSearch" placeholder="ej: AAPL, Tesla, BTC, MELI..." autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
+            <input type="text" id="wlSearch" placeholder="ej: AAPL, Tesla, Bitcoin, EUR/USD..." autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
             <div id="wlSearchResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-top:none;z-index:50;max-height:220px;overflow-y:auto"></div>
           </div>
           <input type="hidden" id="wlSymbol" value=""/>
@@ -2800,7 +2787,62 @@ var WL_LABELS = {spx:'SPY · S&P 500 ETF',ndx:'QQQ · Nasdaq ETF',vix:'VIXY · V
 var wlAlertsFired = {};
 function getWatchlist(){try{return JSON.parse(localStorage.getItem('cn_watchlist')||'[]');}catch(e){return[];}}
 function saveWatchlist(wl){localStorage.setItem('cn_watchlist',JSON.stringify(wl));}
-async function wlSearchSymbol(q){if(q.length<1)return[];try{var r=await fetch('https://finnhub.io/api/v1/search?q='+encodeURIComponent(q)+'&token='+FINNHUB_KEY);if(!r.ok)return[];var d=await r.json();return(d.result||[]).filter(function(x){return x.type==='Common Stock'||x.type==='ETP'||x.type==='Crypto';}).slice(0,8);}catch(e){return[];}}
+async function wlSearchSymbol(q){
+  if(q.length<1) return [];
+  try {
+    // Search stocks/ETFs/crypto via Finnhub
+    var r = await fetch('https://finnhub.io/api/v1/search?q='+encodeURIComponent(q)+'&token='+FINNHUB_KEY);
+    var results = [];
+    if(r.ok) {
+      var d = await r.json();
+      var stocks = (d.result||[]).filter(function(x){
+        return x.type==='Common Stock'||x.type==='ETP'||x.type==='DR';
+      }).slice(0,5);
+      results = results.concat(stocks);
+    }
+
+    // Add crypto matches from Binance symbols
+    var cryptoMap = [
+      {symbol:'BINANCE:BTCUSDT', description:'Bitcoin (BTC)', type:'Crypto'},
+      {symbol:'BINANCE:ETHUSDT', description:'Ethereum (ETH)', type:'Crypto'},
+      {symbol:'BINANCE:SOLUSDT', description:'Solana (SOL)', type:'Crypto'},
+      {symbol:'BINANCE:BNBUSDT', description:'BNB', type:'Crypto'},
+      {symbol:'BINANCE:XRPUSDT', description:'XRP / Ripple', type:'Crypto'},
+      {symbol:'BINANCE:ADAUSDT', description:'Cardano (ADA)', type:'Crypto'},
+      {symbol:'BINANCE:DOGEUSDT',description:'Dogecoin (DOGE)', type:'Crypto'},
+      {symbol:'BINANCE:MATICUSDT',description:'Polygon (MATIC)', type:'Crypto'},
+      {symbol:'BINANCE:AVAXUSDT',description:'Avalanche (AVAX)', type:'Crypto'},
+      {symbol:'BINANCE:DOTUSDT', description:'Polkadot (DOT)', type:'Crypto'},
+      {symbol:'BINANCE:LINKUSDT',description:'Chainlink (LINK)', type:'Crypto'},
+      {symbol:'BINANCE:LTCUSDT', description:'Litecoin (LTC)', type:'Crypto'},
+    ];
+    var qLow = q.toLowerCase();
+    var cryptoMatches = cryptoMap.filter(function(c){
+      return c.symbol.toLowerCase().includes(qLow) || c.description.toLowerCase().includes(qLow);
+    }).slice(0,3);
+    results = results.concat(cryptoMatches);
+
+    // Add FX pairs
+    var fxMap = [
+      {symbol:'OANDA:EUR_USD', description:'EUR/USD · Euro vs Dólar', type:'FX'},
+      {symbol:'OANDA:USD_JPY', description:'USD/JPY · Dólar vs Yen', type:'FX'},
+      {symbol:'OANDA:GBP_USD', description:'GBP/USD · Libra vs Dólar', type:'FX'},
+      {symbol:'OANDA:USD_CHF', description:'USD/CHF · Dólar vs Franco Suizo', type:'FX'},
+      {symbol:'OANDA:AUD_USD', description:'AUD/USD · Dólar Australiano', type:'FX'},
+      {symbol:'OANDA:USD_CAD', description:'USD/CAD · Dólar Canadiense', type:'FX'},
+      {symbol:'OANDA:USD_MXN', description:'USD/MXN · Dólar vs Peso Mexicano', type:'FX'},
+      {symbol:'OANDA:USD_BRL', description:'USD/BRL · Dólar vs Real', type:'FX'},
+      {symbol:'OANDA:USD_CNY', description:'USD/CNY · Dólar vs Yuan', type:'FX'},
+    ];
+    var fxMatches = fxMap.filter(function(f){
+      return f.symbol.toLowerCase().includes(qLow) || f.description.toLowerCase().includes(qLow) ||
+             f.symbol.split(':')[1].toLowerCase().replace('_','/').includes(qLow);
+    }).slice(0,3);
+    results = results.concat(fxMatches);
+
+    return results.slice(0,10);
+  } catch(e) { return []; }
+}
 var wlSearchTimeout=null;
 document.addEventListener('DOMContentLoaded',function(){
   var inp=document.getElementById('wlSearch');
@@ -2813,7 +2855,16 @@ document.addEventListener('DOMContentLoaded',function(){
     wlSearchTimeout=setTimeout(async function(){
       var results=await wlSearchSymbol(q);
       if(!results.length){res.style.display='none';return;}
-      res.innerHTML=results.map(function(r){return'<div class="wl-result" data-sym="'+r.symbol+'" data-desc="'+(r.description||r.symbol)+'" style="padding:0.5rem 0.75rem;cursor:pointer;font-family:var(--mono);font-size:0.7rem;border-bottom:1px solid var(--border2);color:var(--text)"><span style="color:var(--gold);margin-right:0.5rem">'+r.symbol+'</span><span style="color:var(--muted)">'+(r.description||'')+'</span></div>';}).join('');
+      res.innerHTML=results.map(function(r){
+        var typeColor = r.type==='Crypto'?'#a855f7':r.type==='FX'?'var(--blue)':'var(--gold)';
+        var typeLabel = r.type==='Crypto'?'CRYPTO':r.type==='FX'?'FX':'STOCK';
+        var displaySym = r.symbol.includes(':') ? r.symbol.split(':')[1] : r.symbol;
+        return '<div class="wl-result" data-sym="'+r.symbol+'" data-desc="'+(r.description||r.symbol)+'" data-type="'+(r.type||'Stock')+'" style="padding:0.5rem 0.75rem;cursor:pointer;font-family:var(--mono);font-size:0.7rem;border-bottom:1px solid var(--border2);color:var(--text);display:flex;align-items:center;gap:0.6rem">' +
+          '<span style="color:'+typeColor+';font-size:0.5rem;border:1px solid '+typeColor+';padding:0.1rem 0.3rem;flex-shrink:0">'+typeLabel+'</span>' +
+          '<span style="color:'+typeColor+';font-weight:500;flex-shrink:0">'+displaySym+'</span>' +
+          '<span style="color:var(--muted);font-size:0.65rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.description||'')+'</span>' +
+        '</div>';
+      }).join('');
       res.style.display='block';
       res.querySelectorAll('.wl-result').forEach(function(el){
         el.addEventListener('mouseenter',function(){el.style.background='var(--surface2)';});
@@ -2854,10 +2905,10 @@ function renderWatchlist(){
   listEl.addEventListener('change',function(e){if(e.target.classList.contains('wl-alert-input'))updateWlAlert(e.target.dataset.id,e.target.dataset.field,e.target.value);});
   listEl.addEventListener('click',function(e){if(e.target.classList.contains('wl-remove-btn'))removeFromWatchlist(e.target.dataset.remove);});
   listEl.innerHTML=wl.map(function(item){
-    var pct,price;
-    if(item.custom&&wlPriceCache[item.id]){pct=wlPriceCache[item.id].pct;price=wlPriceCache[item.id].price;}
+    var pct,price,noChange;
+    if(item.custom&&wlPriceCache[item.id]){pct=wlPriceCache[item.id].pct;price=wlPriceCache[item.id].price;noChange=wlPriceCache[item.id].noChange;}
     else{pct=getTickerChange(item.id);var pe=document.getElementById('t-'+item.id);price=pe?pe.textContent.trim():'—';}
-    var pctStr=pct!==null?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—';
+    var pctStr=noChange?'':pct!==null?(pct>=0?'+':'')+pct.toFixed(2)+'%':'—';
     var pctColor=pct===null?'var(--muted2)':pct>0?'var(--green)':pct<0?'var(--red)':'var(--muted)';
     var arrow=pct===null?'':pct>0?'▲ ':pct<0?'▼ ':'';
     var alertMsg='',alertBg='';
@@ -2875,7 +2926,49 @@ function renderWatchlist(){
   }).join('');
 }
 function logAlert(id,msg){var logEl=document.getElementById('wlAlertsList');var logWrap=document.getElementById('wlAlertsLog');if(!logEl||!logWrap)return;logWrap.style.display='block';var time=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});var div=document.createElement('div');div.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.75rem;background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);font-family:var(--mono);font-size:0.68rem';div.innerHTML='<span style="color:var(--gold)">'+msg+'</span><span style="color:var(--muted2)">'+time+'</span>';logEl.insertBefore(div,logEl.firstChild);}
-async function loadWatchlistPrices(){var wl=getWatchlist();for(var i=0;i<wl.length;i++){var item=wl[i];if(!item.custom)continue;try{var r=await fetch('https://finnhub.io/api/v1/quote?symbol='+item.id+'&token='+FINNHUB_KEY);if(!r.ok)continue;var d=await r.json();if(d.c&&d.pc&&d.c>0){var pct=((d.c-d.pc)/d.pc)*100;var price=d.c>=1000?'$'+d.c.toLocaleString('en-US',{maximumFractionDigits:0}):'$'+d.c.toFixed(2);wlPriceCache[item.id]={price:price,pct:pct};}await new Promise(function(r){setTimeout(r,200);});}catch(e){}}renderWatchlist();}
+async function loadWatchlistPrices(){
+  var wl=getWatchlist();
+  for(var i=0;i<wl.length;i++){
+    var item=wl[i];
+    if(!item.custom) continue;
+    try{
+      var sym = item.id;
+      var isCrypto = sym.startsWith('BINANCE:');
+      var isFX = sym.startsWith('OANDA:');
+
+      if(isFX) {
+        // Use exchangerate-api for FX
+        var pair = sym.replace('OANDA:','').replace('_','/');
+        var base = pair.split('/')[0];
+        var quote = pair.split('/')[1];
+        var fxRes = await fetch('https://api.exchangerate-api.com/v4/latest/'+base);
+        if(fxRes.ok){
+          var fxData = await fxRes.json();
+          var rate = fxData.rates && fxData.rates[quote];
+          if(rate){
+            // No % change available from this API, show rate only
+            var priceStr = rate < 1 ? rate.toFixed(4) : rate >= 100 ? rate.toFixed(2) : rate.toFixed(4);
+            wlPriceCache[item.id] = {price: priceStr, pct: null, noChange: true};
+          }
+        }
+      } else {
+        // Finnhub for stocks and crypto (Binance symbols work with Finnhub)
+        var r = await fetch('https://finnhub.io/api/v1/quote?symbol='+encodeURIComponent(sym)+'&token='+FINNHUB_KEY);
+        if(!r.ok) continue;
+        var d = await r.json();
+        if(d.c&&d.pc&&d.c>0){
+          var pct=((d.c-d.pc)/d.pc)*100;
+          var price = isCrypto
+            ? (d.c>=1000?'$'+d.c.toLocaleString('en-US',{maximumFractionDigits:0}):'$'+d.c.toFixed(2))
+            : (d.c>=1000?'$'+d.c.toLocaleString('en-US',{maximumFractionDigits:0}):'$'+d.c.toFixed(2));
+          wlPriceCache[item.id]={price:price,pct:pct};
+        }
+      }
+      await new Promise(function(r){setTimeout(r,250);});
+    }catch(e){}
+  }
+  renderWatchlist();
+}
 function showWatchlist(e){
   e&&e.preventDefault();
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
@@ -3123,37 +3216,123 @@ function getSignalIntensity(avgAbs) {
 
 
 // ── MOBILE MARKET WIDGET ──────────────────────────────────
+var MOB_ASSETS = [
+  {id:'spx',  label:'SPY',       desc:'S&P 500',   tickerId:'spx',  pmId:'pm-spy'},
+  {id:'ndx',  label:'QQQ',       desc:'Nasdaq',     tickerId:'ndx',  pmId:'pm-qqq'},
+  {id:'btc',  label:'BTC',       desc:'Bitcoin',    tickerId:'btc'},
+  {id:'gld',  label:'GOLD',      desc:'Oro ETF',    tickerId:'gld'},
+  {id:'wti',  label:'WTI',       desc:'Petróleo',   tickerId:'wti'},
+  {id:'tlt',  label:'TLT',       desc:'Bonos 20Y',  tickerId:'tlt'},
+  {id:'vix',  label:'VIX ETF',   desc:'Volatilidad',tickerId:'vix'},
+  {id:'nvda', label:'NVDA',      desc:'NVIDIA',     tickerId:'nvda', pmId:'pm-nvda'},
+  {id:'tsla', label:'TSLA',      desc:'Tesla',      tickerId:'tsla', pmId:'pm-tsla'},
+  {id:'ypf',  label:'YPF',       desc:'YPF',        tickerId:'ypf'},
+  {id:'ggal', label:'GGAL',      desc:'Galicia',    tickerId:'ggal'},
+  {id:'rp',   label:'Riesgo país',desc:'EMBI+',     special:'rp'},
+];
+
+var MOB_DEFAULT = ['spx','ndx','btc','rp'];
+
+function getMobSelected() {
+  try {
+    var s = JSON.parse(localStorage.getItem('cn_mob_assets')||'null');
+    return s && s.length ? s : MOB_DEFAULT;
+  } catch(e) { return MOB_DEFAULT; }
+}
+
+function saveMobSelected(sel) {
+  localStorage.setItem('cn_mob_assets', JSON.stringify(sel));
+}
+
+function toggleMobConfig() {
+  var panel = document.getElementById('mobConfigPanel');
+  if(!panel) return;
+  var open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if(!open) renderMobSelector();
+}
+
+function renderMobSelector() {
+  var el = document.getElementById('mobAssetSelector');
+  if(!el) return;
+  var selected = getMobSelected();
+  el.innerHTML = MOB_ASSETS.map(function(a) {
+    var isSel = selected.indexOf(a.id) !== -1;
+    var bg = isSel ? 'var(--gold)' : 'var(--surface)';
+    var color = isSel ? 'var(--bg)' : 'var(--muted)';
+    var border = isSel ? 'var(--gold)' : 'var(--border2)';
+    return '<button data-mob-id="'+a.id+'" class="mob-asset-btn" style="font-family:var(--mono);font-size:0.6rem;padding:0.3rem 0.6rem;background:'+bg+';color:'+color+';border:1px solid '+border+';cursor:pointer;transition:all 0.15s">'+a.label+'</button>';
+  }).join('');
+}
+
+function toggleMobAsset(id) {
+  var selected = getMobSelected();
+  var idx = selected.indexOf(id);
+  if(idx !== -1) {
+    if(selected.length <= 1) return; // keep at least 1
+    selected.splice(idx, 1);
+  } else {
+    if(selected.length >= 4) {
+      selected.shift(); // remove oldest if at max
+    }
+    selected.push(id);
+  }
+  saveMobSelected(selected);
+  renderMobSelector();
+  renderMobCards();
+  updateMobMarket();
+}
+
+function renderMobCards() {
+  var grid = document.getElementById('mobCardsGrid');
+  if(!grid) return;
+  var selected = getMobSelected();
+  grid.innerHTML = selected.map(function(id) {
+    var asset = MOB_ASSETS.find(function(a){ return a.id === id; });
+    if(!asset) return '';
+    return '<div class="mob-card" id="mob-card-'+id+'">' +
+      '<div class="mob-card-lbl">'+asset.label+' · '+asset.desc+'</div>' +
+      '<div class="mob-card-price" id="mob-'+id+'-price">···</div>' +
+      '<div class="mob-card-chg neu" id="mob-'+id+'-chg"></div>' +
+      (asset.pmId ? '<div class="mob-card-pm" id="mob-'+id+'-pm" style="display:none"></div>' : '') +
+    '</div>';
+  }).join('');
+}
+
 function updateMobMarket() {
-  // Only run if widget is visible
   var widget = document.getElementById('mobMarket');
   if(!widget || getComputedStyle(widget).display === 'none') return;
 
-  var markets = [
-    {id:'spx', priceEl:'mob-spx-price', chgEl:'mob-spx-chg', pmEl:'mob-spx-pm', pmId:'pm-spy'},
-    {id:'ndx', priceEl:'mob-ndx-price', chgEl:'mob-ndx-chg', pmEl:'mob-ndx-pm', pmId:'pm-qqq'},
-    {id:'btc', priceEl:'mob-btc-price', chgEl:'mob-btc-chg'},
-  ];
+  var selected = getMobSelected();
+  selected.forEach(function(id) {
+    var asset = MOB_ASSETS.find(function(a){ return a.id === id; });
+    if(!asset) return;
 
-  markets.forEach(function(m) {
-    var tickerPrice = document.getElementById('t-' + m.id);
-    var tickerChg   = document.getElementById('t-' + m.id + '-c');
-    var priceEl = document.getElementById(m.priceEl);
-    var chgEl   = document.getElementById(m.chgEl);
+    var priceEl = document.getElementById('mob-'+id+'-price');
+    var chgEl   = document.getElementById('mob-'+id+'-chg');
 
+    if(asset.special === 'rp') {
+      var rpEl = document.getElementById('arg-riesgo');
+      if(priceEl && rpEl) priceEl.textContent = rpEl.textContent.trim() || '—';
+      if(chgEl) { chgEl.textContent = 'EMBI+ · JPMorgan'; chgEl.className = 'mob-card-chg neu'; }
+      return;
+    }
+
+    var tickerPrice = document.getElementById('t-' + asset.tickerId);
+    var tickerChg   = document.getElementById('t-' + asset.tickerId + '-c');
     if(priceEl && tickerPrice) priceEl.textContent = tickerPrice.textContent.trim() || '—';
     if(chgEl && tickerChg) {
-      chgEl.textContent = tickerChg.textContent.trim() || '—';
+      chgEl.textContent = tickerChg.textContent.trim() || '';
       chgEl.className = 'mob-card-chg ' + (tickerChg.className.includes('t-up') ? 'up' : tickerChg.className.includes('t-dn') ? 'dn' : 'neu');
     }
 
     // Pre/after market
-    if(m.pmEl && m.pmId) {
-      var pmPrice = document.getElementById(m.pmId);
-      var pmChg   = document.getElementById(m.pmId + '-c');
-      var pmEl    = document.getElementById(m.pmEl);
+    if(asset.pmId) {
+      var pmPrice = document.getElementById(asset.pmId);
+      var pmChg   = document.getElementById(asset.pmId + '-c');
+      var pmEl    = document.getElementById('mob-'+id+'-pm');
       if(pmEl && pmPrice && pmPrice.textContent.trim() && pmPrice.textContent.trim() !== '—') {
-        var pmTxt = pmPrice.textContent.trim() + ' ' + (pmChg ? pmChg.textContent.trim() : '');
-        pmEl.textContent = '⬤ Pre/After: ' + pmTxt;
+        pmEl.textContent = '⬤ Pre/After: ' + pmPrice.textContent.trim() + ' ' + (pmChg ? pmChg.textContent.trim() : '');
         pmEl.style.display = 'block';
       } else if(pmEl) {
         pmEl.style.display = 'none';
@@ -3161,23 +3340,24 @@ function updateMobMarket() {
     }
   });
 
-  // Riesgo pais
-  var rpEl = document.getElementById('arg-riesgo');
-  var mobRp = document.getElementById('mob-rp-price');
-  if(mobRp && rpEl) mobRp.textContent = rpEl.textContent.trim() || '—';
-
-  // FX
-  var pairs = [
-    {src:'arg-oficial', dst:'mob-fx-oficial'},
-    {src:'arg-blue',    dst:'mob-fx-blue'},
-    {src:'arg-mep',     dst:'mob-fx-mep'},
-  ];
-  pairs.forEach(function(p) {
-    var src = document.getElementById(p.src);
-    var dst = document.getElementById(p.dst);
+  // FX rows
+  [['arg-oficial','mob-fx-oficial'],['arg-blue','mob-fx-blue'],['arg-mep','mob-fx-mep']].forEach(function(p){
+    var src = document.getElementById(p[0]);
+    var dst = document.getElementById(p[1]);
     if(src && dst) dst.innerHTML = src.innerHTML || '—';
   });
 }
+
+// Init on load
+document.addEventListener('DOMContentLoaded', function() {
+  renderMobCards();
+  // Event delegation for mob asset buttons
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest ? e.target.closest('.mob-asset-btn') : null;
+    if(btn && btn.dataset.mobId) toggleMobAsset(btn.dataset.mobId);
+  });
+});
+
 
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
