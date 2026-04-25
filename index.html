@@ -242,21 +242,30 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .nav-strip::-webkit-scrollbar{display:none}
   .nav-strip a{padding:0.55rem 0.9rem;font-size:0.56rem;letter-spacing:0.08em;white-space:nowrap;flex-shrink:0;border-right:1px solid var(--border2)}
 
-  /* ── TICKER ── */
-  .ticker{padding:0.5rem 0;overflow:hidden !important}
-  .ticker-inner{gap:1.8rem;animation-duration:22s !important}
-  .t-item{flex-shrink:0 !important;min-width:max-content !important;padding:0 0.2rem}
-  .t-lbl{font-size:0.6rem !important;flex-shrink:0 !important}
-  .t-val{font-size:0.78rem !important;flex-shrink:0 !important}
-  .t-up,.t-dn{font-size:0.65rem !important;flex-shrink:0 !important}
-  .t-sep{flex-shrink:0 !important;padding:0 0.15rem}
-  .ticker-status{display:none}
+  /* ── TICKER: hidden on mobile ── */
+  .ticker{display:none}
 
   /* ── LAYOUT ── */
   main{grid-template-columns:1fr;padding:0.85rem;gap:1rem;max-width:100%}
 
   /* ── SIDEBAR: hide on mobile entirely ── */
   .sidebar{display:none}
+
+  /* ── MOBILE MACRO STRIP ── */
+  .mobile-strip{
+    display:flex;
+    align-items:center;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    gap:0;
+    padding:0.55rem 1rem;
+    background:var(--surface2);
+    border-bottom:1px solid var(--border2);
+    white-space:nowrap;
+  }
+  .mobile-strip::-webkit-scrollbar{display:none}
+  .ms-item{font-size:0.62rem}
 
   /* ── EDITOR: hide on mobile ── */
   .editor-panel{display:none !important}
@@ -383,6 +392,20 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <span class="t-item"><span class="t-lbl">USD/ARS</span><span class="t-val" id="t-ars2"> —</span><span id="t-ars-c2"> —</span></span>
   </div>
   <div class="ticker-status" id="tickerStatus">··· cargando</div>
+</div>
+
+
+<!-- MOBILE MACRO STRIP -->
+<div id="mobileMacroStrip" class="mobile-strip">
+  <span class="ms-item">Fed <span class="ms-val">3.50–3.75%</span></span>
+  <span class="ms-sep">·</span>
+  <span class="ms-item">CPI <span class="ms-val">3.3%</span></span>
+  <span class="ms-sep">·</span>
+  <span class="ms-item">Riesgo país <span class="ms-val" id="ms-rp">···</span></span>
+  <span class="ms-sep">·</span>
+  <span class="ms-item">Blue <span class="ms-val" id="ms-blue">···</span></span>
+  <span class="ms-sep">·</span>
+  <span class="ms-item">Reservas <span class="ms-val">USD 45.4B</span></span>
 </div>
 
 
@@ -1769,6 +1792,9 @@ async function loadArgMacro() {
       };
       setFX('arg-oficial', data.find(d => d.casa === 'oficial'), 'neu');
       setFX('arg-blue',    data.find(d => d.casa === 'blue'),    'dn');
+      var blueData = data.find(function(d){ return d.casa === 'blue'; });
+      var msBlue = document.getElementById('ms-blue');
+      if(msBlue && blueData && blueData.venta) msBlue.textContent = '$' + Math.round(blueData.venta).toLocaleString('es-AR');
       setFX('arg-mep',     data.find(d => d.casa === 'bolsa'),   'neu');
       setFX('arg-ccl',     data.find(d => d.casa === 'contadoconliqui'), 'neu');
     }
@@ -1781,6 +1807,8 @@ async function loadArgMacro() {
         rpEl.textContent = Math.round(rpVal) + ' pb';
         rpEl.className = rpVal > 800 ? 'ind-v dn' : 'ind-v neu';
       }
+      var msRp = document.getElementById('ms-rp');
+      if(msRp && rpVal) msRp.textContent = Math.round(rpVal) + 'pb';
     }
 
   } catch(e) {
