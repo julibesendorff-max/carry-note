@@ -504,7 +504,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <button onclick="setAnalisisFilter('views')" id="af-views" class="af-btn" style="border-color:var(--green);color:var(--green)">▸ Views Técnicos</button>
         <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
         <button onclick="setAnalisisFilter('markets')" id="af-markets" class="af-btn">Mercados</button>
-        <button onclick="setAnalisisFilter('policy')" id="af-policy" class="af-btn">Política Fiscal</button>
         <button onclick="setAnalisisFilter('latam')" id="af-latam" class="af-btn">EM & Latam</button>
       </div>
     </div>
@@ -1103,13 +1102,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.4rem;font-weight:600;color:#e8e6e0;margin-bottom:0.5rem;line-height:1.1">Julián Besendorff</div>
           <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.25rem">Analista · Carry Note</div>
           <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8;margin-bottom:1rem">
-            Soy analista de derivados financieros — trabajo con fondos de inversión de EEUU en instrumentos de FX, renta fija y commodities. Me formé en Administración en la UBA y estoy cursando el Master en Economía en UCEMA.
+            Me formé en Administración en la UBA y estoy cursando el Master en Economía en UCEMA.
           </p>
           <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8;margin-bottom:1.25rem">
             Carry Note nació de una necesidad personal: quería una herramienta en español que integrara datos macro en tiempo real con análisis de cartera inteligente. Lo que empezó como un proyecto de fin de semana se convirtió en algo que uso todos los días y que hoy comparto de forma gratuita.
           </p>
           <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8">
-            Me apasionan los mercados emergentes, la política monetaria y entender cómo las decisiones macro impactan en las inversiones del día a día. Todo lo que publicás en Carry Note viene de esa curiosidad.
+            Me apasionan los mercados emergentes, la política monetaria y entender cómo las decisiones macro impactan en las inversiones del día a día. 
           </p>
         </div>
         <!-- Experience -->
@@ -3617,7 +3616,7 @@ var currentAnalisisFilter = 'all';
 function setAnalisisFilter(filter) {
   currentAnalisisFilter = filter;
   // Update button styles
-  ['all','views','macro_geo','markets','policy','latam'].forEach(function(f) {
+  ['all','views','macro_geo','markets','latam'].forEach(function(f) {
     var btn = document.getElementById('af-' + f);
     if(btn) {
       if(f === filter) btn.classList.add('af-active');
