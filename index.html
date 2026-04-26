@@ -3724,9 +3724,51 @@ async function generateView() {
   if(!ticker) { alert('Ingresá el ticker.'); return; }
 
   var statusEl = document.getElementById('viewStatus');
-  statusEl.textContent = 'Generando con IA...';
+  statusEl.textContent = 'Buscando precios en vivo...';
   statusEl.style.color = 'var(--gold)';
   statusEl.style.display = 'block';
+
+  // ── Fetch live price for this ticker from Finnhub ──────────────
+  var livePrice = null, livePct = null, livePrevClose = null;
+  try {
+    var qRes = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(ticker) + '&token=' + FINNHUB_KEY);
+    if(qRes.ok) {
+      var qData = await qRes.json();
+      if(qData.c && qData.c > 0) {
+        livePrice = qData.c;
+        livePrevClose = qData.pc;
+        livePct = livePrevClose ? ((livePrice - livePrevClose) / livePrevClose * 100) : null;
+      }
+    }
+  } catch(e) {}
+
+  // ── Build live market context ──────────────────────────────────
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var priceStr = livePrice
+    ? ticker + ' cotiza hoy a ' + (livePrice >= 1000 ? '$' + livePrice.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + livePrice.toFixed(2)) +
+      (livePct !== null ? ' (' + (livePct >= 0 ? '+' : '') + livePct.toFixed(2) + '% vs cierre anterior)' : '')
+    : ticker + ' (precio no disponible vía API, usar datos del broker)';
+
+  // Also inject key market context from ticker DOM
+  var spyPct  = getTickerChange('spx');
+  var vixPct  = getTickerChange('vix');
+  var btcPct  = getTickerChange('btc');
+  var ypfPct  = getTickerChange('ypf');
+  var ggalPct = getTickerChange('ggal');
+  var rpEl    = document.getElementById('arg-riesgo');
+  var rpStr   = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : null;
+
+  var mktLines = ['Contexto de mercado hoy ('+today+'):', '- '+priceStr];
+  if(spyPct !== null)  mktLines.push('- SPY (S&P 500): '+(spyPct>=0?'+':'')+spyPct.toFixed(2)+'% hoy');
+  if(vixPct !== null)  mktLines.push('- VIX ETF: '+(vixPct>=0?'+':'')+vixPct.toFixed(2)+'% (volatilidad implicita)');
+  if(btcPct !== null)  mktLines.push('- Bitcoin: '+(btcPct>=0?'+':'')+btcPct.toFixed(2)+'% hoy');
+  if(market==='ar' && ypfPct!==null)  mktLines.push('- YPF: '+(ypfPct>=0?'+':'')+ypfPct.toFixed(2)+'% hoy');
+  if(market==='ar' && ggalPct!==null) mktLines.push('- GGAL: '+(ggalPct>=0?'+':'')+ggalPct.toFixed(2)+'% hoy');
+  if(market==='ar' && rpStr) mktLines.push('- Riesgo pais EMBI+: '+rpStr);
+  mktLines.push('Macro EEUU: Fed 3.50-3.75% | CPI 3.3% YoY | Core PCE 2.7%');
+  var mktContext = mktLines.join(' | ');
+
+  statusEl.textContent = 'Generando análisis...';
 
   var biasLabel = {compra:'momento de compra (bullish)',venta:'momento de venta (bearish)',neutral:'neutral, esperar confirmación'}[bias];
   var tfLabel   = {corto:'corto plazo (días)',medio:'mediano plazo (semanas)',largo:'largo plazo (meses)'}[tf];
@@ -3738,13 +3780,17 @@ async function generateView() {
       headers: {'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 800,
-        system: 'Sos un analista técnico y fundamental escribiendo para Carry Note, portal de análisis macroeconómico argentino. Escribí en español, en tono profesional pero directo. Sin asteriscos ni markdown. Solo texto plano con párrafos.',
+        max_tokens: 900,
+        tools: [{type:'web_search_20250305', name:'web_search'}],
+        system: 'Sos un analista técnico y fundamental escribiendo para Carry Note. Escribí en español, tono profesional y directo. Sin asteriscos ni markdown. Solo texto plano con párrafos cortos. SIEMPRE usá los precios en vivo provistos, no los de tu entrenamiento. Buscá noticias recientes del activo antes de escribir.',
         messages: [{role:'user', content:
-          'Escribí un view técnico/fundamental sobre ' + ticker + ' (' + mktLabel + ') para ' + tfLabel + '. ' +
+          mktContext + ' ||| ' +
+          'Escribi un view tecnico/fundamental sobre ' + ticker + ' (' + mktLabel + ') para ' + tfLabel + '. ' +
           'El bias es ' + biasLabel + '. ' +
-          (notes ? 'Contexto adicional: ' + notes + '. ' : '') +
-          'Incluí: setup técnico (soportes/resistencias clave), catalizador fundamental, nivel de entrada sugerido, stop loss referencial, relación riesgo/recompensa y disclaimer breve. Máximo 4 párrafos cortos y directos.'
+          (notes ? 'Notas adicionales: ' + notes + '. ' : '') +
+          'Primero busca noticias recientes sobre ' + ticker + '. ' +
+          'Incluí: precio actual con referencia al contexto, soportes/resistencias clave, catalizador fundamental reciente, nivel de entrada y stop loss referencial, riesgo/recompensa. ' +
+          'Maximo 4 parrafos. USA SIEMPRE los precios provistos, no inventes precios.'
         }]
       })
     });
@@ -3752,7 +3798,7 @@ async function generateView() {
     var data = await res.json();
     var txt = data.content.map(function(i){ return i.type==='text'?i.text:''; }).join('').trim();
     document.getElementById('viewBody').value = txt;
-    statusEl.textContent = '✓ View generado. Revisá y publicá.';
+    statusEl.textContent = '✓ View generado con precios en vivo. Revisá y publicá.';
     statusEl.style.color = 'var(--green)';
   } catch(err) {
     statusEl.textContent = '✗ Error: '+err.message;
