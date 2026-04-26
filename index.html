@@ -3721,14 +3721,14 @@ async function generateView() {
   var bias   = document.getElementById('viewBias').value;
   var tf     = document.getElementById('viewTimeframe').value;
   var notes  = document.getElementById('viewBody').value.trim();
-  if(!ticker) { alert('Ingresá el ticker.'); return; }
+  if(!ticker) { alert('Ingresa el ticker.'); return; }
 
   var statusEl = document.getElementById('viewStatus');
   statusEl.textContent = 'Buscando precios en vivo...';
   statusEl.style.color = 'var(--gold)';
   statusEl.style.display = 'block';
 
-  // ── Fetch live price for this ticker from Finnhub ──────────────
+  // -- Fetch live price for this ticker from Finnhub --------------
   var livePrice = null, livePct = null, livePrevClose = null;
   try {
     var qRes = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(ticker) + '&token=' + FINNHUB_KEY);
@@ -3742,12 +3742,12 @@ async function generateView() {
     }
   } catch(e) {}
 
-  // ── Build live market context ──────────────────────────────────
+  // -- Build live market context ----------------------------------
   var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
   var priceStr = livePrice
     ? ticker + ' cotiza hoy a ' + (livePrice >= 1000 ? '$' + livePrice.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + livePrice.toFixed(2)) +
       (livePct !== null ? ' (' + (livePct >= 0 ? '+' : '') + livePct.toFixed(2) + '% vs cierre anterior)' : '')
-    : ticker + ' (precio no disponible vía API, usar datos del broker)';
+    : ticker + ' (precio no disponible via API, usar datos del broker)';
 
   // Also inject key market context from ticker DOM
   var spyPct  = getTickerChange('spx');
@@ -3760,7 +3760,7 @@ async function generateView() {
 
   var mktLines = ['Contexto de mercado hoy ('+today+'):', '- '+priceStr];
   if(spyPct !== null)  mktLines.push('- SPY (S&P 500): '+(spyPct>=0?'+':'')+spyPct.toFixed(2)+'% hoy');
-  if(vixPct !== null)  mktLines.push('- VIX ETF: '+(vixPct>=0?'+':'')+vixPct.toFixed(2)+'% (volatilidad implicita)');
+  if(vixPct !== null)  mktLines.push('- VIX ETF: '+(vixPct>=0?'+':'')+vixPct.toFixed(2)+'% (VIX)');
   if(btcPct !== null)  mktLines.push('- Bitcoin: '+(btcPct>=0?'+':'')+btcPct.toFixed(2)+'% hoy');
   if(market==='ar' && ypfPct!==null)  mktLines.push('- YPF: '+(ypfPct>=0?'+':'')+ypfPct.toFixed(2)+'% hoy');
   if(market==='ar' && ggalPct!==null) mktLines.push('- GGAL: '+(ggalPct>=0?'+':'')+ggalPct.toFixed(2)+'% hoy');
@@ -3768,10 +3768,10 @@ async function generateView() {
   mktLines.push('Macro EEUU: Fed 3.50-3.75% | CPI 3.3% YoY | Core PCE 2.7%');
   var mktContext = mktLines.join(' | ');
 
-  statusEl.textContent = 'Generando análisis...';
+  statusEl.textContent = 'Generando analisis...';
 
-  var biasLabel = {compra:'momento de compra (bullish)',venta:'momento de venta (bearish)',neutral:'neutral, esperar confirmación'}[bias];
-  var tfLabel   = {corto:'corto plazo (días)',medio:'mediano plazo (semanas)',largo:'largo plazo (meses)'}[tf];
+  var biasLabel = {compra:'momento de compra (bullish)',venta:'momento de venta (bearish)',neutral:'neutral, esperar confirmacion'}[bias];
+  var tfLabel   = {corto:'corto plazo (dias)',medio:'mediano plazo (semanas)',largo:'largo plazo (meses)'}[tf];
   var mktLabel  = market === 'eeuu' ? 'mercado americano' : 'mercado argentino';
 
   try {
@@ -3782,14 +3782,14 @@ async function generateView() {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 900,
         tools: [{type:'web_search_20250305', name:'web_search'}],
-        system: 'Sos un analista técnico y fundamental escribiendo para Carry Note. Escribí en español, tono profesional y directo. Sin asteriscos ni markdown. Solo texto plano con párrafos cortos. SIEMPRE usá los precios en vivo provistos, no los de tu entrenamiento. Buscá noticias recientes del activo antes de escribir.',
+        system: 'Sos un analista tecnico y fundamental escribiendo para Carry Note. Escribi en espanol, tono profesional y directo. Sin asteriscos ni markdown. Solo texto plano con parrafos cortos. SIEMPRE usa los precios en vivo provistos, no los de tu entrenamiento. Busca noticias recientes del activo antes de escribir.',
         messages: [{role:'user', content:
           mktContext + ' ||| ' +
           'Escribi un view tecnico/fundamental sobre ' + ticker + ' (' + mktLabel + ') para ' + tfLabel + '. ' +
           'El bias es ' + biasLabel + '. ' +
           (notes ? 'Notas adicionales: ' + notes + '. ' : '') +
           'Primero busca noticias recientes sobre ' + ticker + '. ' +
-          'Incluí: precio actual con referencia al contexto, soportes/resistencias clave, catalizador fundamental reciente, nivel de entrada y stop loss referencial, riesgo/recompensa. ' +
+          'Inclui: precio actual con referencia al contexto, soportes/resistencias clave, catalizador fundamental reciente, nivel de entrada y stop loss referencial, riesgo/recompensa. ' +
           'Maximo 4 parrafos. USA SIEMPRE los precios provistos, no inventes precios.'
         }]
       })
@@ -3798,10 +3798,10 @@ async function generateView() {
     var data = await res.json();
     var txt = data.content.map(function(i){ return i.type==='text'?i.text:''; }).join('').trim();
     document.getElementById('viewBody').value = txt;
-    statusEl.textContent = '✓ View generado con precios en vivo. Revisá y publicá.';
+    statusEl.textContent = 'OK View generado con precios en vivo. Revisa y publica.';
     statusEl.style.color = 'var(--green)';
   } catch(err) {
-    statusEl.textContent = '✗ Error: '+err.message;
+    statusEl.textContent = 'Error Error: '+err.message;
     statusEl.style.color = 'var(--red)';
   }
 }
