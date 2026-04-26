@@ -236,6 +236,9 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .mob-fx-row{display:flex;justify-content:space-between;padding:0.65rem 1rem;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.72rem}
 .mob-fx-lbl{color:var(--muted);font-size:0.62rem}
 .mob-fx-val{color:var(--text);font-weight:500}
+.af-btn{font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.85rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;transition:all 0.2s}
+.af-btn:hover{color:var(--gold);border-color:var(--gold)}
+.af-active{background:var(--gold) !important;color:var(--bg) !important;border-color:var(--gold) !important}
 footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.58rem;color:var(--muted2)}
 .footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
 .footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
@@ -322,11 +325,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   <nav class="nav-strip" id="navStrip">
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
-    <a data-filter="all">Análisis</a>
-    <a data-filter="macro">Macro</a>
-    <a data-filter="geo">Geopolítica</a>
-    <a data-filter="markets">Mercados</a>
-    <a data-filter="latam">EM &amp; Latam</a>
+    <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
@@ -496,6 +495,18 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
     <div class="feed-header" id="feedHeader" style="display:none">
       <span class="feed-count" id="feedCount"></span>
+    </div>
+
+    <!-- ANÁLISIS SUBSECTION FILTERS -->
+    <div id="analisisFilters" style="display:none;margin-bottom:1.5rem;border-bottom:1px solid var(--border2);padding-bottom:1rem">
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
+        <button onclick="setAnalisisFilter('all')" id="af-all" class="af-btn af-active">Todo</button>
+        <button onclick="setAnalisisFilter('views')" id="af-views" class="af-btn" style="border-color:var(--green);color:var(--green)">▸ Views Técnicos</button>
+        <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
+        <button onclick="setAnalisisFilter('markets')" id="af-markets" class="af-btn">Mercados</button>
+        <button onclick="setAnalisisFilter('policy')" id="af-policy" class="af-btn">Política Fiscal</button>
+        <button onclick="setAnalisisFilter('latam')" id="af-latam" class="af-btn">EM & Latam</button>
+      </div>
     </div>
     <div class="feed" id="feed">
       <div class="empty" id="emptyState">
@@ -978,7 +989,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
             <div id="fearGreedScore" style="font-family:var(--mono);font-size:2rem;font-weight:600;color:var(--gold)">—</div>
             <div>
               <div id="fearGreedLabel" style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:var(--gold)">Calculando...</div>
-              <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.2rem">Basado en VIX · SPY · BTC · TLT · Oro</div>
+              <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.2rem">Basado en VIX (30%) · SPY momentum (25%) · BTC beta (15%) · TLT (15%) · Oro (15%)</div>
             </div>
           </div>
           <div style="margin-top:0.75rem;height:6px;background:var(--border);border-radius:3px;overflow:hidden">
@@ -1025,7 +1036,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           <button onclick="generateRadarSuggestion()" id="radarSugBtn" style="font-family:var(--mono);font-size:0.6rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.4rem 0.9rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer">Generar análisis ▸</button>
         </div>
         <div id="radarSuggestion" style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.7">
-          Presioná "Generar análisis" para obtener una interpretación de las señales actuales y una sugerencia de posicionamiento de cartera basada en el contexto macro del momento.
+          Presioná "Generar análisis" para que la IA interprete las señales activas del momento y te dé una sugerencia concreta de posicionamiento para las próximas 48-72hs. Usa los datos del radar en tiempo real más el contexto macro actual.
         </div>
       </div>
 
@@ -1035,11 +1046,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-family:var(--mono);font-size:0.72rem;color:var(--muted);line-height:1.75">
           <div>
             <div style="color:var(--text);margin-bottom:0.3rem">¿Cómo detecta señales?</div>
-            El sistema monitorea 10 patrones de correlación. Una señal se activa cuando todos los activos del patrón se mueven en la misma dirección con una variación mínima de ±0.3% en el día.
+            El sistema monitorea 21 patrones en 7 categorías. Una señal se activa cuando todos los activos del patrón se mueven en la dirección esperada con variación mínima de ±0.3%. Los ADRs de YPF y GGAL se usan como proxy de flujo de capitales externos hacia Argentina.
           </div>
           <div>
             <div style="color:var(--text);margin-bottom:0.3rem">Patrones monitoreados</div>
-            Risk-off global (VIX+Oro+TLT) · Risk-on (SPY+QQQ+BTC) · Presión inflacionaria (WTI+Oro) · Flight to quality (TLT+Oro) · Tech liderando (QQQ+NVDA) · Argentina rally/estrés (YPF+GGAL) · Dólar débil (Oro+BTC) · Mercado en caída (SPY+QQQ)
+            21 patrones en 7 categorías: Régimen de riesgo · Volatilidad · Macro & Tasas · Inflación & Commodities · Dólar & Cobertura · Tech & Semiconductores · Crypto · Emergentes & Argentina
           </div>
         </div>
         <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border2);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">
@@ -1086,16 +1097,114 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
     <!-- SOBRE MI PANEL -->
     <div id="sobrePanel" style="display:none;margin-bottom:2rem">
-      <div style="border-bottom:1px solid #2a2a32;padding-bottom:2rem;margin-bottom:2rem;max-width:560px">
-        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:600;color:#e8e6e0;margin-bottom:0.75rem;line-height:1.1">Julián Besendorff</div>
-        <div style="font-size:0.92rem;color:#9d99a8;line-height:1.75;margin-bottom:1.5rem">Licenciado en Administración (UBA).</div>
-        <hr style="border:none;border-top:1px solid #2a2a32;margin:1.5rem 0">
-        <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:1.5rem">
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#4a4855;letter-spacing:0.12em;text-transform:uppercase">Experiencia</div>
-          <div style="font-size:0.85rem;color:#9d99a8">J.P. Morgan · KPMG · HSBC</div>
+      <div style="max-width:600px">
+        <!-- Header -->
+        <div style="border-bottom:1px solid #2a2a32;padding-bottom:2rem;margin-bottom:2rem">
+          <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.4rem;font-weight:600;color:#e8e6e0;margin-bottom:0.5rem;line-height:1.1">Julián Besendorff</div>
+          <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.25rem">Analista · Carry Note</div>
+          <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8;margin-bottom:1rem">
+            Soy analista de derivados financieros — trabajo con fondos de inversión de EEUU en instrumentos de FX, renta fija y commodities. Me formé en Administración en la UBA y estoy cursando el Master en Economía en UCEMA.
+          </p>
+          <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8;margin-bottom:1.25rem">
+            Carry Note nació de una necesidad personal: quería una herramienta en español que integrara datos macro en tiempo real con análisis de cartera inteligente. Lo que empezó como un proyecto de fin de semana se convirtió en algo que uso todos los días y que hoy comparto de forma gratuita.
+          </p>
+          <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8">
+            Me apasionan los mercados emergentes, la política monetaria y entender cómo las decisiones macro impactan en las inversiones del día a día. Todo lo que publicás en Carry Note viene de esa curiosidad.
+          </p>
         </div>
-        <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.62rem;color:#c9a84c;text-decoration:none;letter-spacing:0.08em">LinkedIn →</a>
+        <!-- Experience -->
+        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #2a2a32">
+          <div style="font-family:var(--mono);font-size:0.55rem;color:#4a4855;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Experiencia</div>
+          <div style="display:flex;flex-direction:column;gap:0.6rem">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:0.88rem;color:#e8e6e0;font-weight:500">J.P. Morgan</span>
+              <span style="font-family:var(--mono);font-size:0.58rem;color:#4a4855">2022 — presente</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:0.88rem;color:#9d99a8">KPMG</span>
+              <span style="font-family:var(--mono);font-size:0.58rem;color:#4a4855">Auditoría</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:0.88rem;color:#9d99a8">HSBC</span>
+              <span style="font-family:var(--mono);font-size:0.58rem;color:#4a4855">Créditos</span>
+            </div>
+          </div>
+        </div>
+        <!-- Education -->
+        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #2a2a32">
+          <div style="font-family:var(--mono);font-size:0.55rem;color:#4a4855;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Formación</div>
+          <div style="display:flex;flex-direction:column;gap:0.5rem">
+            <div>
+              <div style="font-size:0.88rem;color:#e8e6e0;font-weight:500">Master en Economía</div>
+              <div style="font-family:var(--mono);font-size:0.62rem;color:#6b6875">UCEMA · 2026–2027</div>
+            </div>
+            <div>
+              <div style="font-size:0.88rem;color:#9d99a8">Licenciado en Administración</div>
+              <div style="font-family:var(--mono);font-size:0.62rem;color:#6b6875">UBA · 2019–2024</div>
+            </div>
+          </div>
+        </div>
+        <!-- Contact -->
+        <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+          <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="font-family:var(--mono);font-size:0.65rem;color:#c9a84c;text-decoration:none;letter-spacing:0.08em;display:flex;align-items:center;gap:0.4rem">
+            LinkedIn →
+          </a>
+          <span style="font-family:var(--mono);font-size:0.65rem;color:#6b6875">thecarrynote.com</span>
+        </div>
       </div>
+    </div>
+
+    <!-- VIEWS TÉCNICOS PANEL -->
+    <div id="viewsPanel" style="display:none;margin-bottom:2rem">
+
+      <!-- HEADER -->
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem">▸ Views Técnicos · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Acciones destacadas</div>
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Análisis técnico y fundamental de acciones en momento de entrada o salida. EEUU y Argentina. No constituye recomendación de inversión.</div>
+      </div>
+
+      <!-- MARKET FILTER -->
+      <div style="display:flex;gap:0.4rem;margin-bottom:1.5rem;flex-wrap:wrap">
+        <button onclick="setViewsMarket('all')" id="vm-all" class="af-btn af-active">Todos</button>
+        <button onclick="setViewsMarket('eeuu')" id="vm-eeuu" class="af-btn">EEUU</button>
+        <button onclick="setViewsMarket('ar')" id="vm-ar" class="af-btn">Argentina</button>
+      </div>
+
+      <!-- VIEWS LIST -->
+      <div id="viewsList" style="display:flex;flex-direction:column;gap:1rem"></div>
+      <div id="viewsEmpty" style="font-family:var(--mono);font-size:0.7rem;color:var(--muted2);text-align:center;padding:3rem;display:none">No hay views publicados todavía.</div>
+
+      <!-- AI GENERATE (editor only) -->
+      <div id="viewsEditorBlock" class="editor-only" style="display:none;margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--green);padding:1.25rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">▸ Publicar view técnico</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+          <input type="text" id="viewTicker" placeholder="Ticker (ej: NVDA, YPF)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none"/>
+          <select id="viewMarket" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="eeuu">EEUU</option>
+            <option value="ar">Argentina</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+          <select id="viewBias" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="compra">📈 Momento de compra</option>
+            <option value="venta">📉 Momento de venta</option>
+            <option value="neutral">→ Neutral / Esperar</option>
+          </select>
+          <select id="viewTimeframe" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="corto">Corto plazo (días)</option>
+            <option value="medio">Mediano plazo (semanas)</option>
+            <option value="largo">Largo plazo (meses)</option>
+          </select>
+        </div>
+        <textarea id="viewBody" placeholder="Describí el setup técnico: soportes, resistencias, catalizadores, riesgo/recompensa..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.6rem 0.8rem;outline:none;resize:vertical;min-height:100px;margin-bottom:0.6rem"></textarea>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+          <button onclick="generateView()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface2);color:var(--gold);border:1px solid var(--gold);cursor:pointer">✦ Generar con IA</button>
+          <button onclick="publishView()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--green);color:#fff;border:none;cursor:pointer">Publicar view ▸</button>
+        </div>
+        <div id="viewStatus" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.6rem;display:none"></div>
+      </div>
+
     </div>
 
     <!-- NEWSLETTER -->
@@ -1345,7 +1454,7 @@ function renderNotes() {
   const header = document.getElementById('feedHeader');
   const countEl = document.getElementById('feedCount');
 
-  const filtered = activeFilter === 'all' ? allNotes : allNotes.filter(n => n.tag === activeFilter);
+  const filtered = activeFilter === 'all' ? allNotes : activeFilter === 'macro_geo' ? allNotes.filter(n => n.tag === 'macro' || n.tag === 'geo') : allNotes.filter(n => n.tag === activeFilter);
 
   if (allNotes.length === 0) {
     if(empty) { empty.style.display = 'block'; }
@@ -1443,6 +1552,7 @@ document.querySelectorAll('.nav-strip a').forEach(a => {
     if(a.id === 'radarTab') return; // handled by showRadar
     if(a.id === 'watchlistTab') return; // handled by showWatchlist
     if(a.id === 'sobreTab') return; // handled by showSobre
+    if(a.id === 'analisisTab' || a.id === 'analisisTab2') return; // handled by showAnalisis
     // Restore feed, hide special panels
     ['fciPanel','aprenderPanel','diagPanel','radarPanel'].forEach(id => {
       const el = document.getElementById(id);
@@ -1474,6 +1584,7 @@ function doLogin() {
     document.getElementById('feed').classList.add('editor-active');
     if(ANTHRO_KEY){document.getElementById('anthroKey').value=ANTHRO_KEY.slice(0,16)+'••••••••••';document.getElementById('anthroStatus').textContent='✓ Key cargada';document.getElementById('anthroStatus').className='eb-status ok';}
     renderNotes();
+    var eb=document.getElementById('viewsEditorBlock'); if(eb&&document.getElementById('viewsPanel')&&document.getElementById('viewsPanel').style.display!=='none') eb.style.display='block';
   } else { document.getElementById('loginErr').textContent='✗ PIN incorrecto. Intentá de nuevo.'; }
 }
 
@@ -1856,106 +1967,123 @@ async function loadArgMacro() {
 // Data updated monthly from Cafci / BYMA
 // Source: cafci.com.ar / byma.com.ar
 const FCI_DATA = [
-  {
-    nombre: 'Fima Premium (Galicia)',
-    tipo: 'Money Market',
-    composicion: 'Cuentas remuneradas, cauciones bursatiles, plazos fijos corto plazo. Liquidez T+0.',
-    benchmark: 'BADLAR bancos privados'
-  },
-  {
-    nombre: 'Balanz Capital Ahorro',
-    tipo: 'T+1 Pesos',
-    composicion: 'Lecaps, Boncaps y letras del Tesoro a tasa fija. Rescate en 24hs.',
-    benchmark: 'BADLAR privada'
-  },
-  {
-    nombre: 'SBS Ahorro Pesos',
-    tipo: 'Renta Fija Pesos',
-    composicion: 'Lecaps, Boncaps y ON corporativas en pesos. Tasa fija en moneda local.',
-    benchmark: 'BADLAR privada'
-  },
-  {
-    nombre: 'BBVA Consolidar CER',
-    tipo: 'Renta Fija CER',
-    composicion: 'Boncer, Lecer y bonos ajustados por CER. Cobertura inflacionaria. Rescate T+1.',
-    benchmark: 'CER (inflacion INDEC)'
-  },
-  {
-    nombre: 'Pellegrini Renta Fija (BNA)',
-    tipo: 'Renta Fija Pesos',
-    composicion: 'Lecaps, titulos publicos en pesos, ON corporativas. Fondo del Banco Nacion.',
-    benchmark: 'BADLAR bancos publicos'
-  },
-  {
-    nombre: 'Galicia Renta Fija',
-    tipo: 'Renta Fija Pesos',
-    composicion: 'Instrumentos de deuda publica y privada en pesos. Gestion activa de duration.',
-    benchmark: 'BADLAR privada'
-  },
-  {
-    nombre: 'Megainver Renta Mixta',
-    tipo: 'Mixto Pesos/USD',
-    composicion: 'ON hard dollar, Bopreales, Lecaps y bonos soberanos. Diversificacion en monedas.',
-    benchmark: 'Sin benchmark oficial'
-  },
-  {
-    nombre: 'Balanz Capital Ahorro Dolares',
-    tipo: 'Renta Fija USD',
-    composicion: 'ON corporativas hard dollar, bonos soberanos en USD (Globales/Bonares). T+1.',
-    benchmark: 'Sin benchmark oficial'
-  },
-  {
-    nombre: 'Quinquela Renta Fija USD',
-    tipo: 'Renta Fija USD',
-    composicion: 'ON hard dollar de empresas argentinas. Foco en credito corporativo local en dolares.',
-    benchmark: 'Sin benchmark oficial'
-  },
-  {
-    nombre: 'Cohen Renta Variable AR',
-    tipo: 'Renta Variable',
-    composicion: 'Acciones del Merval: YPF, GGAL, BMA, PAMP, TXAR. Alta exposicion al ciclo local.',
-    benchmark: 'S&P Merval (ARS)'
-  },
-  {
-    nombre: 'Schroders Acciones Latinoamerica',
-    tipo: 'Renta Variable Regional',
-    composicion: 'CEDEARs y acciones de Brasil, Mexico, Chile, Colombia. Diversificacion en USD.',
-    benchmark: 'MSCI Latin America'
-  },
-  {
-    nombre: 'Delta Asset Management Balanceado',
-    tipo: 'Balanceado',
-    composicion: 'Mix de renta fija en pesos, ON hard dollar y acciones argentinas. Gestion activa.',
-    benchmark: 'Sin benchmark oficial'
-  },
+  // ── MONEY MARKET ──────────────────────────────────────────
+  {cat:'mm', nombre:'Fima Premium (Galicia)', tipo:'Money Market',
+   composicion:'Cuentas remuneradas, cauciones bursátiles, plazos fijos corto plazo. Liquidez inmediata T+0.',
+   benchmark:'BADLAR bancos privados', liquidez:'T+0'},
+  {cat:'mm', nombre:'Pellegrini Money Market (BNA)', tipo:'Money Market',
+   composicion:'Plazos fijos, cuentas remuneradas y cauciones. Fondo del Banco Nación. Liquidez T+0.',
+   benchmark:'BADLAR bancos públicos', liquidez:'T+0'},
+  {cat:'mm', nombre:'Compass Ahorro (BBVA)', tipo:'Money Market',
+   composicion:'Cauciones, plazos fijos y letras de corto plazo. Liquidez inmediata.',
+   benchmark:'BADLAR privada', liquidez:'T+0'},
+  // ── RENTA FIJA PESOS ──────────────────────────────────────
+  {cat:'pesos', nombre:'Balanz Capital Ahorro', tipo:'Renta Fija $ · T+1',
+   composicion:'Lecaps, Boncaps y letras del Tesoro a tasa fija. Rescate en 24hs hábiles.',
+   benchmark:'BADLAR privada', liquidez:'T+1'},
+  {cat:'pesos', nombre:'SBS Ahorro Pesos', tipo:'Renta Fija $',
+   composicion:'Lecaps, Boncaps y ON corporativas en pesos. Tasa fija en moneda local.',
+   benchmark:'BADLAR privada', liquidez:'T+1'},
+  {cat:'pesos', nombre:'Galicia Renta Fija', tipo:'Renta Fija $',
+   composicion:'Instrumentos de deuda pública y privada en pesos. Gestión activa de duration.',
+   benchmark:'BADLAR privada', liquidez:'T+2'},
+  {cat:'pesos', nombre:'Pellegrini Renta Fija (BNA)', tipo:'Renta Fija $',
+   composicion:'Lecaps, títulos públicos en pesos, ON corporativas. Fondo del Banco Nación.',
+   benchmark:'BADLAR bancos públicos', liquidez:'T+1'},
+  // ── CER / INFLACIÓN ───────────────────────────────────────
+  {cat:'cer', nombre:'BBVA Consolidar CER', tipo:'Renta Fija CER',
+   composicion:'Boncer, Lecer y bonos ajustados por CER. Cobertura contra inflación. Rescate T+1.',
+   benchmark:'CER (inflación INDEC)', liquidez:'T+1'},
+  {cat:'cer', nombre:'Balanz Capital CER', tipo:'Renta Fija CER',
+   composicion:'Boncer, Lecer y letras ajustadas por inflación. Duration moderada.',
+   benchmark:'CER (inflación INDEC)', liquidez:'T+2'},
+  // ── RENTA FIJA USD ────────────────────────────────────────
+  {cat:'usd', nombre:'Balanz Capital Ahorro Dólares', tipo:'Renta Fija USD',
+   composicion:'ON corporativas hard dollar, bonos soberanos en USD (Globales/Bonares). T+1.',
+   benchmark:'Sin benchmark oficial', liquidez:'T+1'},
+  {cat:'usd', nombre:'Quinquela Renta Fija USD', tipo:'Renta Fija USD',
+   composicion:'ON hard dollar de empresas argentinas. Foco en crédito corporativo local en dólares.',
+   benchmark:'Sin benchmark oficial', liquidez:'T+2'},
+  {cat:'usd', nombre:'Megainver Renta Mixta', tipo:'Mixto $/USD',
+   composicion:'ON hard dollar, Bopreales, Lecaps y bonos soberanos. Diversificación en monedas.',
+   benchmark:'Sin benchmark oficial', liquidez:'T+2'},
+  // ── RENTA VARIABLE ────────────────────────────────────────
+  {cat:'rv', nombre:'Cohen Renta Variable AR', tipo:'Renta Variable',
+   composicion:'Acciones del Merval: YPF, GGAL, BMA, PAMP, TXAR. Alta exposición al ciclo local.',
+   benchmark:'S&P Merval (ARS)', liquidez:'T+2'},
+  {cat:'rv', nombre:'Schroders Acciones Latinoamérica', tipo:'Renta Variable Regional',
+   composicion:'CEDEARs y acciones de Brasil, México, Chile, Colombia. Diversificación en USD.',
+   benchmark:'MSCI Latin America', liquidez:'T+2'},
+  // ── MIXTOS / BALANCEADOS ──────────────────────────────────
+  {cat:'mixto', nombre:'Delta Asset Management Balanceado', tipo:'Balanceado',
+   composicion:'Mix de renta fija en pesos, ON hard dollar y acciones argentinas. Gestión activa.',
+   benchmark:'Sin benchmark oficial', liquidez:'T+2'},
 ];
+
+var currentFciFilter = 'all';
+
+function setFciFilter(filter) {
+  currentFciFilter = filter;
+  ['all','mm','pesos','cer','usd','rv','mixto'].forEach(function(f){
+    var btn = document.getElementById('fci-'+f);
+    if(btn){ if(f===filter) btn.classList.add('af-active'); else btn.classList.remove('af-active'); }
+  });
+  renderFCI();
+}
 
 function renderFCI() {
   const el = document.getElementById('fciBody');
   if(!el) return;
-  el.innerHTML = FCI_DATA.map((f, i) => {
-    const bg = i % 2 === 0 ? 'background:var(--surface)' : 'background:var(--surface2)';
-    return '<div style="' + bg + ';border-bottom:1px solid var(--border2);padding:0.85rem 1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.5rem">' +
-      '<div style="grid-column:1/-1;font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.25rem">' + f.nombre + '</div>' +
-      '<div>' +
-        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Tipo</div>' +
-        '<div style="font-size:0.72rem;color:var(--muted)">' + f.tipo + '</div>' +
-      '</div>' +
-      '<div>' +
-        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Benchmark</div>' +
-        '<div style="font-size:0.72rem;color:var(--muted2)">' + f.benchmark + '</div>' +
-      '</div>' +
-      '<div style="grid-column:1/-1">' +
-        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Composición</div>' +
-        '<div style="font-size:0.72rem;color:var(--muted);line-height:1.55">' + f.composicion + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
+  var filtered = currentFciFilter === 'all' ? FCI_DATA : FCI_DATA.filter(function(f){ return f.cat === currentFciFilter; });
+  var catLabels = {mm:'Money Market',pesos:'Renta Fija Pesos',cer:'CER / Inflación',usd:'Renta Fija USD',rv:'Renta Variable',mixto:'Mixtos / Balanceados'};
+  var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#a855f7',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
+
+  if(currentFciFilter === 'all') {
+    // Group by category
+    var cats = ['mm','pesos','cer','usd','rv','mixto'];
+    el.innerHTML = cats.map(function(cat) {
+      var items = FCI_DATA.filter(function(f){ return f.cat === cat; });
+      if(!items.length) return '';
+      var color = catColors[cat] || 'var(--gold)';
+      return '<div style="margin-bottom:1rem">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:'+color+';padding:0.5rem 1rem;background:var(--surface2);border-bottom:1px solid var(--border2);border-left:3px solid '+color+'">'+catLabels[cat]+'</div>' +
+        items.map(function(f,i){ return renderFciCard(f,i); }).join('') +
+      '</div>';
+    }).join('');
+  } else {
+    el.innerHTML = filtered.map(function(f,i){ return renderFciCard(f,i); }).join('');
+  }
+}
+
+function renderFciCard(f, i) {
+  var bg = i % 2 === 0 ? 'background:var(--surface)' : 'background:var(--surface2)';
+  var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#a855f7',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
+  var color = catColors[f.cat] || 'var(--gold)';
+  return '<div style="'+bg+';border-bottom:1px solid var(--border2);padding:0.85rem 1rem;display:grid;grid-template-columns:1fr 1fr 80px;gap:0.5rem 1.5rem">' +
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.6rem;margin-bottom:0.2rem">' +
+      '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text)">'+f.nombre+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.5rem;color:'+color+';border:1px solid '+color+';padding:0.1rem 0.35rem;white-space:nowrap">'+f.tipo+'</span>' +
+    '</div>' +
+    '<div>' +
+      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Benchmark</div>' +
+      '<div style="font-size:0.72rem;color:var(--muted)">'+f.benchmark+'</div>' +
+    '</div>' +
+    '<div>' +
+      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Liquidez</div>' +
+      '<div style="font-size:0.72rem;color:var(--muted)">'+f.liquidez+'</div>' +
+    '</div>' +
+    '<div style="grid-column:1/-1">' +
+      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Composición</div>' +
+      '<div style="font-size:0.72rem;color:var(--muted);line-height:1.55">'+f.composicion+'</div>' +
+    '</div>' +
+  '</div>';
 }
 
 
 function showFCI(e) {
   e && e.preventDefault();
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   // Hide everything feed-related
   ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
     const el = document.getElementById(id);
@@ -2037,6 +2165,8 @@ function loadCalendar() {
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
   e && e.preventDefault();
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel'].forEach(id => {
@@ -2556,6 +2686,8 @@ async function generateRadarSuggestion() {
 
 function showRadar(e) {
   e && e.preventDefault();
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   var wla=document.getElementById('wlAlertsLog'); if(wla) wla.style.display='none';
@@ -2647,6 +2779,8 @@ function updateRadarLarge() {
 
 function showDiag(e) {
   e && e.preventDefault();
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   // Hide all content panels
   var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel'];
   toHide.forEach(function(id){
@@ -2688,34 +2822,125 @@ function updateClock(){
 
 // ── RADAR MACRO ────────────────────────────────────────────
 var RADAR_PATTERNS = [
-  // ── RISK REGIME ──────────────────────────────────────────
-  {name:'Risk-off global',      cat:'Régimen de riesgo', assets:['vix','gld','tlt'],  dirs:[1,1,1],   desc:'VIX+Oro+TLT al alza: fuga masiva hacia refugios. Señal de estrés sistémico.',            color:'var(--red)',   level:'alerta'},
-  {name:'Risk-on global',       cat:'Régimen de riesgo', assets:['spx','ndx','btc'],  dirs:[1,1,1],   desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado en todos los segmentos.',                color:'var(--green)', level:'positivo'},
-  {name:'Mercado en caída',     cat:'Régimen de riesgo', assets:['spx','ndx'],        dirs:[-1,-1],   desc:'SPY+QQQ a la baja: sell-off en renta variable de EEUU.',                                color:'var(--red)',   level:'alerta'},
-  {name:'Rally amplio',         cat:'Régimen de riesgo', assets:['spx','ndx','tlt'],  dirs:[1,1,1],   desc:'Acciones y bonos subiendo juntos: entorno muy favorable para activos de riesgo.',       color:'var(--green)', level:'positivo'},
-  // ── VOLATILIDAD ───────────────────────────────────────────
-  {name:'VIX en alza',          cat:'Volatilidad',       assets:['vix'],              dirs:[1],        desc:'Volatilidad implícita subiendo: el mercado paga más por protección. Cautela.',          color:'var(--red)',   level:'alerta'},
-  {name:'VIX comprimido',       cat:'Volatilidad',       assets:['vix'],              dirs:[-1],       desc:'Volatilidad implícita cayendo: el mercado está en modo complacencia.',                  color:'var(--blue)',  level:'atencion'},
+  // ── RÉGIMEN DE RIESGO ────────────────────────────────────
+  {name:'Risk-off global',       cat:'Régimen de riesgo',
+   assets:['vix','gld','tlt'], dirs:[1,1,1],
+   desc:'VIX+Oro+TLT al alza simultáneamente: señal clásica de fuga hacia activos refugio. Indica estrés sistémico o shock geopolítico.',
+   color:'var(--red)', level:'alerta'},
+
+  {name:'Risk-on global',        cat:'Régimen de riesgo',
+   assets:['spx','ndx','btc'], dirs:[1,1,1],
+   desc:'SPY+QQQ+BTC al alza: apetito de riesgo elevado en equity y activos especulativos. Flujo hacia activos de mayor beta.',
+   color:'var(--green)', level:'positivo'},
+
+  {name:'Mercado en caída',      cat:'Régimen de riesgo',
+   assets:['spx','ndx'], dirs:[-1,-1],
+   desc:'SPY+QQQ a la baja: sell-off coordinado en renta variable EEUU. Evaluar si hay catalizador macro o es corrección técnica.',
+   color:'var(--red)', level:'alerta'},
+
+  {name:'Rally amplio',          cat:'Régimen de riesgo',
+   assets:['spx','ndx','tlt'], dirs:[1,1,1],
+   desc:'Acciones y bonos subiendo juntos: entorno de baja volatilidad y apetito de riesgo generalizado. Condición de mercado favorable.',
+   color:'var(--green)', level:'positivo'},
+
+  // ── VOLATILIDAD ──────────────────────────────────────────
+  {name:'VIX en expansión',      cat:'Volatilidad',
+   assets:['vix'], dirs:[1],
+   desc:'Volatilidad implícita subiendo: el mercado está pagando más por cobertura. Señal de incertidumbre o posicionamiento defensivo.',
+   color:'var(--red)', level:'alerta'},
+
+  {name:'VIX comprimido',        cat:'Volatilidad',
+   assets:['vix'], dirs:[-1],
+   desc:'Volatilidad implícita en mínimos: el mercado está en modo complacencia. Históricamente precede movimientos bruscos en cualquier dirección.',
+   color:'var(--blue)', level:'atencion'},
+
   // ── MACRO / TASAS ─────────────────────────────────────────
-  {name:'Flight to quality',    cat:'Macro & Tasas',     assets:['tlt','gld'],        dirs:[1,1],      desc:'TLT+Oro al alza: inversores buscan activos refugio ante incertidumbre macro.',         color:'var(--gold)',  level:'atencion'},
-  {name:'Bonos bajo presión',   cat:'Macro & Tasas',     assets:['tlt'],              dirs:[-1],       desc:'TLT a la baja: mercado priceando tasas altas por más tiempo. Presión en duration.',    color:'var(--red)',   level:'alerta'},
-  {name:'Curva empinando',      cat:'Macro & Tasas',     assets:['tlt','spx'],        dirs:[-1,1],     desc:'Bonos bajan, acciones suben: reflación. Mercado anticipa crecimiento con tasas altas.',color:'var(--gold)',  level:'atencion'},
-  // ── INFLACIÓN / COMMODITIES ───────────────────────────────
-  {name:'Presión inflacionaria',cat:'Inflación & Commodities', assets:['wti','gld'],  dirs:[1,1],      desc:'Petróleo+Oro subiendo: presión inflacionaria en alza. Impacto en política de la Fed.',color:'var(--gold)',  level:'atencion'},
-  {name:'Commodities en caída', cat:'Inflación & Commodities', assets:['wti','gld'],  dirs:[-1,-1],    desc:'Petróleo+Oro bajando: expectativas deflacionarias o debilidad de demanda global.',     color:'var(--blue)',  level:'atencion'},
-  {name:'Oil shock',            cat:'Inflación & Commodities', assets:['wti'],        dirs:[1],        desc:'WTI ETF al alza fuerte: riesgo de shock energético. Impacto en inflación y consumo.',  color:'var(--red)',   level:'alerta'},
-  // ── DÓLAR ─────────────────────────────────────────────────
-  {name:'Dólar débil',          cat:'Dólar',             assets:['gld','btc'],        dirs:[1,1],      desc:'Oro+BTC al alza: dólar bajo presión. Flujo hacia activos alternativos.',              color:'var(--gold)',  level:'atencion'},
-  {name:'Dólar fuerte',         cat:'Dólar',             assets:['gld','spx'],        dirs:[-1,-1],    desc:'Oro y acciones cayendo juntos: fortaleza del dólar comprime activos de riesgo.',      color:'var(--red)',   level:'alerta'},
-  // ── TECH / CRECIMIENTO ────────────────────────────────────
-  {name:'Tech liderando',       cat:'Tech & Crypto',     assets:['ndx','nvda'],       dirs:[1,1],      desc:'QQQ+NVDA al alza: sector tecnológico liderando. Momentum de crecimiento.',            color:'var(--green)', level:'positivo'},
-  {name:'Tech rezagado',        cat:'Tech & Crypto',     assets:['ndx','nvda'],       dirs:[-1,-1],    desc:'QQQ+NVDA a la baja: rotación saliendo de tech. Riesgo de compresión de múltiplos.',   color:'var(--red)',   level:'alerta'},
-  {name:'Divergencia tech',     cat:'Tech & Crypto',     assets:['spx','ndx'],        dirs:[1,-1],     desc:'S&P sube pero Nasdaq cae: rotación desde growth hacia value y defensivos.',           color:'var(--gold)',  level:'atencion'},
+  {name:'Flight to quality',     cat:'Macro & Tasas',
+   assets:['tlt','gld'], dirs:[1,1],
+   desc:'TLT (bonos largos EEUU) y Oro al alza: inversores buscan refugio en renta fija soberana y metales preciosos. Señal de aversión al riesgo macro.',
+   color:'var(--gold)', level:'atencion'},
+
+  {name:'Bonos bajo presión',    cat:'Macro & Tasas',
+   assets:['tlt'], dirs:[-1],
+   desc:'TLT a la baja: el mercado está priceando tasas altas por más tiempo (higher for longer). Presión sobre activos de larga duration.',
+   color:'var(--red)', level:'alerta'},
+
+  {name:'Curva empinando',       cat:'Macro & Tasas',
+   assets:['tlt','spx'], dirs:[-1,1],
+   desc:'Bonos largos caen mientras acciones suben: señal de reflación. El mercado anticipa crecimiento económico con tasas estructuralmente más altas.',
+   color:'var(--gold)', level:'atencion'},
+
+  // ── INFLACIÓN / COMMODITIES ──────────────────────────────
+  {name:'Presión inflacionaria', cat:'Inflación & Commodities',
+   assets:['wti','wti'], dirs:[1,1],
+   desc:'Petróleo (WTI ETF) al alza: principal driver de inflación en EEUU y emergentes. Impacto directo en expectativas de Fed y costos de producción global.',
+   color:'var(--gold)', level:'atencion'},
+
+  {name:'Commodities en caída',  cat:'Inflación & Commodities',
+   assets:['wti','gld'], dirs:[-1,-1],
+   desc:'Petróleo y Oro bajando juntos: señal de expectativas deflacionarias o debilidad de demanda global. Positivo para desinflación, negativo para emergentes exportadores.',
+   color:'var(--blue)', level:'atencion'},
+
+  {name:'Oil shock',             cat:'Inflación & Commodities',
+   assets:['wti'], dirs:[1],
+   desc:'WTI ETF al alza fuerte: riesgo de shock energético con impacto directo en inflación y consumo. Históricamente endurece la postura de la Fed.',
+   color:'var(--red)', level:'alerta'},
+
+  // ── DÓLAR (DXY PROXY) ────────────────────────────────────
+  {name:'Dólar débil',           cat:'Dólar & Cobertura',
+   assets:['gld','spx'], dirs:[1,1],
+   desc:'Oro y acciones subiendo juntos: señal de dólar bajo presión. Cuando el DXY cede, el capital fluye hacia activos reales y mercados emergentes.',
+   color:'var(--gold)', level:'atencion'},
+
+  {name:'Dólar fuerte',          cat:'Dólar & Cobertura',
+   assets:['gld','spx'], dirs:[-1,-1],
+   desc:'Oro y acciones cayendo juntos: fortaleza del dólar comprime activos de riesgo. Presión sobre emergentes con deuda en USD y exportadores de commodities.',
+   color:'var(--red)', level:'alerta'},
+
+  {name:'Cobertura activa',      cat:'Dólar & Cobertura',
+   assets:['gld','tlt'], dirs:[1,1],
+   desc:'Oro y bonos largos al alza simultáneamente: flujo hacia activos de cobertura. Señal de desconfianza en el ciclo de riesgo. Considerar posición defensiva.',
+   color:'var(--gold)', level:'atencion'},
+
+  // ── SEMICONDUCTORES / TECH ───────────────────────────────
+  {name:'Semis liderando',       cat:'Tech & Semiconductores',
+   assets:['ndx','nvda'], dirs:[1,1],
+   desc:'QQQ+NVDA al alza: sector de semiconductores liderando el mercado. Driver principal: demanda de chips para IA. Señal de momentum en el ciclo tech.',
+   color:'var(--green)', level:'positivo'},
+
+  {name:'Tech rezagado',         cat:'Tech & Semiconductores',
+   assets:['ndx','nvda'], dirs:[-1,-1],
+   desc:'QQQ+NVDA a la baja: rotación saliendo del sector tech/semis. Posible compresión de múltiplos ante expectativas de tasas altas o decepción en resultados.',
+   color:'var(--red)', level:'alerta'},
+
+  {name:'Divergencia tech/value',cat:'Tech & Semiconductores',
+   assets:['spx','ndx'], dirs:[1,-1],
+   desc:'S&P 500 sube pero Nasdaq cae: rotación desde growth/tech hacia value y defensivos. El mercado amplio avanza pero sin liderazgo tecnológico.',
+   color:'var(--gold)', level:'atencion'},
+
   // ── CRYPTO ───────────────────────────────────────────────
-  {name:'Crypto risk-on',       cat:'Tech & Crypto',     assets:['btc','ndx'],        dirs:[1,1],      desc:'BTC+QQQ al alza: apetito especulativo elevado. Correlación activos de alto beta.',    color:'var(--green)', level:'positivo'},
-  {name:'Crypto sell-off',      cat:'Tech & Crypto',     assets:['btc'],              dirs:[-1],       desc:'Bitcoin cayendo: sell-off en activos especulativos. Señal de aversión al riesgo.',     color:'var(--red)',   level:'alerta'},
-  {name:'Divergencia BTC/SPX',  cat:'Tech & Crypto',     assets:['btc','spx'],        dirs:[1,-1],     desc:'BTC sube pero SPY cae: flujo especulativo desacoplado del equity tradicional.',       color:'var(--gold)',  level:'atencion'},
+  {name:'Crypto risk-on',        cat:'Crypto',
+   assets:['btc','ndx'], dirs:[1,1],
+   desc:'BTC+QQQ al alza: apetito especulativo elevado con correlación entre activos de alto beta. Indicador de liquidez y risk appetite en el sistema.',
+   color:'var(--green)', level:'positivo'},
+
+  {name:'Crypto sell-off',       cat:'Crypto',
+   assets:['btc'], dirs:[-1],
+   desc:'Bitcoin en caída: señal de aversión al riesgo en activos especulativos. Monitorear si hay contagio hacia equity o si es movimiento idiosincrático.',
+   color:'var(--red)', level:'alerta'},
+
+  // ── EMERGENTES & ARGENTINA ───────────────────────────────
+  {name:'Inflow Argentina',      cat:'Emergentes & Argentina',
+   assets:['ypf','ggal'], dirs:[1,1],
+   desc:'YPF+GGAL (ADRs que cotizan en NY) al alza: señal de ingreso de capital externo al mercado argentino. Proxy de flujo de fondos internacionales hacia Argentina.',
+   color:'var(--green)', level:'positivo'},
+
+  {name:'Outflow Argentina',     cat:'Emergentes & Argentina',
+   assets:['ypf','ggal'], dirs:[-1,-1],
+   desc:'YPF+GGAL a la baja en NYSE: señal de salida de capitales externos. Los ADRs son el termómetro más rápido del posicionamiento internacional en Argentina.',
+   color:'var(--red)', level:'alerta'},
 ];
+
 
 function getTickerChange(id) {
   var el = document.getElementById('t-' + id + '-c');
@@ -3355,13 +3580,216 @@ function updateMobMarket() {
 // Init on load
 document.addEventListener('DOMContentLoaded', function() {
   renderMobCards();
-  // Event delegation for mob asset buttons
   document.addEventListener('click', function(e) {
-    var btn = e.target.closest ? e.target.closest('.mob-asset-btn') : null;
-    if(btn && btn.dataset.mobId) toggleMobAsset(btn.dataset.mobId);
+    var mobBtn = e.target.closest ? e.target.closest('.mob-asset-btn') : null;
+    if(mobBtn && mobBtn.dataset.mobId) toggleMobAsset(mobBtn.dataset.mobId);
+    var delBtn = e.target.closest ? e.target.closest('.view-del-btn') : null;
+    if(delBtn && delBtn.dataset.viewDel) deleteView(delBtn.dataset.viewDel);
   });
 });
 
+
+
+// ── ANÁLISIS TAB ──────────────────────────────────────────
+function showAnalisis(e) {
+  e && e.preventDefault();
+  // Hide special panels
+  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','editorPanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  // Show feed
+  ['feed','newsletterBlock'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = '';
+  });
+  // Show subsection filters
+  var af = document.getElementById('analisisFilters');
+  if(af) af.style.display = 'block';
+  // Set active nav
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('analisisTab');
+  if(tab) tab.classList.add('active');
+  // Reset to all
+  setAnalisisFilter(currentAnalisisFilter || 'all');
+}
+
+var currentAnalisisFilter = 'all';
+
+function setAnalisisFilter(filter) {
+  currentAnalisisFilter = filter;
+  // Update button styles
+  ['all','views','macro_geo','markets','policy','latam'].forEach(function(f) {
+    var btn = document.getElementById('af-' + f);
+    if(btn) {
+      if(f === filter) btn.classList.add('af-active');
+      else btn.classList.remove('af-active');
+    }
+  });
+  // Views filter: show viewsPanel, hide feed
+  var viewsPanel = document.getElementById('viewsPanel');
+  var feedEl = document.getElementById('feed');
+  var nlEl = document.getElementById('newsletterBlock');
+  var noResEl = document.getElementById('noResults');
+
+  if(filter === 'views') {
+    if(viewsPanel) viewsPanel.style.display = 'block';
+    if(feedEl) feedEl.style.display = 'none';
+    if(nlEl) nlEl.style.display = 'none';
+    if(noResEl) noResEl.style.display = 'none';
+    // Show editor block if in editor mode
+    var edBlock = document.getElementById('viewsEditorBlock');
+    if(edBlock) edBlock.style.display = isEditor ? 'block' : 'none';
+    loadViews();
+    return;
+  } else {
+    if(viewsPanel) viewsPanel.style.display = 'none';
+    if(feedEl) feedEl.style.display = '';
+    if(nlEl) nlEl.style.display = '';
+  }
+
+  if(filter === 'macro_geo') {
+    activeFilter = 'macro_geo';
+  } else {
+    activeFilter = filter;
+  }
+  renderNotes();
+}
+
+
+// ── VIEWS TÉCNICOS ─────────────────────────────────────────
+var currentViewsMarket = 'all';
+
+function setViewsMarket(market) {
+  currentViewsMarket = market;
+  ['all','eeuu','ar'].forEach(function(m){
+    var btn = document.getElementById('vm-'+m);
+    if(btn){ if(m===market) btn.classList.add('af-active'); else btn.classList.remove('af-active'); }
+  });
+  loadViews();
+}
+
+async function loadViews() {
+  var el = document.getElementById('viewsList');
+  var emptyEl = document.getElementById('viewsEmpty');
+  if(!el) return;
+  try {
+    var url = '/rest/v1/views?select=*&order=created_at.desc';
+    if(currentViewsMarket !== 'all') url += '&market=eq.' + currentViewsMarket;
+    var res = await sbFetch(url);
+    if(!res.ok) throw new Error();
+    var views = await res.json();
+    if(!views.length) {
+      el.innerHTML = '';
+      if(emptyEl) emptyEl.style.display = 'block';
+      return;
+    }
+    if(emptyEl) emptyEl.style.display = 'none';
+    el.innerHTML = views.map(function(v){ return buildViewCard(v); }).join('');
+  } catch(e) {
+    el.innerHTML = '';
+    if(emptyEl) emptyEl.style.display = 'block';
+  }
+}
+
+function buildViewCard(v) {
+  var biasColor = v.bias==='compra' ? 'var(--green)' : v.bias==='venta' ? 'var(--red)' : 'var(--muted)';
+  var biasLabel = v.bias==='compra' ? '▲ COMPRA' : v.bias==='venta' ? '▼ VENTA' : '→ NEUTRAL';
+  var mktLabel  = v.market==='eeuu' ? 'EEUU' : 'ARGENTINA';
+  var mktColor  = v.market==='eeuu' ? 'var(--blue)' : '#a855f7';
+  var tfLabel   = {corto:'Corto plazo',medio:'Mediano plazo',largo:'Largo plazo'}[v.timeframe] || v.timeframe;
+  var ds = new Date(v.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
+  return '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid '+biasColor+';padding:1.25rem 1.5rem">' +
+    '<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem">' +
+      '<span style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--text)">'+v.ticker+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.58rem;font-weight:500;color:'+biasColor+';border:1px solid '+biasColor+';padding:0.15rem 0.5rem">'+biasLabel+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.55rem;color:'+mktColor+';border:1px solid '+mktColor+';padding:0.15rem 0.4rem">'+mktLabel+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+tfLabel+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto">'+ds+'</span>' +
+    '</div>' +
+    '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75">'+v.body+'</div>' +
+    (isEditor ? '<button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer;margin-top:0.75rem;letter-spacing:0.06em">✕ Eliminar</button>' : '') +
+  '</div>';
+}
+
+async function deleteView(id) {
+  if(!confirm('¿Eliminar este view?')) return;
+  await sbFetch('/rest/v1/views?id=eq.'+id, {method:'DELETE'});
+  loadViews();
+}
+
+async function generateView() {
+  var ticker = document.getElementById('viewTicker').value.trim().toUpperCase();
+  var market = document.getElementById('viewMarket').value;
+  var bias   = document.getElementById('viewBias').value;
+  var tf     = document.getElementById('viewTimeframe').value;
+  var notes  = document.getElementById('viewBody').value.trim();
+  if(!ticker) { alert('Ingresá el ticker.'); return; }
+
+  var statusEl = document.getElementById('viewStatus');
+  statusEl.textContent = 'Generando con IA...';
+  statusEl.style.color = 'var(--gold)';
+  statusEl.style.display = 'block';
+
+  var biasLabel = {compra:'momento de compra (bullish)',venta:'momento de venta (bearish)',neutral:'neutral, esperar confirmación'}[bias];
+  var tfLabel   = {corto:'corto plazo (días)',medio:'mediano plazo (semanas)',largo:'largo plazo (meses)'}[tf];
+  var mktLabel  = market === 'eeuu' ? 'mercado americano' : 'mercado argentino';
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        system: 'Sos un analista técnico y fundamental escribiendo para Carry Note, portal de análisis macroeconómico argentino. Escribí en español, en tono profesional pero directo. Sin asteriscos ni markdown. Solo texto plano con párrafos.',
+        messages: [{role:'user', content:
+          'Escribí un view técnico/fundamental sobre ' + ticker + ' (' + mktLabel + ') para ' + tfLabel + '. ' +
+          'El bias es ' + biasLabel + '. ' +
+          (notes ? 'Contexto adicional: ' + notes + '. ' : '') +
+          'Incluí: setup técnico (soportes/resistencias clave), catalizador fundamental, nivel de entrada sugerido, stop loss referencial, relación riesgo/recompensa y disclaimer breve. Máximo 4 párrafos cortos y directos.'
+        }]
+      })
+    });
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    var data = await res.json();
+    var txt = data.content.map(function(i){ return i.type==='text'?i.text:''; }).join('').trim();
+    document.getElementById('viewBody').value = txt;
+    statusEl.textContent = '✓ View generado. Revisá y publicá.';
+    statusEl.style.color = 'var(--green)';
+  } catch(err) {
+    statusEl.textContent = '✗ Error: '+err.message;
+    statusEl.style.color = 'var(--red)';
+  }
+}
+
+async function publishView() {
+  var ticker = document.getElementById('viewTicker').value.trim().toUpperCase();
+  var market = document.getElementById('viewMarket').value;
+  var bias   = document.getElementById('viewBias').value;
+  var tf     = document.getElementById('viewTimeframe').value;
+  var body   = document.getElementById('viewBody').value.trim();
+  var statusEl = document.getElementById('viewStatus');
+
+  if(!ticker || !body) { alert('Completá ticker y análisis.'); return; }
+
+  try {
+    var res = await sbFetch('/rest/v1/views', {
+      method: 'POST',
+      headers: {'Prefer':'return=minimal'},
+      body: JSON.stringify({ticker, market, bias, timeframe:tf, body})
+    });
+    if(!res.ok) throw new Error('Error al guardar');
+    document.getElementById('viewTicker').value = '';
+    document.getElementById('viewBody').value = '';
+    statusEl.textContent = '✓ View publicado.';
+    statusEl.style.color = 'var(--green)';
+    statusEl.style.display = 'block';
+    loadViews();
+  } catch(err) {
+    statusEl.textContent = '✗ ' + err.message;
+    statusEl.style.color = 'var(--red)';
+    statusEl.style.display = 'block';
+  }
+}
 
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
@@ -3378,6 +3806,8 @@ window.addEventListener('load', function(){
   loadWatchlistPrices();
   setInterval(loadWatchlistPrices, 120000);
   showDiag();
+  // Pre-render analisis filters (hidden until tab clicked)
+  renderMobCards();
 });
 </script>
 
