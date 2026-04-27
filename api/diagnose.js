@@ -30,12 +30,31 @@ USA EXACTAMENTE este HTML (copia la estructura, reemplaza solo el contenido entr
 <div style="${CHG}"><p style="${P}"><strong style="${STR}">Cambio 1:</strong> [qué hacer, por qué en términos simples, cómo comprarlo]</p><p style="${P}"><strong style="${STR}">Cambio 2:</strong> [ídem]</p><p style="${P}"><strong style="${STR}">Cambio 3:</strong> [ídem]</p></div>`,
 };
 
+// Simple in-memory rate limiter (resets on cold start)
+const rateMap = {};
+const RATE_LIMIT = 10; // max requests per IP per hour
+const RATE_WINDOW = 60 * 60 * 1000; // 1 hour in ms
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  if (!rateMap[ip]) rateMap[ip] = { count: 0, resetAt: now + RATE_WINDOW };
+  if (now > rateMap[ip].resetAt) rateMap[ip] = { count: 0, resetAt: now + RATE_WINDOW };
+  rateMap[ip].count++;
+  return rateMap[ip].count <= RATE_LIMIT;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  // Rate limiting
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket?.remoteAddress || 'unknown';
+  if (!checkRateLimit(ip)) {
+    return res.status(429).json({ error: 'Límite de análisis alcanzado. Volvé en una hora.' });
+  }
 
   const { assets, horizonte, riesgo, liveData, scenario, mode = 'diagnostic' } = req.body;
   if (!assets || !assets.length) return res.status(400).json({ error: 'Sin activos' });
