@@ -52,6 +52,7 @@
   --serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;--sans:'Inter',sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:hidden;max-width:100vw}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;min-height:100vh;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.35}
@@ -398,11 +399,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 <!-- MOBILE MARKET WIDGET -->
 <div class="mob-market" id="mobMarket">
   <!-- HEADER -->
-  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.65rem 1rem;border-bottom:1px solid var(--border2);background:var(--surface)">
-    <div style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold)">Mercados · en vivo</div>
-    <button onclick="toggleMobConfig()" style="font-family:var(--mono);font-size:0.52rem;color:var(--muted);background:transparent;border:1px solid var(--border2);padding:0.2rem 0.5rem;cursor:pointer;letter-spacing:0.06em">⚙ Configurar</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 1rem;border-bottom:1px solid var(--border2);background:var(--surface)">
+    <button onclick="toggleMobWidget()" style="font-family:var(--mono);font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);background:transparent;border:none;cursor:pointer;padding:0">Mercados · en vivo <span id="mobWidgetArrow">▸</span></button>
+    <button onclick="toggleMobConfig()" style="font-family:var(--mono);font-size:0.52rem;color:var(--muted);background:transparent;border:1px solid var(--border2);padding:0.2rem 0.5rem;cursor:pointer;letter-spacing:0.06em">⚙</button>
   </div>
 
+  <!-- COLLAPSIBLE BODY -->
+  <div id="mobWidgetBody" style="display:none">
   <!-- CONFIG PANEL (hidden by default) -->
   <div id="mobConfigPanel" style="display:none;background:var(--surface2);border-bottom:1px solid var(--border2);padding:0.75rem 1rem">
     <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted);margin-bottom:0.6rem;letter-spacing:0.08em;text-transform:uppercase">Seleccioná hasta 4 activos</div>
@@ -432,6 +435,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <span class="mob-fx-val" id="mob-fx-ccl">—</span>
     </div>
   </div>
+  </div><!-- end mobWidgetBody -->
 </div>
 
 
@@ -566,7 +570,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El primer objetivo de cualquier inversión no es ganar dinero sino no perderlo. Vencer a la inflación es la meta básica. Todo lo que supere ese umbral es ganancia real.</p>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Las opciones más simples para empezar: Fondos Money Market (liquidez inmediata, rinden similar a la tasa BCRA), plazos fijos (tasa fija garantizada) o FCIs de renta fija en pesos. Ninguna de estas requiere conocimiento técnico avanzado.</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
           <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l2')">
@@ -579,7 +583,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El riesgo no es malo en sí mismo — es algo que hay que gestionar. La clave es entender cuánto riesgo podés tolerar en función de tu horizonte de inversión y tu situación financiera.</p>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Si necesitás el dinero en 3 meses, no pongas todo en acciones. Si tenés 10 años de horizonte, el riesgo de corto plazo importa menos. El tiempo es el principal aliado del inversor.</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
           <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l3')">
@@ -593,7 +597,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Brokers regulados CNV: Balanz · IOL · Bull Market · PPI · Cocos Capital</div>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">No hay monto mínimo obligatorio en la mayoría de los brokers. Podés empezar con cualquier suma.</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
           <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;cursor:pointer" onclick="toggleLesson('l4')">
@@ -606,7 +610,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">En Argentina, la diversificación también implica diversificar en moneda: tener parte en pesos (para cubrir gastos cotidianos) y parte en dólares (para preservar valor a largo plazo).</p>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">La diversificación no significa tener 30 activos distintos. Con 3 o 4 instrumentos bien elegidos ya se logra una cartera razonablemente diversificada.</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
         </div>
@@ -626,7 +630,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">La <strong style="color:var(--text)">duration</strong> mide la sensibilidad del precio de un bono ante cambios en las tasas de interés. Un bono con duration de 5 años pierde aproximadamente 5% de precio si las tasas suben 1%. Por eso en contexto de suba de tasas conviene privilegiar bonos cortos.</p>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">En Argentina los principales instrumentos son: Lecaps (letras del Tesoro en pesos, corto plazo), Boncaps (bonos en pesos a tasa fija), Boncer/Lecer (ajustados por CER/inflación) y bonos soberanos en dólares (Globales y Bonares).</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
           <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m2')">
@@ -639,7 +643,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar blue:</strong> mercado informal, ilegal. Su precio refleja la demanda de cobertura cambiaria pero conlleva riesgo legal y operacional.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Para dolarizarse legalmente: MEP vía bono AL30 o GD30 a través de cualquier broker regulado por CNV</div>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
           <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m3')">
@@ -651,7 +655,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Conservador: 60% renta fija · 30% dólares (MEP/ON) · 10% acciones<br>Moderado: 40% renta fija · 35% dólares · 25% acciones<br>Agresivo: 20% renta fija · 30% dólares · 50% acciones</div>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Estas son referencias orientativas. Una cartera personalizada requiere analizar tu situación fiscal, tu flujo de ingresos y tu contexto particular.</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
           <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m4')">
@@ -664,7 +668,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El riesgo es un salto cambiario abrupto (devaluación) que licúe la ganancia en pesos. En el contexto actual con banda cambiaria y acuerdo FMI, el carry tiene menor riesgo de cola que en años anteriores — pero el riesgo nunca es cero.</p>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Es una estrategia de corto plazo. No es adecuada como base de una cartera de largo plazo.</p>
             </div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem">Leer más ▸</div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
 
         </div>
@@ -843,7 +847,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         </div>
       </div>
 
-      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem">⚠ El contenido es educativo e informativo. No constituye asesoramiento financiero ni recomendación de inversión. · Carry Note</div>
+
 
     </div>
 
@@ -958,7 +962,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
       </div>
 
-      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1.5rem;line-height:1.7">&#9888; Este diagn&#243;stico es de car&#225;cter educativo e informativo. No constituye asesoramiento financiero, recomendaci&#243;n de inversi&#243;n ni oferta de compra o venta de ning&#250;n activo. · Carry Note</div>
+
     </div>
     <!-- RADAR PANEL -->
     <div id="radarPanel" style="display:none;margin-bottom:2rem">
@@ -2191,9 +2195,16 @@ function showNivel(nivel) {
 }
 
 function toggleLesson(id) {
-  const el = document.getElementById(id);
+  var el = document.getElementById(id);
   if(!el) return;
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  var open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  // Update button text in parent card
+  var card = el.parentElement;
+  if(card) {
+    var lnk = card.querySelector('.lesson-toggle-lbl');
+    if(lnk) lnk.textContent = open ? 'Leer más ▸' : 'Leer menos ▴';
+  }
 }
 
 
@@ -3834,6 +3845,17 @@ async function publishView() {
     statusEl.style.color = 'var(--red)';
     statusEl.style.display = 'block';
   }
+}
+
+
+function toggleMobWidget() {
+  var body = document.getElementById('mobWidgetBody');
+  var arrow = document.getElementById('mobWidgetArrow');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  if(arrow) arrow.textContent = open ? '▸' : '▾';
+  if(!open) { updateMobMarket(); }
 }
 
 window.addEventListener('load', function(){
