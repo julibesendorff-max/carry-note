@@ -4094,7 +4094,12 @@ window.addEventListener('load', function(){
   loadForex();
   loadWatchlistPrices();
   setInterval(loadWatchlistPrices, 120000);
-  showDiag();
+  // Check ?section= param from landing pages
+  var urlSection = new URLSearchParams(window.location.search).get('section');
+  if(urlSection === 'radar') { showRadar(); }
+  else if(urlSection === 'analisis') { showAnalisis(); }
+  else if(urlSection === 'aprender') { showAprender(); }
+  else { showDiag(); }
   // Pre-render analisis filters (hidden until tab clicked)
   renderMobCards();
 });
