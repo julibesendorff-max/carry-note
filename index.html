@@ -2087,6 +2087,7 @@ function showFCI(e) {
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  setSidebarVisible(false);
   // Hide everything feed-related
   ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
     const el = document.getElementById(id);
@@ -2110,6 +2111,7 @@ function filterByTag(tag) {
     if(el) el.style.display = '';
   });
   document.getElementById('fciPanel').style.display = 'none';
+  setSidebarVisible(true);
   _origFilterByTag(tag);
 }
 
@@ -2170,6 +2172,7 @@ function showAprender(e) {
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  setSidebarVisible(false);
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel'].forEach(id => {
@@ -2698,6 +2701,7 @@ function showRadar(e) {
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  setSidebarVisible(false);
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   var wla=document.getElementById('wlAlertsLog'); if(wla) wla.style.display='none';
@@ -2791,6 +2795,7 @@ function showDiag(e) {
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  setSidebarVisible(false);
   // Hide all content panels
   var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel'];
   toHide.forEach(function(id){
@@ -3614,6 +3619,8 @@ function showAnalisis(e) {
   // Show subsection filters
   var af = document.getElementById('analisisFilters');
   if(af) af.style.display = 'block';
+  // Show sidebar
+  setSidebarVisible(true);
   // Set active nav
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   var tab = document.getElementById('analisisTab');
@@ -3856,6 +3863,12 @@ function toggleMobWidget() {
   body.style.display = open ? 'none' : 'block';
   if(arrow) arrow.textContent = open ? '▸' : '▾';
   if(!open) { updateMobMarket(); }
+}
+
+
+function setSidebarVisible(visible) {
+  var sb = document.querySelector('.sidebar');
+  if(sb) sb.style.display = visible ? '' : 'none';
 }
 
 window.addEventListener('load', function(){
