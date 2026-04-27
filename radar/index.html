@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar Macro · Detección de señales de mercado en tiempo real · Carry Note</title>
+<meta name="description" content="Sistema de detección de patrones de correlación entre activos globales en tiempo real. Fear & Greed index propio, 21 patrones, alertas para tu cartera. Gratis.">
+<meta name="keywords" content="radar macro, señales de mercado, correlación activos, fear and greed, análisis técnico tiempo real, mercados Argentina">
+<meta name="author" content="Julián Besendorff">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.thecarrynote.com/radar">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.thecarrynote.com/radar">
+<meta property="og:title" content="Radar Macro · Señales de mercado en tiempo real · Carry Note">
+<meta property="og:description" content="21 patrones de correlación entre activos globales. Fear & Greed index, alertas para tu cartera, historial de señales. Gratis.">
+<meta property="og:image" content="https://www.thecarrynote.com/og-image.png">
+<meta property="og:locale" content="es_AR">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Radar Macro · Carry Note",
+  "url": "https://www.thecarrynote.com/radar",
+  "description": "Sistema de detección de patrones de correlación entre activos financieros globales en tiempo real.",
+  "applicationCategory": "FinanceApplication",
+  "author": {"@type": "Person", "name": "Julián Besendorff"},
+  "featureList": ["21 patrones de correlación", "Fear & Greed index", "Alertas por cartera", "Historial de señales", "Sugerencia macro con IA"]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0b;--surface:#111114;--surface2:#18181d;--border:#2a2a32;--border2:#1e1e24;--gold:#c9a84c;--gold2:#e8c96a;--text:#f0ede8;--muted:#9d99a8;--muted2:#6b6875;--green:#4caf7d;--red:#e05252;--blue:#5b8dee;--serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;--sans:'Inter',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
+header{border-bottom:1px solid var(--border);background:var(--bg);padding:1.2rem 2.5rem;display:flex;align-items:center;justify-content:space-between}
+.logo-name{font-family:var(--serif);font-size:2rem;font-weight:600;letter-spacing:-0.02em}
+.logo-name em{font-style:italic;color:var(--gold)}
+.logo-name a{text-decoration:none;color:inherit}
+.back-bar{background:var(--surface2);border-bottom:1px solid var(--border2);padding:0.5rem 2.5rem;font-family:var(--mono);font-size:0.6rem;display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap}
+.back-bar a{color:var(--muted);text-decoration:none}.back-bar a:hover{color:var(--gold)}
+.back-bar span{color:var(--border)}
+main{max-width:900px;margin:0 auto;padding:3rem 2.5rem}
+h1{font-family:var(--serif);font-size:2.8rem;font-weight:600;color:var(--text);margin-bottom:0.75rem;line-height:1.1}
+h1 em{font-style:italic;color:var(--red)}
+.subtitle{font-size:1.05rem;color:var(--muted);line-height:1.7;margin-bottom:2.5rem;max-width:600px}
+.patterns-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:0.75rem;margin-bottom:2.5rem}
+.pattern{background:var(--surface);border:1px solid var(--border2);padding:1rem 1.25rem}
+.pattern-cat{font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem}
+.pattern-name{font-family:var(--mono);font-size:0.75rem;font-weight:500;color:var(--text);margin-bottom:0.2rem}
+.pattern-desc{font-size:0.8rem;color:var(--muted);line-height:1.5}
+.cta{display:inline-block;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2rem;background:var(--red);color:#fff;text-decoration:none;margin-bottom:3rem}
+.cta:hover{opacity:0.85}
+footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:900px;margin:0 auto;font-family:var(--mono);font-size:0.58rem;color:var(--muted2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+.footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
+.footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
+@media(max-width:600px){main{padding:2rem 1rem}h1{font-size:2rem}header{padding:1rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-name"><a href="/">Carry<em>Note</em></a></div>
+  <a href="/" style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);text-decoration:none;border:1px solid var(--border2);padding:0.3rem 0.75rem">← Ir al portal</a>
+</header>
+<div class="back-bar">
+  <a href="/">Inicio</a><span>·</span>
+  <a href="/diagnostico">Diagnóstico</a><span>·</span>
+  <a href="/radar" style="color:var(--red)">◉ Radar Macro</a><span>·</span>
+  <a href="/analisis">Análisis</a><span>·</span>
+  <a href="/aprender">Aprender</a>
+</div>
+<main>
+  <div style="font-family:var(--mono);font-size:0.58rem;color:var(--red);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.75rem">◉ Sistema de detección · Carry Note</div>
+  <h1>Radar <em>Macro</em></h1>
+  <p class="subtitle">Sistema de detección de patrones de correlación entre activos financieros globales en tiempo real. Identifica señales de riesgo, oportunidades y movimientos relevantes para el inversor argentino.</p>
+
+  <a href="/" class="cta">Ver Radar en vivo ▸</a>
+
+  <div style="margin-bottom:2rem">
+    <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">21 patrones monitoreados en 7 categorías</div>
+    <div class="patterns-grid">
+      <div class="pattern"><div class="pattern-cat">Régimen de riesgo</div><div class="pattern-name">Risk-off global</div><div class="pattern-desc">VIX + Oro + TLT al alza simultáneamente: fuga hacia activos refugio.</div></div>
+      <div class="pattern"><div class="pattern-cat">Régimen de riesgo</div><div class="pattern-name">Risk-on global</div><div class="pattern-desc">SPY + QQQ + BTC al alza: apetito de riesgo en todos los segmentos.</div></div>
+      <div class="pattern"><div class="pattern-cat">Volatilidad</div><div class="pattern-name">VIX en expansión</div><div class="pattern-desc">Volatilidad implícita subiendo: el mercado paga más por cobertura.</div></div>
+      <div class="pattern"><div class="pattern-cat">Macro & Tasas</div><div class="pattern-name">Flight to quality</div><div class="pattern-desc">TLT + Oro al alza: inversores buscan refugio ante incertidumbre macro.</div></div>
+      <div class="pattern"><div class="pattern-cat">Macro & Tasas</div><div class="pattern-name">Bonos bajo presión</div><div class="pattern-desc">TLT a la baja: higher for longer. Presión sobre activos de larga duration.</div></div>
+      <div class="pattern"><div class="pattern-cat">Inflación & Commodities</div><div class="pattern-name">Oil shock</div><div class="pattern-desc">WTI al alza fuerte: riesgo de shock energético e impacto en inflación.</div></div>
+      <div class="pattern"><div class="pattern-cat">Tech & Semiconductores</div><div class="pattern-name">Semis liderando</div><div class="pattern-desc">QQQ + NVDA al alza: sector de semiconductores traccionando el mercado.</div></div>
+      <div class="pattern"><div class="pattern-cat">Emergentes & Argentina</div><div class="pattern-name">Inflow Argentina</div><div class="pattern-desc">YPF + GGAL en NYSE al alza: ingreso de capital externo al mercado argentino.</div></div>
+      <div class="pattern"><div class="pattern-cat">Crypto</div><div class="pattern-name">Crypto risk-on</div><div class="pattern-desc">BTC + QQQ al alza: apetito especulativo y correlación de alto beta.</div></div>
+    </div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--red);padding:1.25rem 1.5rem;margin-bottom:2.5rem">
+    <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--red);margin-bottom:0.5rem">⚡ Alertas cruzadas con tu cartera</div>
+    <div style="font-size:0.88rem;color:var(--muted);line-height:1.65">Si tenés cartera guardada en el Diagnóstico, el Radar identifica automáticamente qué señales activas son relevantes para tus activos. Si tenés Bitcoin y se activa "Crypto sell-off", te lo marca. Si tenés CEDEARs de NVIDIA y se activa "Semis liderando", aparece como señal positiva.</div>
+  </div>
+
+  <a href="/" class="cta">Ver Radar en vivo ▸</a>
+</main>
+<footer>
+  <div class="footer-logo">Carry<em>Note</em></div>
+  <div>© 2025 · thecarrynote.com · No constituye asesoramiento financiero</div>
+</footer>
+</body>
+</html>
