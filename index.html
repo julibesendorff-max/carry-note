@@ -152,6 +152,7 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-tag.markets{border-color:var(--text);color:var(--text)}
 .note-tag.policy{border-color:var(--green);color:var(--green)}
 .note-tag.latam{border-color:#a855f7;color:#a855f7}
+.note-tag.semanal{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
 .note-date{font-family:var(--mono);font-size:0.58rem;color:var(--muted)}
 .note-num{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto;letter-spacing:0.1em}
 .note-title{font-family:var(--serif);font-size:2.1rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
@@ -311,6 +312,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- Microsoft Clarity — reemplazá CLARITY_ID con tu ID real de clarity.microsoft.com -->
+<script type="text/javascript">
+(function(c,l,a,r,i,t,y){
+  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+})(window,document,"clarity","script","CLARITY_ID");
+</script>
 </head>
 <body>
 
@@ -461,6 +470,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
           <button class="t-btn" data-t="El dólar como moneda de reserva global bajo presión: BRICS, desdolarización y alternativas">Dollar Dominance</button>
           <button class="t-btn" data-t="Argentina: programa económico, carry trade del peso, brecha cambiaria y acceso a mercados">Argentina Macro</button>
           <button class="t-btn" data-t="Economías emergentes: carry trade, flujos de capital, fortaleza del dólar y vulnerabilidades">EM &amp; Carry</button>
+          <button class="t-btn" data-t="Cierre semanal de mercados: resumen de lo más importante de la semana en Wall Street, Argentina y emergentes. Earnings destacados, movimientos macro y qué esperar la semana próxima">◈ Cierre Semanal</button>
         </div>
         <div class="gen-row">
           <input type="text" id="customT" placeholder="O escribí tu propio tema de análisis..."/>
@@ -468,10 +478,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div class="gen-row" style="margin-top:0.5rem">
           <select id="aiTag" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.65rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
             <option value="auto">Categoría automática</option>
+            <option value="semanal">◈ Cierre Semanal</option>
             <option value="macro">Macro US / Política Monetaria</option>
             <option value="geo">Geopolítica</option>
             <option value="markets">Mercados / Renta Fija</option>
-            <option value="policy">Política Fiscal</option>
             <option value="latam">EM & Latam</option>
           </select>
           <button class="gen-go" id="genBtn" onclick="genAI()">Generar nota ▸</button>
@@ -482,10 +492,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <input type="text" id="wSubtitle" placeholder="Subtítulo o bajada..."/>
         <div class="write-meta">
           <select id="wTag">
+            <option value="semanal">◈ Cierre Semanal</option>
             <option value="macro">Macro US / Política Monetaria</option>
             <option value="geo">Geopolítica</option>
             <option value="markets">Mercados / Renta Fija</option>
-            <option value="policy">Política Fiscal</option>
             <option value="latam">EM & Latam</option>
           </select>
         </div>
@@ -505,6 +515,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <div id="analisisFilters" style="display:none;margin-bottom:1.5rem;border-bottom:1px solid var(--border2);padding-bottom:1rem">
       <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
         <button onclick="setAnalisisFilter('all')" id="af-all" class="af-btn af-active">Todo</button>
+        <button onclick="setAnalisisFilter('semanal')" id="af-semanal" class="af-btn" style="border-color:var(--gold);color:var(--gold)">◈ Cierre semanal</button>
         <button onclick="setAnalisisFilter('views')" id="af-views" class="af-btn" style="border-color:var(--green);color:var(--green)">▸ Views Técnicos</button>
         <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
         <button onclick="setAnalisisFilter('markets')" id="af-markets" class="af-btn">Mercados</button>
@@ -673,6 +684,31 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
         </div>
       </div>
+
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m5')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 05 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">CEDEARs: dolarizarse con acciones</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué son los CEDEARs, cómo funcionan, ratio de conversión y cómo usarlos para dolarizar una cartera desde Argentina.</div>
+            <div id="m5" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Un CEDEAR (Certificado de Depósito Argentino) es un instrumento que cotiza en pesos en la Bolsa de Buenos Aires pero representa acciones de empresas extranjeras: Apple, Google, Tesla, Nvidia, entre otras. Comprando CEDEARs accedés a acciones globales desde un broker local, sin necesidad de una cuenta en el exterior.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">CEDEAR de Apple (AAPL) en Argentina = fracción de una acción AAPL en NYSE · Precio en pesos ajustado por el tipo de cambio implícito (CCL)</div>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El <strong style="color:var(--text)">ratio de conversión</strong> indica cuántos CEDEARs equivalen a una acción original. Apple tiene un ratio de 10:1 — necesitás 10 CEDEARs para representar 1 acción AAPL. El precio en pesos surge de multiplicar el precio en dólares por el tipo de cambio CCL.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">La ventaja: dolarizarte legalmente desde cualquier broker argentino con cualquier monto. El riesgo: estás expuesto tanto al precio de la acción subyacente como al movimiento del tipo de cambio.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m6')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 06 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo leer un balance trimestral</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">EPS, revenue, guidance y márgenes: qué mirar cuando una empresa publica resultados y cómo interpretarlo.</div>
+            <div id="m6" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Cuando una empresa publica resultados trimestrales (earnings), los cuatro números clave son: <strong style="color:var(--text)">Revenue</strong> (ingresos totales), <strong style="color:var(--text)">EPS</strong> (ganancia por acción), <strong style="color:var(--text)">Margen operativo</strong> y <strong style="color:var(--text)">Guidance</strong> (proyección de la empresa para el próximo trimestre).</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Beat = resultado mejor que lo esperado · Miss = peor que lo esperado · Lo que mueve el precio no es el número sino la diferencia vs expectativas</div>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El mercado no reacciona al resultado absoluto sino a la <strong style="color:var(--text)">sorpresa</strong>. Una empresa puede reportar ganancias récord y caer si el mercado esperaba más. El guidance define si los analistas van a subir o bajar sus estimaciones futuras — y eso mueve el precio más que el resultado pasado.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Para el inversor argentino en CEDEARs, los earnings de NVIDIA, Apple o Tesla son eventos que pueden mover el precio 10-20% en una sola jornada, y suelen operar en el after-hours antes de que abra el mercado local.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
+          </div>
 
       <!-- GLOSARIO -->
       <div id="nivel-glosario" style="display:none">
@@ -1462,7 +1498,7 @@ function renderNotes() {
   const header = document.getElementById('feedHeader');
   const countEl = document.getElementById('feedCount');
 
-  const filtered = activeFilter === 'all' ? allNotes : activeFilter === 'macro_geo' ? allNotes.filter(n => n.tag === 'macro' || n.tag === 'geo') : allNotes.filter(n => n.tag === activeFilter);
+  const filtered = activeFilter === 'all' ? allNotes : activeFilter === 'macro_geo' ? allNotes.filter(n => n.tag === 'macro' || n.tag === 'geo') : activeFilter === 'semanal' ? allNotes.filter(n => n.tag === 'semanal') : allNotes.filter(n => n.tag === activeFilter);
 
   if (allNotes.length === 0) {
     if(empty) { empty.style.display = 'block'; }
@@ -1527,7 +1563,7 @@ function buildCard(n, num) {
 }
 
 function tagLabel(t) {
-  return {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal',latam:'EM & Latam'}[t]||'Análisis';
+  return {macro:'Política Monetaria',geo:'Geopolítica',markets:'Mercados',policy:'Política Fiscal',latam:'EM & Latam',semanal:'Cierre Semanal'}[t]||'Análisis';
 }
 
 function toggleNote(id) {
@@ -3654,7 +3690,7 @@ var currentAnalisisFilter = 'all';
 function setAnalisisFilter(filter) {
   currentAnalisisFilter = filter;
   // Update button styles
-  ['all','views','macro_geo','markets','latam'].forEach(function(f) {
+  ['all','semanal','views','macro_geo','markets','latam'].forEach(function(f) {
     var btn = document.getElementById('af-' + f);
     if(btn) {
       if(f === filter) btn.classList.add('af-active');
