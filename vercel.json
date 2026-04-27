@@ -2,12 +2,20 @@
   "version": 2,
   "builds": [
     { "src": "index.html", "use": "@vercel/static" },
+    { "src": "diagnostico/index.html", "use": "@vercel/static" },
+    { "src": "radar/index.html", "use": "@vercel/static" },
+    { "src": "analisis/index.html", "use": "@vercel/static" },
+    { "src": "aprender/index.html", "use": "@vercel/static" },
     { "src": "api/notify.js", "use": "@vercel/node" },
     { "src": "api/diagnose.js", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/notify", "dest": "/api/notify.js" },
     { "src": "/api/diagnose", "dest": "/api/diagnose.js" },
+    { "src": "/diagnostico", "dest": "/diagnostico/index.html" },
+    { "src": "/radar", "dest": "/radar/index.html" },
+    { "src": "/analisis", "dest": "/analisis/index.html" },
+    { "src": "/aprender", "dest": "/aprender/index.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
