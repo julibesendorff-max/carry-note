@@ -1067,6 +1067,18 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
         <div id="radarSignalLog" style="display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--border2)"></div>
       </div>
 
+      <!-- CROSS ALERTS: Radar × Cartera -->
+      <div id="radarCrossAlertsWrap" style="display:none;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2);display:flex;align-items:center;gap:0.5rem">
+          <span style="color:var(--gold)">⚡</span> Señales relevantes para tu cartera
+          <span style="font-size:0.5rem;color:var(--muted2);font-weight:300;margin-left:auto">Basado en tu cartera guardada</span>
+        </div>
+        <div id="radarCrossAlerts"></div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.5rem">
+          <a onclick="showDiag()" style="color:var(--gold);cursor:pointer;text-decoration:none">Actualizar cartera ▸</a>
+        </div>
+      </div>
+
       <!-- AI SUGGESTION -->
       <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:1.5rem">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
@@ -1452,6 +1464,9 @@ async function loadTicker() {
     if(dp && dp.style.display !== 'none') renderDailySummary();
     // Update fear & greed if radar is open
     renderFearGreed();
+    // Update cross alerts if radar is open
+    var rp = document.getElementById('radarPanel');
+    if(rp && rp.style.display !== 'none') renderCrossAlerts();
     // Update mobile market widget
     setTimeout(updateMobMarket, 300);
   } catch(e) {
@@ -3924,6 +3939,143 @@ function toggleMobWidget() {
 function setSidebarVisible(visible) {
   var sb = document.querySelector('.sidebar');
   if(sb) sb.style.display = visible ? '' : 'none';
+}
+
+
+// ── RADAR × CARTERA CROSS ALERTS ──────────────────────────────────────
+var ASSET_RADAR_MAP = {
+  // Acciones EEUU / ETFs
+  'sp500':        ['Risk-on global','Risk-off global','Mercado en caída','Rally amplio','Semis liderando','Tech rezagado','Divergencia tech/value'],
+  'nasdaq':       ['Risk-on global','Risk-off global','Semis liderando','Tech rezagado','Divergencia tech/value','Crypto risk-on'],
+  'etf_eeuu':     ['Risk-on global','Risk-off global','Mercado en caída','Rally amplio'],
+  'acciones_eeuu':['Risk-on global','Mercado en caída','Rally amplio'],
+  // CEDEARs tech
+  'nvda_cedr':    ['Semis liderando','Tech rezagado','Risk-on global'],
+  'tsla_cedr':    ['Risk-on global','Mercado en caída','Crypto risk-on'],
+  'aapl_cedr':    ['Semis liderando','Tech rezagado','Mercado en caída'],
+  'msft_cedr':    ['Semis liderando','Tech rezagado'],
+  'amzn_cedr':    ['Risk-on global','Mercado en caída'],
+  'googl_cedr':   ['Semis liderando','Tech rezagado'],
+  'meta_cedr':    ['Risk-on global','Tech rezagado'],
+  'cedears':      ['Risk-on global','Mercado en caída','Semis liderando'],
+  // Crypto
+  'bitcoin':      ['Crypto risk-on','Crypto sell-off','Dólar débil','Risk-on global'],
+  'ethereum':     ['Crypto risk-on','Crypto sell-off','Risk-on global'],
+  'crypto_otro':  ['Crypto risk-on','Crypto sell-off'],
+  // Bonos / Renta fija
+  'bono_dollar':  ['Flight to quality','Bonos bajo presión','Inflow Argentina','Outflow Argentina'],
+  'fci_cer':      ['Presión inflacionaria','Oil shock'],
+  'fci_pesos':    ['Presión inflacionaria','Bonos bajo presión'],
+  'plazo_fijo':   ['Presión inflacionaria','Curva empinando'],
+  'money_market': ['Bonos bajo presión','VIX en expansión'],
+  // Oro
+  'oro':          ['Flight to quality','Cobertura activa','Dólar débil','Dólar fuerte','Risk-off global'],
+  // Dólares
+  'dolar_mep':    ['Dólar débil','Dólar fuerte','Inflow Argentina','Outflow Argentina'],
+  'dolar_billete':['Dólar débil','Dólar fuerte'],
+  // Acciones argentinas
+  'ypf_ar':       ['Inflow Argentina','Outflow Argentina','Oil shock','Presión inflacionaria'],
+  'ggal':         ['Inflow Argentina','Outflow Argentina','Risk-off global'],
+  'acciones_ar':  ['Inflow Argentina','Outflow Argentina','Risk-off global'],
+  'bma':          ['Inflow Argentina','Outflow Argentina'],
+  'pamp':         ['Inflow Argentina','Oil shock'],
+  'txar':         ['Inflow Argentina','Outflow Argentina'],
+  'come':         ['Inflow Argentina','Outflow Argentina'],
+};
+
+function getCrossAlerts() {
+  var saved = getSavedPortfolio ? getSavedPortfolio() : null;
+  if(!saved || !saved.assets || !saved.assets.length) return [];
+
+  // Get active radar signals
+  var activeSignals = [];
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){ return x === null; })) return;
+    var match = pcts.every(function(pct, i){ return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
+    if(match) activeSignals.push(p.name);
+  });
+
+  if(!activeSignals.length) return [];
+
+  // Cross with portfolio
+  var alerts = [];
+  saved.assets.forEach(function(asset) {
+    // Find the asset type key
+    var typeKey = null;
+    // Match by tipo label to ASSET_TYPES value
+    var ASSET_TYPES_MAP = {
+      'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market',
+      'FCI Renta Fija Pesos':'fci_pesos','FCI / Bono CER':'fci_cer',
+      'Bono / ON Hard Dollar':'bono_dollar','Dolar MEP / CCL':'dolar_mep',
+      'Dolares billete':'dolar_billete','Acciones argentinas (generico)':'acciones_ar',
+      'GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar',
+      'BMA (Banco Macro)':'bma','PAMP (Pampa Energia)':'pamp',
+      'TXAR (Ternium Argentina)':'txar','COME (Sociedad Comercial del Plata)':'come',
+      'CEDEARs (general)':'cedears','CEDEAR: Apple (AAPL)':'aapl_cedr',
+      'CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr',
+      'CEDEAR: Microsoft (MSFT)':'msft_cedr','CEDEAR: Amazon (AMZN)':'amzn_cedr',
+      'CEDEAR: Alphabet (GOOGL)':'googl_cedr','CEDEAR: Meta (META)':'meta_cedr',
+      'S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq',
+      'ETFs EEUU (otros)':'etf_eeuu','Acciones EEUU (general)':'acciones_eeuu',
+      'Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum',
+      'Crypto (otras)':'crypto_otro','Oro':'oro','Otro':null
+    };
+    typeKey = ASSET_TYPES_MAP[asset.tipo];
+    if(!typeKey) return;
+
+    var relevantSignals = ASSET_RADAR_MAP[typeKey] || [];
+    relevantSignals.forEach(function(sigName) {
+      if(activeSignals.indexOf(sigName) !== -1) {
+        // Find the signal object for color/level
+        var sig = RADAR_PATTERNS.find(function(p){ return p.name === sigName; });
+        if(sig && !alerts.find(function(a){ return a.signal === sigName && a.asset === asset.tipo; })) {
+          alerts.push({
+            asset: asset.tipo,
+            signal: sigName,
+            desc: sig.desc,
+            color: sig.color,
+            level: sig.level
+          });
+        }
+      }
+    });
+  });
+
+  return alerts;
+}
+
+function renderCrossAlerts() {
+  var el = document.getElementById('radarCrossAlerts');
+  var wrap = document.getElementById('radarCrossAlertsWrap');
+  if(!el || !wrap) return;
+
+  var alerts = getCrossAlerts();
+  var saved = getSavedPortfolio ? getSavedPortfolio() : null;
+
+  if(!saved || !saved.assets || !saved.assets.length) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = 'block';
+
+  if(!alerts.length) {
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.75rem">No hay señales activas relevantes para tu cartera en este momento.</div>';
+    return;
+  }
+
+  el.innerHTML = alerts.map(function(a) {
+    var bgColor = a.level === 'alerta' ? 'rgba(224,82,82,0.08)' : a.level === 'positivo' ? 'rgba(76,175,125,0.08)' : 'rgba(201,168,76,0.06)';
+    var borderColor = a.level === 'alerta' ? 'var(--red)' : a.level === 'positivo' ? 'var(--green)' : 'var(--gold)';
+    return '<div style="padding:0.75rem 1rem;border-left:3px solid '+borderColor+';background:'+bgColor+';margin-bottom:0.5rem">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">' +
+        '<span style="font-family:var(--mono);font-size:0.62rem;font-weight:500;color:var(--text)">'+a.asset+'</span>' +
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:'+borderColor+';border:1px solid '+borderColor+';padding:0.1rem 0.4rem">'+a.signal+'</span>' +
+      '</div>' +
+      '<div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);line-height:1.5">'+a.desc+'</div>' +
+    '</div>';
+  }).join('');
 }
 
 window.addEventListener('load', function(){
