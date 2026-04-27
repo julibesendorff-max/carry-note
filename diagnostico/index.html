@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico de Cartera con IA · Carry Note</title>
+<meta name="description" content="Analizá tu cartera de inversiones con inteligencia artificial. Obtené un score, identificá riesgos y recibí sugerencias personalizadas en el contexto macroeconómico actual. Gratis, en español.">
+<meta name="keywords" content="diagnóstico de cartera, análisis de inversiones IA, cartera argentina, portfolio analysis, inversiones Argentina">
+<meta name="author" content="Julián Besendorff">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://www.thecarrynote.com/diagnostico">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.thecarrynote.com/diagnostico">
+<meta property="og:title" content="Diagnóstico de Cartera con IA · Carry Note">
+<meta property="og:description" content="Analizá tu cartera con IA en el contexto macro actual. Score, riesgos, sugerencias y simulación de escenarios. Gratis.">
+<meta property="og:image" content="https://www.thecarrynote.com/og-image.png">
+<meta property="og:locale" content="es_AR">
+<meta property="og:site_name" content="Carry Note">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Diagnóstico de Cartera con IA · Carry Note">
+<meta name="twitter:description" content="Analizá tu cartera con IA. Score, riesgos y escenarios macro. Gratis en español.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Diagnóstico de Cartera · Carry Note",
+  "url": "https://www.thecarrynote.com/diagnostico",
+  "description": "Herramienta gratuita de análisis de cartera de inversiones con inteligencia artificial. Diseñada para el inversor argentino.",
+  "applicationCategory": "FinanceApplication",
+  "author": {"@type": "Person", "name": "Julián Besendorff"},
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "ARS"},
+  "featureList": ["Análisis de cartera con IA", "Score de alineación", "Simulación de escenarios macro", "Cartera alternativa sugerida", "Precios en vivo"]
+}
+</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0b;--surface:#111114;--surface2:#18181d;--border:#2a2a32;--border2:#1e1e24;--gold:#c9a84c;--gold2:#e8c96a;--text:#f0ede8;--muted:#9d99a8;--muted2:#6b6875;--green:#4caf7d;--red:#e05252;--blue:#5b8dee;--serif:'Cormorant Garamond',Georgia,serif;--mono:'DM Mono',monospace;--sans:'Inter',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;-webkit-font-smoothing:antialiased}
+header{border-bottom:1px solid var(--border);background:var(--bg);padding:1.2rem 2.5rem;display:flex;align-items:center;justify-content:space-between}
+.logo-name{font-family:var(--serif);font-size:2rem;font-weight:600;letter-spacing:-0.02em}
+.logo-name em{font-style:italic;color:var(--gold)}
+.logo-name a{text-decoration:none;color:inherit}
+.back-bar{background:var(--surface2);border-bottom:1px solid var(--border2);padding:0.5rem 2.5rem;font-family:var(--mono);font-size:0.6rem;display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap}
+.back-bar a{color:var(--muted);text-decoration:none}.back-bar a:hover{color:var(--gold)}
+.back-bar span{color:var(--border)}
+main{max-width:900px;margin:0 auto;padding:3rem 2.5rem}
+h1{font-family:var(--serif);font-size:2.8rem;font-weight:600;color:var(--text);margin-bottom:0.75rem;line-height:1.1}
+h1 em{font-style:italic;color:var(--gold)}
+.subtitle{font-size:1.05rem;color:var(--muted);line-height:1.7;margin-bottom:2.5rem;max-width:600px}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-bottom:2.5rem}
+.feature{background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem}
+.feature-title{font-family:var(--mono);font-size:0.65rem;font-weight:500;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.4rem}
+.feature-desc{font-size:0.88rem;color:var(--muted);line-height:1.6}
+.cta{display:inline-block;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 2rem;background:var(--gold);color:var(--bg);text-decoration:none;margin-bottom:3rem}
+.cta:hover{background:var(--gold2)}
+.how{margin-bottom:3rem}
+.how h2{font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--text);margin-bottom:1.25rem}
+.step{display:flex;gap:1rem;margin-bottom:1rem;align-items:flex-start}
+.step-num{font-family:var(--mono);font-size:0.7rem;color:var(--gold);border:1px solid var(--gold);width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.step-text{font-size:0.92rem;color:var(--muted);line-height:1.65}
+.step-text strong{color:var(--text)}
+footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:900px;margin:0 auto;font-family:var(--mono);font-size:0.58rem;color:var(--muted2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.5rem}
+.footer-logo{font-family:var(--serif);font-size:1rem;font-weight:600;color:var(--muted)}
+.footer-logo em{font-style:italic;color:var(--gold);opacity:0.7}
+@media(max-width:600px){main{padding:2rem 1rem}h1{font-size:2rem}header{padding:1rem}back-bar{padding:0.5rem 1rem}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo-name"><a href="/">Carry<em>Note</em></a></div>
+  <a href="/" style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);text-decoration:none;border:1px solid var(--border2);padding:0.3rem 0.75rem">← Ir al portal</a>
+</header>
+<div class="back-bar">
+  <a href="/">Inicio</a><span>·</span>
+  <a href="/diagnostico" style="color:var(--gold)">Diagnóstico</a><span>·</span>
+  <a href="/radar">Radar Macro</a><span>·</span>
+  <a href="/analisis">Análisis</a><span>·</span>
+  <a href="/aprender">Aprender</a>
+</div>
+<main>
+  <div style="font-family:var(--mono);font-size:0.58rem;color:var(--gold);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.75rem">▸ Herramienta gratuita · Carry Note</div>
+  <h1>Diagnóstico de cartera <em>con IA</em></h1>
+  <p class="subtitle">Ingresás tus activos y el sistema analiza tu cartera en el contexto macroeconómico actual: Fed, inflación, riesgo país y tipos de cambio en vivo. Obtenés un score, fortalezas, riesgos y sugerencias concretas.</p>
+
+  <a href="/#diagnostico" class="cta">Analizar mi cartera ▸</a>
+
+  <div class="features">
+    <div class="feature">
+      <div class="feature-title">Score de alineación</div>
+      <div class="feature-desc">Tu cartera recibe un puntaje del 1 al 10 según qué tan bien está posicionada para tu perfil de riesgo y horizonte de inversión.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-title">Contexto macro en vivo</div>
+      <div class="feature-desc">El análisis incorpora datos en tiempo real: tasa de la Fed, CPI, riesgo país argentino, dólar blue y MEP al momento del análisis.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-title">Simulación de escenarios</div>
+      <div class="feature-desc">¿Qué pasa con tu cartera si hay una devaluación? ¿Si el Merval cae 20%? ¿Si la Fed sube tasas? Simulá 19 escenarios distintos.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-title">Cartera alternativa</div>
+      <div class="feature-desc">La IA propone una redistribución de activos más acorde a tu perfil, con explicación de cada cambio y cómo ejecutarlo en Argentina.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-title">Historial de scores</div>
+      <div class="feature-desc">Cada análisis queda guardado. Podés ver cómo evolucionó el score de tu cartera en el tiempo y cargar configuraciones anteriores.</div>
+    </div>
+    <div class="feature">
+      <div class="feature-title">Resumen diario</div>
+      <div class="feature-desc">Al abrir la herramienta, ves automáticamente la variación del día de cada activo que tenés, sin necesidad de reanalizarlo.</div>
+    </div>
+  </div>
+
+  <div class="how">
+    <h2>Cómo funciona</h2>
+    <div class="step"><div class="step-num">1</div><div class="step-text"><strong>Ingresás tus activos</strong> — tipo (plazo fijo, CEDEARs, dólares, BTC, acciones), monto y moneda. Podés agregar cualquier combinación.</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><strong>Seleccionás tu perfil</strong> — horizonte de inversión (corto, mediano, largo plazo) y tolerancia al riesgo (conservador, moderado, agresivo).</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><strong>La IA analiza</strong> — Claude (Anthropic) procesa tu cartera con datos macro en vivo y devuelve un diagnóstico completo en segundos.</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text"><strong>Actuás</strong> — podés simular escenarios, pedir una cartera alternativa o compartir el resultado por WhatsApp o LinkedIn.</div></div>
+  </div>
+
+  <div style="background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:2rem">
+    <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);line-height:1.7">⚠ Esta herramienta es de carácter educativo e informativo. No constituye asesoramiento financiero ni recomendación de inversión. Las decisiones son responsabilidad del usuario.</div>
+  </div>
+
+  <a href="/" class="cta">Ir al portal completo ▸</a>
+</main>
+<footer>
+  <div class="footer-logo">Carry<em>Note</em></div>
+  <div>© 2025 · thecarrynote.com · No constituye asesoramiento financiero</div>
+</footer>
+</body>
+</html>
