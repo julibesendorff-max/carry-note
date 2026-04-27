@@ -1971,54 +1971,54 @@ async function loadArgMacro() {
 // Source: cafci.com.ar / byma.com.ar
 const FCI_DATA = [
   // ── MONEY MARKET ──────────────────────────────────────────
-  {cat:'mm', nombre:'Fima Premium (Galicia)', tipo:'Money Market',
+  {cat:'mm', logo:'https://logo.clearbit.com/bancogalicia.com.ar', logo:'https://logo.clearbit.com/bancogalicia.com.ar', nombre:'Fima Premium (Galicia)', tipo:'Money Market',
    composicion:'Cuentas remuneradas, cauciones bursátiles, plazos fijos corto plazo. Liquidez inmediata T+0.',
    benchmark:'BADLAR bancos privados', liquidez:'T+0'},
-  {cat:'mm', nombre:'Pellegrini Money Market (BNA)', tipo:'Money Market',
+  {cat:'mm', logo:'https://logo.clearbit.com/bna.com.ar', nombre:'Pellegrini Money Market (BNA)', tipo:'Money Market',
    composicion:'Plazos fijos, cuentas remuneradas y cauciones. Fondo del Banco Nación. Liquidez T+0.',
    benchmark:'BADLAR bancos públicos', liquidez:'T+0'},
-  {cat:'mm', nombre:'Compass Ahorro (BBVA)', tipo:'Money Market',
+  {cat:'mm', logo:'https://logo.clearbit.com/bbva.com.ar', nombre:'Compass Ahorro (BBVA)', tipo:'Money Market',
    composicion:'Cauciones, plazos fijos y letras de corto plazo. Liquidez inmediata.',
    benchmark:'BADLAR privada', liquidez:'T+0'},
   // ── RENTA FIJA PESOS ──────────────────────────────────────
-  {cat:'pesos', nombre:'Balanz Capital Ahorro', tipo:'Renta Fija $ · T+1',
+  {cat:'pesos', logo:'https://logo.clearbit.com/balanz.com', nombre:'Balanz Capital Ahorro', tipo:'Renta Fija $ · T+1',
    composicion:'Lecaps, Boncaps y letras del Tesoro a tasa fija. Rescate en 24hs hábiles.',
    benchmark:'BADLAR privada', liquidez:'T+1'},
-  {cat:'pesos', nombre:'SBS Ahorro Pesos', tipo:'Renta Fija $',
+  {cat:'pesos', logo:'https://logo.clearbit.com/sbsam.com', nombre:'SBS Ahorro Pesos', tipo:'Renta Fija $',
    composicion:'Lecaps, Boncaps y ON corporativas en pesos. Tasa fija en moneda local.',
    benchmark:'BADLAR privada', liquidez:'T+1'},
-  {cat:'pesos', nombre:'Galicia Renta Fija', tipo:'Renta Fija $',
+  {cat:'pesos', logo:'https://logo.clearbit.com/bancogalicia.com.ar', nombre:'Galicia Renta Fija', tipo:'Renta Fija $',
    composicion:'Instrumentos de deuda pública y privada en pesos. Gestión activa de duration.',
    benchmark:'BADLAR privada', liquidez:'T+2'},
-  {cat:'pesos', nombre:'Pellegrini Renta Fija (BNA)', tipo:'Renta Fija $',
+  {cat:'pesos', logo:'https://logo.clearbit.com/bna.com.ar', nombre:'Pellegrini Renta Fija (BNA)', tipo:'Renta Fija $',
    composicion:'Lecaps, títulos públicos en pesos, ON corporativas. Fondo del Banco Nación.',
    benchmark:'BADLAR bancos públicos', liquidez:'T+1'},
   // ── CER / INFLACIÓN ───────────────────────────────────────
-  {cat:'cer', nombre:'BBVA Consolidar CER', tipo:'Renta Fija CER',
+  {cat:'cer', logo:'https://logo.clearbit.com/bbva.com.ar', nombre:'BBVA Consolidar CER', tipo:'Renta Fija CER',
    composicion:'Boncer, Lecer y bonos ajustados por CER. Cobertura contra inflación. Rescate T+1.',
    benchmark:'CER (inflación INDEC)', liquidez:'T+1'},
-  {cat:'cer', nombre:'Balanz Capital CER', tipo:'Renta Fija CER',
+  {cat:'cer', logo:'https://logo.clearbit.com/balanz.com', nombre:'Balanz Capital CER', tipo:'Renta Fija CER',
    composicion:'Boncer, Lecer y letras ajustadas por inflación. Duration moderada.',
    benchmark:'CER (inflación INDEC)', liquidez:'T+2'},
   // ── RENTA FIJA USD ────────────────────────────────────────
-  {cat:'usd', nombre:'Balanz Capital Ahorro Dólares', tipo:'Renta Fija USD',
+  {cat:'usd', logo:'https://logo.clearbit.com/balanz.com', nombre:'Balanz Capital Ahorro Dólares', tipo:'Renta Fija USD',
    composicion:'ON corporativas hard dollar, bonos soberanos en USD (Globales/Bonares). T+1.',
    benchmark:'Sin benchmark oficial', liquidez:'T+1'},
-  {cat:'usd', nombre:'Quinquela Renta Fija USD', tipo:'Renta Fija USD',
+  {cat:'usd', logo:'https://logo.clearbit.com/quinquelafinance.com.ar', nombre:'Quinquela Renta Fija USD', tipo:'Renta Fija USD',
    composicion:'ON hard dollar de empresas argentinas. Foco en crédito corporativo local en dólares.',
    benchmark:'Sin benchmark oficial', liquidez:'T+2'},
-  {cat:'usd', nombre:'Megainver Renta Mixta', tipo:'Mixto $/USD',
+  {cat:'usd', logo:'https://logo.clearbit.com/megainver.com.ar', nombre:'Megainver Renta Mixta', tipo:'Mixto $/USD',
    composicion:'ON hard dollar, Bopreales, Lecaps y bonos soberanos. Diversificación en monedas.',
    benchmark:'Sin benchmark oficial', liquidez:'T+2'},
   // ── RENTA VARIABLE ────────────────────────────────────────
-  {cat:'rv', nombre:'Cohen Renta Variable AR', tipo:'Renta Variable',
+  {cat:'rv', logo:'https://logo.clearbit.com/cohen.com.ar', nombre:'Cohen Renta Variable AR', tipo:'Renta Variable',
    composicion:'Acciones del Merval: YPF, GGAL, BMA, PAMP, TXAR. Alta exposición al ciclo local.',
    benchmark:'S&P Merval (ARS)', liquidez:'T+2'},
-  {cat:'rv', nombre:'Schroders Acciones Latinoamérica', tipo:'Renta Variable Regional',
+  {cat:'rv', logo:'https://logo.clearbit.com/schroders.com', nombre:'Schroders Acciones Latinoamérica', tipo:'Renta Variable Regional',
    composicion:'CEDEARs y acciones de Brasil, México, Chile, Colombia. Diversificación en USD.',
    benchmark:'MSCI Latin America', liquidez:'T+2'},
   // ── MIXTOS / BALANCEADOS ──────────────────────────────────
-  {cat:'mixto', nombre:'Delta Asset Management Balanceado', tipo:'Balanceado',
+  {cat:'mixto', logo:'https://logo.clearbit.com/deltaasset.com.ar', nombre:'Delta Asset Management Balanceado', tipo:'Balanceado',
    composicion:'Mix de renta fija en pesos, ON hard dollar y acciones argentinas. Gestión activa.',
    benchmark:'Sin benchmark oficial', liquidez:'T+2'},
 ];
@@ -2063,7 +2063,8 @@ function renderFciCard(f, i) {
   var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#a855f7',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
   var color = catColors[f.cat] || 'var(--gold)';
   return '<div style="'+bg+';border-bottom:1px solid var(--border2);padding:0.85rem 1rem;display:grid;grid-template-columns:1fr 1fr 80px;gap:0.5rem 1.5rem">' +
-    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.6rem;margin-bottom:0.2rem">' +
+    '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.75rem;margin-bottom:0.2rem">' +
+      (f.logo ? '<img src="'+f.logo+'" alt="" class="fci-logo" style="width:22px;height:22px;border-radius:4px;object-fit:contain;background:#fff;padding:2px;flex-shrink:0">' : '') +
       '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text)">'+f.nombre+'</span>' +
       '<span style="font-family:var(--mono);font-size:0.5rem;color:'+color+';border:1px solid '+color+';padding:0.1rem 0.35rem;white-space:nowrap">'+f.tipo+'</span>' +
     '</div>' +
@@ -2088,6 +2089,8 @@ function showFCI(e) {
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide everything feed-related
   ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
     const el = document.getElementById(id);
@@ -2173,6 +2176,8 @@ function showAprender(e) {
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel'].forEach(id => {
@@ -2702,6 +2707,8 @@ function showRadar(e) {
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   var wla=document.getElementById('wlAlertsLog'); if(wla) wla.style.display='none';
@@ -2796,6 +2803,8 @@ function showDiag(e) {
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide all content panels
   var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel'];
   toHide.forEach(function(id){
@@ -3601,6 +3610,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var delBtn = e.target.closest ? e.target.closest('.view-del-btn') : null;
     if(delBtn && delBtn.dataset.viewDel) deleteView(delBtn.dataset.viewDel);
   });
+  // Hide broken FCI logos
+  document.addEventListener('error', function(e) {
+    if(e.target && e.target.classList && e.target.classList.contains('fci-logo')) {
+      e.target.style.display = 'none';
+    }
+  }, true);
 });
 
 
