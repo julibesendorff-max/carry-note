@@ -314,6 +314,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- v2.1 -->
 <!-- Microsoft Clarity — reemplazá wiaf0l4905 con tu ID real de clarity.microsoft.com -->
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){
@@ -2441,7 +2442,8 @@ function saveDiagHistory(assets, horizonte, riesgo, score) {
   try {
     var h = JSON.parse(localStorage.getItem('cn_diag_history')||'[]');
     h.unshift({date:new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}),assets,horizonte,riesgo,score});
-    localStorage.setItem('cn_diag_history', JSON.stringify(h.slice(0,5)));
+    localStorage.setItem('cn_diag_history', JSON.stringify(h.slice(0,10)));
+    diagHistoryExpanded = false;
     renderDiagHistory();
   } catch(e) {}
 }
@@ -2467,13 +2469,13 @@ function renderDiagHistory() {
         diff > 0 ? '<span style="color:var(--green);font-size:0.62rem;margin-left:0.3rem">+'+diff+'</span>' :
         diff < 0 ? '<span style="color:var(--red);font-size:0.62rem;margin-left:0.3rem">'+diff+'</span>' :
         '<span style="color:var(--muted2);font-size:0.62rem;margin-left:0.3rem">-</span>';
-      return '<div style="background:var(--surface);border:1px solid var(--border2);border-bottom:none;padding:0.7rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem">' +
+      return '<div style="background:var(--surface);border:1px solid var(--border2);border-bottom:none;padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;gap:0.4rem">' +
         '<div style="flex:1;cursor:pointer" onclick="loadHistoryItem('+i+')">' +
           '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+' · '+x.horizonte+'</div>' +
           '<div style="font-size:0.7rem;color:var(--muted);margin-top:0.1rem">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,55)+'</div>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0">' +
-          '<div style="font-family:var(--mono);font-size:1rem;color:var(--gold);font-weight:600">'+(x.score||'-')+'/10'+diffStr+'</div>' +
+          '<div style="font-family:var(--mono);font-size:0.85rem;color:var(--gold);font-weight:600;white-space:nowrap">'+(x.score||'-')+'/10'+diffStr+'</div>' +
           '<button onclick="removeHistoryItem('+i+')" style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);background:none;border:1px solid var(--border2);cursor:pointer;padding:0.12rem 0.3rem">x</button>' +
         '</div>' +
       '</div>';
