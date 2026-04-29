@@ -314,6 +314,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
+<!-- v2.1 -->
 <!-- Microsoft Clarity — reemplazá wiaf0l4905 con tu ID real de clarity.microsoft.com -->
 <script type="text/javascript">
 (function(c,l,a,r,i,t,y){
@@ -516,7 +517,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <!-- ANÁLISIS SUBSECTION FILTERS -->
     <div id="analisisFilters" style="display:none;margin-bottom:1.5rem;border-bottom:1px solid var(--border2);padding-bottom:1rem">
       <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
-        <button onclick="setAnalisisFilter('all')" id="af-all" class="af-btn af-active">Todo</button>
         <button onclick="setAnalisisFilter('semanal')" id="af-semanal" class="af-btn" style="border-color:var(--gold);color:var(--gold)">◈ Cierre semanal</button>
         <button onclick="setAnalisisFilter('views')" id="af-views" class="af-btn" style="border-color:var(--green);color:var(--green)">▸ Views Técnicos</button>
         <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
@@ -909,7 +909,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <!-- SCORE HISTORY -->
       <div id="diagHistory" style="display:none;margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Historial de scores</div>
-        <div id="diagHistoryList" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+        <div id="diagHistoryList" style="display:flex;flex-direction:column;gap:0"></div>
+        <div id="diagHistoryFooter" style="display:none;border:1px solid var(--border2);padding:0.45rem 1rem;justify-content:space-between;align-items:center;margin-top:0"></div>
       </div>
 
       <div style="margin-bottom:1.5rem">
@@ -1280,13 +1281,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <div class="sb-block">
       <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· abr 2026</span></div>
       <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">3.50–3.75%</span></div>
-      <div class="ind"><span class="ind-n">CPI YoY</span><span class="ind-v dn">3.3%</span></div>
-      <div class="ind"><span class="ind-n">Core CPI YoY</span><span class="ind-v dn">2.6%</span></div>
-      <div class="ind"><span class="ind-n">Core PCE YoY</span><span class="ind-v dn">2.7%</span></div>
-      <div class="ind"><span class="ind-n">Desempleo</span><span class="ind-v neu">4.3%</span></div>
+      <div class="ind"><span class="ind-n">CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">mar</span></span><span class="ind-v dn">3.3%</span></div>
+      <div class="ind"><span class="ind-n">Core CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">mar</span></span><span class="ind-v dn">2.6%</span></div>
+      <div class="ind"><span class="ind-n">Core PCE YoY <span style="font-size:0.5rem;color:var(--muted2)">feb</span></span><span class="ind-v dn">2.7%</span></div>
+      <div class="ind"><span class="ind-n">Desempleo <span style="font-size:0.5rem;color:var(--muted2)">mar</span></span><span class="ind-v neu">4.3%</span></div>
       <div class="ind"><span class="ind-n">PIB Q4 '25</span><span class="ind-v up">+2.4%</span></div>
       <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v up">+18bp</span></div>
-      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.8</span></div>
+      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.0</span></div>
       <div class="chart-box">
         <svg viewBox="0 0 300 80" preserveAspectRatio="none">
           <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></linearGradient></defs>
@@ -1323,7 +1324,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
 
 <footer>
   <div class="footer-logo">Carry<em>Note</em></div>
-  <div>© 2025 · No constituye asesoramiento financiero ni de inversión</div>
+  <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
+    <span>© 2025 · thecarrynote.com</span>
+    <a href="/sponsors" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
+    <span>No constituye asesoramiento financiero</span>
+  </div>
 </footer>
 
 <script>
@@ -1639,11 +1644,17 @@ function doLogin() {
     isEditor=true;
     closeLogin();
     document.getElementById('editorBar').classList.add('visible');
-    document.getElementById('editorPanel').classList.add('visible');
     document.getElementById('loginToggle').style.display='none';
     document.getElementById('feed').classList.add('editor-active');
     if(ANTHRO_KEY){document.getElementById('anthroKey').value=ANTHRO_KEY.slice(0,16)+'••••••••••';document.getElementById('anthroStatus').textContent='✓ Key cargada';document.getElementById('anthroStatus').className='eb-status ok';}
     renderNotes();
+    // Only show editorPanel if Análisis tab is active
+    var analisisActive = document.getElementById('analisisTab') && document.getElementById('analisisTab').classList.contains('active');
+    var analisisTab2Active = document.getElementById('analisisTab2') && document.getElementById('analisisTab2').classList.contains('active');
+    if(analisisActive || analisisTab2Active) {
+      var ep = document.getElementById('editorPanel');
+      if(ep) ep.style.display = 'block';
+    }
     var eb=document.getElementById('viewsEditorBlock'); if(eb&&document.getElementById('viewsPanel')&&document.getElementById('viewsPanel').style.display!=='none') eb.style.display='block';
   } else { document.getElementById('loginErr').textContent='✗ PIN incorrecto. Intentá de nuevo.'; }
 }
@@ -1651,7 +1662,8 @@ function doLogin() {
 function logout(){
   isEditor=false;
   document.getElementById('editorBar').classList.remove('visible');
-  document.getElementById('editorPanel').classList.remove('visible');
+  var ep = document.getElementById('editorPanel');
+  if(ep) ep.style.display = 'none';
   document.getElementById('loginToggle').style.display='block';
   document.getElementById('feed').classList.remove('editor-active');
   renderNotes();
@@ -1713,24 +1725,30 @@ function buildPrompt(topic) {
     '- EUR/USD: ' + eurUsd,
     '- USD/ARS (official): ' + usdArs,
     '',
-    'CURRENT US MACRO DATA (April 2026):',
-    '- Fed Funds Rate: 3.50-3.75% (cut from 5.50% peak in Jul 2024)',
-    '- US CPI YoY: 2.8%',
-    '- US Core PCE YoY: 2.7%',
-    '- US Unemployment: 4.4%',
+    'CURRENT US MACRO DATA (April 29, 2026):',
+    '- Fed Funds Rate: 3.50-3.75% (held for 3rd consecutive meeting Apr 2026; last cut Dec 2025)',
+    '- US CPI YoY: 3.3% (March 2026 - spike driven by Iran war energy shock)',
+    '- US Core CPI YoY: 2.6% (March 2026 - contained)',
+    '- US Core PCE YoY: 2.7% (February 2026)',
+    '- US Unemployment: 4.3% (March 2026)',
     '- US GDP Q4 2025: +2.4% annualized',
-    '- 10Y-2Y Treasury Spread: +18bp (recently un-inverted)',
-    '- ISM Manufacturing: 49.8 (contractionary)',
-    '- Brent Oil: ~$110/barrel (elevated due to Middle East tensions)',
-    '- Gold: all-time highs ~$3,050/oz',
-    '- Bitcoin ATH: $126,000 (October 2025), currently consolidating',
+    '- NFP March 2026: +178,000 (above expectations)',
+    '- 10Y-2Y Treasury Spread: +18bp',
+    '- ISM Manufacturing: 49.0 (contractionary)',
+    '- Brent Oil: ~$110/barrel (elevated - Iran war, Strait of Hormuz disruption)',
+    '- Gold: all-time highs ~$3,300/oz (safe haven demand)',
+    '- KEY EVENT: FOMC Apr 29 held rates 3.5-3.75% (8-4 split vote, historic dissent)',
+    '- KEY EVENT: Iran war started Feb 28 2026, US-Iran ceasefire Apr 8 but conflict ongoing',
+    '- KEY EVENT: Powell likely final meeting as chair (Kevin Warsh nominated successor)',
     '',
     'RECENT KEY EVENTS (post Aug 2025):',
-    '- Fed cut rates 3 times (Sep, Nov, Dec 2025) from 5.25-5.50% to 3.50-3.75%',
-    '- Argentina: Milei won midterms Oct 2025, lifted FX controls (cepo), new IMF deal $20bn',
+    '- Fed cut rates 3 times (Sep, Nov, Dec 2025); held Jan, Mar, Apr 2026 at 3.50-3.75%',
+    '- Iran war: US-Iran conflict started Feb 28 2026, driving oil above $100, CPI spike to 3.3%',
+    '- FOMC Apr 29: historic 8-4 dissent vote, most divided since Oct 1992',
+    '- Fed leadership: Powell likely final meeting, Kevin Warsh nominated as next chair',
+    '- Argentina: Milei lifted FX controls (cepo) late 2025, new IMF deal $20bn',
     '- YPF/Burford: 2nd Circuit Court NY overturned $16bn ruling in favor of Argentina (Mar 27, 2026)',
-    '- US-Israel vs Iran conflict driving oil prices above $100',
-    '- Trump administration: new tariffs reshaping global trade',
+    '- Markets pricing NO rate cuts in 2026, possible hike if Iran inflation persists',
   ].join('\\n');
 
   return 'Write a Carry Note analysis about: "' + topic + '".\n\nContext as of ' + today + ':\n' + marketData + '\n\nIMPORTANT: Use web_search to find the latest data, news and figures about this topic before writing. Complement the data above with fresh search results. Be specific with current figures and take a clear position.';
@@ -1738,7 +1756,9 @@ function buildPrompt(topic) {
 
 // ── GENERATE AI ───────────────────────────────────────────────
 async function genAI(){
-  if(!ANTHRO_KEY){alert('Ingresá tu Anthropic API key primero.');return;}
+  // Reload key in case it was saved after page load
+  if(!ANTHRO_KEY) ANTHRO_KEY = (localStorage.getItem('cn_akey')||'').trim();
+  if(!ANTHRO_KEY){alert('Ingresá tu Anthropic API key en la barra de editor y guardala primero.');return;}
   const topic=document.getElementById('customT').value.trim()||selT;
   const btn=document.getElementById('genBtn');btn.disabled=true;btn.textContent='Generando...';
   const feed=document.getElementById('feed');
@@ -1946,7 +1966,7 @@ async function loadArgMacro() {
     {n:'IPC interanual',    v:'32.6%',     cls:'dn',  note:'Mar 2026 · INDEC'},
     {n:'Acumulado 2026',    v:'9.4%',      cls:'dn',  note:'ene-mar · INDEC'},
     {n:'TAMAR abr.',        v:'26.8% TNA', cls:'neu', note:'REM BCRA'},
-    {n:'Reservas brutas',   v:'USD 45.4B', cls:'up',  note:'BCRA'},
+    {n:'Reservas brutas',   v:'···',       cls:'up',  note:'BCRA · en vivo', id:'arg-reservas'},
     {n:'Compras BCRA 2026', v:'USD 5.8B',  cls:'up',  note:'acum.'},
   ];
 
@@ -1954,7 +1974,7 @@ async function loadArgMacro() {
     '<div class="ind">' +
     '<span class="ind-n">' + d.n +
       (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + d.note + '</span>' : '') +
-    '</span><span class="ind-v ' + d.cls + '">' + d.v + '</span></div>'
+    '</span><span class="ind-v ' + d.cls + '"' + (d.id ? ' id="'+d.id+'"' : '') + '>' + d.v + '</span></div>'
   ).join('') +
   '<div class="ind"><span class="ind-n">Riesgo país <span style="font-size:0.5rem;color:var(--muted2)">EMBI+ JPM</span></span><span class="ind-v dn" id="arg-riesgo">···</span></div>' +
   '<div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border2)">' +
@@ -2019,6 +2039,20 @@ async function loadArgMacro() {
       if(el) { el.textContent = val; el.style.opacity = '0.5'; }
     });
   }
+  // Fetch reservas BCRA en vivo
+  try {
+    var resRes = await fetch('https://api.argentinadatos.com/v1/finanzas/reservas/ultimo');
+    if(resRes.ok) {
+      var resData = await resRes.json();
+      var resVal = resData.valor || resData.value || (Array.isArray(resData) ? resData[resData.length-1]?.valor : null);
+      var resEl = document.getElementById('arg-reservas');
+      if(resEl && resVal) {
+        var resBillones = (resVal / 1000).toFixed(1);
+        resEl.textContent = 'USD ' + resBillones + 'B';
+        resEl.className = 'ind-v up';
+      }
+    }
+  } catch(e) {}
   setTimeout(updateMobMarket, 200);
 }
 
@@ -2172,6 +2206,8 @@ function filterByTag(tag) {
   });
   document.getElementById('fciPanel').style.display = 'none';
   setSidebarVisible(true);
+  var ep = document.getElementById('editorPanel');
+  if(ep) ep.style.display = isEditor ? 'block' : 'none';
   _origFilterByTag(tag);
 }
 
@@ -2405,29 +2441,68 @@ function saveDiagHistory(assets, horizonte, riesgo, score) {
   try {
     var h = JSON.parse(localStorage.getItem('cn_diag_history')||'[]');
     h.unshift({date:new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}),assets,horizonte,riesgo,score});
-    localStorage.setItem('cn_diag_history', JSON.stringify(h.slice(0,5)));
+    localStorage.setItem('cn_diag_history', JSON.stringify(h.slice(0,10)));
+    diagHistoryExpanded = false;
     renderDiagHistory();
   } catch(e) {}
 }
 
+var diagHistoryExpanded = false;
+
 function renderDiagHistory() {
   try {
     var h = JSON.parse(localStorage.getItem('cn_diag_history')||'[]');
-    var el=document.getElementById('diagHistory'), list=document.getElementById('diagHistoryList');
-    if(!el||!list||!h.length) return;
-    el.style.display='block';
-    list.innerHTML=h.map(function(x,i){
+    var el = document.getElementById('diagHistory');
+    var list = document.getElementById('diagHistoryList');
+    var footer = document.getElementById('diagHistoryFooter');
+    if(!el || !list) return;
+    if(!h.length) { el.style.display = 'none'; return; }
+    el.style.display = 'block';
+    var showCount = diagHistoryExpanded ? h.length : Math.min(3, h.length);
+    // Render rows
+    list.innerHTML = h.slice(0, showCount).map(function(x, i) {
       var scoreCurrent = x.score ? parseInt(x.score) : null;
       var scorePrev = (i < h.length-1 && h[i+1].score) ? parseInt(h[i+1].score) : null;
       var diff = (scoreCurrent !== null && scorePrev !== null) ? scoreCurrent - scorePrev : null;
-      var diffStr = diff === null ? '' : diff > 0 ? '<span style="color:var(--green);font-size:0.65rem;margin-left:0.4rem">▲+'+diff+'</span>' : diff < 0 ? '<span style="color:var(--red);font-size:0.65rem;margin-left:0.4rem">▼'+diff+'</span>' : '<span style="color:var(--muted2);font-size:0.65rem;margin-left:0.4rem">→</span>';
-      return '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:0" onclick="loadHistoryItem('+i+')">' +
-        '<div><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+' · horizonte '+x.horizonte+'</div>' +
-        '<div style="font-size:0.72rem;color:var(--muted);margin-top:0.15rem">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,65)+'</div></div>' +
-        '<div style="font-family:var(--mono);font-size:1.1rem;color:var(--gold);font-weight:600;text-align:right">'+(x.score||'—')+'/10'+diffStr+'</div></div>';
+      var diffStr = diff === null ? '' :
+        diff > 0 ? '<span style="color:var(--green);font-size:0.62rem;margin-left:0.3rem">+'+diff+'</span>' :
+        diff < 0 ? '<span style="color:var(--red);font-size:0.62rem;margin-left:0.3rem">'+diff+'</span>' :
+        '<span style="color:var(--muted2);font-size:0.62rem;margin-left:0.3rem">-</span>';
+      return '<div style="background:var(--surface);border:1px solid var(--border2);border-bottom:none;padding:0.6rem 0.75rem;display:flex;justify-content:space-between;align-items:center;gap:0.4rem">' +
+        '<div style="flex:1;cursor:pointer" onclick="loadHistoryItem('+i+')">' +
+          '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+' · '+x.horizonte+'</div>' +
+          '<div style="font-size:0.7rem;color:var(--muted);margin-top:0.1rem">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,55)+'</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0">' +
+          '<div style="font-family:var(--mono);font-size:0.85rem;color:var(--gold);font-weight:600;white-space:nowrap">'+(x.score||'-')+'/10'+diffStr+'</div>' +
+          '<button onclick="removeHistoryItem('+i+')" style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);background:none;border:1px solid var(--border2);cursor:pointer;padding:0.12rem 0.3rem">x</button>' +
+        '</div>' +
+      '</div>';
     }).join('');
+    // Render footer separately
+    if(footer) {
+      footer.style.display = 'flex';
+      footer.innerHTML =
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+h.length+' guardados</span>' +
+        (h.length > 3 ? '<button onclick="toggleDiagHistory()" style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);background:none;border:none;cursor:pointer">'+(diagHistoryExpanded?'Ver menos ▴':'Ver todos ('+h.length+') ▸')+'</button>' : '');
+    }
+  } catch(e) { console.error('renderDiagHistory error:', e); }
+}
+
+function toggleDiagHistory() {
+  diagHistoryExpanded = !diagHistoryExpanded;
+  renderDiagHistory();
+}
+
+function removeHistoryItem(idx) {
+  try {
+    var h = JSON.parse(localStorage.getItem('cn_diag_history')||'[]');
+    h.splice(idx, 1);
+    localStorage.setItem('cn_diag_history', JSON.stringify(h));
+    renderDiagHistory();
   } catch(e) {}
 }
+
 
 function loadHistoryItem(idx) {
   try {
@@ -2863,7 +2938,7 @@ function showDiag(e) {
   ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide all content panels
-  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel'];
+  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel'];
   toHide.forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
@@ -3462,9 +3537,11 @@ function calcFearGreed() {
   var score = Math.round((vixScore * 0.30) + (spxScore * 0.25) + (btcScore * 0.15) + (tltScore * 0.15) + (gldScore * 0.15));
 
   var label, color, bg;
-  if(score >= 80)       { label = 'Codicia extrema'; color = '#4caf7d'; bg = 'rgba(76,175,125,0.12)'; }
+  if(score >= 75)       { label = 'Codicia extrema'; color = '#4caf7d'; bg = 'rgba(76,175,125,0.12)'; }
   else if(score >= 60)  { label = 'Codicia';          color = '#8bc34a'; bg = 'rgba(139,195,74,0.10)'; }
+  else if(score >= 55)  { label = 'Leve codicia';     color = '#a8c34a'; bg = 'rgba(168,195,74,0.08)'; }
   else if(score >= 45)  { label = 'Neutral';           color = '#c9a84c'; bg = 'rgba(201,168,76,0.10)'; }
+  else if(score >= 40)  { label = 'Leve miedo';        color = '#e0962b'; bg = 'rgba(224,150,43,0.08)'; }
   else if(score >= 25)  { label = 'Miedo';             color = '#ff9800'; bg = 'rgba(255,152,0,0.10)'; }
   else                  { label = 'Miedo extremo';    color = '#e05252'; bg = 'rgba(224,82,82,0.12)'; }
 
@@ -3681,7 +3758,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function showAnalisis(e) {
   e && e.preventDefault();
   // Hide special panels
-  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','editorPanel'].forEach(function(id){
+  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   // Show feed
@@ -3697,8 +3774,11 @@ function showAnalisis(e) {
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   var tab = document.getElementById('analisisTab');
   if(tab) tab.classList.add('active');
+  // Show editor panel if in editor mode
+  var ep = document.getElementById('editorPanel');
+  if(ep) ep.style.display = isEditor ? 'block' : 'none';
   // Reset to all
-  setAnalisisFilter(currentAnalisisFilter || 'all');
+  setAnalisisFilter(currentAnalisisFilter || 'macro_geo');
 }
 
 var currentAnalisisFilter = 'all';
@@ -3706,7 +3786,7 @@ var currentAnalisisFilter = 'all';
 function setAnalisisFilter(filter) {
   currentAnalisisFilter = filter;
   // Update button styles
-  ['all','semanal','views','macro_geo','markets','latam'].forEach(function(f) {
+  ['semanal','views','macro_geo','markets','latam'].forEach(function(f) {
     var btn = document.getElementById('af-' + f);
     if(btn) {
       if(f === filter) btn.classList.add('af-active');
