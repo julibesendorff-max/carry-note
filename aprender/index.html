@@ -909,7 +909,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <!-- SCORE HISTORY -->
       <div id="diagHistory" style="display:none;margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Historial de scores</div>
-        <div id="diagHistoryList" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+        <div id="diagHistoryList" style="display:flex;flex-direction:column;gap:0"></div>
+        <div id="diagHistoryFooter" style="display:none;border:1px solid var(--border2);padding:0.45rem 1rem;justify-content:space-between;align-items:center;margin-top:0"></div>
       </div>
 
       <div style="margin-bottom:1.5rem">
@@ -2452,33 +2453,39 @@ function renderDiagHistory() {
     var h = JSON.parse(localStorage.getItem('cn_diag_history')||'[]');
     var el = document.getElementById('diagHistory');
     var list = document.getElementById('diagHistoryList');
-    if(!el || !list || !h.length) return;
+    var footer = document.getElementById('diagHistoryFooter');
+    if(!el || !list) return;
+    if(!h.length) { el.style.display = 'none'; return; }
     el.style.display = 'block';
     var showCount = diagHistoryExpanded ? h.length : Math.min(3, h.length);
+    // Render rows
     list.innerHTML = h.slice(0, showCount).map(function(x, i) {
       var scoreCurrent = x.score ? parseInt(x.score) : null;
       var scorePrev = (i < h.length-1 && h[i+1].score) ? parseInt(h[i+1].score) : null;
       var diff = (scoreCurrent !== null && scorePrev !== null) ? scoreCurrent - scorePrev : null;
-      var diffStr = diff === null ? '' : diff > 0 ?
-        '<span style="color:var(--green);font-size:0.65rem;margin-left:0.4rem">+'+diff+'</span>' :
-        diff < 0 ? '<span style="color:var(--red);font-size:0.65rem;margin-left:0.4rem">'+diff+'</span>' :
-        '<span style="color:var(--muted2);font-size:0.65rem;margin-left:0.4rem">-</span>';
-      return '<div style="background:var(--surface);border:1px solid var(--border2);border-bottom:none;padding:0.75rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem">' +
+      var diffStr = diff === null ? '' :
+        diff > 0 ? '<span style="color:var(--green);font-size:0.62rem;margin-left:0.3rem">+'+diff+'</span>' :
+        diff < 0 ? '<span style="color:var(--red);font-size:0.62rem;margin-left:0.3rem">'+diff+'</span>' :
+        '<span style="color:var(--muted2);font-size:0.62rem;margin-left:0.3rem">-</span>';
+      return '<div style="background:var(--surface);border:1px solid var(--border2);border-bottom:none;padding:0.7rem 1rem;display:flex;justify-content:space-between;align-items:center;gap:0.5rem">' +
         '<div style="flex:1;cursor:pointer" onclick="loadHistoryItem('+i+')">' +
-          '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+' · '+x.horizonte+'</div>' +
-          '<div style="font-size:0.72rem;color:var(--muted);margin-top:0.15rem">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,60)+'</div>' +
+          '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+x.date+' · '+x.riesgo+' · '+x.horizonte+'</div>' +
+          '<div style="font-size:0.7rem;color:var(--muted);margin-top:0.1rem">'+x.assets.map(function(a){return a.tipo;}).join(', ').slice(0,55)+'</div>' +
         '</div>' +
-        '<div style="display:flex;align-items:center;gap:0.6rem;flex-shrink:0">' +
-          '<div style="font-family:var(--mono);font-size:1.1rem;color:var(--gold);font-weight:600">'+(x.score||'-')+'/10'+diffStr+'</div>' +
-          '<button onclick="removeHistoryItem('+i+')" style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);background:none;border:1px solid var(--border2);cursor:pointer;padding:0.15rem 0.35rem">x</button>' +
+        '<div style="display:flex;align-items:center;gap:0.5rem;flex-shrink:0">' +
+          '<div style="font-family:var(--mono);font-size:1rem;color:var(--gold);font-weight:600">'+(x.score||'-')+'/10'+diffStr+'</div>' +
+          '<button onclick="removeHistoryItem('+i+')" style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);background:none;border:1px solid var(--border2);cursor:pointer;padding:0.12rem 0.3rem">x</button>' +
         '</div>' +
       '</div>';
-    }).join('') +
-    '<div style="border:1px solid var(--border2);padding:0.45rem 1rem;display:flex;justify-content:space-between;align-items:center">' +
-      '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+h.length+' guardados</span>' +
-      (h.length > 3 ? '<button onclick="toggleDiagHistory()" style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);background:none;border:none;cursor:pointer">'+(diagHistoryExpanded?'Ver menos':'Ver todos ('+h.length+')')+'</button>' : '') +
-    '</div>';
-  } catch(e) {}
+    }).join('');
+    // Render footer separately
+    if(footer) {
+      footer.style.display = 'flex';
+      footer.innerHTML =
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+h.length+' guardados</span>' +
+        (h.length > 3 ? '<button onclick="toggleDiagHistory()" style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);background:none;border:none;cursor:pointer">'+(diagHistoryExpanded?'Ver menos ▴':'Ver todos ('+h.length+') ▸')+'</button>' : '');
+    }
+  } catch(e) { console.error('renderDiagHistory error:', e); }
 }
 
 function toggleDiagHistory() {
