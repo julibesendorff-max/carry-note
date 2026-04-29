@@ -292,9 +292,29 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .feed-header{margin-bottom:0.85rem}
   .feed-count{display:none}
 
-  /* ── DIAG: fix grids ── */
-  #diagPanel [style*="grid-template-columns:1fr 1fr"]{display:flex !important;flex-direction:column !important}
-  #diagAssets > div{grid-template-columns:1fr 90px 70px 28px !important;font-size:0.65rem}
+  /* ── DIAG: mobile fixes ── */
+  #diagPanel{padding:0 !important}
+  #diagPanel [style*="grid-template-columns:1fr 1fr"]{display:flex !important;flex-direction:column !important;gap:0.75rem !important}
+  #diagAssets > div{grid-template-columns:1fr 80px 60px 26px !important;font-size:0.62rem;gap:0.3rem !important}
+  #diagPanel select,#diagPanel input[type="number"]{font-size:0.7rem !important;padding:0.45rem 0.5rem !important}
+  #diagPanel button#diagBtn{font-size:0.7rem !important;padding:0.75rem !important}
+  #diagPanel .dscore{flex-direction:column !important;gap:0.4rem !important;align-items:flex-start !important}
+  #diagPanel .ds{padding:1rem !important}
+  #diagPanel .ds p,#diagPanel .ds ul{font-size:0.88rem !important;line-height:1.75 !important}
+  #diagPanel .ds h3{font-size:0.65rem !important}
+  /* Daily summary */
+  #diagDailySummary > div > div{grid-template-columns:1fr auto !important}
+  /* Scenarios */
+  .scen-btn{font-size:0.58rem !important;padding:0.28rem 0.55rem !important}
+  /* Action buttons */
+  #diagActions{gap:0.4rem !important}
+  #diagActions button{font-size:0.56rem !important;padding:0.4rem 0.7rem !important}
+  /* History */
+  #diagHistory{margin-bottom:1rem !important}
+  #diagHistoryList > div{padding:0.5rem 0.6rem !important}
+  /* Comparison & scenario results */
+  .comp-row{grid-template-columns:1fr !important;gap:0.4rem !important}
+  .comp-label{min-width:unset !important}
 
   /* ── LOADING ── */
   .loading-card{padding:1.25rem 0}
@@ -311,6 +331,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .nav-strip a{padding:0.5rem 0.75rem;font-size:0.52rem}
   .note-title{font-size:1.35rem}
   .ticker-inner{gap:1rem}
+  /* Asset rows: stack tipo on top, monto/moneda/remove below */
+  #diagAssets > div{grid-template-columns:1fr 70px 55px 24px !important;font-size:0.6rem !important;gap:0.2rem !important}
+  #diagPanel select{font-size:0.65rem !important}
+  .scen-btn{font-size:0.54rem !important;padding:0.25rem 0.45rem !important}
 }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
