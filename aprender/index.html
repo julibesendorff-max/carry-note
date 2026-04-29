@@ -517,7 +517,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <!-- ANÁLISIS SUBSECTION FILTERS -->
     <div id="analisisFilters" style="display:none;margin-bottom:1.5rem;border-bottom:1px solid var(--border2);padding-bottom:1rem">
       <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
-        <button onclick="setAnalisisFilter('all')" id="af-all" class="af-btn af-active">Todo</button>
         <button onclick="setAnalisisFilter('semanal')" id="af-semanal" class="af-btn" style="border-color:var(--gold);color:var(--gold)">◈ Cierre semanal</button>
         <button onclick="setAnalisisFilter('views')" id="af-views" class="af-btn" style="border-color:var(--green);color:var(--green)">▸ Views Técnicos</button>
         <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
@@ -3779,7 +3778,7 @@ function showAnalisis(e) {
   var ep = document.getElementById('editorPanel');
   if(ep) ep.style.display = isEditor ? 'block' : 'none';
   // Reset to all
-  setAnalisisFilter(currentAnalisisFilter || 'all');
+  setAnalisisFilter(currentAnalisisFilter || 'macro_geo');
 }
 
 var currentAnalisisFilter = 'all';
@@ -3787,7 +3786,7 @@ var currentAnalisisFilter = 'all';
 function setAnalisisFilter(filter) {
   currentAnalisisFilter = filter;
   // Update button styles
-  ['all','semanal','views','macro_geo','markets','latam'].forEach(function(f) {
+  ['semanal','views','macro_geo','markets','latam'].forEach(function(f) {
     var btn = document.getElementById('af-' + f);
     if(btn) {
       if(f === filter) btn.classList.add('af-active');
