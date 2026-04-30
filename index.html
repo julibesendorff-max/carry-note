@@ -2730,7 +2730,7 @@ function downloadPDF() {
 
   var printWin = window.open('', '_blank');
   printWin.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <title>Diagnóstico Carry Note · ${today}</title>
+  <title>Diagn\u00f3stico Carry Note \u00b7 ${today}</title>
   <style>
     body{font-family:Georgia,serif;max-width:750px;margin:40px auto;color:#1a1a1a;background:#fff;padding:0 20px}
     h1{font-size:2rem;margin-bottom:0.25rem;color:#1a1a1a}
@@ -2751,9 +2751,9 @@ function downloadPDF() {
     @media print{body{margin:20px}}
   </style>
 </head><body>
-  <div class="tag">▸ CARRY NOTE · DIAGNÓSTICO DE CARTERA</div>
-  <h1>Diagnóstico <span class="gold">macroeconómico</span></h1>
-  <p class="mono" style="color:#888;margin-bottom:1.5rem">${today} · Perfil ${riesgo} · Horizonte ${horizonte}</p>
+  <div class="tag">\u25b8 CARRY NOTE \u00b7 DIAGN\u00d3STICO DE CARTERA</div>
+  <h1>Diagn\u00f3stico <span class="gold">macroecon\u00f3mico</span></h1>
+  <p class="mono" style="color:#888;margin-bottom:1.5rem">${today} \u00b7 Perfil ${riesgo} \u00b7 Horizonte ${horizonte}</p>
   <hr class="divider">
   <div class="section">
     <h2>Cartera analizada</h2>
@@ -2761,18 +2761,18 @@ function downloadPDF() {
   </div>
   <div class="score-box">
     <div>
-      <div style="font-family:'Courier New',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.3rem">Puntuación</div>
-      <div style="font-size:0.9rem;color:#555">Alineación con perfil ${riesgo}</div>
+      <div style="font-family:'Courier New',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.3rem">Puntuaci\u00f3n</div>
+      <div style="font-size:0.9rem;color:#555">Alineaci\u00f3n con perfil ${riesgo}</div>
     </div>
     <div class="score-num">${score}</div>
   </div>
   <div class="section result-content">
-    <h2>Análisis completo</h2>
+    <h2>An\u00e1lisis completo</h2>
     ${resultEl.innerHTML.replace(/<style>.*?<\/style>/s,'').replace(/class="ds[^"]*"/g,'').replace(/class="dscore[^"]*"/g,'')}
   </div>
-  <div class="disclaimer">⚠ Este diagnóstico es de carácter educativo e informativo. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del inversor.</div>
+  <div class="disclaimer">\u26a0 Este diagn\u00f3stico es de car\u00e1cter educativo e informativo. No constituye asesoramiento financiero, recomendaci\u00f3n de inversi\u00f3n ni oferta de compra o venta de ning\u00fan activo. Las decisiones de inversi\u00f3n son responsabilidad exclusiva del inversor.</div>
   <div class="footer">
-    <span>Carry Note · thecarrynote.com</span>
+    <span>Carry Note \u00b7 thecarrynote.com</span>
     <span>thecarrynote.com</span>
   </div>
   <script>window.onload=function(){window.print();}<\/script>
@@ -2783,23 +2783,23 @@ function downloadPDF() {
     <!-- Header -->
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
       <div>
-        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
+        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note \u00b7 Diagn\u00f3stico</div>
         <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text)">Cartera alternativa sugerida</div>
       </div>
-      <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">✕</button>
+      <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">\u2715</button>
     </div>
     <!-- Content -->
     <div id="cartModalContent" style="padding:1.25rem;max-height:60vh;overflow-y:auto"></div>
     <!-- Actions -->
     <div style="display:flex;gap:0.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border2);flex-wrap:wrap">
-      <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Descargar PDF</button>
-      <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp ↗</button>
-      <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
+      <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">\u2193 Descargar PDF</button>
+      <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp \u2197</button>
+      <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn \u2197</button>
       <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
     </div>
     <!-- Disclaimer -->
     <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
-      ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
+      \u26a0 Car\u00e1cter educativo e informativo. No constituye recomendaci\u00f3n de inversi\u00f3n ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
     </div>
   </div>
 </div>
@@ -3523,21 +3523,20 @@ function exportCartPDF() {
   if(!content) return;
   var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
   var printWin = window.open('', '_blank');
-  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cartera Alternativa · Carry Note</title>' +
+  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cartera Alternativa \u00b7 Carry Note</title>' +
     '<style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;color:#1a1a1a;padding:0 20px}' +
     'h1{font-size:1.6rem;margin-bottom:0.5rem}' +
     '.mono{font-family:Courier New,monospace;font-size:0.8rem}' +
     'p{line-height:1.75;margin-bottom:0.75rem;font-size:0.92rem}' +
     '.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #ddd;font-family:Courier New,monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}' +
     '.disclaimer{background:#fff8f8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:Courier New,monospace;font-size:0.72rem;color:#666;line-height:1.6}' +
-    '</style>
-</head><body>' +
-    '<div class="mono" style="color:#888;margin-bottom:0.5rem">▸ CARRY NOTE · CARTERA ALTERNATIVA</div>' +
+    '</style></head><body>' +
+    '<div class="mono" style="color:#888;margin-bottom:0.5rem">\u25b8 CARRY NOTE \u00b7 CARTERA ALTERNATIVA</div>' +
     '<h1>Cartera alternativa <span style="color:#b8860b">sugerida</span></h1>' +
     '<p class="mono" style="color:#888">' + today + '</p><hr style="border:none;border-top:1px solid #ddd;margin:1rem 0">' +
     content.innerHTML +
-    '<div class="disclaimer">⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero.</div>' +
-    '<div class="footer"><span>Carry Note · thecarrynote.com</span><span>' + today + '</span></div>' +
+    '<div class="disclaimer">\u26a0 Car\u00e1cter educativo e informativo. No constituye recomendaci\u00f3n de inversi\u00f3n ni asesoramiento financiero.</div>' +
+    '<div class="footer"><span>Carry Note \u00b7 thecarrynote.com</span><span>' + today + '</span></div>' +
     '<script>window.onload=function(){window.print();}<\/script>' +
     '</body></html>');
   printWin.document.close();
@@ -3631,7 +3630,7 @@ function renderSignalLog() {
   el.innerHTML = radarSignalLog.slice(0,10).map(function(s){
     return '<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border2)">' +
       '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);white-space:nowrap;margin-top:2px">' + s.time + '</span>' +
-      '<span style="font-size:0.58rem;margin-top:3px" style="color:' + s.color + '">●</span>' +
+      '<span style="font-size:0.58rem;margin-top:3px" style="color:' + s.color + '">\u25cf</span>' +
       '<div><div style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + ';font-weight:500">' + s.name + '</div>' +
       '<div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);line-height:1.5">' + s.desc + '</div></div>' +
     '</div>';
@@ -3640,9 +3639,9 @@ function renderSignalLog() {
 
 // ── SIGNAL INTENSITY ──────────────────────────────────────
 function getSignalIntensity(avgAbs) {
-  if(avgAbs >= 2.0) return {label:'Fuerte',  color:'#e05252', dot:'●●●'};
-  if(avgAbs >= 0.8) return {label:'Moderada',color:'#c9a84c', dot:'●●○'};
-  return              {label:'Débil',    color:'#6b6875', dot:'●○○'};
+  if(avgAbs >= 2.0) return {label:'Fuerte',  color:'#e05252', dot:'\u25cf\u25cf\u25cf'};
+  if(avgAbs >= 0.8) return {label:'Moderada',color:'#c9a84c', dot:'\u25cf\u25cf\u25cb'};
+  return              {label:'D\u00e9bil',    color:'#6b6875', dot:'\u25cf\u25cb\u25cb'};
 }
 
 
@@ -3652,14 +3651,14 @@ var MOB_ASSETS = [
   {id:'ndx',  label:'QQQ',       desc:'Nasdaq',     tickerId:'ndx',  pmId:'pm-qqq'},
   {id:'btc',  label:'BTC',       desc:'Bitcoin',    tickerId:'btc'},
   {id:'gld',  label:'GOLD',      desc:'Oro ETF',    tickerId:'gld'},
-  {id:'wti',  label:'WTI',       desc:'Petróleo',   tickerId:'wti'},
+  {id:'wti',  label:'WTI',       desc:'Petr\u00f3leo',   tickerId:'wti'},
   {id:'tlt',  label:'TLT',       desc:'Bonos 20Y',  tickerId:'tlt'},
   {id:'vix',  label:'VIX ETF',   desc:'Volatilidad',tickerId:'vix'},
   {id:'nvda', label:'NVDA',      desc:'NVIDIA',     tickerId:'nvda', pmId:'pm-nvda'},
   {id:'tsla', label:'TSLA',      desc:'Tesla',      tickerId:'tsla', pmId:'pm-tsla'},
   {id:'ypf',  label:'YPF',       desc:'YPF',        tickerId:'ypf'},
   {id:'ggal', label:'GGAL',      desc:'Galicia',    tickerId:'ggal'},
-  {id:'rp',   label:'Riesgo país',desc:'EMBI+',     special:'rp'},
+  {id:'rp',   label:'Riesgo pa\u00eds',desc:'EMBI+',     special:'rp'},
 ];
 
 var MOB_DEFAULT = ['spx','ndx','btc','rp'];
@@ -3722,8 +3721,8 @@ function renderMobCards() {
     var asset = MOB_ASSETS.find(function(a){ return a.id === id; });
     if(!asset) return '';
     return '<div class="mob-card" id="mob-card-'+id+'">' +
-      '<div class="mob-card-lbl">'+asset.label+' · '+asset.desc+'</div>' +
-      '<div class="mob-card-price" id="mob-'+id+'-price">···</div>' +
+      '<div class="mob-card-lbl">'+asset.label+' \u00b7 '+asset.desc+'</div>' +
+      '<div class="mob-card-price" id="mob-'+id+'-price">\u00b7\u00b7\u00b7</div>' +
       '<div class="mob-card-chg neu" id="mob-'+id+'-chg"></div>' +
       (asset.pmId ? '<div class="mob-card-pm" id="mob-'+id+'-pm" style="display:none"></div>' : '') +
     '</div>';
@@ -3744,14 +3743,14 @@ function updateMobMarket() {
 
     if(asset.special === 'rp') {
       var rpEl = document.getElementById('arg-riesgo');
-      if(priceEl && rpEl) priceEl.textContent = rpEl.textContent.trim() || '—';
-      if(chgEl) { chgEl.textContent = 'EMBI+ · JPMorgan'; chgEl.className = 'mob-card-chg neu'; }
+      if(priceEl && rpEl) priceEl.textContent = rpEl.textContent.trim() || '\u2014';
+      if(chgEl) { chgEl.textContent = 'EMBI+ \u00b7 JPMorgan'; chgEl.className = 'mob-card-chg neu'; }
       return;
     }
 
     var tickerPrice = document.getElementById('t-' + asset.tickerId);
     var tickerChg   = document.getElementById('t-' + asset.tickerId + '-c');
-    if(priceEl && tickerPrice) priceEl.textContent = tickerPrice.textContent.trim() || '—';
+    if(priceEl && tickerPrice) priceEl.textContent = tickerPrice.textContent.trim() || '\u2014';
     if(chgEl && tickerChg) {
       chgEl.textContent = tickerChg.textContent.trim() || '';
       chgEl.className = 'mob-card-chg ' + (tickerChg.className.includes('t-up') ? 'up' : tickerChg.className.includes('t-dn') ? 'dn' : 'neu');
@@ -3762,8 +3761,8 @@ function updateMobMarket() {
       var pmPrice = document.getElementById(asset.pmId);
       var pmChg   = document.getElementById(asset.pmId + '-c');
       var pmEl    = document.getElementById('mob-'+id+'-pm');
-      if(pmEl && pmPrice && pmPrice.textContent.trim() && pmPrice.textContent.trim() !== '—') {
-        pmEl.textContent = '⬤ Pre/After: ' + pmPrice.textContent.trim() + ' ' + (pmChg ? pmChg.textContent.trim() : '');
+      if(pmEl && pmPrice && pmPrice.textContent.trim() && pmPrice.textContent.trim() !== '\u2014') {
+        pmEl.textContent = '\u2b24 Pre/After: ' + pmPrice.textContent.trim() + ' ' + (pmChg ? pmChg.textContent.trim() : '');
         pmEl.style.display = 'block';
       } else if(pmEl) {
         pmEl.style.display = 'none';
@@ -3775,7 +3774,7 @@ function updateMobMarket() {
   [['arg-oficial','mob-fx-oficial'],['arg-blue','mob-fx-blue'],['arg-mep','mob-fx-mep'],['arg-ccl','mob-fx-ccl']].forEach(function(p){
     var src = document.getElementById(p[0]);
     var dst = document.getElementById(p[1]);
-    if(src && dst) dst.innerHTML = src.innerHTML || '—';
+    if(src && dst) dst.innerHTML = src.innerHTML || '\u2014';
   });
 }
 
@@ -3905,7 +3904,7 @@ async function loadViews() {
 
 function buildViewCard(v) {
   var biasColor = v.bias==='compra' ? 'var(--green)' : v.bias==='venta' ? 'var(--red)' : 'var(--muted)';
-  var biasLabel = v.bias==='compra' ? '▲ COMPRA' : v.bias==='venta' ? '▼ VENTA' : '→ NEUTRAL';
+  var biasLabel = v.bias==='compra' ? '\u25b2 COMPRA' : v.bias==='venta' ? '\u25bc VENTA' : '\u2192 NEUTRAL';
   var mktLabel  = v.market==='eeuu' ? 'EEUU' : 'ARGENTINA';
   var mktColor  = v.market==='eeuu' ? 'var(--blue)' : '#a855f7';
   var tfLabel   = {corto:'Corto plazo',medio:'Mediano plazo',largo:'Largo plazo'}[v.timeframe] || v.timeframe;
@@ -3919,12 +3918,12 @@ function buildViewCard(v) {
       '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto">'+ds+'</span>' +
     '</div>' +
     '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75">'+v.body+'</div>' +
-    (isEditor ? '<button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer;margin-top:0.75rem;letter-spacing:0.06em">✕ Eliminar</button>' : '') +
+    (isEditor ? '<button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer;margin-top:0.75rem;letter-spacing:0.06em">\u2715 Eliminar</button>' : '') +
   '</div>';
 }
 
 async function deleteView(id) {
-  if(!confirm('¿Eliminar este view?')) return;
+  if(!confirm('\u00bfEliminar este view?')) return;
   await sbFetch('/rest/v1/views?id=eq.'+id, {method:'DELETE'});
   loadViews();
 }
@@ -3970,7 +3969,7 @@ async function generateView() {
   var ypfPct  = getTickerChange('ypf');
   var ggalPct = getTickerChange('ggal');
   var rpEl    = document.getElementById('arg-riesgo');
-  var rpStr   = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : null;
+  var rpStr   = rpEl && rpEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? rpEl.textContent.trim() : null;
 
   var mktLines = ['Contexto de mercado hoy ('+today+'):', '- '+priceStr];
   if(spyPct !== null)  mktLines.push('- SPY (S&P 500): '+(spyPct>=0?'+':'')+spyPct.toFixed(2)+'% hoy');
@@ -4028,7 +4027,7 @@ async function publishView() {
   var body   = document.getElementById('viewBody').value.trim();
   var statusEl = document.getElementById('viewStatus');
 
-  if(!ticker || !body) { alert('Completá ticker y análisis.'); return; }
+  if(!ticker || !body) { alert('Complet\u00e1 ticker y an\u00e1lisis.'); return; }
 
   try {
     var res = await sbFetch('/rest/v1/views', {
@@ -4039,12 +4038,12 @@ async function publishView() {
     if(!res.ok) throw new Error('Error al guardar');
     document.getElementById('viewTicker').value = '';
     document.getElementById('viewBody').value = '';
-    statusEl.textContent = '✓ View publicado.';
+    statusEl.textContent = '\u2713 View publicado.';
     statusEl.style.color = 'var(--green)';
     statusEl.style.display = 'block';
     loadViews();
   } catch(err) {
-    statusEl.textContent = '✗ ' + err.message;
+    statusEl.textContent = '\u2717 ' + err.message;
     statusEl.style.color = 'var(--red)';
     statusEl.style.display = 'block';
   }
@@ -4057,7 +4056,7 @@ function toggleMobWidget() {
   if(!body) return;
   var open = body.style.display !== 'none';
   body.style.display = open ? 'none' : 'block';
-  if(arrow) arrow.textContent = open ? '▸' : '▾';
+  if(arrow) arrow.textContent = open ? '\u25b8' : '\u25be';
   if(!open) { updateMobMarket(); }
 }
 
@@ -4071,36 +4070,36 @@ function setSidebarVisible(visible) {
 // ── RADAR × CARTERA CROSS ALERTS ──────────────────────────────────────
 var ASSET_RADAR_MAP = {
   // Acciones EEUU / ETFs
-  'sp500':        ['Risk-on global','Risk-off global','Mercado en caída','Rally amplio','Semis liderando','Tech rezagado','Divergencia tech/value'],
+  'sp500':        ['Risk-on global','Risk-off global','Mercado en ca\u00edda','Rally amplio','Semis liderando','Tech rezagado','Divergencia tech/value'],
   'nasdaq':       ['Risk-on global','Risk-off global','Semis liderando','Tech rezagado','Divergencia tech/value','Crypto risk-on'],
-  'etf_eeuu':     ['Risk-on global','Risk-off global','Mercado en caída','Rally amplio'],
-  'acciones_eeuu':['Risk-on global','Mercado en caída','Rally amplio'],
+  'etf_eeuu':     ['Risk-on global','Risk-off global','Mercado en ca\u00edda','Rally amplio'],
+  'acciones_eeuu':['Risk-on global','Mercado en ca\u00edda','Rally amplio'],
   // CEDEARs tech
   'nvda_cedr':    ['Semis liderando','Tech rezagado','Risk-on global'],
-  'tsla_cedr':    ['Risk-on global','Mercado en caída','Crypto risk-on'],
-  'aapl_cedr':    ['Semis liderando','Tech rezagado','Mercado en caída'],
+  'tsla_cedr':    ['Risk-on global','Mercado en ca\u00edda','Crypto risk-on'],
+  'aapl_cedr':    ['Semis liderando','Tech rezagado','Mercado en ca\u00edda'],
   'msft_cedr':    ['Semis liderando','Tech rezagado'],
-  'amzn_cedr':    ['Risk-on global','Mercado en caída'],
+  'amzn_cedr':    ['Risk-on global','Mercado en ca\u00edda'],
   'googl_cedr':   ['Semis liderando','Tech rezagado'],
   'meta_cedr':    ['Risk-on global','Tech rezagado'],
-  'cedears':      ['Risk-on global','Mercado en caída','Semis liderando'],
+  'cedears':      ['Risk-on global','Mercado en ca\u00edda','Semis liderando'],
   // Crypto
-  'bitcoin':      ['Crypto risk-on','Crypto sell-off','Dólar débil','Risk-on global'],
+  'bitcoin':      ['Crypto risk-on','Crypto sell-off','D\u00f3lar d\u00e9bil','Risk-on global'],
   'ethereum':     ['Crypto risk-on','Crypto sell-off','Risk-on global'],
   'crypto_otro':  ['Crypto risk-on','Crypto sell-off'],
   // Bonos / Renta fija
-  'bono_dollar':  ['Flight to quality','Bonos bajo presión','Inflow Argentina','Outflow Argentina'],
-  'fci_cer':      ['Presión inflacionaria','Oil shock'],
-  'fci_pesos':    ['Presión inflacionaria','Bonos bajo presión'],
-  'plazo_fijo':   ['Presión inflacionaria','Curva empinando'],
-  'money_market': ['Bonos bajo presión','VIX en expansión'],
+  'bono_dollar':  ['Flight to quality','Bonos bajo presi\u00f3n','Inflow Argentina','Outflow Argentina'],
+  'fci_cer':      ['Presi\u00f3n inflacionaria','Oil shock'],
+  'fci_pesos':    ['Presi\u00f3n inflacionaria','Bonos bajo presi\u00f3n'],
+  'plazo_fijo':   ['Presi\u00f3n inflacionaria','Curva empinando'],
+  'money_market': ['Bonos bajo presi\u00f3n','VIX en expansi\u00f3n'],
   // Oro
-  'oro':          ['Flight to quality','Cobertura activa','Dólar débil','Dólar fuerte','Risk-off global'],
+  'oro':          ['Flight to quality','Cobertura activa','D\u00f3lar d\u00e9bil','D\u00f3lar fuerte','Risk-off global'],
   // Dólares
-  'dolar_mep':    ['Dólar débil','Dólar fuerte','Inflow Argentina','Outflow Argentina'],
-  'dolar_billete':['Dólar débil','Dólar fuerte'],
+  'dolar_mep':    ['D\u00f3lar d\u00e9bil','D\u00f3lar fuerte','Inflow Argentina','Outflow Argentina'],
+  'dolar_billete':['D\u00f3lar d\u00e9bil','D\u00f3lar fuerte'],
   // Acciones argentinas
-  'ypf_ar':       ['Inflow Argentina','Outflow Argentina','Oil shock','Presión inflacionaria'],
+  'ypf_ar':       ['Inflow Argentina','Outflow Argentina','Oil shock','Presi\u00f3n inflacionaria'],
   'ggal':         ['Inflow Argentina','Outflow Argentina','Risk-off global'],
   'acciones_ar':  ['Inflow Argentina','Outflow Argentina','Risk-off global'],
   'bma':          ['Inflow Argentina','Outflow Argentina'],
@@ -4187,7 +4186,7 @@ function renderCrossAlerts() {
   wrap.style.display = 'block';
 
   if(!alerts.length) {
-    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.75rem">No hay señales activas relevantes para tu cartera en este momento.</div>';
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.75rem">No hay se\u00f1ales activas relevantes para tu cartera en este momento.</div>';
     return;
   }
 
