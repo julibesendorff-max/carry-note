@@ -350,6 +350,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 })(window,document,"clarity","script","wiaf0l4905");
 </script>
+
 <!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-440VXYB2BJ"></script>
 <script>
@@ -1528,11 +1529,17 @@ async function sbFetch(path, opts={}) {
 async function loadNotes() {
   try {
     const res = await sbFetch('/rest/v1/notes?select=*&order=created_at.desc');
-    if(!res.ok) throw new Error();
+    if(!res.ok) {
+      const errText = await res.text().catch(()=>'');
+      console.error('Supabase error:', res.status, errText);
+      throw new Error('HTTP ' + res.status);
+    }
     allNotes = await res.json();
     renderNotes();
   } catch(e) {
-    document.getElementById('emptyMsg').textContent = 'Error cargando notas.';
+    console.error('loadNotes failed:', e);
+    var el = document.getElementById('emptyMsg');
+    if(el) el.textContent = 'Las notas aparecerán aquí pronto.';
   }
 }
 
@@ -2742,14 +2749,7 @@ function downloadPDF() {
     .footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd;font-family:'Courier New',monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}
     .disclaimer{background:#fff8f8;border:1px solid #e8c8c8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:'Courier New',monospace;font-size:0.72rem;color:#666;line-height:1.6}
     @media print{body{margin:20px}}
-  </style><!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-440VXYB2BJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-440VXYB2BJ');
-</script>
+  </style>
 </head><body>
   <div class="tag">▸ CARRY NOTE · DIAGNÓSTICO DE CARTERA</div>
   <h1>Diagnóstico <span class="gold">macroeconómico</span></h1>
@@ -3530,14 +3530,7 @@ function exportCartPDF() {
     'p{line-height:1.75;margin-bottom:0.75rem;font-size:0.92rem}' +
     '.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #ddd;font-family:Courier New,monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}' +
     '.disclaimer{background:#fff8f8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:Courier New,monospace;font-size:0.72rem;color:#666;line-height:1.6}' +
-    '</style><!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-440VXYB2BJ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-440VXYB2BJ');
-</script>
+    '</style>
 </head><body>' +
     '<div class="mono" style="color:#888;margin-bottom:0.5rem">▸ CARRY NOTE · CARTERA ALTERNATIVA</div>' +
     '<h1>Cartera alternativa <span style="color:#b8860b">sugerida</span></h1>' +
