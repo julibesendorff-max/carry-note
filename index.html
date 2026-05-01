@@ -2327,76 +2327,59 @@ async function loadPremarketData() {
   futuresEl.innerHTML = PM_FUTURES.map(function(){return loadingCard;}).join('');
   cryptoEl.innerHTML  = PM_CRYPTO.map(function(){return loadingCard;}).join('');
 
-  // Fetch stocks
-  var stockCards = [];
-  for(var i = 0; i < PM_STOCKS.length; i++) {
-    var s = PM_STOCKS[i];
+  // Fetch all in parallel using Promise.all
+  async function fetchQuoteData(sym) {
     try {
-      var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + s.sym + '&token=' + FINNHUB_KEY);
-      var d = await r.json();
-      var price = null, pct = null, extra = null;
-      if(d.c && d.c > 0) {
-        price = '$' + d.c.toFixed(2);
-        pct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
-        // Pre/after market price
-        if(d.dp !== undefined && d.d !== undefined) {
-          extra = null;
-        }
-      }
-      stockCards.push(buildPmCard(s.label, s.desc, price, pct, extra));
-    } catch(e) {
-      stockCards.push(buildPmCard(s.label, s.desc, null, null, null));
-    }
-    if(i % 4 === 3) await new Promise(function(r){setTimeout(r,200);});
+      var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + FINNHUB_KEY);
+      return await r.json();
+    } catch(e) { return {}; }
   }
-  stocksEl.innerHTML = stockCards.join('');
 
-  // Fetch futures via Finnhub
-  var futureCards = [];
+  // Stocks — parallel
+  var stockPromises = PM_STOCKS.map(function(s){ return fetchQuoteData(s.sym); });
+  var stockResults = await Promise.all(stockPromises);
+  stocksEl.innerHTML = stockResults.map(function(d, i) {
+    var s = PM_STOCKS[i];
+    var price = null, pct = null;
+    if(d.c && d.c > 0) {
+      price = '$' + d.c.toFixed(2);
+      pct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
+    }
+    return buildPmCard(s.label, s.desc, price, pct, null);
+  }).join('');
+
+  // Futures — parallel
   var futureSyms = ['ES1!','NQ1!','YM1!','GC1!','CL1!'];
   var futureLabels = [
-    {label:'ES · S&P 500', desc:'E-mini S&P 500 Fut.'},
-    {label:'NQ · Nasdaq',  desc:'E-mini Nasdaq Fut.'},
-    {label:'YM · Dow',     desc:'E-mini Dow Jones Fut.'},
-    {label:'GC · Oro',     desc:'Gold Futures (COMEX)'},
+    {label:'ES · S&P 500', desc:'E-mini S&P 500'},
+    {label:'NQ · Nasdaq',  desc:'E-mini Nasdaq'},
+    {label:'YM · Dow',     desc:'E-mini Dow Jones'},
+    {label:'GC · Oro',     desc:'Gold Futures'},
     {label:'CL · WTI',     desc:'Crude Oil Futures'},
   ];
-  for(var j = 0; j < futureSyms.length; j++) {
-    try {
-      var rf = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(futureSyms[j]) + '&token=' + FINNHUB_KEY);
-      var df = await rf.json();
-      var fp = null, fpct = null;
-      if(df.c && df.c > 0) {
-        fp = df.c >= 1000 ? '$' + df.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + df.c.toFixed(2);
-        fpct = df.pc ? ((df.c - df.pc) / df.pc * 100) : null;
-      }
-      futureCards.push(buildPmCard(futureLabels[j].label, futureLabels[j].desc, fp, fpct, null));
-    } catch(e) {
-      futureCards.push(buildPmCard(futureLabels[j].label, futureLabels[j].desc, null, null, null));
+  var futurePromises = futureSyms.map(function(sym){ return fetchQuoteData(sym); });
+  var futureResults = await Promise.all(futurePromises);
+  futuresEl.innerHTML = futureResults.map(function(d, j) {
+    var fp = null, fpct = null;
+    if(d.c && d.c > 0) {
+      fp = d.c >= 1000 ? '$' + d.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + d.c.toFixed(2);
+      fpct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
     }
-    await new Promise(function(r){setTimeout(r,150);});
-  }
-  futuresEl.innerHTML = futureCards.join('');
+    return buildPmCard(futureLabels[j].label, futureLabels[j].desc, fp, fpct, null);
+  }).join('');
 
-  // Fetch crypto
-  var cryptoCards = [];
-  for(var k = 0; k < PM_CRYPTO.length; k++) {
+  // Crypto — parallel
+  var cryptoPromises = PM_CRYPTO.map(function(c){ return fetchQuoteData(c.sym); });
+  var cryptoResults = await Promise.all(cryptoPromises);
+  cryptoEl.innerHTML = cryptoResults.map(function(d, k) {
     var c = PM_CRYPTO[k];
-    try {
-      var rc = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(c.sym) + '&token=' + FINNHUB_KEY);
-      var dc = await rc.json();
-      var cp = null, cpct = null;
-      if(dc.c && dc.c > 0) {
-        cp = dc.c >= 1000 ? '$' + dc.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + dc.c.toFixed(4);
-        cpct = dc.pc ? ((dc.c - dc.pc) / dc.pc * 100) : null;
-      }
-      cryptoCards.push(buildPmCard(c.label, c.desc, cp, cpct, null));
-    } catch(e) {
-      cryptoCards.push(buildPmCard(c.label, c.desc, null, null, null));
+    var cp = null, cpct = null;
+    if(d.c && d.c > 0) {
+      cp = d.c >= 1000 ? '$' + d.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + d.c.toFixed(4);
+      cpct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
     }
-    await new Promise(function(r){setTimeout(r,100);});
-  }
-  cryptoEl.innerHTML = cryptoCards.join('');
+    return buildPmCard(c.label, c.desc, cp, cpct, null);
+  }).join('');
 }
 
 function showPremarket(e) {
@@ -2411,6 +2394,8 @@ function showPremarket(e) {
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   document.getElementById('premarketPanel').style.display = 'block';
+  var nr = document.getElementById('noResults'); if(nr) nr.style.display = 'none';
+  var es = document.getElementById('emptyState'); if(es) es.style.display = 'none';
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   document.getElementById('premarketTab').classList.add('active');
   loadPremarketData();
