@@ -2436,6 +2436,7 @@ function showPremarket(e) {
 }
 
 function showFCI(e) {
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
@@ -2465,6 +2466,7 @@ function filterByTag(tag) {
     if(el) el.style.display = '';
   });
   document.getElementById('fciPanel').style.display = 'none';
+  var pp = document.getElementById('premarketPanel'); if(pp) pp.style.display = 'none';
   setSidebarVisible(true);
   var ep = document.getElementById('editorPanel');
   if(ep) ep.style.display = isEditor ? 'block' : 'none';
@@ -2525,6 +2527,7 @@ function loadCalendar() {
 
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
@@ -3106,6 +3109,7 @@ async function generateRadarSuggestion() {
 }
 
 function showRadar(e) {
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
@@ -3202,6 +3206,7 @@ function updateRadarLarge() {
 }
 
 function showDiag(e) {
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
@@ -3626,8 +3631,9 @@ async function loadWatchlistPrices(){
   renderWatchlist();
 }
 function showWatchlist(e){
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e&&e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   document.getElementById('watchlistPanel').style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
@@ -3635,6 +3641,7 @@ function showWatchlist(e){
   renderWatchlist();
 }
 function showSobre(e){
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e&&e.preventDefault();
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
@@ -4026,9 +4033,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ── ANÁLISIS TAB ──────────────────────────────────────────
 function showAnalisis(e) {
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   // Hide special panels
-  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'].forEach(function(id){
+  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','premarketPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   // Show feed
