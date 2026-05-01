@@ -2275,33 +2275,18 @@ function renderFciCard(f, i) {
 
 // ── PRE / AFTER MARKET ────────────────────────────────────
 var PM_STOCKS = [
-  {sym:'SPY',   label:'SPY',  desc:'S&P 500 ETF'},
-  {sym:'QQQ',   label:'QQQ',  desc:'Nasdaq ETF'},
-  {sym:'AAPL',  label:'AAPL', desc:'Apple'},
-  {sym:'NVDA',  label:'NVDA', desc:'NVIDIA'},
-  {sym:'TSLA',  label:'TSLA', desc:'Tesla'},
-  {sym:'MSFT',  label:'MSFT', desc:'Microsoft'},
-  {sym:'AMZN',  label:'AMZN', desc:'Amazon'},
-  {sym:'META',  label:'META', desc:'Meta'},
-  {sym:'GOOGL', label:'GOOGL',desc:'Alphabet'},
-  {sym:'AMD',   label:'AMD',  desc:'AMD'},
-  {sym:'NFLX',  label:'NFLX', desc:'Netflix'},
-  {sym:'JPM',   label:'JPM',  desc:'JPMorgan'},
+  {sym:'SPY',  label:'SPY',  desc:'S&P 500 ETF'},
+  {sym:'QQQ',  label:'QQQ',  desc:'Nasdaq ETF'},
+  {sym:'NVDA', label:'NVDA', desc:'NVIDIA'},
+  {sym:'TSLA', label:'TSLA', desc:'Tesla'},
 ];
 var PM_FUTURES = [
-  {sym:'BINANCE:BTCUSDT', label:'ES1!', desc:'S&P 500 Fut.', isFuture:true, finnSym:'ES1!'},
-  {sym:'BINANCE:ETHUSDT', label:'NQ1!', desc:'Nasdaq Fut.',  isFuture:true, finnSym:'NQ1!'},
-  {sym:'BINANCE:BTCUSDT', label:'YM1!', desc:'Dow Jones Fut.', isFuture:true, finnSym:'YM1!'},
-  {sym:'BINANCE:BTCUSDT', label:'GC1!', desc:'Oro Futuros',   isFuture:true, finnSym:'GC1!'},
-  {sym:'BINANCE:BTCUSDT', label:'CL1!', desc:'WTI Futuros',   isFuture:true, finnSym:'CL1!'},
+  {sym:'GLD', label:'GLD / GC', desc:'Oro ETF'},
+  {sym:'USO', label:'USO / CL', desc:'WTI Crudo ETF'},
 ];
 var PM_CRYPTO = [
-  {sym:'BINANCE:BTCUSDT',  label:'BTC',  desc:'Bitcoin'},
-  {sym:'BINANCE:ETHUSDT',  label:'ETH',  desc:'Ethereum'},
-  {sym:'BINANCE:SOLUSDT',  label:'SOL',  desc:'Solana'},
-  {sym:'BINANCE:BNBUSDT',  label:'BNB',  desc:'BNB'},
-  {sym:'BINANCE:XRPUSDT',  label:'XRP',  desc:'XRP'},
-  {sym:'BINANCE:DOGEUSDT', label:'DOGE', desc:'Dogecoin'},
+  {sym:'BINANCE:BTCUSDT', label:'BTC', desc:'Bitcoin'},
+  {sym:'BINANCE:ETHUSDT', label:'ETH', desc:'Ethereum'},
 ];
 
 function getMarketSession() {
@@ -2373,15 +2358,9 @@ async function loadPremarketData() {
 
   // Fetch all in parallel using Promise.all
   // Stocks — parallel
-  // Batch in groups of 4 to avoid Finnhub rate limit
-  var stockResults = [];
-  for(var bi = 0; bi < PM_STOCKS.length; bi += 4) {
-    if(signal.aborted) return;
-    var batch = PM_STOCKS.slice(bi, bi+4).map(function(s){ return fetchQuoteData(s.sym, signal); });
-    var batchResults = await Promise.all(batch);
-    stockResults = stockResults.concat(batchResults);
-    if(bi + 4 < PM_STOCKS.length) await new Promise(function(r){ setTimeout(r, 300); });
-  }
+  // 4 stocks — fetch all in parallel, no batching needed
+  var stockPromises = PM_STOCKS.map(function(s){ return fetchQuoteData(s.sym, signal); });
+  var stockResults = await Promise.all(stockPromises);
   if(signal.aborted) return;
   stocksEl.innerHTML = stockResults.map(function(d, i) {
     var s = PM_STOCKS[i];
