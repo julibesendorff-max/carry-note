@@ -2314,6 +2314,14 @@ function buildPmCard(label, desc, price, pct, extra) {
   '</div>';
 }
 
+async function fetchQuoteData(sym) {
+  try {
+    var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + FINNHUB_KEY);
+    if(!r.ok) return {};
+    return await r.json();
+  } catch(e) { return {}; }
+}
+
 async function loadPremarketData() {
   var stocksEl  = document.getElementById('pmStocksGrid');
   var futuresEl = document.getElementById('pmFuturesGrid');
@@ -2334,13 +2342,6 @@ async function loadPremarketData() {
   cryptoEl.innerHTML  = PM_CRYPTO.map(function(){return loadingCard;}).join('');
 
   // Fetch all in parallel using Promise.all
-  async function fetchQuoteData(sym) {
-    try {
-      var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + FINNHUB_KEY);
-      return await r.json();
-    } catch(e) { return {}; }
-  }
-
   // Stocks — parallel
   var stockPromises = PM_STOCKS.map(function(s){ return fetchQuoteData(s.sym); });
   var stockResults = await Promise.all(stockPromises);
