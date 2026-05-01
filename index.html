@@ -288,9 +288,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .editor-panel{display:none !important}
   .editor-bar{display:none !important}
   .login-toggle{display:none !important}
-  /* Ensure premarket panel shows on mobile */
-  #premarketPanel{display:block}
-
   /* ── FEED / NOTES ── */
   .note-card{padding:1.25rem 0}
   .note-title{font-size:1.5rem;line-height:1.2}
@@ -388,7 +385,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
-    <a data-filter="premarket" id="premarketTab" onclick="showPremarket(event)" style="color:#a855f7">⬤ Pre/After</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
@@ -582,42 +578,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <p>No hay notas en esta categoría todavía.</p>
     </div>
 
-    <!-- PREMARKET / AFTERMARKET PANEL -->
-    <div id="premarketPanel" style="display:none;margin-bottom:2rem">
-      <!-- HEADER -->
-      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.5rem">⬤ Extended Hours · Carry Note</div>
-        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Pre & After Market</div>
-        <div style="font-size:0.95rem;color:var(--muted);line-height:1.7;max-width:640px;margin-bottom:1.25rem">Precios en tiempo extendido para acciones EEUU, índices y cripto 24h.</div>
-        <div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid #a855f7;padding:1.1rem 1.25rem">
-          <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#a855f7;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">¿Qué es el pre y after market?</div>
-          <div style="font-size:0.9rem;color:var(--muted);line-height:1.75">
-            El mercado regular de EEUU opera entre las <strong style="color:var(--text)">9:30 AM y las 4:00 PM ET</strong> (10:30 AM – 5:00 PM en Argentina). Fuera de ese horario, el mercado sigue funcionando con menor volumen en dos sesiones:<br><br>
-            <strong style="color:var(--text)">Pre-market (4:00–9:30 AM ET)</strong> — antes de la apertura. Los precios reflejan reacciones a noticias overnight: earnings publicados después del cierre, datos macro de Asia o Europa, o eventos geopolíticos. El volumen es bajo, así que los movimientos pueden ser exagerados.<br><br>
-            <strong style="color:var(--text)">After-market (4:00–8:00 PM ET)</strong> — después del cierre. La mayoría de las empresas del S&P 500 publican sus resultados trimestrales (earnings) en este horario, lo que genera los movimientos más bruscos del día. NVDA, AAPL, TSLA mueven entre 5% y 20% en after-hours cuando reportan.<br><br>
-            <strong style="color:var(--text)">Para el inversor de CEDEARs:</strong> los movimientos del after/pre impactan directamente en el precio del CEDEAR al día siguiente, cuando abre el BCBA. Seguir este panel te permite anticipar la apertura.
-          </div>
-        </div>
-      </div>
-      <!-- STATUS BAR -->
-      <div id="pmStatusBar" style="background:var(--surface);border:1px solid var(--border2);padding:0.65rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.62rem">
-        <span id="pmSessionLabel" style="color:#a855f7">Cargando sesión...</span>
-        <span id="pmLastUpdate" style="color:var(--muted2)">—</span>
-      </div>
-      <!-- ACCIONES EEUU -->
-      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Acciones EEUU · Extended Hours</div>
-      <div id="pmStocksGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-bottom:1.5rem;border:1px solid var(--border2)"></div>
-      <!-- FUTUROS -->
-      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Futuros de Índices · 24h</div>
-      <div id="pmFuturesGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-bottom:1.5rem;border:1px solid var(--border2)"></div>
-      <!-- CRIPTO -->
-      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Cripto · 24h</div>
-      <div id="pmCryptoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-bottom:1.5rem;border:1px solid var(--border2)"></div>
-      <!-- DISCLAIMER -->
-      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2)">
-        ⚠ Los precios de pre y after market tienen menor liquidez y mayor volatilidad que el horario regular. Pre-market: 4:00–9:30 AM ET · After-market: 4:00–8:00 PM ET · Fuente: Finnhub
-      </div>
-    </div>
 
     <!-- FCI PANEL -->
     <div id="fciPanel" style="display:none;margin-bottom:2rem">
@@ -790,6 +750,20 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
               <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Beat = resultado mejor que lo esperado · Miss = peor que lo esperado · Lo que mueve el precio no es el número sino la diferencia vs expectativas</div>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El mercado no reacciona al resultado absoluto sino a la <strong style="color:var(--text)">sorpresa</strong>. Una empresa puede reportar ganancias récord y caer si el mercado esperaba más. El guidance define si los analistas van a subir o bajar sus estimaciones futuras — y eso mueve el precio más que el resultado pasado.</p>
               <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Para el inversor argentino en CEDEARs, los earnings de NVIDIA, Apple o Tesla son eventos que pueden mover el precio 10-20% en una sola jornada, y suelen operar en el after-hours antes de que abra el mercado local.</p>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--blue);padding:1.5rem;cursor:pointer" onclick="toggleLesson('m7')">
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--blue);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.5rem">Módulo 07 · Intermedio</div>
+            <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Pre-market y after-market</div>
+            <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué pasa con los precios antes y después del cierre de Wall Street, y por qué importa para el inversor de CEDEARs.</div>
+            <div id="m7" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El mercado regular de EEUU opera entre las <strong style="color:var(--text)">9:30 AM y las 4:00 PM ET</strong> (10:30 AM a 5:00 PM en Argentina). Fuera de ese horario existen dos sesiones extendidas con menor volumen y mayor volatilidad.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Pre-market: 4:00–9:30 AM ET · After-market: 4:00–8:00 PM ET · Menor volumen = mayor volatilidad</div>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Pre-market (4:00–9:30 AM ET):</strong> antes de la apertura. Los precios reflejan reacciones a noticias overnight: earnings publicados después del cierre, datos macro de Asia o Europa, o eventos geopolíticos. Los movimientos suelen ser exagerados y pueden revertirse al abrir el mercado regular.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">After-market (4:00–8:00 PM ET):</strong> después del cierre. La mayoría de las empresas del S&amp;P 500 publican sus resultados trimestrales en este horario, lo que genera los movimientos más bruscos del día. NVDA, AAPL o TSLA pueden moverse entre 5% y 20% en after-hours cuando reportan.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Por qué importa para el inversor de CEDEARs:</strong> los movimientos del after/pre impactan directamente en el precio del CEDEAR al día siguiente. Si NVDA sube 10% en after-hours, el CEDEAR de NVDA va a abrir aproximadamente 10% más alto al otro día en el BCBA.</p>
+              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Para ver precios en tiempo extendido podés usar TradingView (gratuito), Yahoo Finance, o la app de tu broker.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1605,7 +1579,7 @@ async function deleteNote(id) {
 // ── RENDER ────────────────────────────────────────────────────
 function renderNotes() {
   // Don't render notes if a special panel is visible
-  var specialPanels = ['premarketPanel','fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'];
+  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'];
   for(var sp = 0; sp < specialPanels.length; sp++) {
     var spEl = document.getElementById(specialPanels[sp]);
     if(spEl && spEl.style.display !== 'none') return;
@@ -2273,178 +2247,24 @@ function renderFciCard(f, i) {
 
 
 
-// ── PRE / AFTER MARKET ────────────────────────────────────
-var PM_STOCKS = [
-  {sym:'SPY',  label:'SPY',  desc:'S&P 500 ETF'},
-  {sym:'QQQ',  label:'QQQ',  desc:'Nasdaq ETF'},
-  {sym:'NVDA', label:'NVDA', desc:'NVIDIA'},
-  {sym:'TSLA', label:'TSLA', desc:'Tesla'},
-];
-var PM_FUTURES = [
-  {sym:'GLD', label:'GLD / GC', desc:'Oro ETF'},
-  {sym:'USO', label:'USO / CL', desc:'WTI Crudo ETF'},
-];
-var PM_CRYPTO = [
-  {sym:'BINANCE:BTCUSDT', label:'BTC', desc:'Bitcoin'},
-  {sym:'BINANCE:ETHUSDT', label:'ETH', desc:'Ethereum'},
-];
 
-function getMarketSession() {
-  var now = new Date();
-  // Convert to ET
-  var etOffset = -5; // EST (UTC-5), adjust for EDT (-4) if needed
-  var utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  var et = new Date(utc + etOffset * 3600000);
-  var h = et.getHours(), m = et.getMinutes();
-  var timeDecimal = h + m / 60;
-  var day = et.getDay(); // 0=Sun, 6=Sat
-  if(day === 0 || day === 6) return {label:'Mercado cerrado (fin de semana)', color:'var(--muted2)'};
-  if(timeDecimal >= 4 && timeDecimal < 9.5)  return {label:'Pre-Market · 4:00–9:30 AM ET', color:'#a855f7'};
-  if(timeDecimal >= 9.5 && timeDecimal < 16) return {label:'Mercado regular · 9:30 AM–4:00 PM ET', color:'var(--green)'};
-  if(timeDecimal >= 16 && timeDecimal < 20)  return {label:'After-Market · 4:00–8:00 PM ET', color:'#a855f7'};
-  return {label:'Mercado cerrado', color:'var(--muted2)'};
-}
 
-function buildPmCard(label, desc, price, pct, extra) {
-  var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
-  var arrow = pct === null ? '' : pct > 0 ? '▲ ' : '▼ ';
-  var pctStr = pct !== null ? arrow + Math.abs(pct).toFixed(2) + '%' : '—';
-  var priceStr = price || '···';
-  return '<div style="padding:1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface)">' +
-    '<div style="font-family:var(--mono);font-size:0.62rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">' + label + '</div>' +
-    '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.5rem">' + desc + '</div>' +
-    '<div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">' + priceStr + '</div>' +
-    '<div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:' + pctColor + '">' + pctStr + '</div>' +
-    (extra ? '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.3rem">' + extra + '</div>' : '') +
-  '</div>';
-}
 
-async function fetchQuoteData(sym, signal) {
-  try {
-    var controller = new AbortController();
-    var timeout = setTimeout(function(){ controller.abort(); }, 8000);
-    var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + FINNHUB_KEY, {
-      signal: signal || controller.signal
-    });
-    clearTimeout(timeout);
-    if(!r.ok) return {};
-    return await r.json();
-  } catch(e) { return {}; }
-}
 
-async function loadPremarketData() {
-  // Cancel any previous in-flight fetch
-  if(window._pmAbort) { window._pmAbort.abort(); }
-  window._pmAbort = new AbortController();
-  var signal = window._pmAbort.signal;
 
-  var stocksEl  = document.getElementById('pmStocksGrid');
-  var futuresEl = document.getElementById('pmFuturesGrid');
-  var cryptoEl  = document.getElementById('pmCryptoGrid');
-  var sessionEl = document.getElementById('pmSessionLabel');
-  var updateEl  = document.getElementById('pmLastUpdate');
-  if(!stocksEl) return;
 
-  // Update session status
-  var session = getMarketSession();
-  if(sessionEl) { sessionEl.textContent = session.label; sessionEl.style.color = session.color; }
-  if(updateEl) updateEl.textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
 
-  // Render loading state
-  var loadingCard = '<div style="padding:1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">···</div>';
-  stocksEl.innerHTML  = PM_STOCKS.map(function(){return loadingCard;}).join('');
-  futuresEl.innerHTML = PM_FUTURES.map(function(){return loadingCard;}).join('');
-  cryptoEl.innerHTML  = PM_CRYPTO.map(function(){return loadingCard;}).join('');
 
-  // Fetch all in parallel using Promise.all
-  // Stocks — parallel
-  // 4 stocks — fetch all in parallel, no batching needed
-  var stockPromises = PM_STOCKS.map(function(s){ return fetchQuoteData(s.sym, signal); });
-  var stockResults = await Promise.all(stockPromises);
-  if(signal.aborted) return;
-  stocksEl.innerHTML = stockResults.map(function(d, i) {
-    var s = PM_STOCKS[i];
-    var price = null, pct = null;
-    if(d.c && d.c > 0) {
-      price = '$' + d.c.toFixed(2);
-      pct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
-    }
-    return buildPmCard(s.label, s.desc, price, pct, null);
-  }).join('');
-
-  // Futures — parallel
-  var futureSyms = ['SPY','QQQ','DIA','GLD','USO'];
-  var futureLabels = [
-    {label:'ES · S&P 500', desc:'E-mini S&P 500'},
-    {label:'NQ · Nasdaq',  desc:'E-mini Nasdaq'},
-    {label:'YM · Dow',     desc:'E-mini Dow Jones'},
-    {label:'GC · Oro',     desc:'Gold Futures'},
-    {label:'CL · WTI',     desc:'Crude Oil Futures'},
-  ];
-  var futurePromises = futureSyms.map(function(sym){ return fetchQuoteData(sym, signal); });
-  var futureResults = await Promise.all(futurePromises);
-  if(signal.aborted) return;
-  futuresEl.innerHTML = futureResults.map(function(d, j) {
-    var fp = null, fpct = null;
-    if(d.c && d.c > 0) {
-      fp = d.c >= 1000 ? '$' + d.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + d.c.toFixed(2);
-      fpct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
-    }
-    return buildPmCard(futureLabels[j].label, futureLabels[j].desc, fp, fpct, null);
-  }).join('');
-
-  // Crypto — parallel
-  var cryptoPromises = PM_CRYPTO.map(function(c){ return fetchQuoteData(c.sym, signal); });
-  var cryptoResults = await Promise.all(cryptoPromises);
-  if(signal.aborted) return;
-  cryptoEl.innerHTML = cryptoResults.map(function(d, k) {
-    var c = PM_CRYPTO[k];
-    var cp = null, cpct = null;
-    if(d.c && d.c > 0) {
-      cp = d.c >= 1000 ? '$' + d.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + d.c.toFixed(4);
-      cpct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
-    }
-    return buildPmCard(c.label, c.desc, cp, cpct, null);
-  }).join('');
-}
-
-function showPremarket(e) {
-  e && e.preventDefault();
-  var af = document.getElementById('analisisFilters'); if(af) af.style.display = 'none';
-  var vp = document.getElementById('viewsPanel'); if(vp) vp.style.display = 'none';
-  setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel'].forEach(function(id){
-    var el = document.getElementById(id); if(el) el.style.display = 'none';
-  });
-  ['feed','newsletterBlock','noResults','feedHeader'].forEach(function(id){
-    var el = document.getElementById(id); if(el) el.style.display = 'none';
-  });
-  document.getElementById('premarketPanel').style.display = 'block';
-  var nr = document.getElementById('noResults'); if(nr) nr.style.display = 'none';
-  var es = document.getElementById('emptyState'); if(es) es.style.display = 'none';
-  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
-  document.getElementById('premarketTab').classList.add('active');
-  loadPremarketData();
-  // Refresh every 60s while panel is open
-  if(window._pmInterval) clearInterval(window._pmInterval);
-  window._pmInterval = setInterval(function(){
-    var pp = document.getElementById('premarketPanel');
-    if(pp && pp.style.display !== 'none') loadPremarketData();
-    else clearInterval(window._pmInterval);
-  }, 60000);
-}
 
 function showFCI(e) {
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide everything feed-related
-  ['feed','newsletterBlock','noResults','feedHeader','premarketPanel'].forEach(id => {
+  ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
@@ -2466,7 +2286,7 @@ function filterByTag(tag) {
     if(el) el.style.display = '';
   });
   document.getElementById('fciPanel').style.display = 'none';
-  var pp = document.getElementById('premarketPanel'); if(pp) pp.style.display = 'none';
+  var pp = document.getElementById(); if(pp) pp.style.display = 'none';
   setSidebarVisible(true);
   var ep = document.getElementById('editorPanel');
   if(ep) ep.style.display = isEditor ? 'block' : 'none';
@@ -2527,13 +2347,11 @@ function loadCalendar() {
 
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
@@ -3110,13 +2928,11 @@ async function generateRadarSuggestion() {
 }
 
 function showRadar(e) {
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
@@ -3208,16 +3024,14 @@ function updateRadarLarge() {
 }
 
 function showDiag(e) {
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide all content panels
-  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel','premarketPanel'];
+  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel'];
   toHide.forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
@@ -3634,10 +3448,8 @@ async function loadWatchlistPrices(){
   renderWatchlist();
 }
 function showWatchlist(e){
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e&&e.preventDefault();
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   document.getElementById('watchlistPanel').style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
@@ -3645,12 +3457,10 @@ function showWatchlist(e){
   renderWatchlist();
 }
 function showSobre(e){
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e&&e.preventDefault();
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   document.getElementById('sobrePanel').style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
@@ -4038,11 +3848,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ── ANÁLISIS TAB ──────────────────────────────────────────
 function showAnalisis(e) {
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   // Hide special panels
-  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','premarketPanel'].forEach(function(id){
+  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
   // Show feed
