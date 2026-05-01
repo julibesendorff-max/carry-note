@@ -2334,15 +2334,25 @@ function buildPmCard(label, desc, price, pct, extra) {
   '</div>';
 }
 
-async function fetchQuoteData(sym) {
+async function fetchQuoteData(sym, signal) {
   try {
-    var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + FINNHUB_KEY);
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 8000);
+    var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(sym) + '&token=' + FINNHUB_KEY, {
+      signal: signal || controller.signal
+    });
+    clearTimeout(timeout);
     if(!r.ok) return {};
     return await r.json();
   } catch(e) { return {}; }
 }
 
 async function loadPremarketData() {
+  // Cancel any previous in-flight fetch
+  if(window._pmAbort) { window._pmAbort.abort(); }
+  window._pmAbort = new AbortController();
+  var signal = window._pmAbort.signal;
+
   var stocksEl  = document.getElementById('pmStocksGrid');
   var futuresEl = document.getElementById('pmFuturesGrid');
   var cryptoEl  = document.getElementById('pmCryptoGrid');
@@ -2363,8 +2373,16 @@ async function loadPremarketData() {
 
   // Fetch all in parallel using Promise.all
   // Stocks — parallel
-  var stockPromises = PM_STOCKS.map(function(s){ return fetchQuoteData(s.sym); });
-  var stockResults = await Promise.all(stockPromises);
+  // Batch in groups of 4 to avoid Finnhub rate limit
+  var stockResults = [];
+  for(var bi = 0; bi < PM_STOCKS.length; bi += 4) {
+    if(signal.aborted) return;
+    var batch = PM_STOCKS.slice(bi, bi+4).map(function(s){ return fetchQuoteData(s.sym, signal); });
+    var batchResults = await Promise.all(batch);
+    stockResults = stockResults.concat(batchResults);
+    if(bi + 4 < PM_STOCKS.length) await new Promise(function(r){ setTimeout(r, 300); });
+  }
+  if(signal.aborted) return;
   stocksEl.innerHTML = stockResults.map(function(d, i) {
     var s = PM_STOCKS[i];
     var price = null, pct = null;
@@ -2384,8 +2402,9 @@ async function loadPremarketData() {
     {label:'GC · Oro',     desc:'Gold Futures'},
     {label:'CL · WTI',     desc:'Crude Oil Futures'},
   ];
-  var futurePromises = futureSyms.map(function(sym){ return fetchQuoteData(sym); });
+  var futurePromises = futureSyms.map(function(sym){ return fetchQuoteData(sym, signal); });
   var futureResults = await Promise.all(futurePromises);
+  if(signal.aborted) return;
   futuresEl.innerHTML = futureResults.map(function(d, j) {
     var fp = null, fpct = null;
     if(d.c && d.c > 0) {
@@ -2396,8 +2415,9 @@ async function loadPremarketData() {
   }).join('');
 
   // Crypto — parallel
-  var cryptoPromises = PM_CRYPTO.map(function(c){ return fetchQuoteData(c.sym); });
+  var cryptoPromises = PM_CRYPTO.map(function(c){ return fetchQuoteData(c.sym, signal); });
   var cryptoResults = await Promise.all(cryptoPromises);
+  if(signal.aborted) return;
   cryptoEl.innerHTML = cryptoResults.map(function(d, k) {
     var c = PM_CRYPTO[k];
     var cp = null, cpct = null;
@@ -2436,6 +2456,7 @@ function showPremarket(e) {
 }
 
 function showFCI(e) {
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -2527,6 +2548,7 @@ function loadCalendar() {
 
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -3109,6 +3131,7 @@ async function generateRadarSuggestion() {
 }
 
 function showRadar(e) {
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -3206,6 +3229,7 @@ function updateRadarLarge() {
 }
 
 function showDiag(e) {
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -3631,6 +3655,7 @@ async function loadWatchlistPrices(){
   renderWatchlist();
 }
 function showWatchlist(e){
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e&&e.preventDefault();
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','premarketPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
@@ -3641,6 +3666,7 @@ function showWatchlist(e){
   renderWatchlist();
 }
 function showSobre(e){
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e&&e.preventDefault();
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
@@ -4033,6 +4059,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // ── ANÁLISIS TAB ──────────────────────────────────────────
 function showAnalisis(e) {
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   e && e.preventDefault();
   // Hide special panels
