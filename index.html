@@ -377,6 +377,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
+    <a data-filter="premarket" id="premarketTab" onclick="showPremarket(event)" style="color:#a855f7">⬤ Pre/After</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
@@ -568,6 +569,34 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     </div>
     <div class="no-results" id="noResults">
       <p>No hay notas en esta categoría todavía.</p>
+    </div>
+
+    <!-- PREMARKET / AFTERMARKET PANEL -->
+    <div id="premarketPanel" style="display:none;margin-bottom:2rem">
+      <!-- HEADER -->
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.5rem">⬤ Extended Hours · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Pre & After Market</div>
+        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Precios en tiempo extendido para acciones EEUU, futuros de índices y cripto 24h. Datos vía Finnhub.</div>
+      </div>
+      <!-- STATUS BAR -->
+      <div id="pmStatusBar" style="background:var(--surface);border:1px solid var(--border2);padding:0.65rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.62rem">
+        <span id="pmSessionLabel" style="color:#a855f7">Cargando sesión...</span>
+        <span id="pmLastUpdate" style="color:var(--muted2)">—</span>
+      </div>
+      <!-- ACCIONES EEUU -->
+      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Acciones EEUU · Extended Hours</div>
+      <div id="pmStocksGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-bottom:1.5rem;border:1px solid var(--border2)"></div>
+      <!-- FUTUROS -->
+      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Futuros de Índices · 24h</div>
+      <div id="pmFuturesGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-bottom:1.5rem;border:1px solid var(--border2)"></div>
+      <!-- CRIPTO -->
+      <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Cripto · 24h</div>
+      <div id="pmCryptoGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0;margin-bottom:1.5rem;border:1px solid var(--border2)"></div>
+      <!-- DISCLAIMER -->
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2)">
+        ⚠ Los precios de pre y after market tienen menor liquidez y mayor volatilidad que el horario regular. Pre-market: 4:00–9:30 AM ET · After-market: 4:00–8:00 PM ET · Fuente: Finnhub
+      </div>
     </div>
 
     <!-- FCI PANEL -->
@@ -2217,6 +2246,183 @@ function renderFciCard(f, i) {
 }
 
 
+
+// ── PRE / AFTER MARKET ────────────────────────────────────
+var PM_STOCKS = [
+  {sym:'SPY',   label:'SPY',  desc:'S&P 500 ETF'},
+  {sym:'QQQ',   label:'QQQ',  desc:'Nasdaq ETF'},
+  {sym:'AAPL',  label:'AAPL', desc:'Apple'},
+  {sym:'NVDA',  label:'NVDA', desc:'NVIDIA'},
+  {sym:'TSLA',  label:'TSLA', desc:'Tesla'},
+  {sym:'MSFT',  label:'MSFT', desc:'Microsoft'},
+  {sym:'AMZN',  label:'AMZN', desc:'Amazon'},
+  {sym:'META',  label:'META', desc:'Meta'},
+  {sym:'GOOGL', label:'GOOGL',desc:'Alphabet'},
+  {sym:'AMD',   label:'AMD',  desc:'AMD'},
+  {sym:'NFLX',  label:'NFLX', desc:'Netflix'},
+  {sym:'JPM',   label:'JPM',  desc:'JPMorgan'},
+];
+var PM_FUTURES = [
+  {sym:'BINANCE:BTCUSDT', label:'ES1!', desc:'S&P 500 Fut.', isFuture:true, finnSym:'ES1!'},
+  {sym:'BINANCE:ETHUSDT', label:'NQ1!', desc:'Nasdaq Fut.',  isFuture:true, finnSym:'NQ1!'},
+  {sym:'BINANCE:BTCUSDT', label:'YM1!', desc:'Dow Jones Fut.', isFuture:true, finnSym:'YM1!'},
+  {sym:'BINANCE:BTCUSDT', label:'GC1!', desc:'Oro Futuros',   isFuture:true, finnSym:'GC1!'},
+  {sym:'BINANCE:BTCUSDT', label:'CL1!', desc:'WTI Futuros',   isFuture:true, finnSym:'CL1!'},
+];
+var PM_CRYPTO = [
+  {sym:'BINANCE:BTCUSDT',  label:'BTC',  desc:'Bitcoin'},
+  {sym:'BINANCE:ETHUSDT',  label:'ETH',  desc:'Ethereum'},
+  {sym:'BINANCE:SOLUSDT',  label:'SOL',  desc:'Solana'},
+  {sym:'BINANCE:BNBUSDT',  label:'BNB',  desc:'BNB'},
+  {sym:'BINANCE:XRPUSDT',  label:'XRP',  desc:'XRP'},
+  {sym:'BINANCE:DOGEUSDT', label:'DOGE', desc:'Dogecoin'},
+];
+
+function getMarketSession() {
+  var now = new Date();
+  // Convert to ET
+  var etOffset = -5; // EST (UTC-5), adjust for EDT (-4) if needed
+  var utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  var et = new Date(utc + etOffset * 3600000);
+  var h = et.getHours(), m = et.getMinutes();
+  var timeDecimal = h + m / 60;
+  var day = et.getDay(); // 0=Sun, 6=Sat
+  if(day === 0 || day === 6) return {label:'Mercado cerrado (fin de semana)', color:'var(--muted2)'};
+  if(timeDecimal >= 4 && timeDecimal < 9.5)  return {label:'Pre-Market · 4:00–9:30 AM ET', color:'#a855f7'};
+  if(timeDecimal >= 9.5 && timeDecimal < 16) return {label:'Mercado regular · 9:30 AM–4:00 PM ET', color:'var(--green)'};
+  if(timeDecimal >= 16 && timeDecimal < 20)  return {label:'After-Market · 4:00–8:00 PM ET', color:'#a855f7'};
+  return {label:'Mercado cerrado', color:'var(--muted2)'};
+}
+
+function buildPmCard(label, desc, price, pct, extra) {
+  var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
+  var arrow = pct === null ? '' : pct > 0 ? '▲ ' : '▼ ';
+  var pctStr = pct !== null ? arrow + Math.abs(pct).toFixed(2) + '%' : '—';
+  var priceStr = price || '···';
+  return '<div style="padding:1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface)">' +
+    '<div style="font-family:var(--mono);font-size:0.62rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">' + label + '</div>' +
+    '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.5rem">' + desc + '</div>' +
+    '<div style="font-family:var(--mono);font-size:1.1rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">' + priceStr + '</div>' +
+    '<div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:' + pctColor + '">' + pctStr + '</div>' +
+    (extra ? '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.3rem">' + extra + '</div>' : '') +
+  '</div>';
+}
+
+async function loadPremarketData() {
+  var stocksEl  = document.getElementById('pmStocksGrid');
+  var futuresEl = document.getElementById('pmFuturesGrid');
+  var cryptoEl  = document.getElementById('pmCryptoGrid');
+  var sessionEl = document.getElementById('pmSessionLabel');
+  var updateEl  = document.getElementById('pmLastUpdate');
+  if(!stocksEl) return;
+
+  // Update session status
+  var session = getMarketSession();
+  if(sessionEl) { sessionEl.textContent = session.label; sessionEl.style.color = session.color; }
+  if(updateEl) updateEl.textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+
+  // Render loading state
+  var loadingCard = '<div style="padding:1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:0.65rem;color:var(--muted2)">···</div>';
+  stocksEl.innerHTML  = PM_STOCKS.map(function(){return loadingCard;}).join('');
+  futuresEl.innerHTML = PM_FUTURES.map(function(){return loadingCard;}).join('');
+  cryptoEl.innerHTML  = PM_CRYPTO.map(function(){return loadingCard;}).join('');
+
+  // Fetch stocks
+  var stockCards = [];
+  for(var i = 0; i < PM_STOCKS.length; i++) {
+    var s = PM_STOCKS[i];
+    try {
+      var r = await fetch('https://finnhub.io/api/v1/quote?symbol=' + s.sym + '&token=' + FINNHUB_KEY);
+      var d = await r.json();
+      var price = null, pct = null, extra = null;
+      if(d.c && d.c > 0) {
+        price = '$' + d.c.toFixed(2);
+        pct = d.pc ? ((d.c - d.pc) / d.pc * 100) : null;
+        // Pre/after market price
+        if(d.dp !== undefined && d.d !== undefined) {
+          extra = null;
+        }
+      }
+      stockCards.push(buildPmCard(s.label, s.desc, price, pct, extra));
+    } catch(e) {
+      stockCards.push(buildPmCard(s.label, s.desc, null, null, null));
+    }
+    if(i % 4 === 3) await new Promise(function(r){setTimeout(r,200);});
+  }
+  stocksEl.innerHTML = stockCards.join('');
+
+  // Fetch futures via Finnhub
+  var futureCards = [];
+  var futureSyms = ['ES1!','NQ1!','YM1!','GC1!','CL1!'];
+  var futureLabels = [
+    {label:'ES · S&P 500', desc:'E-mini S&P 500 Fut.'},
+    {label:'NQ · Nasdaq',  desc:'E-mini Nasdaq Fut.'},
+    {label:'YM · Dow',     desc:'E-mini Dow Jones Fut.'},
+    {label:'GC · Oro',     desc:'Gold Futures (COMEX)'},
+    {label:'CL · WTI',     desc:'Crude Oil Futures'},
+  ];
+  for(var j = 0; j < futureSyms.length; j++) {
+    try {
+      var rf = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(futureSyms[j]) + '&token=' + FINNHUB_KEY);
+      var df = await rf.json();
+      var fp = null, fpct = null;
+      if(df.c && df.c > 0) {
+        fp = df.c >= 1000 ? '$' + df.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + df.c.toFixed(2);
+        fpct = df.pc ? ((df.c - df.pc) / df.pc * 100) : null;
+      }
+      futureCards.push(buildPmCard(futureLabels[j].label, futureLabels[j].desc, fp, fpct, null));
+    } catch(e) {
+      futureCards.push(buildPmCard(futureLabels[j].label, futureLabels[j].desc, null, null, null));
+    }
+    await new Promise(function(r){setTimeout(r,150);});
+  }
+  futuresEl.innerHTML = futureCards.join('');
+
+  // Fetch crypto
+  var cryptoCards = [];
+  for(var k = 0; k < PM_CRYPTO.length; k++) {
+    var c = PM_CRYPTO[k];
+    try {
+      var rc = await fetch('https://finnhub.io/api/v1/quote?symbol=' + encodeURIComponent(c.sym) + '&token=' + FINNHUB_KEY);
+      var dc = await rc.json();
+      var cp = null, cpct = null;
+      if(dc.c && dc.c > 0) {
+        cp = dc.c >= 1000 ? '$' + dc.c.toLocaleString('en-US',{maximumFractionDigits:0}) : '$' + dc.c.toFixed(4);
+        cpct = dc.pc ? ((dc.c - dc.pc) / dc.pc * 100) : null;
+      }
+      cryptoCards.push(buildPmCard(c.label, c.desc, cp, cpct, null));
+    } catch(e) {
+      cryptoCards.push(buildPmCard(c.label, c.desc, null, null, null));
+    }
+    await new Promise(function(r){setTimeout(r,100);});
+  }
+  cryptoEl.innerHTML = cryptoCards.join('');
+}
+
+function showPremarket(e) {
+  e && e.preventDefault();
+  var af = document.getElementById('analisisFilters'); if(af) af.style.display = 'none';
+  var vp = document.getElementById('viewsPanel'); if(vp) vp.style.display = 'none';
+  setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  ['feed','newsletterBlock','noResults','feedHeader'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  document.getElementById('premarketPanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  document.getElementById('premarketTab').classList.add('active');
+  loadPremarketData();
+  // Refresh every 60s while panel is open
+  if(window._pmInterval) clearInterval(window._pmInterval);
+  window._pmInterval = setInterval(function(){
+    var pp = document.getElementById('premarketPanel');
+    if(pp && pp.style.display !== 'none') loadPremarketData();
+    else clearInterval(window._pmInterval);
+  }, 60000);
+}
+
 function showFCI(e) {
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -2225,7 +2431,7 @@ function showFCI(e) {
   ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide everything feed-related
-  ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
+  ['feed','newsletterBlock','noResults','feedHeader','premarketPanel'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
@@ -2981,7 +3187,7 @@ function showDiag(e) {
   ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   // Hide all content panels
-  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel'];
+  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel','premarketPanel'];
   toHide.forEach(function(id){
     var el = document.getElementById(id);
     if(el) el.style.display = 'none';
