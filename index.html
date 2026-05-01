@@ -47,6 +47,13 @@
 }
 </script>
 
+<link rel="manifest" href="/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CarryNote">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="theme-color" content="#0a0a0b">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 <style>
@@ -281,6 +288,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .editor-panel{display:none !important}
   .editor-bar{display:none !important}
   .login-toggle{display:none !important}
+  /* Ensure premarket panel shows on mobile */
+  #premarketPanel{display:block}
 
   /* ── FEED / NOTES ── */
   .note-card{padding:1.25rem 0}
@@ -334,10 +343,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   .nav-strip a{padding:0.5rem 0.75rem;font-size:0.52rem}
   .note-title{font-size:1.35rem}
   .ticker-inner{gap:1rem}
-  /* Asset rows: stack tipo on top, monto/moneda/remove below */
+  /* Asset rows */
   #diagAssets > div{grid-template-columns:1fr 70px 55px 24px !important;font-size:0.6rem !important;gap:0.2rem !important}
   #diagPanel select{font-size:0.65rem !important}
   .scen-btn{font-size:0.54rem !important;padding:0.25rem 0.45rem !important}
+  /* Premarket grid: 2 cols on small screens */
+  #pmStocksGrid,#pmFuturesGrid,#pmCryptoGrid{grid-template-columns:1fr 1fr !important}
 }
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
@@ -577,7 +588,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.5rem">⬤ Extended Hours · Carry Note</div>
         <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Pre & After Market</div>
-        <div style="font-size:0.88rem;color:var(--muted);line-height:1.6;max-width:580px">Precios en tiempo extendido para acciones EEUU, futuros de índices y cripto 24h. Datos vía Finnhub.</div>
+        <div style="font-size:0.95rem;color:var(--muted);line-height:1.7;max-width:640px;margin-bottom:1.25rem">Precios en tiempo extendido para acciones EEUU, índices y cripto 24h.</div>
+        <div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid #a855f7;padding:1.1rem 1.25rem">
+          <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#a855f7;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">¿Qué es el pre y after market?</div>
+          <div style="font-size:0.9rem;color:var(--muted);line-height:1.75">
+            El mercado regular de EEUU opera entre las <strong style="color:var(--text)">9:30 AM y las 4:00 PM ET</strong> (10:30 AM – 5:00 PM en Argentina). Fuera de ese horario, el mercado sigue funcionando con menor volumen en dos sesiones:<br><br>
+            <strong style="color:var(--text)">Pre-market (4:00–9:30 AM ET)</strong> — antes de la apertura. Los precios reflejan reacciones a noticias overnight: earnings publicados después del cierre, datos macro de Asia o Europa, o eventos geopolíticos. El volumen es bajo, así que los movimientos pueden ser exagerados.<br><br>
+            <strong style="color:var(--text)">After-market (4:00–8:00 PM ET)</strong> — después del cierre. La mayoría de las empresas del S&P 500 publican sus resultados trimestrales (earnings) en este horario, lo que genera los movimientos más bruscos del día. NVDA, AAPL, TSLA mueven entre 5% y 20% en after-hours cuando reportan.<br><br>
+            <strong style="color:var(--text)">Para el inversor de CEDEARs:</strong> los movimientos del after/pre impactan directamente en el precio del CEDEAR al día siguiente, cuando abre el BCBA. Seguir este panel te permite anticipar la apertura.
+          </div>
+        </div>
       </div>
       <!-- STATUS BAR -->
       <div id="pmStatusBar" style="background:var(--surface);border:1px solid var(--border2);padding:0.65rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:0.62rem">
@@ -2356,7 +2376,7 @@ async function loadPremarketData() {
   }).join('');
 
   // Futures — parallel
-  var futureSyms = ['ES1!','NQ1!','YM1!','GC1!','CL1!'];
+  var futureSyms = ['SPY','QQQ','DIA','GLD','USO'];
   var futureLabels = [
     {label:'ES · S&P 500', desc:'E-mini S&P 500'},
     {label:'NQ · Nasdaq',  desc:'E-mini Nasdaq'},
@@ -3001,6 +3021,16 @@ function downloadPDF() {
     </div>
   </div>
 </div>
+
+
+
+<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;display:flex;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90vw">
+  <span style="color:var(--text)">Instalá <strong style="color:var(--gold)">Carry Note</strong> en tu pantalla de inicio</span>
+  <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
+  <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
+</div>
+
+
 </body></html>`);
   printWin.document.close();
 }
@@ -3735,8 +3765,7 @@ function exportCartPDF() {
     content.innerHTML +
     '<div class="disclaimer">\u26a0 Car\u00e1cter educativo e informativo. No constituye recomendaci\u00f3n de inversi\u00f3n ni asesoramiento financiero.</div>' +
     '<div class="footer"><span>Carry Note \u00b7 thecarrynote.com</span><span>' + today + '</span></div>' +
-    '<script>window.onload=function(){window.print();}<\/script>' +
-    '</body></html>');
+    '<script>window.onload=function(){window.print();}<\/script></body></html>');
   printWin.document.close();
 }
 
@@ -4429,7 +4458,6 @@ window.addEventListener('load', function(){
 <!-- CARTERA MODAL -->
 <div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
   <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
-    <!-- Header -->
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
       <div>
         <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
@@ -4437,20 +4465,58 @@ window.addEventListener('load', function(){
       </div>
       <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">✕</button>
     </div>
-    <!-- Content -->
     <div id="cartModalContent" style="padding:1.25rem;max-height:60vh;overflow-y:auto"></div>
-    <!-- Actions -->
     <div style="display:flex;gap:0.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border2);flex-wrap:wrap">
       <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Descargar PDF</button>
       <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp ↗</button>
       <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
       <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
     </div>
-    <!-- Disclaimer -->
     <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
       ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
     </div>
   </div>
 </div>
+
+<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90vw">
+  <span style="color:var(--text)">Instalá <strong style="color:var(--gold)">Carry Note</strong> en tu pantalla de inicio</span>
+  <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
+  <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
+</div>
+<script>
+var pwaPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  pwaPrompt = e;
+  var banner = document.getElementById('pwaInstallBanner');
+  if(banner) banner.style.display = 'flex';
+});
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('pwaInstallBtn');
+  if(btn) btn.addEventListener('click', function() {
+    if(pwaPrompt) {
+      pwaPrompt.prompt();
+      pwaPrompt.userChoice.then(function(r) {
+        if(r.outcome === 'accepted') {
+          document.getElementById('pwaInstallBanner').style.display = 'none';
+        }
+        pwaPrompt = null;
+      });
+    }
+  });
+});
+window.addEventListener('appinstalled', function() {
+  var banner = document.getElementById('pwaInstallBanner');
+  if(banner) banner.style.display = 'none';
+  pwaPrompt = null;
+});
+</script>
+<script>
+if('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('/sw.js').catch(function(e){ console.log('SW error:', e); });
+  });
+}
+</script>
 </body>
 </html>
