@@ -4263,6 +4263,368 @@ function renderCrossAlerts() {
   }).join('');
 }
 
+
+function showDiag(e) {
+  e && e.preventDefault();
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
+  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel'];
+  toHide.forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  document.querySelectorAll('#emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
+  var dp = document.getElementById('diagPanel');
+  if(dp) dp.style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('diagTab');
+  if(tab) tab.classList.add('active');
+  var assetsEl = document.getElementById('diagAssets');
+  var saved = getSavedPortfolio();
+  if(saved && saved.assets && saved.assets.length) {
+    loadSavedPortfolioIntoForm();
+    renderDailySummary();
+  } else if(assetsEl && assetsEl.children.length === 0) {
+    addAsset(); addAsset(); addAsset();
+  }
+  renderDiagHistory();
+}
+
+function updateRadarLarge() {
+  var signalEl  = document.getElementById('radarSignalLarge');
+  var alertsEl  = document.getElementById('radarAlertsLarge');
+  var positiveEl= document.getElementById('radarPositiveLarge');
+  var corrEl    = document.getElementById('radarCorrLarge');
+  var orbEl     = document.getElementById('radarOrbLarge');
+  var orbInner  = document.getElementById('radarOrbInnerLarge');
+  if(!signalEl) return;
+  var active = [], rows = [];
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){return x===null;})) return;
+    var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
+    var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
+    rows.push({name:p.name, avg:avg, color:p.color, active:match, level:p.level, desc:p.desc, assets:p.assets, dirs:p.dirs, intensity: getSignalIntensity(Math.abs(avg))});
+    if(match) active.push(p);
+  });
+  var alerts   = active.filter(function(s){return s.level==='alerta';});
+  var positive = active.filter(function(s){return s.level==='positivo'||s.level==='atencion';});
+  var tone, toneColor, orbColor, orbBorder;
+  if(alerts.length>=2)    { tone='Estrés de mercado — múltiples alertas activas';      toneColor='#e05252'; orbColor='rgba(224,82,82,0.2)';  orbBorder='#e05252'; }
+  else if(alerts.length)  { tone='Cautela — señal de riesgo detectada';                toneColor='#c9a84c'; orbColor='rgba(201,168,76,0.2)'; orbBorder='#c9a84c'; }
+  else if(positive.length>=2){ tone='Apetito de riesgo — momentum positivo generalizado'; toneColor='#4caf7d'; orbColor='rgba(76,175,125,0.2)'; orbBorder='#4caf7d'; }
+  else if(positive.length){ tone='Mercado mixto — señal positiva aislada';             toneColor='#5b8dee'; orbColor='rgba(91,141,238,0.2)'; orbBorder='#5b8dee'; }
+  else                    { tone='Sin señales claras — mercado lateral';               toneColor='#9d99a8'; orbColor='var(--surface2)';       orbBorder='var(--border)'; }
+  signalEl.textContent = tone;
+  signalEl.style.color = toneColor;
+  if(orbEl)    { orbEl.style.background=orbColor; orbEl.style.borderColor=orbBorder; }
+  if(orbInner) { orbInner.style.background=toneColor; }
+  alertsEl.innerHTML = alerts.length ? alerts.map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">' +
+      '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
+      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.2rem">'+s.name+'</div>' +
+      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
+  }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin alertas activas en este momento</div>';
+  positiveEl.innerHTML = positive.length ? positive.map(function(s){
+    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">' +
+      '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
+      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.2rem">'+s.name+'</div>' +
+      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
+  }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
+  // AI explanations
+  if(active.length && ANTHRO_KEY) { generateSignalExplanations(active, rows); }
+  // Show/hide forecast panel
+  var fw = document.getElementById('radarForecastWrap');
+  if(fw) fw.style.display = active.length ? 'block' : 'none';
+  rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
+  corrEl.innerHTML = rows.map(function(r){
+    var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
+    var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
+    var bg    = r.active ? 'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
+    var corrStat = _historicalLoaded ? getPatternCorrelation(r) : null;
+    var corrBadge = '';
+    if(corrStat) {
+      var cl = corrLabel(corrStat.r);
+      corrBadge = '<span style="font-family:var(--mono);font-size:0.52rem;color:'+cl.color+';border:1px solid '+cl.color+';padding:0.08rem 0.3rem;margin-left:0.4rem">r='+corrStat.r.toFixed(2)+'</span>';
+    }
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
+      '<div>' +
+        '<span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.4rem">('+r.assets.join(', ')+')</span>' +
+        corrBadge +
+      '</div>' +
+      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
+    '</div>';
+  }).join('');
+}
+
+
+function calcPearson(a, b) {
+  var n = Math.min(a.length, b.length);
+  if(n < 5) return null;
+  var ax = a.slice(-n), bx = b.slice(-n);
+  var meanA = ax.reduce(function(s,v){return s+v;},0)/n;
+  var meanB = bx.reduce(function(s,v){return s+v;},0)/n;
+  var cov = 0, varA = 0, varB = 0;
+  for(var i = 0; i < n; i++) {
+    var da = ax[i]-meanA, db = bx[i]-meanB;
+    cov += da*db; varA += da*da; varB += db*db;
+  }
+  cov /= n; varA /= n; varB /= n;
+  var denom = Math.sqrt(varA*varB);
+  if(denom === 0) return null;
+  return { r: cov/denom, cov: cov };
+}
+
+function getPatternCorrelation(pattern) {
+  if(pattern.assets.length < 2) return null;
+  var results = [];
+  for(var i = 0; i < pattern.assets.length - 1; i++) {
+    for(var j = i+1; j < pattern.assets.length; j++) {
+      var a = _historicalCache[pattern.assets[i]];
+      var b = _historicalCache[pattern.assets[j]];
+      if(!a || !b) continue;
+      var stat = calcPearson(a, b);
+      if(stat) results.push(stat);
+    }
+  }
+  if(!results.length) return null;
+  return {
+    r:   results.reduce(function(s,x){return s+x.r;},  0) / results.length,
+    cov: results.reduce(function(s,x){return s+x.cov;},0) / results.length
+  };
+}
+
+function calcSignalPersistence(pattern) {
+  var persistenceRates = [];
+  pattern.assets.forEach(function(sym) {
+    var returns = _historicalCache[sym];
+    if(!returns || returns.length < 5) return;
+    var consecutive = 0, total = returns.length - 1;
+    for(var i = 0; i < total; i++) {
+      var sameDir = (returns[i] > 0 && returns[i+1] > 0) || (returns[i] < 0 && returns[i+1] < 0);
+      if(sameDir) consecutive++;
+    }
+    persistenceRates.push(total > 0 ? consecutive / total : 0.5);
+  });
+  if(!persistenceRates.length) return null;
+  return Math.round(persistenceRates.reduce(function(s,v){ return s+v; }, 0) / persistenceRates.length * 100);
+}
+
+function calcReversalProb(pattern) {
+  var reversals = 0, streaks = 0;
+  pattern.assets.forEach(function(sym) {
+    var returns = _historicalCache[sym];
+    if(!returns || returns.length < 4) return;
+    for(var i = 0; i < returns.length - 2; i++) {
+      var d0 = returns[i] > 0 ? 1 : -1;
+      var d1 = returns[i+1] > 0 ? 1 : -1;
+      var d2 = returns[i+2] > 0 ? 1 : -1;
+      if(d0 === d1) { streaks++; if(d2 !== d1) reversals++; }
+    }
+  });
+  return streaks > 0 ? Math.round((reversals / streaks) * 100) : 40;
+}
+
+function getStatForecast(activeSignals) {
+  if(!_historicalLoaded || !activeSignals.length) return null;
+  var results = activeSignals.map(function(s) {
+    var persistence = calcSignalPersistence(s) || 50;
+    var reversal    = calcReversalProb(s);
+    var corr        = getPatternCorrelation(s);
+    return { name: s.name, level: s.level, color: s.color, persistence: persistence, reversal: reversal,
+             corrStr: corr ? (corr.r * 100).toFixed(0) + '% corr.' : null };
+  });
+  var alertCount    = activeSignals.filter(function(s){ return s.level === 'alerta'; }).length;
+  var positiveCount = activeSignals.filter(function(s){ return s.level === 'positivo'; }).length;
+  var direction = alertCount > positiveCount ? 'bajista' : positiveCount > alertCount ? 'alcista' : 'neutral';
+  var avgPersistence = Math.round(results.reduce(function(s,r){ return s + r.persistence; }, 0) / results.length);
+  return { signals: results, direction: direction, avgPersistence: avgPersistence };
+}
+
+async function generateForecast() {
+  var btn = document.getElementById('forecastBtn');
+  var statEl = document.getElementById('radarStatForecast');
+  var aiEl   = document.getElementById('radarAIForecast');
+  if(!statEl || !aiEl) return;
+  if(btn) { btn.disabled = true; btn.textContent = 'Calculando...'; }
+  var activeSignals = [];
+  var allRows = [];
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){ return x === null; })) return;
+    var avg = pcts.reduce(function(a,b){ return a+b; }, 0) / pcts.length;
+    var match = pcts.every(function(pct,i){ return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
+    allRows.push({name:p.name, avg:avg, active:match, assets:p.assets, level:p.level, color:p.color, dirs:p.dirs});
+    if(match) activeSignals.push(p);
+  });
+  if(!activeSignals.length) {
+    if(statEl) statEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem">No hay señales activas para generar un pronóstico.</div>';
+    if(btn) { btn.disabled = false; btn.textContent = 'Generar análisis ▸'; }
+    return;
+  }
+  var statForecast = getStatForecast(activeSignals);
+  if(statForecast) {
+    var dirColor = statForecast.direction === 'bajista' ? 'var(--red)' : statForecast.direction === 'alcista' ? 'var(--green)' : 'var(--gold)';
+    var dirArrow = statForecast.direction === 'bajista' ? '▼' : statForecast.direction === 'alcista' ? '▲' : '→';
+    statEl.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;border:1px solid var(--border2);margin-bottom:0.75rem">' +
+        '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
+          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Sesión probable</div>' +
+          '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:'+dirColor+'">' + dirArrow + ' ' + statForecast.direction.charAt(0).toUpperCase() + statForecast.direction.slice(1) + '</div>' +
+        '</div>' +
+        '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
+          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Persistencia</div>' +
+          '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--gold)">' + statForecast.avgPersistence + '%</div>' +
+          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">prob. que continúe</div>' +
+        '</div>' +
+        '<div style="padding:1rem">' +
+          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Señales</div>' +
+          '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text)">' + activeSignals.length + '</div>' +
+          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' +
+            activeSignals.filter(function(s){return s.level==='alerta';}).length + ' alertas · ' +
+            activeSignals.filter(function(s){return s.level==='positivo';}).length + ' positivas' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border2)">' +
+      statForecast.signals.map(function(s) {
+        var persColor = s.persistence >= 60 ? 'var(--gold)' : s.persistence >= 40 ? 'var(--muted)' : 'var(--muted2)';
+        var revColor  = s.reversal >= 50 ? 'var(--red)' : 'var(--green)';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.9rem;border-bottom:1px solid var(--border2)">' +
+          '<span style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + '">● ' + s.name + '</span>' +
+          '<div style="display:flex;gap:1rem;font-family:var(--mono);font-size:0.62rem">' +
+            '<span style="color:'+persColor+'">' + s.persistence + '% persiste</span>' +
+            '<span style="color:'+revColor+'">' + s.reversal + '% reversión</span>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>';
+  }
+  if(!ANTHRO_KEY) {
+    if(aiEl) aiEl.innerHTML = '<div style="color:var(--muted2);font-size:0.72rem;margin-top:0.75rem">Cargá tu API key en el editor para el análisis de IA.</div>';
+    if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
+    return;
+  }
+  if(aiEl) aiEl.innerHTML = '<div style="color:var(--gold);font-size:0.7rem;margin-top:0.75rem">Generando análisis IA...</div>';
+  var statSummary = statForecast ?
+    'dirección ' + statForecast.direction + ', persistencia ' + statForecast.avgPersistence + '%, ' +
+    statForecast.signals.map(function(s){ return s.name + ' ' + s.persistence + '% persiste'; }).join(', ')
+    : 'sin datos';
+  var mktContext = activeSignals.map(function(s){
+    var pcts = s.assets.map(getTickerChange).filter(function(v){ return v!==null; });
+    var avg = pcts.length ? pcts.reduce(function(a,b){return a+b;},0)/pcts.length : 0;
+    return s.name + ' (' + (avg>=0?'+':'') + avg.toFixed(2) + '%)';
+  }).join(', ');
+  var rpEl = document.getElementById('arg-riesgo');
+  var rpStr = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : 'N/D';
+  var prompt = 'Eres un analista explicando a un inversor argentino sin experiencia tecnica.' +
+    ' Señales activas: ' + mktContext +
+    ' | Modelo estadistico: ' + statSummary +
+    ' | Riesgo pais: ' + rpStr +
+    ' | Escribe en español simple 3 parrafos cortos:' +
+    ' 1) Que esta pasando hoy (1-2 oraciones).' +
+    ' 2) Que es probable que pase en 24-48hs segun las correlaciones historicas.' +
+    ' 3) Que considerar si tenes pesos, dolares y CEDEARs.' +
+    ' Aclara siempre que son aproximaciones estadisticas, no predicciones.';
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHRO_KEY,
+                 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }] })
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
+    if(aiEl) {
+      aiEl.innerHTML = '<div style="margin-top:0.75rem">' +
+        txt.split('\n').filter(function(l){ return l.trim(); }).map(function(p) {
+          return '<p style="font-size:0.88rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.75rem">' + p + '</p>';
+        }).join('') + '</div>';
+    }
+  } catch(e) {
+    if(aiEl) aiEl.innerHTML = '<div style="color:var(--red);font-size:0.7rem;margin-top:0.5rem">Error: ' + e.message + '</div>';
+  }
+  if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
+}
+
+
+function showRadar(e) {
+  e && e.preventDefault();
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.style.display = 'none';
+  });
+  document.getElementById('radarPanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  document.getElementById('radarTab').classList.add('active');
+  updateRadarLarge();
+  renderFearGreed();
+  renderCrossAlerts();
+  var corrStatus = document.getElementById('corrLoadStatus');
+  if(!_historicalLoaded) {
+    if(corrStatus) corrStatus.textContent = 'cargando datos históricos...';
+    loadHistoricalData().then(function() {
+      if(corrStatus) corrStatus.textContent = '30 días · Pearson + Cov';
+      updateRadarLarge();
+    });
+  } else {
+    if(corrStatus) corrStatus.textContent = '30 días · Pearson + Cov';
+  }
+}
+
+function toggleRadarCat(id) {
+  var el = document.getElementById(id);
+  var arrow = document.getElementById(id + '_arrow');
+  if(!el) return;
+  var open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if(arrow) arrow.textContent = open ? '▸' : '▾';
+}
+
+document.addEventListener('click', function(e) {
+  var header = e.target.closest ? e.target.closest('.radar-cat-header') : null;
+  if(header && header.dataset.catid) toggleRadarCat(header.dataset.catid);
+});
+
+function showWatchlist(e){
+  e&&e.preventDefault();
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
+  document.getElementById('watchlistPanel').style.display='block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
+  document.getElementById('watchlistTab').classList.add('active');
+  renderWatchlist();
+}
+
+function showSobre(e){
+  e&&e.preventDefault();
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
+  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
+  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
+  document.getElementById('sobrePanel').style.display='block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
+  document.getElementById('sobreTab').classList.add('active');
+}
+
+
 window.addEventListener('load', function(){
   // Check for editor URL param: ?editor=true
   if(new URLSearchParams(window.location.search).get('editor') === 'true') {
