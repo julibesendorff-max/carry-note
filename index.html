@@ -2939,6 +2939,88 @@ async function generateRadarSuggestion() {
   btn.disabled = false; btn.textContent = 'Actualizar análisis ▸';
 }
 
+
+// ── EXPLICACIONES DINÁMICAS DE SEÑALES ───────────────────────
+var _lastSignalKey = null;
+
+async function generateSignalExplanations(activeSignals, allRows) {
+  if(!ANTHRO_KEY) return;
+  if(!activeSignals.length) return;
+
+  // Build a key to avoid regenerating for same signals
+  var signalKey = activeSignals.map(function(s){ return s.name; }).sort().join('|');
+  if(signalKey === _lastSignalKey) return;
+  _lastSignalKey = signalKey;
+
+  // Build context with real numbers
+  var context = allRows.map(function(r) {
+    var arrow = r.avg > 0 ? '+' : '';
+    return r.name + ': ' + arrow + r.avg.toFixed(2) + '%' + (r.active ? ' (ACTIVA)' : '');
+  }).join(' | ');
+
+  var signalList = activeSignals.map(function(s) {
+    return s.level.toUpperCase() + ': ' + s.name + ' (' + s.assets.join('+') + ')';
+  }).join(', ');
+
+  var prompt = 'Contexto del mercado ahora mismo: ' + context + ' ||| ' + 'Se\u00f1ales activas: ' + signalList + ' ||| ' + 'Por cada se\u00f1al activa escrib\u00ed UNA oraci\u00f3n corta (m\u00e1ximo 25 palabras) en espa\u00f1ol' + ' que explique qu\u00e9 significa para alguien que invierte en Argentina pero no es experto en finanzas.' + ' Us\u00e1 lenguaje cotidiano, evit\u00e1 t\u00e9rminos t\u00e9cnicos.' + ' Empez\u00e1 con la explicaci\u00f3n, sin mencionar el nombre de la se\u00f1al.' + ' Una l\u00ednea por se\u00f1al, en el mismo orden.';
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': ANTHRO_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 400,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    if(!res.ok) return;
+    var data = await res.json();
+    var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
+    if(!txt) return;
+
+    var lines = txt.split('\n').filter(function(l){ return l.trim(); });
+    var alertsEl   = document.getElementById('radarAlertsLarge');
+    var positiveEl = document.getElementById('radarPositiveLarge');
+
+    var alerts   = activeSignals.filter(function(s){ return s.level === 'alerta'; });
+    var positive = activeSignals.filter(function(s){ return s.level === 'positivo' || s.level === 'atencion'; });
+
+    var lineIdx = 0;
+    // Update alerts
+    if(alertsEl && alerts.length) {
+      alertsEl.innerHTML = alerts.map(function(s) {
+        var explanation = lines[lineIdx++] || s.desc;
+        return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">' +
+          '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
+          '<div>' +
+            '<div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.25rem">' + s.name + '</div>' +
+            '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">' + explanation + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+    // Update positives
+    if(positiveEl && positive.length) {
+      positiveEl.innerHTML = positive.map(function(s) {
+        var explanation = lines[lineIdx++] || s.desc;
+        return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">' +
+          '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
+          '<div>' +
+            '<div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.25rem">' + s.name + '</div>' +
+            '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">' + explanation + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+  } catch(e) { console.log('Signal explain error:', e); }
+}
+
 function showRadar(e) {
   e && e.preventDefault();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -3007,16 +3089,22 @@ function updateRadarLarge() {
   if(orbInner) { orbInner.style.background=toneColor; }
 
   alertsEl.innerHTML = alerts.length ? alerts.map(function(s){
-    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.6rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2)">' +
-      '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:1px">●</span>' +
-      '<span style="font-family:var(--mono);font-size:0.82rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</span></div>';
+    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">' +
+      '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
+      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.2rem">'+s.name+'</div>' +
+      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
   }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin alertas activas en este momento</div>';
 
   positiveEl.innerHTML = positive.length ? positive.map(function(s){
-    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.6rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2)">' +
-      '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:1px">●</span>' +
-      '<span style="font-family:var(--mono);font-size:0.82rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</span></div>';
+    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">' +
+      '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
+      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.2rem">'+s.name+'</div>' +
+      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
   }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
+  // Generate dynamic AI explanations if there are active signals and API key is available
+  if(active.length && ANTHRO_KEY) {
+    generateSignalExplanations(active, rows);
+  }
 
   rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
   corrEl.innerHTML = rows.map(function(r){
