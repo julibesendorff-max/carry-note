@@ -3024,11 +3024,20 @@ function updateRadarLarge() {
     var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
     var bg    = r.active ? 'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
     var inten = r.intensity || {dot:'●○○'};
+    // Get historical correlation if available
+    var corrStat = _historicalLoaded ? getPatternCorrelation(r) : null;
+    var corrBadge = '';
+    if(corrStat) {
+      var cl = corrLabel(corrStat.r);
+      var covStr = (corrStat.cov * 10000).toFixed(2);
+      corrBadge = '<span style="font-family:var(--mono);font-size:0.52rem;color:'+cl.color+';border:1px solid '+cl.color+';padding:0.08rem 0.3rem;margin-left:0.4rem" title="Pearson r='+corrStat.r.toFixed(2)+' · Cov='+covStr+'">r='+corrStat.r.toFixed(2)+'</span>';
+    }
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
       '<div>' +
         '<span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
-        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.5rem">('+r.assets.join(', ')+')</span>' +
-        (r.active ? '<span style="font-family:var(--mono);font-size:0.58rem;color:'+r.intensity.color+';margin-left:0.5rem">'+inten.dot+'</span>' : '') +
+        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.4rem">('+r.assets.join(', ')+')</span>' +
+        corrBadge +
+        (r.active ? '<span style="font-family:var(--mono);font-size:0.58rem;color:'+r.intensity.color+';margin-left:0.4rem">'+inten.dot+'</span>' : '') +
       '</div>' +
       '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
     '</div>';
@@ -3082,6 +3091,88 @@ function updateClock(){
 // ── INIT ─────────────────────────────────────────────────────────────────
 
 // ── RADAR MACRO ────────────────────────────────────────────
+
+// ── CORRELACIÓN HISTÓRICA (PEARSON + COVARIANZA) ─────────────
+var _historicalCache = {};
+var _historicalLoaded = false;
+
+async function fetchHistoricalReturns(sym, days) {
+  if(_historicalCache[sym]) return _historicalCache[sym];
+  try {
+    var to   = Math.floor(Date.now() / 1000);
+    var from = to - (days + 10) * 86400;
+    var finnMap = {spx:'SPY',ndx:'QQQ',vix:'VIXY',tlt:'TLT',wti:'USO',gld:'GLD',
+                   btc:'BINANCE:BTCUSDT',nvda:'NVDA',tsla:'TSLA',ypf:'YPF',ggal:'GGAL',eem:'EEM'};
+    var finnSym = finnMap[sym] || sym.toUpperCase();
+    var res = await fetch(
+      'https://finnhub.io/api/v1/stock/candle?symbol=' + encodeURIComponent(finnSym) +
+      '&resolution=D&from=' + from + '&to=' + to + '&token=' + FINNHUB_KEY
+    );
+    if(!res.ok) return null;
+    var d = await res.json();
+    if(!d.c || d.c.length < 5) return null;
+    var returns = [];
+    for(var i = 1; i < d.c.length; i++) {
+      returns.push((d.c[i] - d.c[i-1]) / d.c[i-1]);
+    }
+    _historicalCache[sym] = returns.slice(-days);
+    return _historicalCache[sym];
+  } catch(e) { return null; }
+}
+
+function calcPearson(a, b) {
+  var n = Math.min(a.length, b.length);
+  if(n < 5) return null;
+  var ax = a.slice(-n), bx = b.slice(-n);
+  var meanA = ax.reduce(function(s,v){return s+v;},0)/n;
+  var meanB = bx.reduce(function(s,v){return s+v;},0)/n;
+  var cov = 0, varA = 0, varB = 0;
+  for(var i = 0; i < n; i++) {
+    var da = ax[i]-meanA, db = bx[i]-meanB;
+    cov  += da*db; varA += da*da; varB += db*db;
+  }
+  cov /= n; varA /= n; varB /= n;
+  var denom = Math.sqrt(varA*varB);
+  if(denom === 0) return null;
+  return { r: cov/denom, cov: cov };
+}
+
+async function loadHistoricalData() {
+  if(_historicalLoaded) return;
+  var syms = ['spx','ndx','vix','tlt','wti','gld','btc','nvda','tsla','ypf','ggal','eem'];
+  for(var i = 0; i < syms.length; i++) {
+    await fetchHistoricalReturns(syms[i], 30);
+    await new Promise(function(r){ setTimeout(r, 250); });
+  }
+  _historicalLoaded = true;
+}
+
+function getPatternCorrelation(pattern) {
+  if(pattern.assets.length < 2) return null;
+  var results = [];
+  for(var i = 0; i < pattern.assets.length - 1; i++) {
+    for(var j = i+1; j < pattern.assets.length; j++) {
+      var a = _historicalCache[pattern.assets[i]];
+      var b = _historicalCache[pattern.assets[j]];
+      if(!a || !b) continue;
+      var stat = calcPearson(a, b);
+      if(stat) results.push(stat);
+    }
+  }
+  if(!results.length) return null;
+  return {
+    r:   results.reduce(function(s,x){return s+x.r;},  0) / results.length,
+    cov: results.reduce(function(s,x){return s+x.cov;},0) / results.length
+  };
+}
+
+function corrLabel(r) {
+  var abs = Math.abs(r);
+  if(abs >= 0.7) return {label:'Alta',     color:'var(--green)'};
+  if(abs >= 0.4) return {label:'Moderada', color:'var(--gold)'};
+  return               {label:'Baja',     color:'var(--muted2)'};
+}
+
 var RADAR_PATTERNS = [
   // ── RÉGIMEN DE RIESGO ────────────────────────────────────
   {name:'Risk-off global',       cat:'Régimen de riesgo',
