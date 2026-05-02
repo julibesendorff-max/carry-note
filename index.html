@@ -425,7 +425,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <span class="t-item"><span class="t-lbl">NVDA</span><span class="t-val" id="t-nvda"> —</span><span id="t-nvda-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">TSLA</span><span class="t-val" id="t-tsla"> —</span><span id="t-tsla-c"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">YPF</span><span class="t-val" id="t-ypf"> —</span><span id="t-ypf-c"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal"> —</span><span id="t-ggal-c"> —</span></span>
+    <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal"> —</span><span id="t-ggal-c"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EEM</span><span class="t-val" id="t-eem"> —</span><span id="t-eem-c"> —</span></span>
     <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur"> —</span><span id="t-eur-c"> —</span></span>
     <span class="t-sep">·</span>
@@ -441,7 +442,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
     <span class="t-item"><span class="t-lbl">NVDA</span><span class="t-val" id="t-nvda2"> —</span><span id="t-nvda-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">TSLA</span><span class="t-val" id="t-tsla2"> —</span><span id="t-tsla-c2"> —</span></span><span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">YPF</span><span class="t-val" id="t-ypf2"> —</span><span id="t-ypf-c2"> —</span></span><span class="t-sep">·</span>
-    <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal2"> —</span><span id="t-ggal-c2"> —</span></span>
+    <span class="t-item"><span class="t-lbl">GGAL</span><span class="t-val" id="t-ggal2"> —</span><span id="t-ggal-c2"> —</span></span><span class="t-sep">·</span>
+    <span class="t-item"><span class="t-lbl">EEM</span><span class="t-val" id="t-eem2"> —</span><span id="t-eem-c2"> —</span></span>
     <span class="t-sep">·</span>
     <span class="t-item"><span class="t-lbl">EUR/USD</span><span class="t-val" id="t-eur2"> —</span><span id="t-eur-c2"> —</span></span>
     <span class="t-sep">·</span>
@@ -1416,6 +1418,7 @@ const tickerSymbols = [
   { id:'tsla', sym:'TSLA',            lbl:'TSLA',    fmt:'price'  },
   { id:'ypf',  sym:'YPF',             lbl:'YPF',     fmt:'price'  },
   { id:'ggal', sym:'GGAL',            lbl:'GGAL',    fmt:'price'  },
+  { id:'eem',  sym:'EEM',             lbl:'EEM',     fmt:'price'  },
 ];
 
 async function fetchQuote(symbol) {
@@ -1533,6 +1536,15 @@ async function loadTicker() {
     // Update cross alerts if radar is open
     var rp = document.getElementById('radarPanel');
     if(rp && rp.style.display !== 'none') renderCrossAlerts();
+    // Update EEM in sidebar
+    var eemEl = document.getElementById('sb-eem');
+    var eemPrice = document.getElementById('t-eem');
+    var eemChg = document.getElementById('t-eem-c');
+    if(eemEl && eemPrice && eemPrice.textContent.trim() !== '—') {
+      var eemPct = eemChg ? eemChg.textContent.trim() : '';
+      eemEl.textContent = eemPrice.textContent.trim() + ' ' + eemPct;
+      eemEl.className = 'ind-v ' + (eemChg && eemChg.className === 't-up' ? 'up' : eemChg && eemChg.className === 't-dn' ? 'dn' : 'neu');
+    }
     // Update mobile market widget
     setTimeout(updateMobMarket, 300);
   } catch(e) {
@@ -4155,6 +4167,8 @@ var ASSET_RADAR_MAP = {
   'pamp':         ['Inflow Argentina','Oil shock'],
   'txar':         ['Inflow Argentina','Outflow Argentina'],
   'come':         ['Inflow Argentina','Outflow Argentina'],
+  // ETFs emergentes
+  'eem_etf':      ['Rally emergentes','Salida de emergentes','Risk-on global','Risk-off global'],
 };
 
 function getCrossAlerts() {
