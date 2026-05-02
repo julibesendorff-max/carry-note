@@ -1155,10 +1155,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
       </div>
 
       <!-- FORECAST PANEL -->
-      <div id="radarForecastWrap" style="display:none;margin-bottom:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center">
-          <span>Pronóstico probabilista · 24-48hs</span>
-          <button onclick="generateForecast()" id="forecastBtn" style="font-family:var(--mono);font-size:0.58rem;color:var(--gold);background:none;border:1px solid var(--gold);cursor:pointer;padding:0.2rem 0.6rem;letter-spacing:0.06em">Generar ▸</button>
+      <div id="radarForecastWrap" style="display:none;margin-bottom:1.5rem;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem">Pronóstico probabilista</div>
+            <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text);line-height:1.1">Qué esperar en las próximas 24-48hs</div>
+          </div>
+          <button onclick="generateForecast()" id="forecastBtn" style="font-family:var(--mono);font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.25rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap;flex-shrink:0">Generar análisis ▸</button>
         </div>
         <div id="radarStatForecast" style="margin-bottom:1rem"></div>
         <div id="radarAIForecast" style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);line-height:1.7"></div>
@@ -2960,23 +2963,32 @@ async function generateSignalExplanations(activeSignals, allRows) {
   if(!ANTHRO_KEY) return;
   if(!activeSignals.length) return;
 
-  // Build a key to avoid regenerating for same signals
   var signalKey = activeSignals.map(function(s){ return s.name; }).sort().join('|');
   if(signalKey === _lastSignalKey) return;
   _lastSignalKey = signalKey;
 
-  // Build context with real numbers
-  var context = allRows.map(function(r) {
-    var arrow = r.avg > 0 ? '+' : '';
-    return r.name + ': ' + arrow + r.avg.toFixed(2) + '%' + (r.active ? ' (ACTIVA)' : '');
+  // Order: alerts first, then positives — same order as displayed
+  var alerts2   = activeSignals.filter(function(s){ return s.level === 'alerta'; });
+  var positive2 = activeSignals.filter(function(s){ return s.level !== 'alerta'; });
+  var ordered   = alerts2.concat(positive2);
+
+  // Build context with actual movements
+  var context = ordered.map(function(s) {
+    var pcts = s.assets.map(getTickerChange).filter(function(v){ return v !== null; });
+    var avg = pcts.length ? pcts.reduce(function(a,b){return a+b;},0)/pcts.length : 0;
+    return s.name + ' (' + s.assets.join('+') + ' ' + (avg>=0?'+':'') + avg.toFixed(2) + '%)';
   }).join(' | ');
 
-  var signalList = activeSignals.map(function(s) {
-    return s.level.toUpperCase() + ': ' + s.name + ' (' + s.assets.join('+') + ')';
-  }).join(', ');
+  var signalDetails = ordered.map(function(s, i) {
+    return (i+1) + '. ' + s.name + ': ' + s.assets.join('+');
+  }).join(' | ');
 
-  var signalDetails = activeSignals.map(function(s,i){ return (i+1)+'. '+s.name+': activos '+s.assets.join('+'); }).join(' | ');
-  var prompt = 'Situaci\u00f3n actual del mercado: ' + context + ' ||| ' + 'Se\u00f1ales detectadas: ' + signalDetails + ' ||| ' + 'Para CADA se\u00f1al numerada, escrib\u00ed exactamente una oraci\u00f3n corta (m\u00e1ximo 20 palabras) en espa\u00f1ol' + ' que explique qu\u00e9 significa esa se\u00f1al espec\u00edfica para alguien que ahorra e invierte en Argentina.' + ' Us\u00e1 lenguaje simple y concreto. NO mezcles las se\u00f1ales.' + ' Respond\u00e9 SOLO con las oraciones numeradas: 1. [explicaci\u00f3n] 2. [explicaci\u00f3n] etc.';
+  var prompt = 'Señales activas: ' + context +
+    ' ||| Lista: ' + signalDetails +
+    ' ||| Escribí UNA oración (máximo 20 palabras) para CADA número.' +
+    ' Explicá qué significa ESA señal específica (no otra) para un inversor argentino.' +
+    ' Sin jerga. Sin mencionar el nombre de la señal.' +
+    ' Respondé SOLO: 1. [oración] 2. [oración] etc.';
 
   try {
     var res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2998,448 +3010,38 @@ async function generateSignalExplanations(activeSignals, allRows) {
     var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
     if(!txt) return;
 
-    var lines = txt.split('\n').filter(function(l){ return l.trim(); });
     var alertsEl   = document.getElementById('radarAlertsLarge');
     var positiveEl = document.getElementById('radarPositiveLarge');
 
-    var alerts   = activeSignals.filter(function(s){ return s.level === 'alerta'; });
-    var positive = activeSignals.filter(function(s){ return s.level === 'positivo' || s.level === 'atencion'; });
+    // Parse numbered lines
+    var lines = txt.split('\n').filter(function(l){ return l.trim(); }).map(function(l){ return l.replace(/^[0-9]+[.)]\s*/, '').trim(); }).filter(function(l){ return l; });
+    var numbered = lines.length > 0
+    var lines = txt.split('\n').map(function(l){ return l.replace(/^[0-9]+[.):]\s*/, '').trim(); }).filter(function(l){ return l.length > 5; });
 
     var lineIdx = 0;
-    // Update alerts
-    if(alertsEl && alerts.length) {
-      alertsEl.innerHTML = alerts.map(function(s) {
+
+    if(alertsEl && alerts2.length) {
+      alertsEl.innerHTML = alerts2.map(function(s) {
         var explanation = lines[lineIdx++] || s.desc;
         return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">' +
           '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
-          '<div>' +
-            '<div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.25rem">' + s.name + '</div>' +
-            '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">' + explanation + '</div>' +
-          '</div>' +
-        '</div>';
+          '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.25rem">' + s.name + '</div>' +
+          '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">' + explanation + '</div></div></div>';
       }).join('');
     }
-    // Update positives
-    if(positiveEl && positive.length) {
-      positiveEl.innerHTML = positive.map(function(s) {
+
+    if(positiveEl && positive2.length) {
+      positiveEl.innerHTML = positive2.map(function(s) {
         var explanation = lines[lineIdx++] || s.desc;
         return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">' +
           '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
-          '<div>' +
-            '<div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.25rem">' + s.name + '</div>' +
-            '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">' + explanation + '</div>' +
-          '</div>' +
-        '</div>';
+          '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.25rem">' + s.name + '</div>' +
+          '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">' + explanation + '</div></div></div>';
       }).join('');
     }
   } catch(e) { console.log('Signal explain error:', e); }
 }
 
-
-// ── MODELO DE PERSISTENCIA ESTADÍSTICA ───────────────────────
-function calcSignalPersistence(pattern) {
-  // For each asset in the pattern, check how many times in the last 30 days
-  // consecutive daily returns had the same sign (persistence)
-  var persistenceRates = [];
-  pattern.assets.forEach(function(sym) {
-    var returns = _historicalCache[sym];
-    if(!returns || returns.length < 5) return;
-    var consecutive = 0, total = returns.length - 1;
-    for(var i = 0; i < total; i++) {
-      var sameDir = (returns[i] > 0 && returns[i+1] > 0) || (returns[i] < 0 && returns[i+1] < 0);
-      if(sameDir) consecutive++;
-    }
-    persistenceRates.push(total > 0 ? consecutive / total : 0.5);
-  });
-  if(!persistenceRates.length) return null;
-  var avg = persistenceRates.reduce(function(s,v){ return s+v; }, 0) / persistenceRates.length;
-  return Math.round(avg * 100);
-}
-
-function calcReversalProb(pattern) {
-  // Check how many times after 2+ consecutive same-direction days, next day reversed
-  var reversals = 0, streaks = 0;
-  pattern.assets.forEach(function(sym) {
-    var returns = _historicalCache[sym];
-    if(!returns || returns.length < 4) return;
-    for(var i = 0; i < returns.length - 2; i++) {
-      var d0 = returns[i] > 0 ? 1 : -1;
-      var d1 = returns[i+1] > 0 ? 1 : -1;
-      var d2 = returns[i+2] > 0 ? 1 : -1;
-      if(d0 === d1) { // streak of 2
-        streaks++;
-        if(d2 !== d1) reversals++; // reversed on day 3
-      }
-    }
-  });
-  return streaks > 0 ? Math.round((reversals / streaks) * 100) : 40;
-}
-
-function getStatForecast(activeSignals, allRows) {
-  if(!_historicalLoaded || !activeSignals.length) return null;
-  var results = activeSignals.map(function(s) {
-    var persistence = calcSignalPersistence(s) || 50;
-    var reversal    = calcReversalProb(s);
-    var corr        = getPatternCorrelation(s);
-    var corrStr     = corr ? (corr.r * 100).toFixed(0) + '% correlación hist.' : null;
-    return {
-      name:        s.name,
-      level:       s.level,
-      color:       s.color,
-      persistence: persistence,
-      reversal:    reversal,
-      corrStr:     corrStr
-    };
-  });
-  // Overall market direction
-  var alertCount    = activeSignals.filter(function(s){ return s.level === 'alerta'; }).length;
-  var positiveCount = activeSignals.filter(function(s){ return s.level === 'positivo'; }).length;
-  var direction = alertCount > positiveCount ? 'bajista' :
-                  positiveCount > alertCount  ? 'alcista' : 'neutral';
-  var avgPersistence = Math.round(
-    results.reduce(function(s,r){ return s + r.persistence; }, 0) / results.length
-  );
-  return { signals: results, direction: direction, avgPersistence: avgPersistence };
-}
-
-
-// ── GENERADOR DE PRONÓSTICO ───────────────────────────────────
-async function generateForecast() {
-  var btn = document.getElementById('forecastBtn');
-  var statEl = document.getElementById('radarStatForecast');
-  var aiEl   = document.getElementById('radarAIForecast');
-  var wrap   = document.getElementById('radarForecastWrap');
-  if(!statEl || !aiEl) return;
-  if(btn) { btn.disabled = true; btn.textContent = 'Calculando...'; }
-
-  // Get active signals
-  var activeSignals = [];
-  var allRows = [];
-  RADAR_PATTERNS.forEach(function(p) {
-    var pcts = p.assets.map(getTickerChange);
-    if(pcts.some(function(x){ return x === null; })) return;
-    var avg = pcts.reduce(function(a,b){ return a+b; }, 0) / pcts.length;
-    var match = pcts.every(function(pct,i){ return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
-    allRows.push({name:p.name, avg:avg, active:match, assets:p.assets, level:p.level, color:p.color, dirs:p.dirs});
-    if(match) activeSignals.push(p);
-  });
-
-  if(!activeSignals.length) {
-    if(statEl) statEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem">No hay señales activas para generar un pronóstico en este momento.</div>';
-    if(btn) { btn.disabled = false; btn.textContent = 'Generar ▸'; }
-    return;
-  }
-
-  // ── Statistical forecast ──────────────────────────────────
-  var statForecast = getStatForecast(activeSignals, allRows);
-  if(statForecast) {
-    var dirColor = statForecast.direction === 'bajista' ? 'var(--red)' :
-                   statForecast.direction === 'alcista'  ? 'var(--green)' : 'var(--gold)';
-    var dirArrow = statForecast.direction === 'bajista' ? '▼' :
-                   statForecast.direction === 'alcista'  ? '▲' : '→';
-    statEl.innerHTML =
-      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;border:1px solid var(--border2);margin-bottom:0.75rem">' +
-        '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
-          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Sesión probable</div>' +
-          '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:'+dirColor+'">' + dirArrow + ' ' + statForecast.direction.charAt(0).toUpperCase() + statForecast.direction.slice(1) + '</div>' +
-        '</div>' +
-        '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
-          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Persistencia de señal</div>' +
-          '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--gold)">' + statForecast.avgPersistence + '%</div>' +
-          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">prob. que continúe</div>' +
-        '</div>' +
-        '<div style="padding:1rem">' +
-          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Señales activas</div>' +
-          '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text)">' + activeSignals.length + '</div>' +
-          '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' +
-            activeSignals.filter(function(s){return s.level==='alerta';}).length + ' alertas · ' +
-            activeSignals.filter(function(s){return s.level==='positivo';}).length + ' positivas' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border2)">' +
-      statForecast.signals.map(function(s) {
-        var persColor = s.persistence >= 60 ? 'var(--gold)' : s.persistence >= 40 ? 'var(--muted)' : 'var(--muted2)';
-        var revColor  = s.reversal >= 50 ? 'var(--red)' : 'var(--green)';
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.9rem;border-bottom:1px solid var(--border2)">' +
-          '<span style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + '">● ' + s.name + '</span>' +
-          '<div style="display:flex;gap:1rem;font-family:var(--mono);font-size:0.62rem">' +
-            '<span title="Probabilidad de que la señal persista mañana" style="color:' + persColor + '">' + s.persistence + '% persiste</span>' +
-            '<span title="Probabilidad de reversión después de 2 días consecutivos" style="color:' + revColor + '">' + s.reversal + '% reversión</span>' +
-            (s.corrStr ? '<span style="color:var(--muted2)">' + s.corrStr + '</span>' : '') +
-          '</div>' +
-        '</div>';
-      }).join('') + '</div>';
-  }
-
-  // ── AI narrative forecast ─────────────────────────────────
-  if(!ANTHRO_KEY) {
-    if(aiEl) { aiEl.innerHTML = '<div style="color:var(--muted2);font-size:0.72rem">Cargá tu API key en el editor para generar el análisis de IA.</div>'; }
-    if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
-    return;
-  }
-
-  if(aiEl) aiEl.innerHTML = '<div style="color:var(--gold);font-size:0.7rem">Generando análisis...···</div>';
-
-  var statSummary = statForecast ?
-    'Dirección estadística: ' + statForecast.direction +
-    ', persistencia promedio: ' + statForecast.avgPersistence + '%, ' +
-    statForecast.signals.map(function(s){ return s.name + ' persiste ' + s.persistence + '%'; }).join(', ')
-    : 'datos estadísticos no disponibles';
-
-  var mktContext = allRows.filter(function(r){ return r.active; })
-    .map(function(r){ return r.name + ' (' + (r.avg >= 0 ? '+' : '') + r.avg.toFixed(2) + '%)'; }).join(', ');
-
-  var rpEl = document.getElementById('arg-riesgo');
-  var rpStr = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : 'N/D';
-
-  var prompt =
-    'Eres un analista de mercados explicando la situacion actual a alguien que invierte sus ahorros en Argentina pero no es experto.' +
-    ' Señales activas hoy: ' + mktContext +
-    ' ||| Modelo estadístico: ' + statSummary +
-    ' ||| Riesgo país: ' + rpStr +
-    ' ||| Escribí en español simple 3 párrafos cortos:' +
-    ' 1) Qué está pasando hoy en los mercados (1-2 oraciones, sin jerga).' +
-    ' 2) Qué es probable que pase en las próximas 24-48hs según las correlaciones históricas (menciona el porcentaje de persistencia).' +
-    ' 3) Qué debería considerar un inversor argentino con pesos, dólares y CEDEARs.' +
-    ' Aclará siempre que son aproximaciones estadísticas, no predicciones.';
-
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': ANTHRO_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
-    var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
-    if(aiEl) {
-      aiEl.innerHTML = txt.split('\n').filter(function(l){ return l.trim(); }).map(function(p) {
-        return '<p style="font-size:0.88rem;color:#c8c4bc;line-height:1.75;margin-bottom:0.75rem">' + p + '</p>';
-      }).join('');
-    }
-  } catch(e) {
-    if(aiEl) aiEl.innerHTML = '<div style="color:var(--red);font-size:0.7rem">Error al generar el análisis: ' + e.message + '</div>';
-  }
-
-  if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
-}
-
-function showRadar(e) {
-  e && e.preventDefault();
-  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
-  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
-  setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
-  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
-  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
-  var wla=document.getElementById('wlAlertsLog'); if(wla) wla.style.display='none';
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
-    var el = document.getElementById(id); if(el) el.style.display = 'none';
-  });
-  document.getElementById('radarPanel').style.display = 'block';
-  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
-  document.getElementById('radarTab').classList.add('active');
-  updateRadarLarge();
-}
-
-
-function toggleRadarCat(id) {
-  var el = document.getElementById(id);
-  var arrow = document.getElementById(id + '_arrow');
-  if(!el) return;
-  var open = el.style.display !== 'none';
-  el.style.display = open ? 'none' : 'block';
-  if(arrow) arrow.textContent = open ? '▸' : '▾';
-}
-
-document.addEventListener('click', function(e) {
-  var header = e.target.closest ? e.target.closest('.radar-cat-header') : null;
-  if(header && header.dataset.catid) toggleRadarCat(header.dataset.catid);
-});
-
-function updateRadarLarge() {
-  var signalEl  = document.getElementById('radarSignalLarge');
-  var alertsEl  = document.getElementById('radarAlertsLarge');
-  var positiveEl= document.getElementById('radarPositiveLarge');
-  var corrEl    = document.getElementById('radarCorrLarge');
-  var orbEl     = document.getElementById('radarOrbLarge');
-  var orbInner  = document.getElementById('radarOrbInnerLarge');
-  if(!signalEl) return;
-
-  var active = [], rows = [];
-  RADAR_PATTERNS.forEach(function(p) {
-    var pcts = p.assets.map(getTickerChange);
-    if(pcts.some(function(x){return x===null;})) return;
-    var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
-    var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
-    rows.push({name:p.name, avg:avg, color:p.color, active:match, level:p.level, desc:p.desc, assets:p.assets});
-    if(match) active.push(p);
-  });
-
-  var alerts   = active.filter(function(s){return s.level==='alerta';});
-  var positive = active.filter(function(s){return s.level==='positivo'||s.level==='atencion';});
-  var tone, toneColor, orbColor, orbBorder;
-  if(alerts.length>=2)    { tone='Estrés de mercado — múltiples alertas activas';      toneColor='#e05252'; orbColor='rgba(224,82,82,0.2)';  orbBorder='#e05252'; }
-  else if(alerts.length)  { tone='Cautela — señal de riesgo detectada';                toneColor='#c9a84c'; orbColor='rgba(201,168,76,0.2)'; orbBorder='#c9a84c'; }
-  else if(positive.length>=2){ tone='Apetito de riesgo — momentum positivo generalizado'; toneColor='#4caf7d'; orbColor='rgba(76,175,125,0.2)'; orbBorder='#4caf7d'; }
-  else if(positive.length){ tone='Mercado mixto — señal positiva aislada';             toneColor='#5b8dee'; orbColor='rgba(91,141,238,0.2)'; orbBorder='#5b8dee'; }
-  else                    { tone='Sin señales claras — mercado lateral';               toneColor='#9d99a8'; orbColor='var(--surface2)';       orbBorder='var(--border)'; }
-
-  signalEl.textContent = tone;
-  signalEl.style.color = toneColor;
-  if(orbEl)    { orbEl.style.background=orbColor; orbEl.style.borderColor=orbBorder; }
-  if(orbInner) { orbInner.style.background=toneColor; }
-
-  alertsEl.innerHTML = alerts.length ? alerts.map(function(s){
-    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">' +
-      '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
-      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.2rem">'+s.name+'</div>' +
-      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
-  }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin alertas activas en este momento</div>';
-
-  positiveEl.innerHTML = positive.length ? positive.map(function(s){
-    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">' +
-      '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>' +
-      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.2rem">'+s.name+'</div>' +
-      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
-  }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
-  // Generate dynamic AI explanations if there are active signals and API key is available
-  if(active.length && ANTHRO_KEY) {
-    generateSignalExplanations(active, rows);
-  }
-  // Show/hide forecast panel
-  var fw = document.getElementById('radarForecastWrap');
-  if(fw) fw.style.display = active.length ? 'block' : 'none';
-
-  rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
-  corrEl.innerHTML = rows.map(function(r){
-    var arrow = r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
-    var cls   = r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
-    var bg    = r.active ? 'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color : 'border-left:2px solid var(--border2)';
-    var inten = r.intensity || {dot:'●○○'};
-    // Get historical correlation if available
-    var corrStat = _historicalLoaded ? getPatternCorrelation(r) : null;
-    var corrBadge = '';
-    if(corrStat) {
-      var cl = corrLabel(corrStat.r);
-      var covStr = (corrStat.cov * 10000).toFixed(2);
-      corrBadge = '<span style="font-family:var(--mono);font-size:0.52rem;color:'+cl.color+';border:1px solid '+cl.color+';padding:0.08rem 0.3rem;margin-left:0.4rem" title="Pearson r='+corrStat.r.toFixed(2)+' · Cov='+covStr+'">r='+corrStat.r.toFixed(2)+'</span>';
-    }
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">' +
-      '<div>' +
-        '<span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>' +
-        '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.4rem">('+r.assets.join(', ')+')</span>' +
-        corrBadge +
-        (r.active ? '<span style="font-family:var(--mono);font-size:0.58rem;color:'+r.intensity.color+';margin-left:0.4rem">'+inten.dot+'</span>' : '') +
-      '</div>' +
-      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span>' +
-    '</div>';
-  }).join('');
-}
-
-function showDiag(e) {
-  e && e.preventDefault();
-  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
-  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
-  setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
-  // Hide all content panels
-  var toHide = ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel'];
-  toHide.forEach(function(id){
-    var el = document.getElementById(id);
-    if(el) el.style.display = 'none';
-  });
-  document.querySelectorAll('#emptyState, #noResults').forEach(function(el){ el.style.display='none'; });
-  // Show diag panel
-  var dp = document.getElementById('diagPanel');
-  if(dp) dp.style.display = 'block';
-  else { console.error('diagPanel not found!'); return; }
-  // Update nav
-  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
-  var tab = document.getElementById('diagTab');
-  if(tab) tab.classList.add('active');
-  // Load saved portfolio or add defaults
-  var assetsEl = document.getElementById('diagAssets');
-  var saved = getSavedPortfolio();
-  if(saved && saved.assets && saved.assets.length) {
-    loadSavedPortfolioIntoForm();
-    renderDailySummary();
-  } else if(assetsEl && assetsEl.children.length === 0) {
-    addAsset(); addAsset(); addAsset();
-  }
-  renderDiagHistory();
-}
-
-// ── NEWSLETTER ────────────────────────────────────────────────────────────────
-// ── SEND NEWSLETTER ────────────────────────────────────────────────────────
-// ── CLOCK ─────────────────────────────────────────────────────────────────
-function updateClock(){
-  document.getElementById('live-clock').textContent=
-    new Date().toLocaleDateString('es-ES',{weekday:'short',day:'2-digit',month:'short',year:'numeric'})+
-    ' - '+new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-}
-// clock removed
-
-// ── INIT ─────────────────────────────────────────────────────────────────
-
-// ── RADAR MACRO ────────────────────────────────────────────
-
-// ── CORRELACIÓN HISTÓRICA (PEARSON + COVARIANZA) ─────────────
-var _historicalCache = {};
-var _historicalLoaded = false;
-
-async function fetchHistoricalReturns(sym, days) {
-  if(_historicalCache[sym]) return _historicalCache[sym];
-  try {
-    var to   = Math.floor(Date.now() / 1000);
-    var from = to - (days + 10) * 86400;
-    var finnMap = {spx:'SPY',ndx:'QQQ',vix:'VIXY',tlt:'TLT',wti:'USO',gld:'GLD',
-                   btc:'BINANCE:BTCUSDT',nvda:'NVDA',tsla:'TSLA',ypf:'YPF',ggal:'GGAL',eem:'EEM'};
-    var finnSym = finnMap[sym] || sym.toUpperCase();
-    var res = await fetch(
-      'https://finnhub.io/api/v1/stock/candle?symbol=' + encodeURIComponent(finnSym) +
-      '&resolution=D&from=' + from + '&to=' + to + '&token=' + FINNHUB_KEY
-    );
-    if(!res.ok) return null;
-    var d = await res.json();
-    if(!d.c || d.c.length < 5) return null;
-    var returns = [];
-    for(var i = 1; i < d.c.length; i++) {
-      returns.push((d.c[i] - d.c[i-1]) / d.c[i-1]);
-    }
-    _historicalCache[sym] = returns.slice(-days);
-    return _historicalCache[sym];
-  } catch(e) { return null; }
-}
-
-function calcPearson(a, b) {
-  var n = Math.min(a.length, b.length);
-  if(n < 5) return null;
-  var ax = a.slice(-n), bx = b.slice(-n);
-  var meanA = ax.reduce(function(s,v){return s+v;},0)/n;
-  var meanB = bx.reduce(function(s,v){return s+v;},0)/n;
-  var cov = 0, varA = 0, varB = 0;
-  for(var i = 0; i < n; i++) {
-    var da = ax[i]-meanA, db = bx[i]-meanB;
-    cov  += da*db; varA += da*da; varB += db*db;
-  }
-  cov /= n; varA /= n; varB /= n;
-  var denom = Math.sqrt(varA*varB);
-  if(denom === 0) return null;
-  return { r: cov/denom, cov: cov };
-}
 
 async function loadHistoricalData() {
   if(_historicalLoaded) return;
