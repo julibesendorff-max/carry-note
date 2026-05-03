@@ -367,6 +367,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   gtag('js', new Date());
   gtag('config', 'G-440VXYB2BJ');
 </script>
+<script>
+// Unregister any broken service workers
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for(var r of registrations) { r.unregister(); }
+  });
+}
+</script>
 </head>
 <body>
 
@@ -3968,13 +3976,7 @@ window.addEventListener('appinstalled', function() {
   pwaPrompt = null;
 });
 </script>
-<script>
-if('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(e){ console.log('SW error:', e); });
-  });
-}
-</script>
+
 </body>
 </htmlvar numbered = txt.match(/\d+[.):] *([^\n]+)/g);
     var lines = numbered && numbered.length
@@ -4401,13 +4403,7 @@ window.addEventListener('appinstalled', function() {
   pwaPrompt = null;
 });
 </script>
-<script>
-if('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(e){ console.log('SW error:', e); });
-  });
-}
-</script>
+
 </body>
 </htmlasync function generateForecast() {
   var btn = document.getElementById('forecastBtn');
@@ -4950,12 +4946,6 @@ window.addEventListener('appinstalled', function() {
   pwaPrompt = null;
 });
 </script>
-<script>
-if('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js').catch(function(e){ console.log('SW error:', e); });
-  });
-}
-</script>
+
 </body>
 </html>
