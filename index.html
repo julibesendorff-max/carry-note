@@ -1409,7 +1409,7 @@ if('serviceWorker' in navigator) {
 
 <script>
 const SUPABASE_URL = 'https://fhswsvjkkmnhlbdnozoe.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_HCwgAA7wQJIJj45eU_MhvQ_gVklccHK';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoc3dzdmpra21uaGxiZG5vem9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzA5OTQsImV4cCI6MjA5MDMwNjk5NH0.eKxP2ltiL1uB2NpoIzOD4O6bYKyXvsCs4bEaflXd1O0';
 const EDITOR_PIN   = 'carrynote2025';
 const FINNHUB_KEY  = 'd74n2ihr01qg1eo64720d74n2ihr01qg1eo6472g';
 
@@ -4513,8 +4513,7 @@ window.addEventListener('appinstalled', function() {
     var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
     if(aiEl && txt) {
       aiEl.innerHTML = '<div style="margin-top:0.75rem">' +
-        txt.split('
-').filter(function(l){ return l.trim(); }).map(function(p) {
+        txt.split('\n').filter(function(l){ return l.trim(); }).map(function(p) {
           return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">' + p + '</p>';
         }).join('') + '</div>';
     }
