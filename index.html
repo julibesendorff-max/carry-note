@@ -3679,6 +3679,13 @@ async function loadViews(){
     if(!views.length){el.innerHTML='';if(emptyEl)emptyEl.style.display='block';return;}
     if(emptyEl)emptyEl.style.display='none';
     el.innerHTML=views.map(function(v){return buildViewCard(v);}).join('');
+    // Attach delete handlers
+    el.querySelectorAll('.view-del-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-view-del');
+        if(id) deleteView(id);
+      });
+    });
   }catch(e){el.innerHTML='';if(emptyEl)emptyEl.style.display='block';}
 }
 function getTVSymbol(ticker, market) {
