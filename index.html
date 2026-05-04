@@ -1129,8 +1129,14 @@ if('serviceWorker' in navigator) {
 
       <!-- CORRELATIONS TABLE -->
       <div style="margin-bottom:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Correlaciones · variación del día</div>
-        <div id="radarCorrLarge" style="display:flex;flex-direction:column;gap:0.4rem"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">
+          <div>
+            <span style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)">Correlaciones · variación del día</span>
+            <span id="corrLoadStatus" style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);margin-left:0.75rem"></span>
+          </div>
+          <button onclick="openCorrExplainer()" style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);background:none;border:1px solid var(--border2);padding:0.2rem 0.6rem;cursor:pointer;letter-spacing:0.06em">¿Qué es esto? ▸</button>
+        </div>
+        <div id="radarCorrLarge" style="display:flex;flex-direction:column;gap:0"></div>
       </div>
 
       <!-- SIGNAL LOG -->
@@ -4108,5 +4114,52 @@ window.addEventListener('appinstalled', function() {
 });
 </script>
 
+
+<!-- CORR EXPLAINER MODAL -->
+<div id="corrExplainerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:700;overflow-y:auto;padding:2rem 1rem">
+  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--gold);width:min(680px,100%);margin:auto;font-family:var(--mono)">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem">Carry Note · Radar Macro</div>
+        <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text)">¿Cómo leer las correlaciones?</div>
+      </div>
+      <button onclick="document.getElementById('corrExplainerModal').style.display='none'" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:1rem;padding:0.3rem 0.7rem">✕</button>
+    </div>
+    <div style="padding:1.5rem;font-size:0.88rem;color:#c8c4bc;line-height:1.85">
+
+      <p style="margin-bottom:1.25rem">La tabla que ves en el Radar muestra <strong style="color:var(--text)">24 patrones de mercado</strong> que el sistema monitorea todo el tiempo. Cada patrón es una combinación de activos que, cuando se mueven juntos en la misma dirección, manda una señal sobre el estado del mercado.</p>
+
+      <div style="background:var(--surface);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="font-size:0.62rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Los símbolos que ves</div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:0.5rem 1rem;align-items:start">
+          <span style="color:#4caf7d;font-size:1rem">●</span><span><strong style="color:var(--text)">Punto lleno</strong> — señal activa hoy. Todos los activos del patrón se mueven en la dirección esperada con más de ±0.3%.</span>
+          <span style="color:#9d99a8;font-size:1rem">○</span><span><strong style="color:var(--text)">Punto vacío</strong> — señal inactiva. El patrón no se está cumpliendo ahora.</span>
+          <span style="color:#4caf7d">▲</span><span><strong style="color:var(--text)">Flecha arriba</strong> — los activos del patrón subieron en promedio hoy.</span>
+          <span style="color:#e05252">▼</span><span><strong style="color:var(--text)">Flecha abajo</strong> — los activos del patrón bajaron en promedio hoy.</span>
+          <span style="color:#9d99a8">→</span><span><strong style="color:var(--text)">Flecha derecha</strong> — movimiento muy pequeño, sin señal clara.</span>
+        </div>
+      </div>
+
+      <div style="background:var(--surface);border-left:3px solid #5b8dee;padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="font-size:0.62rem;font-weight:500;color:#5b8dee;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">El porcentaje a la derecha</div>
+        <p style="margin:0">Es el <strong style="color:var(--text)">promedio de variación del día</strong> de los activos del patrón. Si "Inflow Argentina" muestra ▼ -3.41%, significa que YPF y GGAL bajaron en promedio 3.41% hoy en la Bolsa de Nueva York.</p>
+      </div>
+
+      <div style="background:var(--surface);border-left:3px solid var(--green);padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="font-size:0.62rem;font-weight:500;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">El badge r=X.XX</div>
+        <p style="margin:0">Es la <strong style="color:var(--text)">correlación histórica de Pearson</strong> — un número entre -1 y +1 que mide cuánto se mueven juntos esos activos en los últimos 30 días. Cuanto más cerca de 1, más confiable es la señal. r=0.80 es muy confiable. r=0.20 puede ser ruido.</p>
+      </div>
+
+      <div style="background:var(--surface);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="font-size:0.62rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">¿Por qué importa para el inversor argentino?</div>
+        <p style="margin:0">Estos patrones afectan directamente el precio de CEDEARs, bonos en dólares y acciones locales. Si "Outflow Argentina" está activo con ● en rojo, inversores extranjeros están saliendo de YPF y Galicia en Nueva York — eso suele anticipar presión en el mercado local al día siguiente.</p>
+      </div>
+
+      <div style="font-size:0.72rem;color:var(--muted2);line-height:1.7;padding:0.75rem;border:1px solid var(--border2)">
+        ⚠ Este sistema detecta patrones estadísticos, no predice el futuro. Una señal activa aumenta la probabilidad de cierto escenario pero no es garantía. Usá esta información como un insumo más.
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
