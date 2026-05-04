@@ -2389,6 +2389,7 @@ function loadCalendar() {
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
   e && e.preventDefault();
+  hideAllPanels();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
@@ -2902,17 +2903,34 @@ function downloadPDF() {
 
 
 
+
+// ── HIDE ALL PANELS (central cleanup) ────────────────────────
+function hideAllPanels() {
+  var allPanels = [
+    'diagPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
+    'sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel',
+    'feed','newsletterBlock','noResults','feedHeader','emptyState',
+    'analisisFilters','radarForecastWrap','corrExplainerModal'
+  ];
+  allPanels.forEach(function(id) {
+    var el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  // Hide all note cards and empty states
+  document.querySelectorAll('.note-card,.loading-card,.empty,.mob-card').forEach(function(el){
+    el.style.display = 'none';
+  });
+  // Clear active nav
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  // Abort any pending premarket
+  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
+  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
+}
+
 function showDiag(e) {
   e && e.preventDefault();
-  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
-  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  hideAllPanels();
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel','viewsStandalonePanel'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.style.display='none';
-  });
-  document.querySelectorAll('#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   var dp=document.getElementById('diagPanel'); if(dp) dp.style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('diagTab'); if(tab) tab.classList.add('active');
@@ -2993,6 +3011,7 @@ function openCorrExplainer() {
 
 function showRadar(e) {
   e && e.preventDefault();
+  hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
@@ -3037,16 +3056,10 @@ document.addEventListener('click', function(e) {
 
 function showViewsTab(e) {
   e && e.preventDefault();
+  hideAllPanels();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','viewsStandalonePanel'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.style.display='none';
-  });
-  ['feed','newsletterBlock','noResults','feedHeader','emptyState'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.style.display='none';
-  });
-  var emptyMsg=document.getElementById('emptyMsg'); if(emptyMsg) emptyMsg.closest('.empty-state') && (emptyMsg.closest('.empty-state').style.display='none');
-  document.querySelectorAll('.note-card,.loading-card,.empty').forEach(function(el){el.style.display='none';});
+  hideAllPanels();
   // Show views panel standalone
   var vp=document.getElementById('viewsStandalonePanel');
   if(vp) vp.style.display='block';
@@ -3066,6 +3079,7 @@ function showViewsTab(e) {
 
 function showWatchlist(e){
   e&&e.preventDefault();
+  hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
@@ -3078,6 +3092,7 @@ function showWatchlist(e){
 
 function showSobre(e){
   e&&e.preventDefault();
+  hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
@@ -3658,9 +3673,7 @@ function showAnalisis(e) {
   e && e.preventDefault();
   if(window._pmAbort){window._pmAbort.abort();window._pmAbort=null;}
   if(window._pmInterval){clearInterval(window._pmInterval);window._pmInterval=null;}
-  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.style.display='none';
-  });
+  hideAllPanels();
   ['feed','newsletterBlock'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='';});
   var af=document.getElementById('analisisFilters');if(af)af.style.display='block';
   setSidebarVisible(true);
