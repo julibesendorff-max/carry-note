@@ -2969,6 +2969,14 @@ function updateRadarLarge() {
 }
 
 
+function openCorrExplainer() {
+  var m = document.getElementById('corrExplainerModal');
+  if(m) m.style.display = 'block';
+  document.addEventListener('keydown', function esc(e) {
+    if(e.key === 'Escape') { m.style.display = 'none'; document.removeEventListener('keydown', esc); }
+  });
+}
+
 function showRadar(e) {
   e && e.preventDefault();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
