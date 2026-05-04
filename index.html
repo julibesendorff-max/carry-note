@@ -391,6 +391,7 @@ if('serviceWorker' in navigator) {
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
     <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
+    <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#a855f7">● Views</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
@@ -588,6 +589,17 @@ if('serviceWorker' in navigator) {
       <p>No hay notas en esta categoría todavía.</p>
     </div>
 
+
+    <!-- VIEWS TÉCNICOS STANDALONE PANEL -->
+    <div id="viewsStandalonePanel" style="display:none;margin-bottom:2rem">
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.5rem">● Views Técnicos · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Análisis técnicos</div>
+        <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;max-width:560px">Views técnicos y fundamentales sobre activos de EEUU y Argentina. Cada análisis incluye el gráfico interactivo del activo vía TradingView.</div>
+      </div>
+      <div id="viewsEmptyStandalone" style="display:none;font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:2rem 0">No hay views publicados todavía.</div>
+      <div id="viewsListStandalone"></div>
+    </div>
 
     <!-- FCI PANEL -->
     <div id="fciPanel" style="display:none;margin-bottom:2rem">
@@ -1305,11 +1317,7 @@ if('serviceWorker' in navigator) {
       </div>
 
       <!-- MARKET FILTER -->
-      <div style="display:flex;gap:0.4rem;margin-bottom:1.5rem;flex-wrap:wrap">
-        <button onclick="setViewsMarket('all')" id="vm-all" class="af-btn af-active">Todos</button>
-        <button onclick="setViewsMarket('eeuu')" id="vm-eeuu" class="af-btn">EEUU</button>
-        <button onclick="setViewsMarket('ar')" id="vm-ar" class="af-btn">Argentina</button>
-      </div>
+      
 
       <!-- VIEWS LIST -->
       <div id="viewsList" style="display:flex;flex-direction:column;gap:1rem"></div>
@@ -2901,7 +2909,7 @@ function showDiag(e) {
   setSidebarVisible(false);
   ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel'].forEach(function(id){
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','radarPanel','editorPanel','viewsStandalonePanel'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.style.display='none';
   });
   document.querySelectorAll('#emptyState,#noResults').forEach(function(el){el.style.display='none';});
@@ -3027,11 +3035,31 @@ document.addEventListener('click', function(e) {
   if(header && header.dataset.catid) toggleRadarCat(header.dataset.catid);
 });
 
+function showViewsTab(e) {
+  e && e.preventDefault();
+  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
+  setSidebarVisible(false);
+  ['sobrePanel','watchlistPanel','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','viewsStandalonePanel'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  ['feed','newsletterBlock','noResults','feedHeader','emptyState'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  var emptyMsg=document.getElementById('emptyMsg'); if(emptyMsg) emptyMsg.closest('.empty-state') && (emptyMsg.closest('.empty-state').style.display='none');
+  document.querySelectorAll('.note-card,.loading-card,.empty').forEach(function(el){el.style.display='none';});
+  // Show views panel standalone
+  var vp=document.getElementById('viewsStandalonePanel');
+  if(vp) vp.style.display='block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
+  var tab=document.getElementById('viewsTab'); if(tab) tab.classList.add('active');
+  loadViews();
+}
+
 function showWatchlist(e){
   e&&e.preventDefault();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   document.getElementById('watchlistPanel').style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
@@ -3045,7 +3073,7 @@ function showSobre(e){
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   document.getElementById('sobrePanel').style.display='block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
@@ -3678,15 +3706,29 @@ async function loadViews(){
     var views=await res.json();
     if(!views.length){el.innerHTML='';if(emptyEl)emptyEl.style.display='block';return;}
     if(emptyEl)emptyEl.style.display='none';
-    el.innerHTML=views.map(function(v){return buildViewCard(v);}).join('');
-    // Attach delete handlers
-    el.querySelectorAll('.view-del-btn').forEach(function(btn){
+    var cardsHtml = views.map(function(v){return buildViewCard(v);}).join('');
+    el.innerHTML = cardsHtml;
+    // Also render in standalone panel
+    var elS = document.getElementById('viewsListStandalone');
+    var emptyS = document.getElementById('viewsEmptyStandalone');
+    if(elS) {
+      elS.innerHTML = cardsHtml;
+      if(emptyS) emptyS.style.display = 'none';
+    }
+    // Attach delete handlers to all view-del-btn
+    document.querySelectorAll('.view-del-btn').forEach(function(btn){
       btn.addEventListener('click', function(){
         var id = btn.getAttribute('data-view-del');
         if(id) deleteView(id);
       });
     });
-  }catch(e){el.innerHTML='';if(emptyEl)emptyEl.style.display='block';}
+  }catch(e){
+    el.innerHTML='';if(emptyEl)emptyEl.style.display='block';
+    var elS2=document.getElementById('viewsListStandalone');
+    var emptyS2=document.getElementById('viewsEmptyStandalone');
+    if(elS2) elS2.innerHTML='';
+    if(emptyS2) emptyS2.style.display='block';
+  }
 }
 function getTVSymbol(ticker, market) {
   var t = ticker.toUpperCase().trim();
