@@ -3978,7 +3978,8 @@ window.addEventListener('appinstalled', function() {
 </script>
 
 </body>
-</htmlvar numbered = txt.match(/\d+[.):] *([^\n]+)/g);
+</html>
+var numbered = txt.match(/\d+[.):] *([^\n]+)/g);
     var lines = numbered && numbered.length
       ? numbered.map(function(l){ return l.replace(/^\d+[.): ]+/, '').trim(); })
       : txt.split('\n').filter(function(l){ return l.trim(); }); name="viewport" content="width=device-width, initial-scale=1.0">
@@ -4405,124 +4406,7 @@ window.addEventListener('appinstalled', function() {
 </script>
 
 </body>
-</htmlasync function generateForecast() {
-  var btn = document.getElementById('forecastBtn');
-  var statEl = document.getElementById('radarStatForecast');
-  var aiEl   = document.getElementById('radarAIForecast');
-  if(!statEl || !aiEl) return;
-  if(btn) { btn.disabled = true; btn.textContent = 'Calculando...'; }
-
-  var activeSignals = [];
-  RADAR_PATTERNS.forEach(function(p) {
-    var pcts = p.assets.map(getTickerChange);
-    if(pcts.some(function(x){ return x === null; })) return;
-    var match = pcts.every(function(pct,i){ return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
-    if(match) activeSignals.push(p);
-  });
-
-  if(!activeSignals.length) {
-    if(statEl) statEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted2);padding:0.5rem">No hay señales activas para generar un pronóstico.</div>';
-    if(btn) { btn.disabled = false; btn.textContent = 'Generar análisis ▸'; }
-    return;
-  }
-
-  // Direction from signal balance (always available)
-  var alertCount    = activeSignals.filter(function(s){ return s.level === 'alerta'; }).length;
-  var positiveCount = activeSignals.filter(function(s){ return s.level === 'positivo'; }).length;
-  var direction     = alertCount > positiveCount ? 'bajista' : positiveCount > alertCount ? 'alcista' : 'neutral';
-  var dirColor  = direction === 'bajista' ? 'var(--red)' : direction === 'alcista' ? 'var(--green)' : 'var(--gold)';
-  var dirArrow  = direction === 'bajista' ? '▼' : direction === 'alcista' ? '▲' : '→';
-
-  // Stat model (only if historical data loaded)
-  var statForecast = _historicalLoaded ? getStatForecast(activeSignals) : null;
-  var avgPersistence = statForecast ? statForecast.avgPersistence : null;
-
-  statEl.innerHTML =
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--border2);margin-bottom:0.75rem">' +
-      '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Sesión probable</div>' +
-        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:'+dirColor+'">' + dirArrow + ' ' + direction.charAt(0).toUpperCase() + direction.slice(1) + '</div>' +
-      '</div>' +
-      '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Persistencia</div>' +
-        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--gold)">' + (avgPersistence !== null ? avgPersistence + '%' : '···') + '</div>' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + (avgPersistence !== null ? 'prob. que continúe' : 'cargando datos…') + '</div>' +
-      '</div>' +
-      '<div style="padding:1rem">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Señales</div>' +
-        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text)">' + activeSignals.length + '</div>' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + alertCount + ' alertas · ' + positiveCount + ' positivas</div>' +
-      '</div>' +
-    '</div>' +
-    (statForecast ?
-      '<div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border2)">' +
-      statForecast.signals.map(function(s) {
-        var persColor = s.persistence >= 60 ? 'var(--gold)' : s.persistence >= 40 ? 'var(--muted)' : 'var(--muted2)';
-        var revColor  = s.reversal >= 50 ? 'var(--red)' : 'var(--green)';
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.9rem;border-bottom:1px solid var(--border2)">' +
-          '<span style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + '">● ' + s.name + '</span>' +
-          '<div style="display:flex;gap:0.75rem;font-family:var(--mono);font-size:0.62rem">' +
-            '<span style="color:'+persColor+'">' + s.persistence + '% persiste</span>' +
-            '<span style="color:'+revColor+'">' + s.reversal + '% reversión</span>' +
-          '</div></div>';
-      }).join('') + '</div>'
-      : '');
-
-  // AI narrative
-  if(!ANTHRO_KEY) {
-    if(aiEl) aiEl.innerHTML = '<div style="color:var(--muted2);font-size:0.72rem;margin-top:0.75rem">Cargá tu API key en el editor para el análisis narrativo.</div>';
-    if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
-    return;
-  }
-
-  if(aiEl) aiEl.innerHTML = '<div style="color:var(--gold);font-size:0.7rem;margin-top:0.75rem">Generando análisis…</div>';
-
-  var mktContext = activeSignals.map(function(s){
-    var pcts = s.assets.map(getTickerChange).filter(function(v){ return v!==null; });
-    var avg = pcts.length ? pcts.reduce(function(a,b){return a+b;},0)/pcts.length : 0;
-    return s.name + ' (' + (avg>=0?'+':'') + avg.toFixed(2) + '%)';
-  }).join(', ');
-
-  var statSummary = statForecast
-    ? 'dirección ' + direction + ', persistencia promedio ' + avgPersistence + '%'
-    : 'dirección ' + direction + ' (sin datos históricos aún)';
-
-  var rpEl = document.getElementById('arg-riesgo');
-  var rpStr = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : 'N/D';
-
-  var prompt = 'Eres un analista explicando a un inversor argentino sin experiencia tecnica.' +
-    ' Señales activas: ' + mktContext +
-    ' | Modelo: ' + statSummary +
-    ' | Riesgo pais: ' + rpStr +
-    ' | Escribe en español simple 3 párrafos cortos:' +
-    ' 1) Qué está pasando hoy.' +
-    ' 2) Qué es probable que pase en 24-48hs.' +
-    ' 3) Qué considerar si tenés pesos, dólares y CEDEARs.' +
-    ' Aclará que son aproximaciones estadísticas, no predicciones.';
-
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHRO_KEY,
-                 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }] })
-    });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
-    var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
-    if(aiEl && txt) {
-      aiEl.innerHTML = '<div style="margin-top:0.75rem">' +
-        txt.split('\n').filter(function(l){ return l.trim(); }).map(function(p) {
-          return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">' + p + '</p>';
-        }).join('') + '</div>';
-    }
-  } catch(e) {
-    if(aiEl) aiEl.innerHTML = '<div style="color:var(--red);font-size:0.7rem;margin-top:0.5rem">Error: ' + e.message + '</div>';
-  }
-  if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
-}
-
+</html>
 OCTYPE html>
 <html lang="es">
 <head>
@@ -4944,6 +4828,125 @@ window.addEventListener('appinstalled', function() {
   var b = document.getElementById('pwaInstallBanner'); if(b) b.style.display = 'none';
   pwaPrompt = null;
 });
+async function generateForecast() {
+  var btn = document.getElementById('forecastBtn');
+  var statEl = document.getElementById('radarStatForecast');
+  var aiEl   = document.getElementById('radarAIForecast');
+  if(!statEl || !aiEl) return;
+  if(btn) { btn.disabled = true; btn.textContent = 'Calculando...'; }
+
+  var activeSignals = [];
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if(pcts.some(function(x){ return x === null; })) return;
+    var match = pcts.every(function(pct,i){ return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
+    if(match) activeSignals.push(p);
+  });
+
+  if(!activeSignals.length) {
+    if(statEl) statEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted2);padding:0.5rem">No hay señales activas para generar un pronóstico.</div>';
+    if(btn) { btn.disabled = false; btn.textContent = 'Generar análisis ▸'; }
+    return;
+  }
+
+  // Direction from signal balance (always available)
+  var alertCount    = activeSignals.filter(function(s){ return s.level === 'alerta'; }).length;
+  var positiveCount = activeSignals.filter(function(s){ return s.level === 'positivo'; }).length;
+  var direction     = alertCount > positiveCount ? 'bajista' : positiveCount > alertCount ? 'alcista' : 'neutral';
+  var dirColor  = direction === 'bajista' ? 'var(--red)' : direction === 'alcista' ? 'var(--green)' : 'var(--gold)';
+  var dirArrow  = direction === 'bajista' ? '▼' : direction === 'alcista' ? '▲' : '→';
+
+  // Stat model (only if historical data loaded)
+  var statForecast = _historicalLoaded ? getStatForecast(activeSignals) : null;
+  var avgPersistence = statForecast ? statForecast.avgPersistence : null;
+
+  statEl.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--border2);margin-bottom:0.75rem">' +
+      '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Sesión probable</div>' +
+        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:'+dirColor+'">' + dirArrow + ' ' + direction.charAt(0).toUpperCase() + direction.slice(1) + '</div>' +
+      '</div>' +
+      '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Persistencia</div>' +
+        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--gold)">' + (avgPersistence !== null ? avgPersistence + '%' : '···') + '</div>' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + (avgPersistence !== null ? 'prob. que continúe' : 'cargando datos…') + '</div>' +
+      '</div>' +
+      '<div style="padding:1rem">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Señales</div>' +
+        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text)">' + activeSignals.length + '</div>' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + alertCount + ' alertas · ' + positiveCount + ' positivas</div>' +
+      '</div>' +
+    '</div>' +
+    (statForecast ?
+      '<div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border2)">' +
+      statForecast.signals.map(function(s) {
+        var persColor = s.persistence >= 60 ? 'var(--gold)' : s.persistence >= 40 ? 'var(--muted)' : 'var(--muted2)';
+        var revColor  = s.reversal >= 50 ? 'var(--red)' : 'var(--green)';
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.9rem;border-bottom:1px solid var(--border2)">' +
+          '<span style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + '">● ' + s.name + '</span>' +
+          '<div style="display:flex;gap:0.75rem;font-family:var(--mono);font-size:0.62rem">' +
+            '<span style="color:'+persColor+'">' + s.persistence + '% persiste</span>' +
+            '<span style="color:'+revColor+'">' + s.reversal + '% reversión</span>' +
+          '</div></div>';
+      }).join('') + '</div>'
+      : '');
+
+  // AI narrative
+  if(!ANTHRO_KEY) {
+    if(aiEl) aiEl.innerHTML = '<div style="color:var(--muted2);font-size:0.72rem;margin-top:0.75rem">Cargá tu API key en el editor para el análisis narrativo.</div>';
+    if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
+    return;
+  }
+
+  if(aiEl) aiEl.innerHTML = '<div style="color:var(--gold);font-size:0.7rem;margin-top:0.75rem">Generando análisis…</div>';
+
+  var mktContext = activeSignals.map(function(s){
+    var pcts = s.assets.map(getTickerChange).filter(function(v){ return v!==null; });
+    var avg = pcts.length ? pcts.reduce(function(a,b){return a+b;},0)/pcts.length : 0;
+    return s.name + ' (' + (avg>=0?'+':'') + avg.toFixed(2) + '%)';
+  }).join(', ');
+
+  var statSummary = statForecast
+    ? 'dirección ' + direction + ', persistencia promedio ' + avgPersistence + '%'
+    : 'dirección ' + direction + ' (sin datos históricos aún)';
+
+  var rpEl = document.getElementById('arg-riesgo');
+  var rpStr = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : 'N/D';
+
+  var prompt = 'Eres un analista explicando a un inversor argentino sin experiencia tecnica.' +
+    ' Señales activas: ' + mktContext +
+    ' | Modelo: ' + statSummary +
+    ' | Riesgo pais: ' + rpStr +
+    ' | Escribe en español simple 3 párrafos cortos:' +
+    ' 1) Qué está pasando hoy.' +
+    ' 2) Qué es probable que pase en 24-48hs.' +
+    ' 3) Qué considerar si tenés pesos, dólares y CEDEARs.' +
+    ' Aclará que son aproximaciones estadísticas, no predicciones.';
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHRO_KEY,
+                 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 500,
+        messages: [{ role: 'user', content: prompt }] })
+    });
+    if(!res.ok) throw new Error('HTTP ' + res.status);
+    var data = await res.json();
+    var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
+    if(aiEl && txt) {
+      aiEl.innerHTML = '<div style="margin-top:0.75rem">' +
+        txt.split('\n').filter(function(l){ return l.trim(); }).map(function(p) {
+          return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">' + p + '</p>';
+        }).join('') + '</div>';
+    }
+  } catch(e) {
+    if(aiEl) aiEl.innerHTML = '<div style="color:var(--red);font-size:0.7rem;margin-top:0.5rem">Error: ' + e.message + '</div>';
+  }
+  if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
+}
+
+
 </script>
 
 </body>
