@@ -573,7 +573,7 @@ if('serviceWorker' in navigator) {
     <div id="analisisFilters" style="display:none;margin-bottom:1.5rem;border-bottom:1px solid var(--border2);padding-bottom:1rem">
       <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
         <button onclick="setAnalisisFilter('semanal')" id="af-semanal" class="af-btn" style="border-color:var(--gold);color:var(--gold)">◈ Cierre semanal</button>
-        <button onclick="setAnalisisFilter('views')" id="af-views" class="af-btn" style="border-color:var(--green);color:var(--green)">▸ Views Técnicos</button>
+        
         <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
         <button onclick="setAnalisisFilter('markets')" id="af-markets" class="af-btn">Mercados</button>
         <button onclick="setAnalisisFilter('latam')" id="af-latam" class="af-btn">EM & Latam</button>
@@ -3658,7 +3658,7 @@ function showAnalisis(e) {
   e && e.preventDefault();
   if(window._pmAbort){window._pmAbort.abort();window._pmAbort=null;}
   if(window._pmInterval){clearInterval(window._pmInterval);window._pmInterval=null;}
-  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'].forEach(function(id){
+  ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
   ['feed','newsletterBlock'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='';});
@@ -3667,14 +3667,18 @@ function showAnalisis(e) {
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('analisisTab');if(tab)tab.classList.add('active');
   var ep=document.getElementById('editorPanel');if(ep)ep.style.display=isEditor?'block':'none';
-  setAnalisisFilter(currentAnalisisFilter||'macro_geo');
+  // Reset away from removed 'views' filter
+  if(!currentAnalisisFilter || currentAnalisisFilter === 'views') currentAnalisisFilter = 'macro_geo';
+  setAnalisisFilter(currentAnalisisFilter);
 }
 
 var currentAnalisisFilter='all';
 
 function setAnalisisFilter(filter){
   currentAnalisisFilter=filter;
-  ['semanal','views','macro_geo','markets','latam'].forEach(function(f){
+  // Ensure standalone views panel is hidden
+  var vsp=document.getElementById('viewsStandalonePanel'); if(vsp) vsp.style.display='none';
+  ['semanal','macro_geo','markets','latam'].forEach(function(f){
     var btn=document.getElementById('af-'+f);
     if(btn){if(f===filter)btn.classList.add('af-active');else btn.classList.remove('af-active');}
   });
@@ -3682,19 +3686,9 @@ function setAnalisisFilter(filter){
   var feedEl=document.getElementById('feed');
   var nlEl=document.getElementById('newsletterBlock');
   var noResEl=document.getElementById('noResults');
-  if(filter==='views'){
-    if(viewsPanel)viewsPanel.style.display='block';
-    if(feedEl)feedEl.style.display='none';
-    if(nlEl)nlEl.style.display='none';
-    if(noResEl)noResEl.style.display='none';
-    var edBlock=document.getElementById('viewsEditorBlock');
-    if(edBlock)edBlock.style.display=isEditor?'block':'none';
-    loadViews();return;
-  } else {
-    if(viewsPanel)viewsPanel.style.display='none';
-    if(feedEl)feedEl.style.display='';
-    if(nlEl)nlEl.style.display='';
-  }
+  if(viewsPanel)viewsPanel.style.display='none';
+  if(feedEl)feedEl.style.display='';
+  if(nlEl)nlEl.style.display='';
   activeFilter=filter==='macro_geo'?'macro_geo':filter;
   renderNotes();
 }
