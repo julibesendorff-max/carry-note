@@ -3681,22 +3681,46 @@ async function loadViews(){
     el.innerHTML=views.map(function(v){return buildViewCard(v);}).join('');
   }catch(e){el.innerHTML='';if(emptyEl)emptyEl.style.display='block';}
 }
+function getTVSymbol(ticker, market) {
+  var t = ticker.toUpperCase().trim();
+  if(market === 'ar') return 'BYMA:' + t;
+  var map = {'BTC':'BINANCE:BTCUSDT','ETH':'BINANCE:ETHUSDT','SPY':'AMEX:SPY','QQQ':'NASDAQ:QQQ','GLD':'AMEX:GLD','TLT':'NASDAQ:TLT'};
+  return map[t] || t;
+}
+
 function buildViewCard(v){
   var biasColor=v.bias==='compra'?'var(--green)':v.bias==='venta'?'var(--red)':'var(--muted)';
   var biasLabel=v.bias==='compra'?'▲ COMPRA':v.bias==='venta'?'▼ VENTA':'→ NEUTRAL';
-  var mktLabel=v.market==='eeuu'?'EEUU':'ARGENTINA';var mktColor=v.market==='eeuu'?'var(--blue)':'#a855f7';
+  var mktLabel=v.market==='eeuu'?'EEUU':'ARGENTINA';
+  var mktColor=v.market==='eeuu'?'var(--blue)':'#a855f7';
   var tfLabel={corto:'Corto plazo',medio:'Mediano plazo',largo:'Largo plazo'}[v.timeframe]||v.timeframe;
   var ds=new Date(v.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
-  return '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid '+biasColor+';padding:1.25rem 1.5rem">'+
-    '<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem">'+
-      '<span style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--text)">'+v.ticker+'</span>'+
-      '<span style="font-family:var(--mono);font-size:0.58rem;font-weight:500;color:'+biasColor+';border:1px solid '+biasColor+';padding:0.15rem 0.5rem">'+biasLabel+'</span>'+
-      '<span style="font-family:var(--mono);font-size:0.55rem;color:'+mktColor+';border:1px solid '+mktColor+';padding:0.15rem 0.4rem">'+mktLabel+'</span>'+
-      '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+tfLabel+'</span>'+
-      '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto">'+ds+'</span>'+
+  var tvSym=getTVSymbol(v.ticker,v.market);
+  var chartInterval=v.timeframe==='corto'?'D':v.timeframe==='medio'?'W':'M';
+  var cardId='vc-'+(v.id||Math.random().toString(36).slice(2,8));
+  var tvUrl='https://www.tradingview.com/widgetembed/?frameElementId='+cardId+'&symbol='+encodeURIComponent(tvSym)+'&interval='+chartInterval+'&hidesidetoolbar=1&hidetoptoolbar=0&symboledit=1&saveimage=0&toolbarbg=1a1a1e&theme=dark&style=1&timezone=America%2FArgentina%2FBuenos_Aires&withdateranges=1&showpopupbutton=0&studies=%5B%5D&locale=es';
+  return '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid '+biasColor+';margin-bottom:0.75rem">'+
+    '<div style="padding:1.25rem 1.5rem">'+
+      '<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;margin-bottom:0.75rem">'+
+        '<span style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--text)">'+v.ticker+'</span>'+
+        '<span style="font-family:var(--mono);font-size:0.58rem;font-weight:500;color:'+biasColor+';border:1px solid '+biasColor+';padding:0.15rem 0.5rem">'+biasLabel+'</span>'+
+        '<span style="font-family:var(--mono);font-size:0.55rem;color:'+mktColor+';border:1px solid '+mktColor+';padding:0.15rem 0.4rem">'+mktLabel+'</span>'+
+        '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+tfLabel+'</span>'+
+        '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto">'+ds+'</span>'+
+      '</div>'+
+      '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75;margin-bottom:1.25rem">'+v.body+'</div>'+
+      '<div style="border-top:1px solid var(--border2);padding-top:0.85rem">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">'+
+          '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase">▸ Gráfico · '+v.ticker+' · TradingView</span>'+
+          '<a href="https://www.tradingview.com/chart/?symbol='+encodeURIComponent(tvSym)+'" target="_blank" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);text-decoration:none">Abrir en TradingView ↗</a>'+
+        '</div>'+
+        '<div style="position:relative;padding-bottom:55%;height:0;overflow:hidden;border:1px solid var(--border2)">'+
+          '<iframe src="'+tvUrl+'" id="'+cardId+'" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowtransparency="true" scrolling="no" allowfullscreen></iframe>'+
+        '</div>'+
+      '</div>'+
+      (isEditor?'<div style="margin-top:0.75rem"><button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer;letter-spacing:0.06em">✕ Eliminar</button></div>':'')+
     '</div>'+
-    '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75">'+v.body+'</div>'+
-    (isEditor?'<button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer;margin-top:0.75rem;letter-spacing:0.06em">✕ Eliminar</button>':'')+'</div>';
+  '</div>';
 }
 async function deleteView(id){if(!confirm('¿Eliminar este view?'))return;await sbFetch('/rest/v1/views?id=eq.'+id,{method:'DELETE'});loadViews();}
 async function generateView(){
