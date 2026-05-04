@@ -3455,29 +3455,41 @@ async function loadHistoricalData() {
 }
 
 function calcSignalPersistence(pattern) {
+  if(!_historicalLoaded) return null;
   var rates=[];
   pattern.assets.forEach(function(sym){
     var r=_historicalCache[sym];
-    if(!r||r.length<5) return;
+    if(!r||r.length<8) return;
     var c=0,t=r.length-1;
-    for(var i=0;i<t;i++){if((r[i]>0&&r[i+1]>0)||(r[i]<0&&r[i+1]<0))c++;}
+    for(var i=0;i<t;i++){
+      // Weight by magnitude: moves >1% count double
+      var weight = (Math.abs(r[i])>0.01||Math.abs(r[i+1])>0.01) ? 2 : 1;
+      if((r[i]>0&&r[i+1]>0)||(r[i]<0&&r[i+1]<0)) c+=weight;
+      else t+=(weight-1); // adjust total
+    }
     rates.push(t>0?c/t:0.5);
   });
   if(!rates.length) return null;
-  return Math.round(rates.reduce(function(s,v){return s+v;},0)/rates.length*100);
+  var avg = rates.reduce(function(s,v){return s+v;},0)/rates.length;
+  // Scale: below 0.45 is low persistence, above 0.55 is high
+  return Math.round(Math.min(85, Math.max(30, avg*100)));
 }
 
 function calcReversalProb(pattern) {
+  if(!_historicalLoaded) return null;
   var rev=0,str=0;
   pattern.assets.forEach(function(sym){
     var r=_historicalCache[sym];
-    if(!r||r.length<4) return;
+    if(!r||r.length<8) return;
     for(var i=0;i<r.length-2;i++){
       var d0=r[i]>0?1:-1,d1=r[i+1]>0?1:-1,d2=r[i+2]>0?1:-1;
       if(d0===d1){str++;if(d2!==d1)rev++;}
     }
   });
-  return str>0?Math.round(rev/str*100):40;
+  if(!str) return null;
+  var rate = rev/str;
+  // Bound between 25-75%
+  return Math.round(Math.min(75, Math.max(25, rate*100)));
 }
 
 function getStatForecast(activeSignals) {
@@ -4054,14 +4066,17 @@ async function generateForecast() {
         return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.9rem;border-bottom:1px solid var(--border2)">' +
           '<span style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + '">● ' + s.name + '</span>' +
           '<div style="display:flex;gap:0.75rem;font-family:var(--mono);font-size:0.62rem">' +
-            '<span style="color:'+persColor+'">' + s.persistence + '% persiste</span>' +
-            '<span style="color:'+revColor+'">' + s.reversal + '% reversión</span>' +
+            '<span style="color:'+persColor+'">' + (s.persistence!==null?s.persistence+'% persiste':'sin datos') + '</span>' +
+            '<span style="color:'+revColor+'">' + (s.reversal!==null?s.reversal+'% reversión':'—') + '</span>' +
           '</div></div>';
       }).join('') + '</div>'
       : '');
 
+  // Re-read key fresh from localStorage in case it was set after page load
+  var freshKey = (localStorage.getItem('cn_akey')||'').trim();
+  if(freshKey) ANTHRO_KEY = freshKey;
   if(!ANTHRO_KEY) {
-    if(aiEl) aiEl.innerHTML = '<div style="color:var(--muted2);font-size:0.72rem;margin-top:0.75rem">Cargá tu API key en el editor para el análisis narrativo.</div>';
+    if(aiEl) aiEl.innerHTML = '<div style="color:var(--muted2);font-size:0.72rem;margin-top:0.75rem">Para el análisis narrativo, entrá al editor con tu PIN y guardá la API key una vez.</div>';
     if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
     return;
   }
