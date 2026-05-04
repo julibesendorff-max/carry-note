@@ -1620,7 +1620,7 @@ async function deleteNote(id) {
 // ── RENDER ────────────────────────────────────────────────────
 function renderNotes() {
   // Don't render notes if a special panel is visible
-  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel'];
+  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel'];
   for(var sp = 0; sp < specialPanels.length; sp++) {
     var spEl = document.getElementById(specialPanels[sp]);
     if(spEl && spEl.style.display !== 'none') return;
@@ -3050,9 +3050,18 @@ function showViewsTab(e) {
   // Show views panel standalone
   var vp=document.getElementById('viewsStandalonePanel');
   if(vp) vp.style.display='block';
+  var nr=document.getElementById('noResults'); if(nr) nr.style.display='none';
+  var es=document.getElementById('emptyState'); if(es) es.style.display='none';
+  var em=document.getElementById('emptyMsg'); if(em) { var ep=em.parentElement; if(ep) ep.style.display='none'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('viewsTab'); if(tab) tab.classList.add('active');
   loadViews();
+  // Re-hide note elements after async ops
+  setTimeout(function(){
+    var nr=document.getElementById('noResults'); if(nr) nr.style.display='none';
+    var es=document.getElementById('emptyState'); if(es) es.style.display='none';
+    var em=document.getElementById('emptyMsg'); if(em && em.closest) { var ep=em.closest('.empty-state,.empty'); if(ep) ep.style.display='none'; }
+  }, 500);
 }
 
 function showWatchlist(e){
