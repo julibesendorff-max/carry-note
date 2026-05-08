@@ -1376,8 +1376,14 @@ const FINNHUB_KEY  = 'd74n2ihr01qg1eo64720d74n2ihr01qg1eo6472g';
 
 // ── API KEY HELPER ───────────────────────────────────────
 function getCleanKey() {
-  var k = (localStorage.getItem('cn_akey') || ANTHRO_KEY || '').trim();
-  return k.split('').filter(function(c){ return c.charCodeAt(0) <= 127; }).join('');
+  // Try localStorage first (most fresh), then global var
+  var fromStorage = (localStorage.getItem('cn_akey') || '').trim();
+  var fromGlobal = (ANTHRO_KEY || '').trim();
+  // Pick whichever starts with sk-ant- (the real key, not the masked version)
+  var k = fromStorage.startsWith('sk-ant-') ? fromStorage :
+          fromGlobal.startsWith('sk-ant-') ? fromGlobal : fromStorage;
+  // Strip non-ASCII
+  return k.split('').filter(function(c){ return c.charCodeAt(0) <= 127; }).join('').trim();
 }
 
 let isEditor = false;
@@ -1711,10 +1717,16 @@ function logout(){
 function saveAnthroKey(){
   const v=document.getElementById('anthroKey').value.trim();
   const s=document.getElementById('anthroStatus');
-  if(!v.startsWith('sk-ant-')){s.textContent='✗ Formato incorrecto';s.className='eb-status err';return;}
-  ANTHRO_KEY=v.trim();localStorage.setItem('cn_akey',v.trim());
-  s.textContent='✓ Key guardada';s.className='eb-status ok';
-  document.getElementById('anthroKey').value=v.slice(0,16)+'••••••••••';
+  // Reject if masked (contains bullets or non-ASCII)
+  const hasNonAscii = v.split('').some(function(c){return c.charCodeAt(0)>127;});
+  if(hasNonAscii){s.textContent='✗ Ingresá la key completa, no la versión enmascarada';s.className='eb-status err';return;}
+  if(!v.startsWith('sk-ant-')){s.textContent='✗ Formato incorrecto (debe empezar con sk-ant-)';s.className='eb-status err';return;}
+  if(v.length < 40){s.textContent='✗ Key demasiado corta';s.className='eb-status err';return;}
+  ANTHRO_KEY=v;
+  localStorage.setItem('cn_akey',v);
+  s.textContent='✓ Key guardada correctamente';s.className='eb-status ok';
+  document.getElementById('anthroKey').value='';
+  document.getElementById('anthroKey').placeholder='Key guardada ✓ (pegá de nuevo para actualizar)';
 }
 document.getElementById('anthroKey').addEventListener('keydown',e=>{if(e.key==='Enter')saveAnthroKey();});
 // ── TABS ──────────────────────────────────────────────────────
@@ -2809,6 +2821,11 @@ async function generateIAAnalysis(){
   var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum y por que. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
   try{
     var useKey = getCleanKey();
+    if(!useKey || !useKey.startsWith('sk-ant-')){
+      result.innerHTML='<span style="color:var(--red);font-family:var(--mono);font-size:0.72rem">API key inválida. Re-ingresá la key en el editor y guardála.</span>';
+      btn.disabled=false; btn.textContent='Analizar ▸';
+      return;
+    }
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{
