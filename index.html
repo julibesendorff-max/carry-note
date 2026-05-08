@@ -1796,13 +1796,13 @@ async function genAI(){
     const timeout = setTimeout(() => controller.abort(), 90000);
     let res;
     try {
-      const cleanKey = ANTHRO_KEY.trim().replace(/[^a-zA-Z0-9_\-]/g, '');
+      const useKey2 = ANTHRO_KEY.trim();
       res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': cleanKey,
+          'x-api-key': useKey2,
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
@@ -2801,12 +2801,12 @@ async function generateIAAnalysis(){
   var upcoming=IA_EARNINGS.filter(function(e){return daysUntil(e.date)>=0;}).map(function(e){return e.sym+' en '+daysUntil(e.date)+' dias (EPS est: $'+e.eps_est+')';}).join('; ');
   var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum y por que. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
   try{
-    var cleanKey = ANTHRO_KEY.trim().replace(/[^a-zA-Z0-9_\-]/g,'');
+    var useKey = ANTHRO_KEY.trim();
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'x-api-key':cleanKey,
+        'x-api-key':useKey,
         'anthropic-version':'2023-06-01',
         'anthropic-dangerous-direct-browser-access':'true'
       },
