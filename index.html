@@ -1373,6 +1373,13 @@ const SUPABASE_URL = 'https://fhswsvjkkmnhlbdnozoe.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZoc3dzdmpra21uaGxiZG5vem9lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ3MzA5OTQsImV4cCI6MjA5MDMwNjk5NH0.eKxP2ltiL1uB2NpoIzOD4O6bYKyXvsCs4bEaflXd1O0';
 const EDITOR_PIN   = 'carrynote2025';
 const FINNHUB_KEY  = 'd74n2ihr01qg1eo64720d74n2ihr01qg1eo6472g';
+
+// ── API KEY HELPER ───────────────────────────────────────
+function getCleanKey() {
+  var k = (localStorage.getItem('cn_akey') || ANTHRO_KEY || '').trim();
+  return k.split('').filter(function(c){ return c.charCodeAt(0) <= 127; }).join('');
+}
+
 let isEditor = false;
 let ANTHRO_KEY = (localStorage.getItem('cn_akey') || '').trim();
 let allNotes = [];
@@ -1796,13 +1803,13 @@ async function genAI(){
     const timeout = setTimeout(() => controller.abort(), 90000);
     let res;
     try {
-      const useKey2 = ANTHRO_KEY.trim();
+      const useKey2 = getCleanKey();
       res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         signal: controller.signal,
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': useKey2,
+          'x-api-key': getCleanKey(),
           'anthropic-version': '2023-06-01',
           'anthropic-dangerous-direct-browser-access': 'true'
         },
@@ -1882,7 +1889,7 @@ async function polishNote(){
   if(!body){alert('Escribí algo primero.');return;}
   const btn=document.getElementById('polishBtn');btn.disabled=true;btn.textContent='Puliendo con Claude...';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
     body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
       system:"You are the editor of Carry Note. Your task: take the economist's draft and polish it - improve structure, refine prose, make sure the thesis is clear in the first paragraph, close with concrete implications. Do not change the ideas. Respond ONLY with valid JSON without markdown: {\"title\":\"polished title\",\"subtitle\":\"subtitle (max 35 words)\",\"body\":\"HTML with <p>, <h3>, <div class='key-stat'>stat</div>\"}",
       messages:[{role:'user',content:'Title: ' + (title||'(no title)') + '\n\nDraft:\n' + body}]})});
@@ -2801,12 +2808,12 @@ async function generateIAAnalysis(){
   var upcoming=IA_EARNINGS.filter(function(e){return daysUntil(e.date)>=0;}).map(function(e){return e.sym+' en '+daysUntil(e.date)+' dias (EPS est: $'+e.eps_est+')';}).join('; ');
   var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum y por que. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
   try{
-    var useKey = ANTHRO_KEY.trim();
+    var useKey = getCleanKey();
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
-        'x-api-key':useKey,
+        'x-api-key':getCleanKey(),
         'anthropic-version':'2023-06-01',
         'anthropic-dangerous-direct-browser-access':'true'
       },
@@ -3481,7 +3488,7 @@ async function generateSignalExplanations(activeSignals, allRows) {
   try {
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,
+      headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),
                'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:400,
         messages:[{role:'user',content:prompt}]})
@@ -3765,7 +3772,7 @@ async function generateView(){
   var tfLabel={corto:'corto plazo (días)',medio:'mediano plazo (semanas)',largo:'largo plazo (meses)'}[tf];
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',headers:{'Content-Type':'application/json','x-api-key':ANTHRO_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      method:'POST',headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         system:'Sos un analista tecnico escribiendo para Carry Note. Escribí en español, tono profesional. Sin asteriscos ni markdown. Solo texto plano.',
@@ -4025,7 +4032,7 @@ async function generateForecast() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHRO_KEY,
+        'x-api-key':getCleanKey(),
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true'
       },
