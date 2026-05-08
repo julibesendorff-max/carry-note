@@ -2167,16 +2167,8 @@ function renderFciCard(f, i) {
 function showFCI(e) {
   e && e.preventDefault();
   activePanel='fci';
-  var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
-  var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
+  hideAllPanels();
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-  var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
-  // Hide everything feed-related
-  ['feed','newsletterBlock','noResults','feedHeader'].forEach(id => {
-    const el = document.getElementById(id);
-    if(el) el.style.display = 'none';
-  });
   document.getElementById('fciPanel').style.display = 'block';
   document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
   document.getElementById('fciTab').classList.add('active');
