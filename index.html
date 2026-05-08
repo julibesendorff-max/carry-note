@@ -2791,28 +2791,47 @@ function renderIAEarnings(){
 async function generateIAAnalysis(){
   var btn=document.getElementById('iAnalysisBtn'),result=document.getElementById('iaAnalysisResult');
   if(!btn||!result)return;
+  // Load key exactly like genAI does
   var freshKey=(localStorage.getItem('cn_akey')||'').trim();
-  if(freshKey)ANTHRO_KEY=freshKey;
+  if(freshKey) ANTHRO_KEY=freshKey;
   if(!ANTHRO_KEY){result.innerHTML='<span style="color:var(--muted2);font-family:var(--mono);font-size:0.72rem">Se necesita API key de Anthropic.</span>';return;}
   btn.disabled=true;btn.textContent='Analizando…';
   result.innerHTML='<span style="color:#a855f7;font-family:var(--mono);font-size:0.72rem">Buscando noticias…</span>';
   var today=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  var upcoming=IA_EARNINGS.filter(function(e){return daysUntil(e.date)>=0;}).map(function(e){return e.sym+' en '+daysUntil(e.date)+' días (EPS est: $'+e.eps_est+')';}).join('; ');
-  var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
+  var upcoming=IA_EARNINGS.filter(function(e){return daysUntil(e.date)>=0;}).map(function(e){return e.sym+' en '+daysUntil(e.date)+' dias (EPS est: $'+e.eps_est+')';}).join('; ');
+  var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum y por que. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
   try{
-    var cleanKey = (freshKey || ANTHRO_KEY).split('').filter(function(c){return c.charCodeAt(0) < 128;}).join('').trim();
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':cleanKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,
+    var cleanKey = ANTHRO_KEY.trim().replace(/[^a-zA-Z0-9_\-]/g,'');
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':cleanKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
         tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:prompt}]})});
-    if(!res.ok)throw new Error('HTTP '+res.status);
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    if(!res.ok){
+      var errData=await res.json().catch(function(){return{};});
+      throw new Error('HTTP '+res.status+' '+((errData.error&&errData.error.message)||''));
+    }
     var data=await res.json();
     var txt=data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('').trim();
-    result.innerHTML=txt?txt.split('\n').filter(function(l){return l.trim();}).map(function(p){return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">'+p+'</p>';}).join(''):'<span style="color:var(--muted2)">Sin respuesta.</span>';
-  }catch(e){result.innerHTML='<span style="color:var(--red);font-family:var(--mono);font-size:0.72rem">Error: '+e.message+'</span>';}
+    result.innerHTML=txt?txt.split('\n').filter(function(l){return l.trim();}).map(function(p){
+      return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">'+p+'</p>';
+    }).join(''):'<span style="color:var(--muted2)">Sin respuesta.</span>';
+  }catch(e){
+    result.innerHTML='<span style="color:var(--red);font-family:var(--mono);font-size:0.72rem">Error: '+e.message+'</span>';
+  }
   btn.disabled=false;btn.textContent='Actualizar ▸';
 }
+
 function showIA(e){
   e&&e.preventDefault();
   activePanel='ia';
