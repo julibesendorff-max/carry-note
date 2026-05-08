@@ -2800,7 +2800,7 @@ async function generateIAAnalysis(){
   var upcoming=IA_EARNINGS.filter(function(e){return daysUntil(e.date)>=0;}).map(function(e){return e.sym+' en '+daysUntil(e.date)+' días (EPS est: $'+e.eps_est+')';}).join('; ');
   var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
   try{
-    var cleanKey = ANTHRO_KEY.replace(/[^a-zA-Z0-9_\-]/g, '');
+    var cleanKey = (freshKey || ANTHRO_KEY).split('').filter(function(c){return c.charCodeAt(0) < 128;}).join('').trim();
     var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
       headers:{'Content-Type':'application/json','x-api-key':cleanKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,
