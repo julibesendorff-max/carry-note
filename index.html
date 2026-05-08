@@ -1525,7 +1525,8 @@ async function deleteNote(id) {
 // ── RENDER ────────────────────────────────────────────────────
 function renderNotes() {
   // Don't render notes if a special panel is visible
-  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel'];
+  if(typeof activePanel !== 'undefined' && activePanel !== 'analisis') return;
+  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel','iaPanel'];
   for(var sp = 0; sp < specialPanels.length; sp++) {
     var spEl = document.getElementById(specialPanels[sp]);
     if(spEl && spEl.style.display !== 'none') return;
@@ -2717,14 +2718,14 @@ var IA_COMPANIES = [
   {sym:'AMZN',name:'Amazon',desc:'AWS · Bedrock',color:'#ff9900'},
 ];
 var IA_EARNINGS = [
-  {sym:'NVDA',date:'2025-05-28',eps_est:'0.89',eps_prev:'0.61',note:'Q1 FY2026 · confirmado'},
-  {sym:'TSLA',date:'2025-07-22',eps_est:'0.42',eps_prev:'0.45',note:'Q2 2025 — est.'},
-  {sym:'MSFT',date:'2025-07-29',eps_est:'3.40',eps_prev:'3.22',note:'Q4 FY2025 — est.'},
-  {sym:'GOOGL',date:'2025-07-29',eps_est:'2.15',eps_prev:'2.01',note:'Q2 2025 — est.'},
-  {sym:'META',date:'2025-07-30',eps_est:'5.60',eps_prev:'5.28',note:'Q2 2025 — est.'},
-  {sym:'AAPL',date:'2025-07-31',eps_est:'1.70',eps_prev:'1.62',note:'Q3 FY2025 — est.'},
-  {sym:'AMZN',date:'2025-08-01',eps_est:'1.50',eps_prev:'1.36',note:'Q2 2025 — est.'},
-  {sym:'AMD',date:'2025-07-29',eps_est:'1.08',eps_prev:'0.94',note:'Q2 2025 — est.'},
+  {sym:'NVDA',date:'2026-05-28',eps_est:'0.94',eps_prev:'0.89',note:'Q1 FY2027 — est.'},
+  {sym:'TSLA',date:'2026-07-21',eps_est:'0.51',eps_prev:'0.27',note:'Q2 2026 — est.'},
+  {sym:'MSFT',date:'2026-07-28',eps_est:'3.65',eps_prev:'3.46',note:'Q4 FY2026 — est.'},
+  {sym:'GOOGL',date:'2026-07-28',eps_est:'2.35',eps_prev:'2.12',note:'Q2 2026 — est.'},
+  {sym:'AMD',date:'2026-07-28',eps_est:'1.25',eps_prev:'1.08',note:'Q2 2026 — est.'},
+  {sym:'META',date:'2026-07-29',eps_est:'6.20',eps_prev:'5.63',note:'Q2 2026 — est.'},
+  {sym:'AAPL',date:'2026-07-30',eps_est:'1.85',eps_prev:'1.65',note:'Q3 FY2026 — est.'},
+  {sym:'AMZN',date:'2026-07-31',eps_est:'1.72',eps_prev:'1.59',note:'Q2 2026 — est.'},
 ];
 function daysUntil(dateStr){var today=new Date();today.setHours(0,0,0,0);return Math.round((new Date(dateStr)-today)/86400000);}
 async function loadIAMomentum(){
@@ -2790,6 +2791,7 @@ async function generateIAAnalysis(){
 }
 function showIA(e){
   e&&e.preventDefault();
+  activePanel='ia';
   hideAllPanels();
   setSidebarVisible(false);
   document.getElementById('iaPanel').style.display='block';
@@ -2933,6 +2935,9 @@ function showViewsTab(e) {
   var em=document.getElementById('emptyMsg'); if(em) { var ep=em.parentElement; if(ep) ep.style.display='none'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('viewsTab'); if(tab) tab.classList.add('active');
+  // Show editor block if in editor mode
+  var eb=document.getElementById('viewsEditorBlock');
+  if(eb) eb.style.display = isEditor ? 'block' : 'none';
   loadViews();
   // Re-hide note elements after async ops
   setTimeout(function(){
@@ -3513,6 +3518,7 @@ function renderSignalLog(){
 // ── ANÁLISIS FILTERS ──────────────────────────────────────────
 function showAnalisis(e) {
   e && e.preventDefault();
+  activePanel='analisis';
   if(window._pmAbort){window._pmAbort.abort();window._pmAbort=null;}
   if(window._pmInterval){clearInterval(window._pmInterval);window._pmInterval=null;}
   hideAllPanels();
