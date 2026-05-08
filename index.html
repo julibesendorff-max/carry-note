@@ -2137,6 +2137,7 @@ function renderFciCard(f, i) {
 }
 function showFCI(e) {
   e && e.preventDefault();
+  activePanel='fci';
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
@@ -2221,6 +2222,7 @@ function loadCalendar() {
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
   e && e.preventDefault();
+  activePanel='aprender';
   hideAllPanels();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
@@ -2803,6 +2805,7 @@ function showIA(e){
 
 function showDiag(e) {
   e && e.preventDefault();
+  activePanel='diag';
   hideAllPanels();
   setSidebarVisible(false);
   var dp=document.getElementById('diagPanel'); if(dp) dp.style.display='block';
@@ -2881,6 +2884,7 @@ function openCorrExplainer() {
 }
 function showRadar(e) {
   e && e.preventDefault();
+  activePanel='radar';
   hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
@@ -2923,6 +2927,7 @@ document.addEventListener('click', function(e) {
 });
 function showViewsTab(e) {
   e && e.preventDefault();
+  activePanel='views';
   hideAllPanels();
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   setSidebarVisible(false);
@@ -2948,6 +2953,7 @@ function showViewsTab(e) {
 }
 function showWatchlist(e){
   e&&e.preventDefault();
+  activePanel='watchlist';
   hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
@@ -2960,6 +2966,7 @@ function showWatchlist(e){
 }
 function showSobre(e){
   e&&e.preventDefault();
+  activePanel='sobre';
   hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
