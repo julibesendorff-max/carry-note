@@ -547,6 +547,35 @@ if('serviceWorker' in navigator) {
       </div>
       <div id="viewsEmptyStandalone" style="display:none;font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:2rem 0">No hay views publicados todavía.</div>
       <div id="viewsListStandalone"></div>
+      <!-- EDITOR BLOCK inside standalone panel -->
+      <div id="viewsEditorStandalone" style="display:none;margin-top:2rem;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--green);padding:1.25rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.75rem">▸ Publicar view técnico</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+          <input type="text" id="viewTicker2" placeholder="Ticker (ej: NVDA, YPF)" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none"/>
+          <select id="viewMarket2" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="eeuu">EEUU</option>
+            <option value="ar">Argentina</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
+          <select id="viewBias2" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="compra">▲ Momento de compra</option>
+            <option value="venta">▼ Momento de venta</option>
+            <option value="neutral">→ Neutral / Esperar</option>
+          </select>
+          <select id="viewTimeframe2" style="background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+            <option value="corto">Corto plazo (días)</option>
+            <option value="medio">Mediano plazo (semanas)</option>
+            <option value="largo">Largo plazo (meses)</option>
+          </select>
+        </div>
+        <textarea id="viewBody2" placeholder="Describí el setup técnico: soportes, resistencias, catalizadores, riesgo/recompensa..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.6rem 0.8rem;outline:none;resize:vertical;min-height:100px;margin-bottom:0.6rem"></textarea>
+        <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+          <button onclick="generateView2()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface2);color:var(--gold);border:1px solid var(--gold);cursor:pointer">✦ Generar con IA</button>
+          <button onclick="publishView2()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--green);color:#fff;border:none;cursor:pointer">Publicar view ▸</button>
+        </div>
+        <div id="viewStatus2" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.6rem;display:none"></div>
+      </div>
     </div>
 
     <!-- IA WATCH PANEL -->
@@ -2925,6 +2954,59 @@ document.addEventListener('click', function(e) {
   var header = e.target.closest ? e.target.closest('.radar-cat-header') : null;
   if(header && header.dataset.catid) toggleRadarCat(header.dataset.catid);
 });
+
+function generateView2() {
+  // Copy values from *2 fields to original fields and call generateView
+  var t=document.getElementById('viewTicker2');
+  var m=document.getElementById('viewMarket2');
+  var b=document.getElementById('viewBias2');
+  var tf=document.getElementById('viewTimeframe2');
+  var body=document.getElementById('viewBody2');
+  var status=document.getElementById('viewStatus2');
+  if(t) document.getElementById('viewTicker') && (document.getElementById('viewTicker').value=t.value);
+  if(m) document.getElementById('viewMarket') && (document.getElementById('viewMarket').value=m.value);
+  if(b) document.getElementById('viewBias') && (document.getElementById('viewBias').value=b.value);
+  if(tf) document.getElementById('viewTimeframe') && (document.getElementById('viewTimeframe').value=tf.value);
+  if(body) document.getElementById('viewBody') && (document.getElementById('viewBody').value=body.value);
+  // Call generateView then copy result back
+  generateView().then(function(){
+    var result=document.getElementById('viewBody');
+    if(result&&body) body.value=result.value;
+    var s=document.getElementById('viewStatus');
+    if(s&&status){status.textContent=s.textContent;status.style.color=s.style.color;status.style.display='block';}
+  }).catch(function(){
+    var freshKey=(localStorage.getItem('cn_akey')||'').trim();
+    if(freshKey) ANTHRO_KEY=freshKey;
+    if(!ANTHRO_KEY){if(status){status.textContent='Se necesita API key.';status.style.color='var(--red)';status.style.display='block';}return;}
+    generateView();
+  });
+}
+
+async function publishView2() {
+  var ticker=(document.getElementById('viewTicker2')||{}).value||'';
+  var market=(document.getElementById('viewMarket2')||{}).value||'eeuu';
+  var bias=(document.getElementById('viewBias2')||{}).value||'neutral';
+  var tf=(document.getElementById('viewTimeframe2')||{}).value||'corto';
+  var body=(document.getElementById('viewBody2')||{}).value||'';
+  var statusEl=document.getElementById('viewStatus2');
+  ticker=ticker.trim().toUpperCase();
+  body=body.trim();
+  if(!ticker||!body){
+    if(statusEl){statusEl.textContent='Completá ticker y análisis.';statusEl.style.color='var(--red)';statusEl.style.display='block';}
+    return;
+  }
+  try{
+    var res=await sbFetch('/rest/v1/views',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({ticker,market,bias,timeframe:tf,body})});
+    if(!res.ok)throw new Error('Error al guardar');
+    document.getElementById('viewTicker2').value='';
+    document.getElementById('viewBody2').value='';
+    if(statusEl){statusEl.textContent='✓ View publicado.';statusEl.style.color='var(--green)';statusEl.style.display='block';}
+    loadViews();
+  }catch(err){
+    if(statusEl){statusEl.textContent='✗ '+err.message;statusEl.style.color='var(--red)';statusEl.style.display='block';}
+  }
+}
+
 function showViewsTab(e) {
   e && e.preventDefault();
   activePanel='views';
@@ -2943,6 +3025,10 @@ function showViewsTab(e) {
   // Show editor block if in editor mode
   var eb=document.getElementById('viewsEditorBlock');
   if(eb) eb.style.display = isEditor ? 'block' : 'none';
+  var eb2=document.getElementById('viewsEditorStandalone');
+  if(eb2) eb2.style.display = isEditor ? 'block' : 'none';
+  var eb2=document.getElementById('viewsEditorStandalone');
+  if(eb2) eb2.style.display = isEditor ? 'block' : 'none';
   loadViews();
   // Re-hide note elements after async ops
   setTimeout(function(){
