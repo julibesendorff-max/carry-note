@@ -594,15 +594,11 @@ if('serviceWorker' in navigator) {
         <div id="iaEarningsTable" style="border:1px solid var(--border2)"></div>
       </div>
       <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:1.5rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.75rem">
-          <div>
-            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.2rem">Análisis IA · Web Search</div>
-            <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text)">¿Quién tiene más upside?</div>
-          </div>
-          <button onclick="generateIAAnalysis()" id="iAnalysisBtn" style="font-family:var(--mono);font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.25rem;background:#a855f7;color:#fff;border:none;cursor:pointer;white-space:nowrap">Analizar ▸</button>
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border2)">Momentum del día · resumen</div>
+        <div id="iaSummary" style="display:flex;flex-direction:column;gap:0">
+          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem 0">Cargando datos...</div>
         </div>
-        <div id="iaAnalysisResult" style="font-size:0.88rem;color:var(--muted);line-height:1.75;min-height:2rem"></div>
-        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border2);line-height:1.6">⚠ Análisis generado con IA y búsqueda web. Carácter educativo. No constituye recomendación de inversión.</div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border2);line-height:1.6">Datos en tiempo real vía Finnhub. No constituye recomendación de inversión.</div>
       </div>
     </div>
 
@@ -2774,21 +2770,25 @@ async function loadIAMomentum(){
   var grid=document.getElementById('iaMomentumGrid');if(!grid)return;
   grid.innerHTML=IA_COMPANIES.map(function(){return '<div style="padding:1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:0.62rem;color:var(--muted2)">···</div>';}).join('');
   var results=await Promise.all(IA_COMPANIES.map(function(c){return fetch('https://finnhub.io/api/v1/quote?symbol='+c.sym+'&token='+FINNHUB_KEY).then(function(r){return r.json();}).catch(function(){return{};});}));
-  grid.innerHTML=results.map(function(d,i){
+  var priceData = results.map(function(d,i){
     var c=IA_COMPANIES[i];
     var price=d.c?(d.c>=100?'$'+d.c.toFixed(0):'$'+d.c.toFixed(2)):'—';
     var pct=(d.c&&d.pc)?((d.c-d.pc)/d.pc*100):null;
     var pctStr=pct!==null?(pct>=0?'▲ +':'▼ ')+Math.abs(pct).toFixed(2)+'%':'—';
     var pctColor=pct===null?'var(--muted2)':pct>0?'var(--green)':'var(--red)';
+    return {sym:c.sym,desc:c.desc,color:c.color,price:price,pct:pct,pctStr:pctStr,pctColor:pctColor};
+  });
+  grid.innerHTML=priceData.map(function(d){
     return '<div style="padding:1.1rem 1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface)">'+
       '<div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem">'+
-        '<span style="font-family:var(--mono);font-size:0.75rem;font-weight:600;color:'+c.color+'">'+c.sym+'</span>'+
-        '<span style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2)">'+c.desc+'</span>'+
+        '<span style="font-family:var(--mono);font-size:0.75rem;font-weight:600;color:'+d.color+'">'+d.sym+'</span>'+
+        '<span style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2)">'+d.desc+'</span>'+
       '</div>'+
-      '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.2rem">'+price+'</div>'+
-      '<div style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+pctColor+'">'+pctStr+'</div>'+
+      '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.2rem">'+d.price+'</div>'+
+      '<div style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+d.pctColor+'">'+d.pctStr+'</div>'+
     '</div>';
   }).join('');
+  renderIASummary(priceData);
 }
 function renderIAEarnings(){
   var table=document.getElementById('iaEarningsTable');if(!table)return;
@@ -2807,54 +2807,56 @@ function renderIAEarnings(){
     '</div>';
   }).join('');
 }
-async function generateIAAnalysis(){
-  var btn=document.getElementById('iAnalysisBtn'),result=document.getElementById('iaAnalysisResult');
-  if(!btn||!result)return;
-  // Load key exactly like genAI does
-  var freshKey=(localStorage.getItem('cn_akey')||'').trim();
-  if(freshKey) ANTHRO_KEY=freshKey;
-  if(!ANTHRO_KEY){result.innerHTML='<span style="color:var(--muted2);font-family:var(--mono);font-size:0.72rem">Se necesita API key de Anthropic.</span>';return;}
-  btn.disabled=true;btn.textContent='Analizando…';
-  result.innerHTML='<span style="color:#a855f7;font-family:var(--mono);font-size:0.72rem">Buscando noticias…</span>';
-  var today=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  var upcoming=IA_EARNINGS.filter(function(e){return daysUntil(e.date)>=0;}).map(function(e){return e.sym+' en '+daysUntil(e.date)+' dias (EPS est: $'+e.eps_est+')';}).join('; ');
-  var prompt='Eres un analista de mercados de EEUU. Hoy es '+today+'. Proximos earnings de IA: '+upcoming+'. Usa web search para buscar noticias recientes sobre NVDA, AMD, MSFT, GOOGL, META, TSLA, AAPL, AMZN. Escribe en espanol simple 3 parrafos: 1) Cuales tienen mayor momentum y por que. 2) Cuales tienen mayor riesgo pre-earnings. 3) Cual tiene mas upside a 30 dias. Aclara que es analisis educativo.';
-  try{
-    var useKey = getCleanKey();
-    if(!useKey || !useKey.startsWith('sk-ant-')){
-      result.innerHTML='<span style="color:var(--red);font-family:var(--mono);font-size:0.72rem">API key inválida. Re-ingresá la key en el editor y guardála.</span>';
-      btn.disabled=false; btn.textContent='Analizar ▸';
-      return;
-    }
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':getCleanKey(),
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:800,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:prompt}]
-      })
-    });
-    if(!res.ok){
-      var errData=await res.json().catch(function(){return{};});
-      throw new Error('HTTP '+res.status+' '+((errData.error&&errData.error.message)||''));
-    }
-    var data=await res.json();
-    var txt=data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('').trim();
-    result.innerHTML=txt?txt.split('\n').filter(function(l){return l.trim();}).map(function(p){
-      return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">'+p+'</p>';
-    }).join(''):'<span style="color:var(--muted2)">Sin respuesta.</span>';
-  }catch(e){
-    result.innerHTML='<span style="color:var(--red);font-family:var(--mono);font-size:0.72rem">Error: '+e.message+'</span>';
+function renderIASummary(priceData) {
+  var el = document.getElementById('iaSummary');
+  if(!el) return;
+  if(!priceData || !priceData.length) {
+    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem 0">Cargando datos de mercado...</div>';
+    return;
   }
-  btn.disabled=false;btn.textContent='Actualizar ▸';
+  // Sort by % change descending
+  var sorted = priceData.slice().sort(function(a,b){ return (b.pct||0)-(a.pct||0); });
+  var gainers = sorted.filter(function(x){ return x.pct > 0; });
+  var losers  = sorted.filter(function(x){ return x.pct <= 0; });
+  var rows = sorted.map(function(d) {
+    var pct = d.pct;
+    var pctStr = pct !== null ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : '—';
+    var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
+    var arrow = pct === null ? '→' : pct > 0 ? '▲' : '▼';
+    var bar = '';
+    if(pct !== null) {
+      var barPct = Math.min(Math.abs(pct) / 5 * 100, 100);
+      var barColor = pct >= 0 ? 'var(--green)' : 'var(--red)';
+      bar = '<div style="flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin:0 0.75rem">' +
+            '<div style="width:'+barPct+'%;height:100%;background:'+barColor+';border-radius:2px"></div></div>';
+    }
+    return '<div style="display:flex;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border2)">' +
+      '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:600;color:'+d.color+';min-width:52px">'+d.sym+'</span>' +
+      '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);min-width:100px">'+d.desc+'</span>' +
+      bar +
+      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:600;color:'+pctColor+';min-width:60px;text-align:right">'+arrow+' '+pctStr+'</span>' +
+    '</div>';
+  }).join('');
+
+  // Top gainer / top loser callout
+  var topG = gainers.length ? gainers[0] : null;
+  var topL = losers.length ? losers[losers.length-1] : null;
+  var callout = '';
+  if(topG || topL) {
+    callout = '<div style="display:flex;gap:0;margin-bottom:0.75rem">';
+    if(topG) callout += '<div style="flex:1;padding:0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-right:0.5rem">' +
+      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Mejor hoy</div>' +
+      '<div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--green)">'+topG.sym+' +'+topG.pct.toFixed(2)+'%</div>' +
+      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+topG.desc+'</div></div>';
+    if(topL) callout += '<div style="flex:1;padding:0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2)">' +
+      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Peor hoy</div>' +
+      '<div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--red)">'+topL.sym+' '+topL.pct.toFixed(2)+'%</div>' +
+      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+topL.desc+'</div></div>';
+    callout += '</div>';
+  }
+  el.innerHTML = callout + rows;
 }
+
 
 function showIA(e){
   e&&e.preventDefault();
