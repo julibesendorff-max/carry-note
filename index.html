@@ -2753,67 +2753,87 @@ function hideAllPanels() {
 
 // ── IA WATCH ─────────────────────────────────────────────
 var IA_COMPANIES = [
-  {sym:'NVDA',name:'NVIDIA',desc:'GPUs · Data Center',color:'#76b900'},
-  {sym:'AMD',name:'AMD',desc:'CPUs/GPUs · MI300',color:'#e05252'},
-  {sym:'MSFT',name:'Microsoft',desc:'Azure · Copilot',color:'#00a4ef'},
-  {sym:'GOOGL',name:'Alphabet',desc:'Gemini · TPUs',color:'#4285f4'},
-  {sym:'META',name:'Meta',desc:'Llama · AI Infra',color:'#0866ff'},
-  {sym:'TSLA',name:'Tesla',desc:'FSD · Optimus',color:'#cc0000'},
-  {sym:'AAPL',name:'Apple',desc:'Apple Intelligence',color:'#555'},
-  {sym:'AMZN',name:'Amazon',desc:'AWS · Bedrock',color:'#ff9900'},
+  // Hiperscalers & Modelos
+  {sym:'NVDA', name:'NVIDIA',    desc:'GPUs · Data Center',    color:'#76b900', cat:'Hiperscalers & Modelos'},
+  {sym:'MSFT', name:'Microsoft', desc:'Azure · Copilot',       color:'#00a4ef', cat:'Hiperscalers & Modelos'},
+  {sym:'GOOGL',name:'Alphabet',  desc:'Gemini · TPUs',         color:'#4285f4', cat:'Hiperscalers & Modelos'},
+  {sym:'META', name:'Meta',      desc:'Llama · AI Infra',      color:'#0866ff', cat:'Hiperscalers & Modelos'},
+  {sym:'AMZN', name:'Amazon',    desc:'AWS · Bedrock',         color:'#ff9900', cat:'Hiperscalers & Modelos'},
+  {sym:'AAPL', name:'Apple',     desc:'Apple Intelligence',    color:'#888',    cat:'Hiperscalers & Modelos'},
+  {sym:'TSLA', name:'Tesla',     desc:'FSD · Optimus',         color:'#cc0000', cat:'Hiperscalers & Modelos'},
+  // Chips & Hardware
+  {sym:'AMD',  name:'AMD',       desc:'CPUs/GPUs · MI300',     color:'#e05252', cat:'Chips & Hardware'},
+  {sym:'AVGO', name:'Broadcom',  desc:'ASICs · Networking',    color:'#ca2026', cat:'Chips & Hardware'},
+  {sym:'ARM',  name:'ARM',       desc:'Arquitectura de chips', color:'#0091bd', cat:'Chips & Hardware'},
+  {sym:'MRVL', name:'Marvell',   desc:'Chips de red DC',       color:'#005eb8', cat:'Chips & Hardware'},
+  {sym:'MU',   name:'Micron',    desc:'Memoria HBM · GPUs',    color:'#0059a5', cat:'Chips & Hardware'},
+  // Nube & Plataformas
+  {sym:'ORCL', name:'Oracle',    desc:'Cloud · OpenAI partner',color:'#f80000', cat:'Nube & Plataformas'},
+  {sym:'SNOW', name:'Snowflake', desc:'Datos · IA empresarial',color:'#29b5e8', cat:'Nube & Plataformas'},
+  // Software & Aplicaciones
+  {sym:'PLTR', name:'Palantir',  desc:'IA defensa/gobierno',   color:'#7b42f6', cat:'Software & Apps'},
+  {sym:'CRM',  name:'Salesforce',desc:'Agentforce · CRM IA',   color:'#00a1e0', cat:'Software & Apps'},
+  {sym:'NOW',  name:'ServiceNow',desc:'Automatización IA',     color:'#81b5a1', cat:'Software & Apps'},
+  // Energía para IA
+  {sym:'CEG',  name:'Constellation',desc:'Nuclear · Data Centers',color:'#ffd700', cat:'Energía para IA'},
+  {sym:'VST',  name:'Vistra',    desc:'Energía · Hyperscalers',color:'#ff8c00', cat:'Energía para IA'},
 ];
 var IA_EARNINGS = [
-  {sym:'NVDA',date:'2026-05-28',eps_est:'0.94',eps_prev:'0.89',note:'Q1 FY2027 — est.'},
-  {sym:'TSLA',date:'2026-07-21',eps_est:'0.51',eps_prev:'0.27',note:'Q2 2026 — est.'},
-  {sym:'MSFT',date:'2026-07-28',eps_est:'3.65',eps_prev:'3.46',note:'Q4 FY2026 — est.'},
-  {sym:'GOOGL',date:'2026-07-28',eps_est:'2.35',eps_prev:'2.12',note:'Q2 2026 — est.'},
-  {sym:'AMD',date:'2026-07-28',eps_est:'1.25',eps_prev:'1.08',note:'Q2 2026 — est.'},
-  {sym:'META',date:'2026-07-29',eps_est:'6.20',eps_prev:'5.63',note:'Q2 2026 — est.'},
-  {sym:'AAPL',date:'2026-07-30',eps_est:'1.85',eps_prev:'1.65',note:'Q3 FY2026 — est.'},
-  {sym:'AMZN',date:'2026-07-31',eps_est:'1.72',eps_prev:'1.59',note:'Q2 2026 — est.'},
+  {sym:'NVDA', date:'2026-05-28',eps_est:'0.94', eps_prev:'0.89',note:'Q1 FY2027 — est.'},
+  {sym:'AVGO', date:'2026-06-11',eps_est:'1.45', eps_prev:'1.28',note:'Q2 FY2026 — est.'},
+  {sym:'ORCL', date:'2026-06-16',eps_est:'1.70', eps_prev:'1.63',note:'Q4 FY2026 — est.'},
+  {sym:'MU',   date:'2026-06-25',eps_est:'1.95', eps_prev:'0.82',note:'Q3 FY2026 — est.'},
+  {sym:'TSLA', date:'2026-07-21',eps_est:'0.51', eps_prev:'0.27',note:'Q2 2026 — est.'},
+  {sym:'MSFT', date:'2026-07-28',eps_est:'3.65', eps_prev:'3.46',note:'Q4 FY2026 — est.'},
+  {sym:'GOOGL',date:'2026-07-28',eps_est:'2.35', eps_prev:'2.12',note:'Q2 2026 — est.'},
+  {sym:'AMD',  date:'2026-07-28',eps_est:'1.25', eps_prev:'1.08',note:'Q2 2026 — est.'},
+  {sym:'MRVL', date:'2026-07-28',eps_est:'0.75', eps_prev:'0.61',note:'Q2 FY2027 — est.'},
+  {sym:'META', date:'2026-07-29',eps_est:'6.20', eps_prev:'5.63',note:'Q2 2026 — est.'},
+  {sym:'PLTR', date:'2026-07-29',eps_est:'0.13', eps_prev:'0.09',note:'Q2 2026 — est.'},
+  {sym:'CRM',  date:'2026-07-29',eps_est:'2.55', eps_prev:'2.44',note:'Q2 FY2027 — est.'},
+  {sym:'NOW',  date:'2026-07-29',eps_est:'4.10', eps_prev:'3.92',note:'Q2 2026 — est.'},
+  {sym:'AAPL', date:'2026-07-30',eps_est:'1.85', eps_prev:'1.65',note:'Q3 FY2026 — est.'},
+  {sym:'ARM',  date:'2026-07-30',eps_est:'0.42', eps_prev:'0.36',note:'Q1 FY2027 — est.'},
+  {sym:'AMZN', date:'2026-07-31',eps_est:'1.72', eps_prev:'1.59',note:'Q2 2026 — est.'},
+  {sym:'SNOW', date:'2026-08-20',eps_est:'0.22', eps_prev:'0.18',note:'Q2 FY2027 — est.'},
+  {sym:'CEG',  date:'2026-08-05',eps_est:'1.80', eps_prev:'1.52',note:'Q2 2026 — est.'},
+  {sym:'VST',  date:'2026-08-07',eps_est:'2.20', eps_prev:'1.95',note:'Q2 2026 — est.'},
 ];
 function daysUntil(dateStr){var today=new Date();today.setHours(0,0,0,0);return Math.round((new Date(dateStr)-today)/86400000);}
 async function loadIAMomentum(){
   var grid=document.getElementById('iaMomentumGrid');if(!grid)return;
-  grid.innerHTML=IA_COMPANIES.map(function(){return '<div style="padding:1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface);font-family:var(--mono);font-size:0.62rem;color:var(--muted2)">···</div>';}).join('');
+  grid.innerHTML='<div style="grid-column:1/-1;font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:1rem">··· cargando datos en vivo</div>';
   var results=await Promise.all(IA_COMPANIES.map(function(c){return fetch('https://finnhub.io/api/v1/quote?symbol='+c.sym+'&token='+FINNHUB_KEY).then(function(r){return r.json();}).catch(function(){return{};});}));
-  var priceData = results.map(function(d,i){
+  var priceData=results.map(function(d,i){
     var c=IA_COMPANIES[i];
     var price=d.c?(d.c>=100?'$'+d.c.toFixed(0):'$'+d.c.toFixed(2)):'—';
     var pct=(d.c&&d.pc)?((d.c-d.pc)/d.pc*100):null;
     var pctStr=pct!==null?(pct>=0?'▲ +':'▼ ')+Math.abs(pct).toFixed(2)+'%':'—';
     var pctColor=pct===null?'var(--muted2)':pct>0?'var(--green)':'var(--red)';
-    return {sym:c.sym,desc:c.desc,color:c.color,price:price,pct:pct,pctStr:pctStr,pctColor:pctColor};
+    return {sym:c.sym,desc:c.desc,color:c.color,cat:c.cat,price:price,pct:pct,pctStr:pctStr,pctColor:pctColor};
   });
-  grid.innerHTML=priceData.map(function(d){
-    return '<div style="padding:1.1rem 1rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface)">'+
-      '<div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem">'+
-        '<span style="font-family:var(--mono);font-size:0.75rem;font-weight:600;color:'+d.color+'">'+d.sym+'</span>'+
-        '<span style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2)">'+d.desc+'</span>'+
-      '</div>'+
-      '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.2rem">'+d.price+'</div>'+
-      '<div style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+d.pctColor+'">'+d.pctStr+'</div>'+
-    '</div>';
-  }).join('');
+  // Group by category
+  var cats={};
+  priceData.forEach(function(d){
+    if(!cats[d.cat]) cats[d.cat]=[];
+    cats[d.cat].push(d);
+  });
+  var gridHtml='';
+  Object.keys(cats).forEach(function(cat){
+    gridHtml+='<div style="grid-column:1/-1;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;padding:0.45rem 0.75rem;background:rgba(168,85,247,0.06);border-bottom:1px solid var(--border2)">'+cat+'</div>';
+    cats[cat].forEach(function(d){
+      gridHtml+='<div style="padding:0.85rem 0.75rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface)">'+
+        '<span style="font-family:var(--mono);font-size:0.7rem;font-weight:600;color:'+d.color+'">'+d.sym+'</span>'+
+        '<div style="font-family:var(--mono);font-size:0.48rem;color:var(--muted2);margin:0.15rem 0 0.35rem">'+d.desc+'</div>'+
+        '<div style="font-family:var(--mono);font-size:0.95rem;font-weight:600;color:var(--text)">'+d.price+'</div>'+
+        '<div style="font-family:var(--mono);font-size:0.68rem;font-weight:500;color:'+d.pctColor+'">'+d.pctStr+'</div>'+
+      '</div>';
+    });
+  });
+  grid.innerHTML=gridHtml;
   renderIASummary(priceData);
 }
-function renderIAEarnings(){
-  var table=document.getElementById('iaEarningsTable');if(!table)return;
-  var sorted=IA_EARNINGS.slice().sort(function(a,b){return new Date(a.date)-new Date(b.date);});
-  table.innerHTML=sorted.map(function(e){
-    var days=daysUntil(e.date),isPast=days<0,isSoon=days>=0&&days<=14;
-    var dayLabel=isPast?'Reportado ✓':days===0?'⚡ HOY':'en '+days+' días';
-    var dayColor=isPast?'var(--muted2)':isSoon?'#a855f7':'var(--gold)';
-    var bg=isSoon?'background:rgba(168,85,247,0.05)':'';
-    return '<div style="display:grid;grid-template-columns:70px 1fr auto auto;align-items:center;gap:0.5rem 1rem;padding:0.7rem 1rem;border-bottom:1px solid var(--border2);'+bg+'">'+
-      '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:600;color:var(--text)">'+e.sym+'</span>'+
-      '<div><div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted)">'+e.note+'</div>'+
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">EPS est: $'+e.eps_est+' · prev: $'+e.eps_prev+'</div></div>'+
-      '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">'+new Date(e.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+'</span>'+
-      '<span style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:'+dayColor+';white-space:nowrap">'+dayLabel+'</span>'+
-    '</div>';
-  }).join('');
-}
+
 function renderIASummary(priceData) {
   var el = document.getElementById('iaSummary');
   if(!el) return;
