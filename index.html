@@ -3097,10 +3097,17 @@ async function updateView2(id) {
     return;
   }
   try {
+    var imgInput3 = document.getElementById('viewImage2');
+    var payload3 = {ticker:ticker, market:market, bias:bias, timeframe:tf, body:body};
+    if(imgInput3 && imgInput3.files && imgInput3.files[0]) {
+      payload3.image_data = await new Promise(function(resolve) {
+        var rd = new FileReader(); rd.onload = function(e){resolve(e.target.result);}; rd.readAsDataURL(imgInput3.files[0]);
+      });
+    }
     var res = await sbFetch('/rest/v1/views?id=eq.'+id, {
       method:'PATCH',
       headers:{'Prefer':'return=minimal'},
-      body:JSON.stringify({ticker:ticker, market:market, bias:bias, timeframe:tf, body:body})
+      body:JSON.stringify(payload3)
     });
     if(!res.ok) throw new Error('Error al actualizar');
     document.getElementById('viewTicker2').value = '';
@@ -3157,10 +3164,21 @@ async function publishView2() {
     return;
   }
   try{
-    var res=await sbFetch('/rest/v1/views',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({ticker,market,bias,timeframe:tf,body})});
+    // Read image if present
+    var imgInput = document.getElementById('viewImage2');
+    var payload = {ticker:ticker,market:market,bias:bias,timeframe:tf,body:body};
+    if(imgInput && imgInput.files && imgInput.files[0]) {
+      payload.image_data = await new Promise(function(resolve) {
+        var rd = new FileReader();
+        rd.onload = function(e){ resolve(e.target.result); };
+        rd.readAsDataURL(imgInput.files[0]);
+      });
+    }
+    var res=await sbFetch('/rest/v1/views',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify(payload)});
     if(!res.ok)throw new Error('Error al guardar');
     document.getElementById('viewTicker2').value='';
     document.getElementById('viewBody2').value='';
+    clearViewImage();
     if(statusEl){statusEl.textContent='✓ View publicado.';statusEl.style.color='var(--green)';statusEl.style.display='block';}
     loadViews();
   }catch(err){
@@ -3877,7 +3895,8 @@ function buildViewCard(v){
         '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+tfLabel+'</span>'+
         '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto">'+ds+'</span>'+
       '</div>'+
-      '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75;margin-bottom:1.25rem">'+v.body+'</div>'+
+      '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75;margin-bottom:'+(v.image_data?'0.75rem':'1.25rem')+'">'+v.body+'</div>'+
+      (v.image_data?'<div style="margin-bottom:1.25rem"><img src="'+v.image_data+'" style="max-width:100%;max-height:340px;object-fit:contain;border:1px solid var(--border2);display:block" loading="lazy"/></div>':'')+
       '<div style="border-top:1px solid var(--border2);padding-top:0.85rem">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">'+
           '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase">▸ Gráfico · '+v.ticker+' · TradingView</span>'+
