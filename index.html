@@ -3386,16 +3386,36 @@ function getCrossAlerts() {
   if(!activeSignals.length) return [];
   var alerts=[];
   var typeMap={'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market','FCI Renta Fija Pesos':'fci_pesos','FCI / Bono CER':'fci_cer','Bono / ON Hard Dollar':'bono_dollar','Dolar MEP / CCL':'dolar_mep','Dolares billete':'dolar_mep','Acciones argentinas (generico)':'acciones_ar','GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar','CEDEARs (general)':'cedears','CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr','CEDEAR: Apple (AAPL)':'aapl_cedr','S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq','Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum','Oro':'oro'};
+  // Build active signals map with category dedup (same logic as radar display)
+  var activeByCat = {};
+  RADAR_PATTERNS.forEach(function(p){
+    var pcts=p.assets.map(getTickerChange);
+    if(pcts.some(function(x){return x===null;})) return;
+    var match=pcts.every(function(pct,i){return p.dirs[i]>0?pct>0.3:pct<-0.3;});
+    if(!match) return;
+    var avg=pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
+    var cat=p.cat||'Otros';
+    if(!activeByCat[cat]||Math.abs(avg)>Math.abs(activeByCat[cat].avg)){
+      activeByCat[cat]={name:p.name,avg:avg};
+    }
+  });
+  var dominantActive=Object.values(activeByCat).map(function(x){return x.name;});
+
   saved.assets.forEach(function(asset){
     var typeKey=typeMap[asset.tipo];
     if(!typeKey) return;
     var relevantSignals=ASSET_RADAR_MAP[typeKey]||[];
+    // Only show dominant signal per category for this asset
+    var seenCats={};
     relevantSignals.forEach(function(sigName){
-      if(activeSignals.indexOf(sigName)!==-1){
-        var sig=RADAR_PATTERNS.find(function(p){return p.name===sigName;});
-        if(sig&&!alerts.find(function(a){return a.signal===sigName&&a.asset===asset.tipo;})){
-          alerts.push({asset:asset.tipo,signal:sigName,desc:sig.desc,color:sig.color,level:sig.level});
-        }
+      if(dominantActive.indexOf(sigName)===-1) return;
+      var sig=RADAR_PATTERNS.find(function(p){return p.name===sigName;});
+      if(!sig) return;
+      var cat=sig.cat||'Otros';
+      if(seenCats[cat]) return; // skip if already showing this cat for this asset
+      seenCats[cat]=true;
+      if(!alerts.find(function(a){return a.signal===sigName&&a.asset===asset.tipo;})){
+        alerts.push({asset:asset.tipo,signal:sigName,desc:sig.desc,color:sig.color,level:sig.level});
       }
     });
   });
@@ -4417,7 +4437,7 @@ window.addEventListener('appinstalled', function() {
       <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid var(--gold);padding:1.5rem;text-align:center">
         <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">¿Te interesa?</div>
         <div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Escribinos y coordinamos una llamada para ver cómo podemos trabajar juntos.</div>
-        <button onclick="window.location.href='mailto:julibesendorff@gmail.com?subject=Sponsor%20Carry%20Note&body=Hola%20Juli%C3%A1n%2C%20me%20interesa%20conocer%20las%20opciones%20de%20sponsorship%20de%20Carry%20Note.'" style="font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem 2rem;background:var(--gold);color:#111;border:none;cursor:pointer">Escribir a julibesendorff@gmail.com →</button>
+        <a href="mailto:julibesendorff@gmail.com?subject=Sponsor%20Carry%20Note&body=Hola%20Juli%C3%A1n%2C%20me%20interesa%20conocer%20las%20opciones%20de%20sponsorship%20de%20Carry%20Note." style="display:inline-block;font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem 2rem;background:var(--gold);color:#111;text-decoration:none">Escribir a julibesendorff@gmail.com →</a>
       </div>
 
     </div>
