@@ -2897,6 +2897,29 @@ function showIA(e){
   renderIAEarnings();
 }
 
+function renderIAEarnings(){
+  var table=document.getElementById('iaEarningsTable');if(!table)return;
+  var sorted=IA_EARNINGS.slice().sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  // Only show upcoming (not past more than 7 days)
+  var relevant=sorted.filter(function(e){return daysUntil(e.date)>=-7;});
+  if(!relevant.length){table.innerHTML='<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.75rem">Sin earnings próximos.</div>';return;}
+  table.innerHTML=relevant.map(function(e){
+    var days=daysUntil(e.date),isPast=days<0,isSoon=days>=0&&days<=14;
+    var dayLabel=isPast?'Reportado ✓':days===0?'⚡ HOY':'en '+days+' días';
+    var dayColor=isPast?'var(--muted2)':isSoon?'#a855f7':'var(--gold)';
+    var bg=isSoon?'background:rgba(168,85,247,0.05)':'';
+    return '<div style="display:grid;grid-template-columns:60px 1fr auto auto;align-items:center;gap:0.5rem 0.75rem;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);'+bg+'">'+
+      '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:600;color:var(--text)">'+e.sym+'</span>'+
+      '<div>'+
+        '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted)">'+e.note+'</div>'+
+        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2)">EPS est: $'+e.eps_est+' · prev: $'+e.eps_prev+'</div>'+
+      '</div>'+
+      '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+new Date(e.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+'</span>'+
+      '<span style="font-family:var(--mono);font-size:0.62rem;font-weight:500;color:'+dayColor+';white-space:nowrap">'+dayLabel+'</span>'+
+    '</div>';
+  }).join('');
+}
+
 function showDiag(e) {
   e && e.preventDefault();
   activePanel='diag';
