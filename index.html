@@ -1364,7 +1364,7 @@ if('serviceWorker' in navigator) {
   <div class="footer-logo">Carry<em>Note</em></div>
   <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
     <span>© 2025 · thecarrynote.com</span>
-    <a href="/sponsors" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
+    <a href="#" onclick="showSponsors(event)" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
     <span>No constituye asesoramiento financiero</span>
   </div>
 </footer>
@@ -1769,30 +1769,33 @@ function buildPrompt(topic) {
     '- EUR/USD: ' + eurUsd,
     '- USD/ARS (official): ' + usdArs,
     '',
-    'CURRENT US MACRO DATA (April 29, 2026):',
-    '- Fed Funds Rate: 3.50-3.75% (held for 3rd consecutive meeting Apr 2026; last cut Dec 2025)',
-    '- US CPI YoY: 3.3% (March 2026 - spike driven by Iran war energy shock)',
-    '- US Core CPI YoY: 2.6% (March 2026 - contained)',
+    'CURRENT US MACRO DATA (May 9, 2026):',
+    '- Fed Funds Rate: 3.50-3.75% (held for 3rd consecutive meeting Apr 29; last cut Dec 2025)',
+    '- US CPI YoY: 3.3% (March 2026 - spike driven by Iran war energy shock; April data out May 12)',
+    '- US Core CPI YoY: 2.6% (March 2026 - moderating from 2.8% a year ago)',
     '- US Core PCE YoY: 2.7% (February 2026)',
-    '- US Unemployment: 4.3% (March 2026)',
-    '- US GDP Q4 2025: +2.4% annualized',
-    '- NFP March 2026: +178,000 (above expectations)',
-    '- 10Y-2Y Treasury Spread: +18bp',
-    '- ISM Manufacturing: 49.0 (contractionary)',
+    '- US Unemployment: 4.3% (April 2026 - unchanged)',
+    '- US GDP Q1 2026: pending; Q4 2025 was +2.4% annualized',
+    '- NFP April 2026: +115,000 (below March revised +185,000; federal job cuts weigh)',
+    '- Initial Jobless Claims: 200K week of May 2 (4-week avg at cycle low - no tariff alarm)',
+    '- 10Y-2Y Treasury Spread: +18bp (curve steepening)',
+    '- ISM Manufacturing: 49.0 (contractionary territory)',
     '- Brent Oil: ~$110/barrel (elevated - Iran war, Strait of Hormuz disruption)',
     '- Gold: all-time highs ~$3,300/oz (safe haven demand)',
-    '- KEY EVENT: FOMC Apr 29 held rates 3.5-3.75% (8-4 split vote, historic dissent)',
-    '- KEY EVENT: Iran war started Feb 28 2026, US-Iran ceasefire Apr 8 but conflict ongoing',
-    '- KEY EVENT: Powell likely final meeting as chair (Kevin Warsh nominated successor)',
+    '- KEY EVENT: FOMC Apr 29 held 3.5-3.75% (8-4 historic dissent, most divided since Oct 1992)',
+    '- KEY EVENT: Kevin Warsh takes over as Fed Chair May 15 - Powell stays as Governor',
+    '- KEY EVENT: April CPI due May 12 - key data for next Fed move',
+    '- KEY EVENT: Iran war ongoing, US-Iran ceasefire Apr 8 but conflict not resolved',
     '',
     'RECENT KEY EVENTS (post Aug 2025):',
-    '- Fed cut rates 3 times (Sep, Nov, Dec 2025); held Jan, Mar, Apr 2026 at 3.50-3.75%',
-    '- Iran war: US-Iran conflict started Feb 28 2026, driving oil above $100, CPI spike to 3.3%',
-    '- FOMC Apr 29: historic 8-4 dissent vote, most divided since Oct 1992',
-    '- Fed leadership: Powell likely final meeting, Kevin Warsh nominated as next chair',
+    '- Fed cut rates 3x (Sep, Nov, Dec 2025); held Jan, Mar, Apr 2026 at 3.50-3.75%',
+    '- Iran war: US-Iran conflict Feb 28 2026, driving oil above $100, CPI spike to 3.3%',
+    '- FOMC Apr 29: historic 8-4 vote - Miran wanted cut, 3 others opposed easing bias language',
+    '- Fed chair transition: Powell remains as Governor, Warsh confirmed as new chair (May 15)',
+    '- Markets pricing ZERO cuts in 2026, one 25bp cut Dec 2027 per futures',
     '- Argentina: Milei lifted FX controls (cepo) late 2025, new IMF deal $20bn',
     '- YPF/Burford: 2nd Circuit Court NY overturned $16bn ruling in favor of Argentina (Mar 27, 2026)',
-    '- Markets pricing NO rate cuts in 2026, possible hike if Iran inflation persists',
+    '- NFP trend: Feb -156k, Mar +185k, Apr +115k - volatile but no collapse',
   ].join('\\n');
   return 'Write a Carry Note analysis about: "' + topic + '".\n\nContext as of ' + today + ':\n' + marketData + '\n\nIMPORTANT: Use web_search to find the latest data, news and figures about this topic before writing. Complement the data above with fresh search results. Be specific with current figures and take a clear position.';
 }
@@ -2971,6 +2974,18 @@ function updateRadarLarge() {
       '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span></div>';
   }).join('');
 }
+
+function showSponsors(e) {
+  e && e.preventDefault();
+  document.getElementById('sponsorsPanel').style.display = 'block';
+  document.addEventListener('keydown', function esc(ev) {
+    if(ev.key === 'Escape') {
+      document.getElementById('sponsorsPanel').style.display = 'none';
+      document.removeEventListener('keydown', esc);
+    }
+  });
+}
+
 function openCorrExplainer() {
   var m = document.getElementById('corrExplainerModal');
   if(m) m.style.display = 'block';
@@ -4342,6 +4357,69 @@ window.addEventListener('appinstalled', function() {
       <div style="font-size:0.72rem;color:var(--muted2);line-height:1.7;padding:0.75rem;border:1px solid var(--border2)">
         ⚠ Este sistema detecta patrones estadísticos, no predice el futuro. Una señal activa aumenta la probabilidad de cierto escenario pero no es garantía. Usá esta información como un insumo más.
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- SPONSORS PANEL -->
+<div id="sponsorsPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:800;overflow-y:auto;padding:2rem 1rem">
+  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--gold);width:min(700px,100%);margin:auto;font-family:var(--mono)">
+
+    <!-- Header -->
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border2)">
+      <div>
+        <div style="font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.35rem">Carry Note · Oportunidades comerciales</div>
+        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8rem;font-weight:600;color:var(--text)">Sponsorá Carry Note</div>
+      </div>
+      <button onclick="document.getElementById('sponsorsPanel').style.display='none'" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:1rem;padding:0.3rem 0.8rem">✕</button>
+    </div>
+
+    <div style="padding:2rem">
+
+      <!-- Intro -->
+      <p style="font-size:0.9rem;color:#c8c4bc;line-height:1.85;margin-bottom:2rem">Carry Note es un portal de análisis macroeconómico en español dirigido al inversor argentino. Combinamos datos de mercado en tiempo real, análisis técnico y contexto macro global en una sola herramienta. Gratuito, sin registro, sin publicidad intrusiva.</p>
+
+      <!-- Audiencia -->
+      <div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem 1.5rem;margin-bottom:1.5rem">
+        <div style="font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">La audiencia</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Inversores argentinos retail con portafolios activos en CEDEARs, bonos y acciones locales</div>
+          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Perfil con formación en ciencias económicas y finanzas</div>
+          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Usuarios que siguen el contexto macro global para tomar decisiones de cartera</div>
+          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Crecimiento orgánico vía comunidades de inversores y redes sociales</div>
+        </div>
+      </div>
+
+      <!-- Qué ofrecemos -->
+      <div style="margin-bottom:1.5rem">
+        <div style="font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">¿Qué puede incluir un sponsorship?</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
+            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
+            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Mención en el portal</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Logo o nombre de tu marca visible en el portal con link a tu sitio.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
+            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
+            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Views patrocinados</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Análisis técnicos o macroeconómicos publicados en el portal con mención de tu marca.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
+            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
+            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Newsletter y redes sociales</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Mención en publicaciones y contenido distribuido en X y otras plataformas.</div></div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
+            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
+            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Formato a medida</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Abiertos a propuestas. Cada acuerdo se diseña según los objetivos del sponsor.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid var(--gold);padding:1.5rem;text-align:center">
+        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">¿Te interesa?</div>
+        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Escribinos y coordinamos una llamada para ver cómo podemos trabajar juntos.</div>
+        <a href="mailto:julibesendorff@gmail.com?subject=Sponsor%20Carry%20Note&body=Hola%20Juli%C3%A1n%2C%20me%20interesa%20conocer%20las%20opciones%20de%20sponsorship%20de%20Carry%20Note." style="display:inline-block;font-family:var(--mono);font-size:0.7rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.75rem 2rem;background:var(--gold);color:#111;text-decoration:none">Escribir a julibesendorff@gmail.com →</a>
+      </div>
+
     </div>
   </div>
 </div>
