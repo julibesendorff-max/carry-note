@@ -2905,7 +2905,7 @@ function updateRadarLarge() {
     var avg=pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
     var match=pcts.every(function(pct,i){return p.dirs[i]>0?pct>0.3:pct<-0.3;});
     rows.push({name:p.name,avg:avg,color:p.color,active:match,level:p.level,desc:p.desc,assets:p.assets,dirs:p.dirs,intensity:getSignalIntensity(Math.abs(avg))});
-    if(match) active.push(p);
+    if(match) { p._avg = avg; active.push(p); }
   });
   var alerts=active.filter(function(s){return s.level==='alerta';});
   var positive=active.filter(function(s){return s.level==='positivo'||s.level==='atencion';});
@@ -2920,16 +2920,39 @@ function updateRadarLarge() {
   if(orbInner) orbInner.style.background=toneColor;
   var signalsActiveEl = document.getElementById('radarSignalsActive');
   if(signalsActiveEl) {
-    signalsActiveEl.innerHTML = active.length ? active.map(function(s){
-      var bg = s.level==='alerta' ? 'rgba(224,82,82,0.08)' : s.level==='positivo' ? 'rgba(76,175,125,0.08)' : 'rgba(91,141,238,0.08)';
-      var border = s.level==='alerta' ? 'rgba(224,82,82,0.25)' : s.level==='positivo' ? 'rgba(76,175,125,0.25)' : 'rgba(91,141,238,0.25)';
-      return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.65rem 0.75rem;background:'+bg+';border:1px solid '+border+';border-left:3px solid '+s.color+'">'+
-        '<span style="color:'+s.color+';font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
-        '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:'+s.color+';margin-bottom:0.2rem">'+s.name+'</div>'+
-        '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
-    }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales activas en este momento</div>';
+    if(!active.length) {
+      signalsActiveEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem 0">Sin señales activas en este momento.</div>';
+    } else {
+      var byCategory = {};
+      active.forEach(function(s) {
+        var cat = s.cat || 'Otros';
+        if(!byCategory[cat]) byCategory[cat] = [];
+        byCategory[cat].push(s);
+      });
+      var htmlOut = '';
+      Object.keys(byCategory).forEach(function(cat) {
+        var signals = byCategory[cat];
+        // Sort by absolute movement — pick dominant signal per category
+        signals.sort(function(a,b){ return Math.abs(b._avg||0) - Math.abs(a._avg||0); });
+        var s = signals[0];
+        var conflict = signals.length > 1;
+        var bg = s.level==='alerta' ? 'rgba(224,82,82,0.06)' : s.level==='positivo' ? 'rgba(76,175,125,0.06)' : 'rgba(201,168,76,0.06)';
+        var brd = s.level==='alerta' ? 'rgba(224,82,82,0.2)' : s.level==='positivo' ? 'rgba(76,175,125,0.2)' : 'rgba(201,168,76,0.2)';
+        var conflictNote = conflict ? ' <span style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);letter-spacing:0.04em">· señal mixta</span>' : '';
+        htmlOut += '<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.65rem 0.75rem;background:'+bg+';border:1px solid '+brd+';border-left:3px solid '+s.color+';margin-bottom:0.35rem">'+
+          '<span style="color:'+s.color+';font-size:0.75rem;flex-shrink:0;margin-top:3px">●</span>'+
+          '<div style="flex:1">'+
+            '<div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.2rem">'+
+              '<span style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:'+s.color+'">'+s.name+conflictNote+'</span>'+
+              '<span style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-left:auto;text-transform:uppercase;letter-spacing:0.06em">'+cat+'</span>'+
+            '</div>'+
+            '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.65">'+s.desc+'</div>'+
+          '</div>'+
+        '</div>';
+      });
+      signalsActiveEl.innerHTML = htmlOut;
+    }
   }
-  // Keep alertsEl and positiveEl references alive to avoid errors
   if(alertsEl) alertsEl.innerHTML='';
   if(positiveEl) positiveEl.innerHTML='';
   if(active.length&&ANTHRO_KEY) generateSignalExplanations(active,rows);
