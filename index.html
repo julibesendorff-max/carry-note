@@ -570,6 +570,16 @@ if('serviceWorker' in navigator) {
           </select>
         </div>
         <textarea id="viewBody2" placeholder="Describí el setup técnico: soportes, resistencias, catalizadores, riesgo/recompensa..." style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.6rem 0.8rem;outline:none;resize:vertical;min-height:100px;margin-bottom:0.6rem"></textarea>
+        <div style="margin-bottom:0.6rem">
+          <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.4rem;letter-spacing:0.06em;text-transform:uppercase">Imagen adjunta (opcional)</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+            <label for="viewImage2" style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);border:1px solid var(--border2);padding:0.3rem 0.75rem;cursor:pointer;background:var(--surface)">+ Adjuntar imagen</label>
+            <input type="file" id="viewImage2" accept="image/*" style="display:none" onchange="previewViewImage()"/>
+            <span id="viewImageName" style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)"></span>
+            <button onclick="clearViewImage()" id="viewImageClear" style="display:none;font-family:var(--mono);font-size:0.55rem;color:var(--red);background:none;border:none;cursor:pointer">✕ Quitar</button>
+          </div>
+          <img id="viewImagePreview" style="display:none;max-width:100%;max-height:180px;margin-top:0.5rem;border:1px solid var(--border2);object-fit:contain"/>
+        </div>
         <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
           <button onclick="generateView2()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface2);color:var(--gold);border:1px solid var(--gold);cursor:pointer">✦ Generar con IA</button>
           <button onclick="publishView2()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--green);color:#fff;border:none;cursor:pointer">Publicar view ▸</button>
@@ -1091,14 +1101,8 @@ if('serviceWorker' in navigator) {
       <!-- SIGNALS GRID -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
         <div>
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Alertas activas</div>
-          <div id="radarAlertsLarge" style="display:flex;flex-direction:column;gap:0.5rem">
-            <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted2)">Calculando...</div>
-          </div>
-        </div>
-        <div>
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Señales positivas</div>
-          <div id="radarPositiveLarge" style="display:flex;flex-direction:column;gap:0.5rem">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Señales activas</div>
+          <div id="radarSignalsActive" style="display:flex;flex-direction:column;gap:0.4rem">
             <div style="font-family:var(--mono);font-size:0.7rem;color:var(--muted2)">Calculando...</div>
           </div>
         </div>
@@ -2914,18 +2918,20 @@ function updateRadarLarge() {
   signalEl.textContent=tone; signalEl.style.color=toneColor;
   if(orbEl){orbEl.style.background=orbColor;orbEl.style.borderColor=orbBorder;}
   if(orbInner) orbInner.style.background=toneColor;
-  alertsEl.innerHTML=alerts.length?alerts.map(function(s){
-    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">'+
-      '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
-      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.2rem">'+s.name+'</div>'+
-      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
-  }).join(''):'<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin alertas activas en este momento</div>';
-  positiveEl.innerHTML=positive.length?positive.map(function(s){
-    return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">'+
-      '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
-      '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.2rem">'+s.name+'</div>'+
-      '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
-  }).join(''):'<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales positivas en este momento</div>';
+  var signalsActiveEl = document.getElementById('radarSignalsActive');
+  if(signalsActiveEl) {
+    signalsActiveEl.innerHTML = active.length ? active.map(function(s){
+      var bg = s.level==='alerta' ? 'rgba(224,82,82,0.08)' : s.level==='positivo' ? 'rgba(76,175,125,0.08)' : 'rgba(91,141,238,0.08)';
+      var border = s.level==='alerta' ? 'rgba(224,82,82,0.25)' : s.level==='positivo' ? 'rgba(76,175,125,0.25)' : 'rgba(91,141,238,0.25)';
+      return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.65rem 0.75rem;background:'+bg+';border:1px solid '+border+';border-left:3px solid '+s.color+'">'+
+        '<span style="color:'+s.color+';font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
+        '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:'+s.color+';margin-bottom:0.2rem">'+s.name+'</div>'+
+        '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+s.desc+'</div></div></div>';
+    }).join('') : '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2)">Sin señales activas en este momento</div>';
+  }
+  // Keep alertsEl and positiveEl references alive to avoid errors
+  if(alertsEl) alertsEl.innerHTML='';
+  if(positiveEl) positiveEl.innerHTML='';
   if(active.length&&ANTHRO_KEY) generateSignalExplanations(active,rows);
   var fw=document.getElementById('radarForecastWrap');
   if(fw) fw.style.display=active.length?'block':'none';
@@ -2992,6 +2998,100 @@ document.addEventListener('click', function(e) {
   var header = e.target.closest ? e.target.closest('.radar-cat-header') : null;
   if(header && header.dataset.catid) toggleRadarCat(header.dataset.catid);
 });
+
+
+function previewViewImage() {
+  var input = document.getElementById('viewImage2');
+  var preview = document.getElementById('viewImagePreview');
+  var nameEl = document.getElementById('viewImageName');
+  var clearBtn = document.getElementById('viewImageClear');
+  if(!input || !input.files || !input.files[0]) return;
+  var file = input.files[0];
+  if(nameEl) nameEl.textContent = file.name;
+  if(clearBtn) clearBtn.style.display = 'inline';
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    if(preview) { preview.src = e.target.result; preview.style.display = 'block'; }
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearViewImage() {
+  document.getElementById('viewImage2').value = '';
+  var preview = document.getElementById('viewImagePreview');
+  var nameEl = document.getElementById('viewImageName');
+  var clearBtn = document.getElementById('viewImageClear');
+  if(preview) { preview.src=''; preview.style.display='none'; }
+  if(nameEl) nameEl.textContent = '';
+  if(clearBtn) clearBtn.style.display = 'none';
+}
+
+function openEditView(id) {
+  // Find the view data from the DOM
+  var card = document.querySelector('[data-view-edit="'+id+'"]');
+  if(!card) return;
+  var cardContainer = card.closest('[style*="border-left"]');
+  if(!cardContainer) return;
+  // Read current values from card
+  var ticker = (cardContainer.querySelector('[style*="font-weight:600"][style*="font-size:0.9rem"]') || {}).textContent || '';
+  var body = (cardContainer.querySelectorAll('[style*="line-height:1.75"]')[0] || {}).textContent || '';
+
+  // Populate the editor with this view's data
+  var editorBlock = document.getElementById('viewsEditorStandalone');
+  if(!editorBlock) return;
+
+  // Scroll to editor
+  editorBlock.style.display = 'block';
+  editorBlock.scrollIntoView({behavior:'smooth', block:'start'});
+
+  // Fill fields
+  var tickerField = document.getElementById('viewTicker2');
+  var bodyField = document.getElementById('viewBody2');
+  var statusEl = document.getElementById('viewStatus2');
+
+  if(tickerField) tickerField.value = ticker.trim();
+  if(bodyField) bodyField.value = body.trim();
+
+  // Change publish button to update
+  var publishBtn = editorBlock.querySelector('[onclick="publishView2()"]');
+  if(publishBtn) {
+    publishBtn.textContent = 'Actualizar view ▸';
+    publishBtn.setAttribute('onclick', 'updateView2("'+id+'")');
+  }
+  if(statusEl) { statusEl.textContent = '✎ Editando view existente. Modificá y guardá.'; statusEl.style.color='var(--gold)'; statusEl.style.display='block'; }
+}
+
+async function updateView2(id) {
+  var ticker = (document.getElementById('viewTicker2')||{}).value||'';
+  var market = (document.getElementById('viewMarket2')||{}).value||'eeuu';
+  var bias = (document.getElementById('viewBias2')||{}).value||'neutral';
+  var tf = (document.getElementById('viewTimeframe2')||{}).value||'corto';
+  var body = (document.getElementById('viewBody2')||{}).value||'';
+  var statusEl = document.getElementById('viewStatus2');
+  ticker = ticker.trim().toUpperCase(); body = body.trim();
+  if(!ticker||!body){
+    if(statusEl){statusEl.textContent='Completá ticker y análisis.';statusEl.style.color='var(--red)';statusEl.style.display='block';}
+    return;
+  }
+  try {
+    var res = await sbFetch('/rest/v1/views?id=eq.'+id, {
+      method:'PATCH',
+      headers:{'Prefer':'return=minimal'},
+      body:JSON.stringify({ticker:ticker, market:market, bias:bias, timeframe:tf, body:body})
+    });
+    if(!res.ok) throw new Error('Error al actualizar');
+    document.getElementById('viewTicker2').value = '';
+    document.getElementById('viewBody2').value = '';
+    if(statusEl){statusEl.textContent='✓ View actualizado.';statusEl.style.color='var(--green)';statusEl.style.display='block';}
+    // Reset publish button
+    var editorBlock = document.getElementById('viewsEditorStandalone');
+    var publishBtn = editorBlock ? editorBlock.querySelector('[onclick*="updateView2"]') : null;
+    if(publishBtn){publishBtn.textContent='Publicar view ▸';publishBtn.setAttribute('onclick','publishView2()');}
+    loadViews();
+  } catch(err) {
+    if(statusEl){statusEl.textContent='✕ '+err.message;statusEl.style.color='var(--red)';statusEl.style.display='block';}
+  }
+}
 
 function generateView2() {
   // Copy values from *2 fields to original fields and call generateView
@@ -3714,6 +3814,12 @@ async function loadViews(){
         if(id) deleteView(id);
       });
     });
+    document.querySelectorAll('.view-edit-btn').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-view-edit');
+        if(id) openEditView(id);
+      });
+    });
   }catch(e){
     el.innerHTML='';if(emptyEl)emptyEl.style.display='block';
     var elS2=document.getElementById('viewsListStandalone');
@@ -3758,7 +3864,10 @@ function buildViewCard(v){
           '<iframe src="'+tvUrl+'" id="'+cardId+'" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowtransparency="true" scrolling="no" allowfullscreen></iframe>'+
         '</div>'+
       '</div>'+
-      (isEditor?'<div style="margin-top:0.75rem"><button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer;letter-spacing:0.06em">✕ Eliminar</button></div>':'')+
+      (isEditor?'<div style="display:flex;gap:0.5rem;margin-top:0.75rem">'+
+        '<button data-view-edit="'+v.id+'" class="view-edit-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);background:none;border:1px solid var(--border2);padding:0.2rem 0.6rem;cursor:pointer">✎ Editar</button>'+
+        '<button data-view-del="'+v.id+'" class="view-del-btn" style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);background:none;border:none;cursor:pointer">✕ Eliminar</button>'+
+        '</div>':'')+
     '</div>'+
   '</div>';
 }
