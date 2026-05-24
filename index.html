@@ -344,15 +344,23 @@ button:disabled {
   border-bottom: 2px solid currentColor;
 }
 
-/* Panel fade-in */
+/* Panel soft blur + fade transition */
 #diagPanel, #diagSelector, #diagEmpresaPanel, #radarPanel,
 #fciPanel, #aprenderPanel, #watchlistPanel, #sobrePanel,
 #viewsStandalonePanel, #iaPanel, .feed {
-  animation: fadeInUp 0.22s ease both;
+  animation: softFadeIn 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
 }
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+@keyframes softFadeIn {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Selector cards hover */
