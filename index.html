@@ -313,6 +313,90 @@ footer{border-top:1px solid var(--border);padding:1.5rem 2.5rem;max-width:1360px
   /* Premarket grid: 2 cols on small screens */
   #pmStocksGrid,#pmFuturesGrid,#pmCryptoGrid{grid-template-columns:1fr 1fr !important}
 }
+
+/* ── GLOBAL TRANSITIONS ──────────────────────────────────── */
+*, *::before, *::after {
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.15s ease, opacity 0.18s ease;
+}
+
+/* Buttons */
+button, a[onclick], .nav-strip a, .af-btn, .mob-asset-btn {
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease !important;
+}
+button:hover:not(:disabled), .nav-strip a:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+button:active:not(:disabled) {
+  transform: translateY(0px) scale(0.98);
+  opacity: 0.9;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Nav tabs */
+.nav-strip a {
+  transition: color 0.18s ease, border-bottom-color 0.18s ease !important;
+}
+.nav-strip a.active {
+  border-bottom: 2px solid currentColor;
+}
+
+/* Panel fade-in */
+#diagPanel, #diagSelector, #diagEmpresaPanel, #radarPanel,
+#fciPanel, #aprenderPanel, #watchlistPanel, #sobrePanel,
+#viewsStandalonePanel, #iaPanel, .feed {
+  animation: fadeInUp 0.22s ease both;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Selector cards hover */
+#diagSelector button {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease !important;
+}
+#diagSelector button:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  transform: translateY(-2px) !important;
+  border-color: var(--gold) !important;
+}
+#diagSelector button:nth-child(2):hover {
+  border-color: #a855f7 !important;
+}
+
+/* ── EMPRESA PANEL MOBILE ─────────────────────────────────── */
+@media (max-width: 600px) {
+  #diagEmpresaPanel [style*="grid-template-columns:1fr 1fr"] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  #diagEmpresaPanel input,
+  #diagEmpresaPanel select,
+  #diagEmpresaPanel textarea {
+    font-size: 0.85rem !important;
+    padding: 0.6rem 0.75rem !important;
+  }
+  #diagEmpresaPanel #empActivos > div {
+    grid-template-columns: 1fr auto !important;
+    grid-template-rows: auto auto !important;
+  }
+  #diagEmpresaPanel #empActivos > div select:first-child {
+    grid-column: 1 / -1;
+  }
+  #diagEmpresaPanel .dscore {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.4rem !important;
+  }
+  #diagSelector [style*="grid-template-columns:1fr 1fr"] {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- v2.1 -->
@@ -1318,7 +1402,7 @@ if('serviceWorker' in navigator) {
         <!-- Header -->
         <div style="border-bottom:1px solid #2a2a32;padding-bottom:2rem;margin-bottom:2rem">
           <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem">
-          <img src="https://media.licdn.com/dms/image/v2/D4D03AQEA8vBTaoeNkg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1693273759675?e=1778716800&v=beta&t=-OYfxZNC6cp-1Qry7YiiZg9dUz5K2kwSfh79Yfq9coM" alt="Julian Besendorff" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #2a2a32;flex-shrink:0">
+          <img src="https://media.licdn.com/dms/image/v2/D4D03AQEA8vBTaoeNkg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1693273759675?e=1893456000&v=beta&t=-OYfxZNC6cp-1Qry7YiiZg9dUz5K2kwSfh79Yfq9coM" alt="Julian Besendorff" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #2a2a32;flex-shrink:0">
           <div>
             <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:2.2rem;font-weight:600;color:#e8e6e0;line-height:1.1;margin-bottom:0.3rem">Julián Besendorff</div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase">Analista · Carry Note</div>
@@ -3059,7 +3143,7 @@ function addEmpActivo() {
   var id = 'ea-' + empActCount;
   var div = document.createElement('div');
   div.id = id;
-  div.style.cssText = 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.style.cssText = 'display:grid;grid-template-columns:1fr 100px 60px 32px;gap:0.4rem;align-items:center;margin-bottom:0.5rem';
   div.innerHTML = '<select style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.45rem 0.6rem;outline:none;cursor:pointer">' +
     EMP_ASSET_TYPES.map(function(t){return '<option>'+t+'</option>';}).join('') + '</select>' +
     '<input type="number" placeholder="Monto" style="width:110px;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.45rem 0.6rem;outline:none"/>' +
