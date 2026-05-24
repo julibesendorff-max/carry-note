@@ -4606,7 +4606,7 @@ function generatePanorama() {
   var el = document.getElementById('panoramaContent');
   if(!el) return;
 
-  // Build active signals from RADAR_PATTERNS
+  // Build active signals
   var active = [];
   RADAR_PATTERNS.forEach(function(p){
     var pcts = p.assets.map(getTickerChange);
@@ -4614,10 +4614,10 @@ function generatePanorama() {
     var match = pcts.every(function(pct,i){return p.dirs[i]>0?pct>0.3:pct<-0.3;});
     if(!match) return;
     var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
-    active.push({name:p.name, avg:avg, level:p.level, cat:p.cat||'Otros', color:p.color});
+    active.push({name:p.name, avg:avg, level:p.level, cat:p.cat||'Otros', color:p.color, desc:p.desc});
   });
 
-  // Dedup by category — pick dominant per cat
+  // Dedup by category
   var byCategory = {};
   active.forEach(function(s){
     if(!byCategory[s.cat] || Math.abs(s.avg)>Math.abs(byCategory[s.cat].avg)){
@@ -4627,72 +4627,92 @@ function generatePanorama() {
   var dominant = Object.values(byCategory);
   var nAlerts = dominant.filter(function(s){return s.level==='alerta';}).length;
   var nPositive = dominant.filter(function(s){return s.level==='positivo';}).length;
-  var nNeutral = dominant.length - nAlerts - nPositive;
 
-  // Build top movers list from tickers
+  // Top movers
+  var keyTickers = ['SPY','QQQ','VIX','GLD','TLT','BTC','EEM','WTI','NVDA','YPF','GGAL'];
   var movers = [];
-  ['SPY','QQQ','NDX','VIX','GLD','TLT','BTC','EEM','WTI','NVDA','YPF','GGAL'].forEach(function(t){
+  keyTickers.forEach(function(t){
     var pct = getTickerChange(t);
     if(pct !== null) movers.push({t:t, pct:pct});
   });
   movers.sort(function(a,b){return Math.abs(b.pct)-Math.abs(a.pct);});
-  var topMovers = movers.slice(0,3);
 
-  // Compose narrative
+  // Build narrative
   var html_out = '';
 
-  // Section 1: Régimen general
-  var regimen = '';
-  var regimenColor = 'var(--muted)';
-  if(nPositive > nAlerts + 1) {
-    regimen = 'risk-on';
-    regimenColor = 'var(--green)';
-  } else if(nAlerts > nPositive + 1) {
-    regimen = 'risk-off';
-    regimenColor = 'var(--red)';
-  } else if(nAlerts > 0 && nPositive > 0) {
-    regimen = 'mixto';
-    regimenColor = 'var(--gold)';
-  } else {
-    regimen = 'sin señales fuertes';
-    regimenColor = 'var(--muted)';
-  }
-
-  html_out += '<p style="margin-bottom:0.75rem">';
-  html_out += '<strong style="color:'+regimenColor+';font-weight:600">Régimen actual: '+regimen+'.</strong> ';
+  // === Régimen ===
+  var regimenLabel, regimenColor, regimenText;
   if(dominant.length === 0) {
-    html_out += 'El mercado no muestra señales claras en este momento. Los activos se mueven dentro de rangos normales sin tendencia dominante.';
+    regimenLabel = 'Mercado en calma'; regimenColor = 'var(--muted)';
+    regimenText = 'No hay se\u00f1ales fuertes activas. Los activos se mueven dentro de rangos normales sin direcci\u00f3n dominante. T\u00edpico de jornadas previas a datos macro importantes o cierres de semana sin catalizadores.';
+  } else if(nPositive > nAlerts + 1) {
+    regimenLabel = 'Risk-on dominante'; regimenColor = 'var(--green)';
+    regimenText = 'El apetito por riesgo manda hoy. Los activos de mayor rendimiento (acciones, cripto, emergentes) avanzan mientras los refugios (oro, bonos, VIX) ceden o quedan rezagados. Es un d\u00eda donde el mercado est\u00e1 dispuesto a tomar exposici\u00f3n.';
+  } else if(nAlerts > nPositive + 1) {
+    regimenLabel = 'Risk-off dominante'; regimenColor = 'var(--red)';
+    regimenText = 'El mercado est\u00e1 buscando refugio. Sube la volatilidad, el oro, los bonos del Tesoro. Los activos de riesgo retroceden. Esto suele pasar cuando hay incertidumbre macro, geopol\u00edtica o expectativas de tasas m\u00e1s altas.';
   } else {
-    html_out += 'Se detectaron <strong style="color:var(--text)">'+dominant.length+' señales activas</strong>';
-    if(nAlerts && nPositive) html_out += ' ('+nPositive+' positivas, '+nAlerts+' alertas)';
-    else if(nAlerts) html_out += ' ('+nAlerts+' de tipo alerta)';
-    else if(nPositive) html_out += ' ('+nPositive+' positivas)';
-    html_out += ' distribuidas en distintas categorías del radar.';
+    regimenLabel = 'R\u00e9gimen mixto'; regimenColor = 'var(--gold)';
+    regimenText = 'El mercado est\u00e1 dividido. Hay se\u00f1ales contradictorias activas al mismo tiempo \u2014 algunas apuntan a apetito por riesgo, otras a cobertura. Esto suele preceder cambios de tendencia o reflejar incertidumbre sobre el pr\u00f3ximo catalizador.';
   }
-  html_out += '</p>';
 
-  // Section 2: Top movers
-  if(topMovers.length) {
-    html_out += '<p style="margin-bottom:0.75rem">';
-    html_out += '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase">Mayor movimiento del día: </span>';
-    html_out += topMovers.map(function(m){
+  html_out += '<div style="background:linear-gradient(135deg, '+regimenColor+'15, transparent);border-left:3px solid '+regimenColor+';padding:1rem 1.2rem;margin-bottom:1.2rem">';
+  html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:'+regimenColor+';margin-bottom:0.4rem">R\u00e9gimen del momento</div>';
+  html_out += '<div style="font-family:var(--serif);font-size:1.25rem;font-weight:600;color:'+regimenColor+';margin-bottom:0.5rem">'+regimenLabel+'</div>';
+  html_out += '<div style="font-size:0.9rem;color:#c8c4bc;line-height:1.75">'+regimenText+'</div>';
+  html_out += '</div>';
+
+  // === Top movers ===
+  if(movers.length) {
+    html_out += '<div style="margin-bottom:1.2rem">';
+    html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Mayores movimientos del d\u00eda</div>';
+    html_out += '<div style="display:flex;flex-wrap:wrap;gap:0.5rem">';
+    movers.slice(0,5).forEach(function(m){
       var color = m.pct>0?'var(--green)':'var(--red)';
       var sign = m.pct>0?'+':'';
-      return '<strong style="font-family:var(--mono);color:'+color+'">'+m.t+' '+sign+m.pct.toFixed(2)+'%</strong>';
-    }).join(' · ');
-    html_out += '.</p>';
+      var arrow = m.pct>0?'\u25b2':'\u25bc';
+      html_out += '<div style="background:'+color+'15;border:1px solid '+color+'40;padding:0.4rem 0.7rem;font-family:var(--mono);font-size:0.72rem">';
+      html_out += '<span style="color:var(--text);font-weight:500">'+m.t+'</span> <span style="color:'+color+';font-weight:600">'+arrow+' '+sign+m.pct.toFixed(2)+'%</span>';
+      html_out += '</div>';
+    });
+    html_out += '</div></div>';
   }
 
-  // Section 3: Categorías destacadas
+  // === Qué interpretar ===
   if(dominant.length) {
-    html_out += '<p style="margin-bottom:0">';
-    html_out += '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase">Categorías activas: </span>';
-    html_out += dominant.slice(0,5).map(function(s){
-      return '<span style="font-family:var(--mono);font-size:0.78rem;color:'+s.color+';font-weight:500">'+s.name+'</span>';
-    }).join(' · ');
-    if(dominant.length > 5) html_out += ' · <span style="color:var(--muted2)">+'+(dominant.length-5)+' más</span>';
-    html_out += '.</p>';
+    // Build interpretation based on what's active
+    var interpretParts = [];
+    dominant.forEach(function(s){ interpretParts.push(s); });
+
+    html_out += '<div style="margin-bottom:1.2rem">';
+    html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Qu\u00e9 est\u00e1 pasando</div>';
+    html_out += '<div style="display:flex;flex-direction:column;gap:0.4rem">';
+    interpretParts.slice(0,5).forEach(function(s){
+      var bg = s.level==='alerta' ? 'rgba(224,82,82,0.05)' : s.level==='positivo' ? 'rgba(76,175,125,0.05)' : 'rgba(201,168,76,0.05)';
+      html_out += '<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.6rem 0.75rem;background:'+bg+';border-left:2px solid '+s.color+'">';
+      html_out += '<span style="color:'+s.color+';font-size:0.65rem;margin-top:3px">\u25cf</span>';
+      html_out += '<div><span style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:'+s.color+'">'+s.name+'</span>';
+      if(s.desc) html_out += '<div style="font-size:0.82rem;color:#b8b4ac;margin-top:0.15rem;line-height:1.55">'+s.desc+'</div>';
+      html_out += '</div></div>';
+    });
+    html_out += '</div></div>';
   }
+
+  // === Implicancias ===
+  var implicancias = '';
+  if(nPositive > nAlerts + 1) {
+    implicancias = 'Para una cartera con activos de riesgo (CEDEARs tech, S&P, Nasdaq, cripto), es un entorno favorable. Para coberturas (oro, bonos), poco atractivo. Ojo si la pr\u00f3xima jornada trae datos macro \u2014 los rallies sin volumen son fr\u00e1giles.';
+  } else if(nAlerts > nPositive + 1) {
+    implicancias = 'Las coberturas (oro, TLT, USD) suelen rendir bien en este entorno. Los activos de riesgo (acciones, cripto, emergentes) enfrentan presi\u00f3n. Para carteras argentinas en CEDEARs, es momento de revisar exposici\u00f3n.';
+  } else if(dominant.length > 0) {
+    implicancias = 'En un entorno mixto conviene mantener diversificaci\u00f3n y no sobrerreaccionar a movimientos del d\u00eda. La direcci\u00f3n suele clarificarse en la pr\u00f3xima jornada con nuevos datos macro o decisiones de pol\u00edtica monetaria.';
+  } else {
+    implicancias = 'Sin se\u00f1ales activas, es buen momento para revisar posiciones, planear coberturas o tomar decisiones que no requieran reaccionar al ruido del d\u00eda.';
+  }
+  html_out += '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.85rem 1rem">';
+  html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem">Implicancias pr\u00e1cticas</div>';
+  html_out += '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.7">'+implicancias+'</div>';
+  html_out += '</div>';
 
   el.innerHTML = html_out;
 }
