@@ -2511,7 +2511,7 @@ function showFCI(e) {
   activePanel='fci';
   hideAllPanels();
   setSidebarVisible(false);
-  document.getElementById('fciPanel').style.display = 'block';
+  var fp=document.getElementById('fciPanel'); if(fp) { fp.style.display='none'; void fp.offsetWidth; fp.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
   document.getElementById('fciTab').classList.add('active');
   renderFCI();
@@ -2598,7 +2598,7 @@ function showAprender(e) {
     const el = document.getElementById(id);
     if(el) el.style.display = 'none';
   });
-  document.getElementById('aprenderPanel').style.display = 'block';
+  var ap=document.getElementById('aprenderPanel'); if(ap) { ap.style.display='none'; void ap.offsetWidth; ap.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
   document.getElementById('aprenderTab').classList.add('active');
   showNivel('basico');
@@ -3210,7 +3210,7 @@ function showIA(e){
   activePanel='ia';
   hideAllPanels();
   setSidebarVisible(false);
-  document.getElementById('iaPanel').style.display='block';
+  var ip=document.getElementById('iaPanel'); if(ip) { ip.style.display='none'; void ip.offsetWidth; ip.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   document.getElementById('iaTab').classList.add('active');
   loadIAMomentum();
@@ -3243,22 +3243,44 @@ function renderIAEarnings(){
 
 // ── DIAG SELECTOR ─────────────────────────────────────────────
 function showDiagSelector() {
+  activePanel='diag';
   hideAllPanels();
-  document.getElementById('diagSelector').style.display = 'block';
+  var sel=document.getElementById('diagSelector');
+  if(sel) {
+    sel.style.display='none';
+    void sel.offsetWidth;
+    sel.style.display='block';
+  }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('diagTab'); if(tab) tab.classList.add('active');
 }
 function showDiagIndividual() {
-  document.getElementById('diagSelector').style.display = 'none';
-  document.getElementById('diagPanel').style.display = 'block';
+  activePanel='diag';
+  // Hide selector and empresa panel cleanly
+  var sel=document.getElementById('diagSelector'); if(sel) sel.style.display='none';
+  var ep=document.getElementById('diagEmpresaPanel'); if(ep) ep.style.display='none';
+  // Force reflow to restart CSS animations
+  var dp=document.getElementById('diagPanel');
+  if(dp) {
+    dp.style.display='none';
+    void dp.offsetWidth;
+    dp.style.display='block';
+  }
   var saved=getSavedPortfolio();
   if(saved&&saved.assets&&saved.assets.length){loadSavedPortfolioIntoForm();renderDailySummary();}
   else if(document.getElementById('diagAssets').children.length===0){addAsset();addAsset();addAsset();}
   renderDiagHistory();
 }
 function showDiagEmpresa() {
-  document.getElementById('diagSelector').style.display = 'none';
-  document.getElementById('diagEmpresaPanel').style.display = 'block';
+  activePanel='diag';
+  var sel=document.getElementById('diagSelector'); if(sel) sel.style.display='none';
+  var dp=document.getElementById('diagPanel'); if(dp) dp.style.display='none';
+  var ep=document.getElementById('diagEmpresaPanel');
+  if(ep) {
+    ep.style.display='none';
+    void ep.offsetWidth;
+    ep.style.display='block';
+  }
   if(document.getElementById('empActivos').children.length===0){addEmpActivo();addEmpActivo();}
 }
 // ── DIAG EMPRESA ──────────────────────────────────────────────
@@ -3499,7 +3521,7 @@ function showRadar(e) {
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
   });
-  document.getElementById('radarPanel').style.display = 'block';
+  var rp=document.getElementById('radarPanel'); if(rp) { rp.style.display='none'; void rp.offsetWidth; rp.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
   document.getElementById('radarTab').classList.add('active');
   updateRadarLarge();
@@ -3702,7 +3724,7 @@ function showViewsTab(e) {
   hideAllPanels();
   // Show views panel standalone
   var vp=document.getElementById('viewsStandalonePanel');
-  if(vp) vp.style.display='block';
+  if(vp) { vp.style.display='none'; void vp.offsetWidth; vp.style.display='block'; }
   var nr=document.getElementById('noResults'); if(nr) nr.style.display='none';
   var es=document.getElementById('emptyState'); if(es) es.style.display='none';
   var em=document.getElementById('emptyMsg'); if(em) { var ep=em.parentElement; if(ep) ep.style.display='none'; }
@@ -3731,7 +3753,7 @@ function showWatchlist(e){
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
-  document.getElementById('watchlistPanel').style.display='block';
+  var wp=document.getElementById('watchlistPanel'); if(wp) { wp.style.display='none'; void wp.offsetWidth; wp.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   document.getElementById('watchlistTab').classList.add('active');
   renderWatchlist();
@@ -3746,7 +3768,7 @@ function showSobre(e){
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
-  document.getElementById('sobrePanel').style.display='block';
+  var sp=document.getElementById('sobrePanel'); if(sp) { sp.style.display='none'; void sp.offsetWidth; sp.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   document.getElementById('sobreTab').classList.add('active');
 }
@@ -4321,7 +4343,7 @@ function showAnalisis(e) {
   if(window._pmAbort){window._pmAbort.abort();window._pmAbort=null;}
   if(window._pmInterval){clearInterval(window._pmInterval);window._pmInterval=null;}
   hideAllPanels();
-  ['feed','newsletterBlock'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='';});
+  ['feed','newsletterBlock'].forEach(function(id){var el=document.getElementById(id);if(el){el.style.display='none';void el.offsetWidth;el.style.display='';}});
   var af=document.getElementById('analisisFilters');if(af)af.style.display='block';
   setSidebarVisible(true);
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
