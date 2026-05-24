@@ -956,6 +956,116 @@ if('serviceWorker' in navigator) {
       </div>
     </div>
     <!-- DIAGNOSTICO PANEL -->
+    <!-- DIAG TYPE SELECTOR -->
+    <div id="diagSelector" style="display:none;margin-bottom:2rem">
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">&#9658; Herramienta educativa &middot; Carry Note</div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Diagn&#243;stico</div>
+        <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;max-width:560px">Seleccion&#225; el tipo de diagn&#243;stico que necesit&#225;s.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;max-width:640px">
+        <button onclick="showDiagIndividual()" style="background:var(--surface);border:1px solid var(--border2);border-top:3px solid var(--gold);padding:2rem 1.5rem;cursor:pointer;text-align:left">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">&#9658; Individual</div>
+          <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Cartera personal</div>
+          <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);line-height:1.65">An&#225;lisis de tu cartera de inversi&#243;n. CEDEARs, bonos, acciones, cripto, FCI y m&#225;s.</div>
+        </button>
+        <button onclick="showDiagEmpresa()" style="background:var(--surface);border:1px solid var(--border2);border-top:3px solid #a855f7;padding:2rem 1.5rem;cursor:pointer;text-align:left">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.75rem">&#9670; Empresa</div>
+          <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Diagn&#243;stico empresarial</div>
+          <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);line-height:1.65">An&#225;lisis para empresas. Activos financieros, exposici&#243;n cambiaria y datos operativos. Informe PDF.</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- DIAG EMPRESA PANEL -->
+    <div id="diagEmpresaPanel" style="display:none;margin-bottom:2rem">
+      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
+          <button onclick="showDiagSelector()" style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);background:none;border:1px solid var(--border2);padding:0.2rem 0.6rem;cursor:pointer">&#8592; Volver</button>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7">&#9670; Diagn&#243;stico empresarial &middot; Carry Note</div>
+        </div>
+        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Diagn&#243;stico de empresa</div>
+        <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;max-width:560px">An&#225;lisis macroecon&#243;mico y financiero para empresas. Complet&#225; los datos para obtener un informe detallado.</div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid #a855f7;padding:1.5rem;margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:1rem">Datos de la empresa</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Nombre</div>
+            <input id="empNombre" type="text" placeholder="Empresa S.A." style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none"/>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Sector</div>
+            <select id="empSector" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+              <option>Agropecuario / Agroindustria</option><option>Industria manufacturera</option>
+              <option>Comercio / Retail</option><option>Servicios profesionales</option>
+              <option>Tecnolog&#237;a</option><option>Construcci&#243;n / Real estate</option>
+              <option>Servicios financieros</option><option>Exportador</option>
+              <option>Importador</option><option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Tama&#241;o</div>
+            <select id="empTamano" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+              <option>Micro (hasta 10 empleados)</option><option selected>PyME (10-200 empleados)</option>
+              <option>Mediana empresa</option><option>Gran empresa</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Horizonte</div>
+            <select id="empHorizonte" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none;cursor:pointer">
+              <option>3 meses</option><option selected>6 meses</option><option>12 meses</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem">Datos operativos (aproximados)</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Facturaci&#243;n mensual</div>
+            <div style="display:flex;gap:0.4rem">
+              <input id="empFact" type="number" placeholder="0" style="flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none"/>
+              <select id="empFactMoneda" style="background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.5rem;outline:none;cursor:pointer"><option>ARS</option><option>USD</option></select>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Deuda total</div>
+            <div style="display:flex;gap:0.4rem">
+              <input id="empDeuda" type="number" placeholder="0" style="flex:1;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none"/>
+              <select id="empDeudaMoneda" style="background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:0.68rem;padding:0.5rem 0.5rem;outline:none;cursor:pointer"><option>ARS</option><option>USD</option></select>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">% costos dolarizados</div>
+            <input id="empCostoUSD" type="number" placeholder="0-100" min="0" max="100" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none"/>
+          </div>
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">% ingresos en d&#243;lares</div>
+            <input id="empIngUSD" type="number" placeholder="0-100" min="0" max="100" style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.75rem;outline:none"/>
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Principales desaf&#237;os / preocupaciones (opcional)</div>
+          <textarea id="empDesafios" placeholder="Ej: presi&#243;n cambiaria, ca&#237;da del consumo, costos laborales..." style="width:100%;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.6rem 0.8rem;outline:none;resize:vertical;min-height:70px"></textarea>
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid var(--green);padding:1.5rem;margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:1rem">Activos financieros de la empresa</div>
+        <div id="empActivos"></div>
+        <button onclick="addEmpActivo()" style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);background:none;border:1px solid var(--border2);padding:0.35rem 0.85rem;cursor:pointer;margin-top:0.5rem">+ Agregar activo</button>
+      </div>
+      <button onclick="runDiagEmpresa()" id="diagEmpresaBtn" style="font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem 2rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;width:100%;margin-bottom:1rem">Generar diagn&#243;stico &#9658;</button>
+      <div id="diagEmpresaResult" style="display:none"></div>
+      <div id="diagEmpresaActions" style="display:none;gap:0.6rem;margin-top:1rem">
+        <button onclick="downloadEmpresaPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">&#8595; Descargar PDF</button>
+      </div>
+    </div>
+
     <div id="diagPanel" style="display:none;margin-bottom:2rem">
       <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
         <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">&#9658; Herramienta educativa · Carry Note</div>
@@ -2731,7 +2841,7 @@ function downloadPDF() {
 // ── HIDE ALL PANELS (central cleanup) ────────────────────────
 function hideAllPanels() {
   var allPanels = [
-    'diagPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
+    'diagSelector','diagPanel','diagEmpresaPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
     'sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
     'feed','newsletterBlock','noResults','feedHeader','emptyState',
     'analisisFilters','radarForecastWrap','corrExplainerModal'
@@ -2920,21 +3030,150 @@ function renderIAEarnings(){
   }).join('');
 }
 
+
+// ── DIAG SELECTOR ─────────────────────────────────────────────
+function showDiagSelector() {
+  hideAllPanels();
+  document.getElementById('diagSelector').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
+  var tab=document.getElementById('diagTab'); if(tab) tab.classList.add('active');
+}
+function showDiagIndividual() {
+  document.getElementById('diagSelector').style.display = 'none';
+  document.getElementById('diagPanel').style.display = 'block';
+  var saved=getSavedPortfolio();
+  if(saved&&saved.assets&&saved.assets.length){loadSavedPortfolioIntoForm();renderDailySummary();}
+  else if(document.getElementById('diagAssets').children.length===0){addAsset();addAsset();addAsset();}
+  renderDiagHistory();
+}
+function showDiagEmpresa() {
+  document.getElementById('diagSelector').style.display = 'none';
+  document.getElementById('diagEmpresaPanel').style.display = 'block';
+  if(document.getElementById('empActivos').children.length===0){addEmpActivo();addEmpActivo();}
+}
+// ── DIAG EMPRESA ──────────────────────────────────────────────
+var empActCount = 0;
+var EMP_ASSET_TYPES = ['Plazo fijo ARS','FCI Money Market','FCI Renta Fija Pesos','FCI / Bono CER','Bono / ON Hard Dollar','Dólar MEP / CCL','Dólares billete (caja)','Cuenta USD','Acciones argentinas','CEDEARs','S&P 500 ETF (SPY)','Nasdaq ETF (QQQ)','Bitcoin / Crypto','Oro','Inmuebles','Otros'];
+function addEmpActivo() {
+  empActCount++;
+  var id = 'ea-' + empActCount;
+  var div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
+  div.innerHTML = '<select style="background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.45rem 0.6rem;outline:none;cursor:pointer">' +
+    EMP_ASSET_TYPES.map(function(t){return '<option>'+t+'</option>';}).join('') + '</select>' +
+    '<input type="number" placeholder="Monto" style="width:110px;background:var(--bg);border:1px solid var(--border2);color:var(--text);font-family:var(--mono);font-size:0.68rem;padding:0.45rem 0.6rem;outline:none"/>' +
+    '<select style="background:var(--bg);border:1px solid var(--border2);color:var(--muted);font-family:var(--mono);font-size:0.65rem;padding:0.45rem 0.5rem;outline:none;cursor:pointer"><option>ARS</option><option>USD</option></select>' +
+    '<button onclick="document.getElementById(\'' + id + '\').remove()" style="background:none;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:0.7rem;padding:0.3rem 0.5rem">✕</button>';
+  document.getElementById('empActivos').appendChild(div);
+}
+async function runDiagEmpresa() {
+  var btn = document.getElementById('diagEmpresaBtn');
+  var result = document.getElementById('diagEmpresaResult');
+  var actions = document.getElementById('diagEmpresaActions');
+  var nombre = (document.getElementById('empNombre').value||'Empresa').trim();
+  var sectorEl = document.getElementById('empSector');
+  var sector = sectorEl.options[sectorEl.selectedIndex].text;
+  var tamanoEl = document.getElementById('empTamano');
+  var tamano = tamanoEl.options[tamanoEl.selectedIndex].text;
+  var horizonte = document.getElementById('empHorizonte').value;
+  var fact = document.getElementById('empFact').value;
+  var factMoneda = document.getElementById('empFactMoneda').value;
+  var deuda = document.getElementById('empDeuda').value;
+  var deudaMoneda = document.getElementById('empDeudaMoneda').value;
+  var costoUSD = document.getElementById('empCostoUSD').value;
+  var ingUSD = document.getElementById('empIngUSD').value;
+  var desafios = document.getElementById('empDesafios').value.trim();
+  var activos = [];
+  document.querySelectorAll('#empActivos > div').forEach(function(row){
+    var sels=row.querySelectorAll('select'),inp=row.querySelector('input');
+    var mv=parseFloat((inp?inp.value:'')||'0');
+    if(sels[0]&&mv>0) activos.push({tipo:sels[0].options[sels[0].selectedIndex].text,monto:mv,moneda:sels[1]?sels[1].value:'ARS'});
+  });
+  var today=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var rpEl=document.getElementById('arg-riesgo'),rpLive=rpEl&&rpEl.textContent.trim()!=='···'?rpEl.textContent.trim():'N/D';
+  var blueEl=document.getElementById('arg-blue'),blueLive=blueEl&&blueEl.textContent.trim()!=='···'?blueEl.textContent.trim():'N/D';
+  var mepEl=document.getElementById('arg-mep'),mepLive=mepEl?mepEl.textContent.trim():'N/D';
+  btn.disabled=true; btn.textContent='Generando diagnóstico...';
+  result.style.display='block';
+  result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:#a855f7">Analizando con Claude Opus 4…</div>';
+  var activosStr=activos.length?activos.map(function(a){return a.tipo+': '+Number(a.monto).toLocaleString()+' '+a.moneda;}).join(' | '):'Sin activos financieros declarados';
+  var isExporter = sector.toLowerCase().includes('export');
+  var isImporter = sector.toLowerCase().includes('import') || costoUSD > 30;
+  var hasDollarDebt = deuda > 0 && deudaMoneda === 'USD';
+  var needsRiesgoPais = isExporter || isImporter || hasDollarDebt || activos.some(function(a){return a.moneda==='USD';});
+  var promptLines = [
+    'Sos un analista económico senior. Escribiá un diagnóstico macroeconómico DETALLADO Y ESPECÍFICO para esta empresa argentina.',
+    'Fecha: '+today,
+    '',
+    '=== EMPRESA ===',
+    'Nombre: '+nombre+' | Sector: '+sector+' | Tamaño: '+tamano+' | Horizonte: '+horizonte,
+    '',
+    '=== DATOS OPERATIVOS ==='
+  ];
+  if(fact) promptLines.push('Facturación mensual: '+Number(fact).toLocaleString()+' '+factMoneda);
+  if(deuda) promptLines.push('Deuda total: '+Number(deuda).toLocaleString()+' '+deudaMoneda);
+  if(costoUSD) promptLines.push('Costos dolarizados: '+costoUSD+'%');
+  if(ingUSD) promptLines.push('Ingresos en dólares: '+ingUSD+'%');
+  if(desafios) promptLines.push('Desafíos: '+desafios);
+  promptLines.push('');
+  promptLines.push('=== ACTIVOS FINANCIEROS ===');
+  promptLines.push(activosStr);
+  promptLines.push('');
+  promptLines.push('=== CONTEXTO MACRO ===');
+  promptLines.push('Riesgo pais: '+rpLive+' | Blue: '+blueLive+' | MEP: '+mepLive);
+  promptLines.push('IPC AR: 3.4% mensual | Reservas: USD 45.2B | Fed: 3.50-3.75% | CPI EEUU: 3.3% | Brent: $110');
+  promptLines.push('');
+  promptLines.push('=== INSTRUCCIONES ===');
+  promptLines.push('Solo menciona riesgo pais si empresa tiene deuda USD, exporta o importa.');
+  promptLines.push('Analisis 100% especifico para el sector. Sin generalidades.');
+  promptLines.push('Responde en HTML con: dscore, ds dg FORTALEZAS, ds dr RIESGOS, ds dy EXPOSICION CAMBIARIA, ds ACTIVOS FINANCIEROS, ds dy RECOMENDACIONES');
+  promptLines.push('Horizonte: '+horizonte+'. Usa p y ul/li. Espanol. Tono profesional.');
+  var prompt = promptLines.filter(Boolean).join('\n');
+  try {
+    var freshKey=(localStorage.getItem('cn_akey')||'').trim();
+    if(freshKey) ANTHRO_KEY=freshKey;
+    if(!ANTHRO_KEY) throw new Error('Se necesita API key de Anthropic (modo editor).');
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2500,messages:[{role:'user',content:prompt}]})
+    });
+    if(!res.ok){var e=await res.json();throw new Error((e.error&&e.error.message)||'HTTP '+res.status);}
+    var data=await res.json();
+    var txt=(data.content&&data.content[0]?data.content[0].text:'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:#a855f7}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
+    if(actions) actions.style.display='flex';
+    window._lastEmpresaDiag={nombre:nombre,sector:sector,tamano:tamano,horizonte:horizonte,activos:activos,txt:txt,today:today};
+  } catch(err) {
+    result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
+  }
+  btn.disabled=false; btn.textContent='Generar diagnóstico ▸';
+}
+function downloadEmpresaPDF() {
+  var d=window._lastEmpresaDiag; if(!d) return;
+  var printWin=window.open('','_blank');
+  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Diagnóstico &middot; '+d.nombre+'</title>'+
+    '<style>body{font-family:Georgia,serif;max-width:750px;margin:40px auto;color:#1a1a1a;padding:0 20px}h1{font-size:2rem}.footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd;font-family:Courier New,monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}.disclaimer{border:1px solid #e8c8c8;border-left:4px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:Courier New,monospace;font-size:0.72rem;color:#666;line-height:1.6}.ds{border:1px solid #e0e0e0;padding:1rem 1.25rem;margin-bottom:1rem}.ds h3{font-family:Courier New,monospace;font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.6rem;color:#888}.dg h3{color:#2e7d32}.dr h3{color:#c62828}.dy h3{color:#b8860b}.ds p,.ds ul{font-size:0.92rem;line-height:1.75}.ds li{margin-bottom:0.4rem}.dscore{border:1px solid #7c3aed;border-left:4px solid #7c3aed;padding:1rem 1.25rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}.dscore b{font-size:2rem;color:#7c3aed;font-family:Courier New,monospace}@media print{body{margin:20px}}</style></head><body>'+
+    '<div style="font-family:Courier New,monospace;font-size:0.7rem;color:#888">&#9670; CARRY NOTE &middot; DIAGNÓSTICO EMPRESARIAL</div>'+
+    '<h1>'+d.nombre+'</h1>'+
+    '<p style="font-family:Courier New,monospace;font-size:0.8rem;color:#888">'+d.today+' &middot; '+d.sector+' &middot; '+d.tamano+' &middot; Horizonte: '+d.horizonte+'</p><hr>'+
+    (d.activos.length?'<div style="margin-bottom:1.5rem"><div style="font-family:Courier New,monospace;font-size:0.7rem;text-transform:uppercase;color:#888;margin-bottom:0.5rem">Activos financieros</div>'+d.activos.map(function(a){return '<div style="font-family:Courier New,monospace;font-size:0.85rem;padding:0.3rem 0;border-bottom:1px solid #f0f0f0">'+a.tipo+': '+Number(a.monto).toLocaleString()+' '+a.moneda+'</div>';}).join('')+'</div>':'')+
+    '<div>'+d.txt+'</div>'+
+    '<div class="disclaimer">&#9888; Carácter educativo. No constituye asesoramiento financiero.</div>'+
+    '<div class="footer"><span>Carry Note &middot; thecarrynote.com</span><span>'+d.today+'</span></div>'+
+    '<scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt></body></html>');
+  printWin.document.close();
+}
+
 function showDiag(e) {
   e && e.preventDefault();
   activePanel='diag';
   hideAllPanels();
   setSidebarVisible(false);
-  var dp=document.getElementById('diagPanel'); if(dp) dp.style.display='block';
+  document.getElementById('diagSelector').style.display = 'block';
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('diagTab'); if(tab) tab.classList.add('active');
-  var saved=getSavedPortfolio();
-  if(saved&&saved.assets&&saved.assets.length){
-    loadSavedPortfolioIntoForm(); renderDailySummary();
-  } else if(document.getElementById('diagAssets')&&document.getElementById('diagAssets').children.length===0){
-    addAsset();addAsset();addAsset();
-  }
-  renderDiagHistory();
 }
 function updateRadarLarge() {
   var signalEl=document.getElementById('radarSignalLarge');
