@@ -1419,19 +1419,15 @@ if('serviceWorker' in navigator) {
           <a onclick="showDiag()" style="color:var(--gold);cursor:pointer;text-decoration:none">Actualizar cartera ▸</a>
         </div>
       </div>
-      <!-- FORECAST PANEL -->
+      <!-- PANORAMA PANEL -->
       <div id="radarForecastWrap" style="display:none;margin-bottom:1.5rem;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-          <div>
-            <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem">Pronóstico probabilista</div>
-            <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text);line-height:1.1">Qué esperar en las próximas 24-48hs</div>
-          </div>
-          <button onclick="generateForecast()" id="forecastBtn" style="font-family:var(--mono);font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.25rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap;flex-shrink:0">Generar análisis ▸</button>
+        <div style="margin-bottom:1rem">
+          <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem">Panorama del día</div>
+          <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text);line-height:1.2">Lectura del mercado en este momento</div>
         </div>
-        <div id="radarStatForecast" style="margin-bottom:1rem"></div>
-        <div id="radarAIForecast" style="font-family:var(--mono);font-size:0.75rem;color:var(--muted);line-height:1.7"></div>
-        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.75rem;padding:0.6rem 0.75rem;border:1px solid var(--border2);line-height:1.6">
-          ⚠ Aproximación estadística basada en correlaciones históricas (30 días) y modelo de persistencia de señales. No constituye asesoramiento financiero ni predicción de mercados. Las decisiones de inversión son responsabilidad exclusiva del usuario.
+        <div id="panoramaContent" style="font-size:0.92rem;color:#c8c4bc;line-height:1.8"></div>
+        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;padding:0.6rem 0.75rem;border:1px solid var(--border2);line-height:1.6">
+          Lectura descriptiva del estado actual del mercado basada en las señales activas. No constituye asesoramiento financiero.
         </div>
       </div>
       <!-- METHODOLOGY -->
@@ -3417,7 +3413,7 @@ function updateRadarLarge() {
   if(positiveEl) positiveEl.innerHTML='';
   if(active.length&&ANTHRO_KEY) generateSignalExplanations(active,rows);
   var fw=document.getElementById('radarForecastWrap');
-  if(fw) fw.style.display=active.length?'block':'none';
+  if(fw) { fw.style.display=active.length?'block':'none'; if(active.length) generatePanorama(); }
   rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
   corrEl.innerHTML=rows.map(function(r){
     var arrow=r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
@@ -4606,299 +4602,101 @@ function updateRadar(){
     return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem"><span style="font-family:var(--mono);font-size:0.68rem;color:'+(r.active?r.color:'#9d99a8')+'">'+(r.active?'● ':'○ ')+r.name+'</span><span style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:'+cls+';white-space:nowrap">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(1)+'%</span></div>';
   }).join('');
 }
-async function generateForecast() {
-  var btn = document.getElementById('forecastBtn');
-  var statEl = document.getElementById('radarStatForecast');
-  var aiEl   = document.getElementById('radarAIForecast');
-  if(!statEl || !aiEl) return;
-  if(btn) { btn.disabled = true; btn.textContent = 'Calculando...'; }
-  var activeSignals = [];
-  RADAR_PATTERNS.forEach(function(p) {
+function generatePanorama() {
+  var el = document.getElementById('panoramaContent');
+  if(!el) return;
+
+  // Build active signals from RADAR_PATTERNS
+  var active = [];
+  RADAR_PATTERNS.forEach(function(p){
     var pcts = p.assets.map(getTickerChange);
-    if(pcts.some(function(x){ return x === null; })) return;
-    var match = pcts.every(function(pct,i){ return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
-    if(match) activeSignals.push(p);
+    if(pcts.some(function(x){return x===null;})) return;
+    var match = pcts.every(function(pct,i){return p.dirs[i]>0?pct>0.3:pct<-0.3;});
+    if(!match) return;
+    var avg = pcts.reduce(function(a,b){return a+b;},0)/pcts.length;
+    active.push({name:p.name, avg:avg, level:p.level, cat:p.cat||'Otros', color:p.color});
   });
-  if(!activeSignals.length) {
-    if(statEl) statEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted2);padding:0.5rem">No hay señales activas para generar un pronóstico.</div>';
-    if(btn) { btn.disabled = false; btn.textContent = 'Generar análisis ▸'; }
-    return;
-  }
-  var alertCount    = activeSignals.filter(function(s){ return s.level === 'alerta'; }).length;
-  var positiveCount = activeSignals.filter(function(s){ return s.level === 'positivo'; }).length;
-  var direction     = alertCount > positiveCount ? 'bajista' : positiveCount > alertCount ? 'alcista' : 'neutral';
-  var dirColor  = direction === 'bajista' ? 'var(--red)' : direction === 'alcista' ? 'var(--green)' : 'var(--gold)';
-  var dirArrow  = direction === 'bajista' ? '▼' : direction === 'alcista' ? '▲' : '→';
-  var statForecast = _historicalLoaded ? getStatForecast(activeSignals) : null;
-  var avgPersistence = statForecast ? statForecast.avgPersistence : null;
-  statEl.innerHTML =
-    '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0;border:1px solid var(--border2);margin-bottom:0.75rem">' +
-      '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Sesión probable</div>' +
-        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:'+dirColor+'">' + dirArrow + ' ' + direction.charAt(0).toUpperCase() + direction.slice(1) + '</div>' +
-      '</div>' +
-      '<div style="padding:1rem;border-right:1px solid var(--border2)">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Persistencia</div>' +
-        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--gold)">' + (avgPersistence !== null ? avgPersistence + '%' : '···') + '</div>' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + (avgPersistence !== null ? 'prob. que continúe' : 'cargando datos…') + '</div>' +
-      '</div>' +
-      '<div style="padding:1rem">' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.3rem">Señales</div>' +
-        '<div style="font-family:var(--mono);font-size:1.2rem;font-weight:600;color:var(--text)">' + activeSignals.length + '</div>' +
-        '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">' + alertCount + ' alertas · ' + positiveCount + ' positivas</div>' +
-      '</div>' +
-    '</div>' +
-    (statForecast ?
-      '<div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--border2)">' +
-      statForecast.signals.map(function(s) {
-        var persColor = s.persistence >= 60 ? 'var(--gold)' : s.persistence >= 40 ? 'var(--muted)' : 'var(--muted2)';
-        var revColor  = s.reversal >= 50 ? 'var(--red)' : 'var(--green)';
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.9rem;border-bottom:1px solid var(--border2)">' +
-          '<span style="font-family:var(--mono);font-size:0.68rem;color:' + s.color + '">● ' + s.name + '</span>' +
-          '<div style="display:flex;gap:0.75rem;font-family:var(--mono);font-size:0.62rem">' +
-            '<span style="color:'+persColor+'">' + (s.persistence!==null?s.persistence+'% persiste':'sin datos') + '</span>' +
-            '<span style="color:'+revColor+'">' + (s.reversal!==null?s.reversal+'% reversión':'—') + '</span>' +
-          '</div></div>';
-      }).join('') + '</div>'
-      : '');
-  // Re-read key fresh from localStorage in case it was set after page load
-  var freshKey = (localStorage.getItem('cn_akey')||'').trim();
-  if(freshKey) ANTHRO_KEY = freshKey;
-  if(!ANTHRO_KEY) {
-    if(aiEl) aiEl.innerHTML = '';
-    if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
-    return;
-  }
-  if(aiEl) aiEl.innerHTML = '<div style="color:var(--gold);font-size:0.7rem;margin-top:0.75rem">Generando análisis…</div>';
-  var mktContext = activeSignals.map(function(s){
-    var pcts = s.assets.map(getTickerChange).filter(function(v){ return v!==null; });
-    var avg = pcts.length ? pcts.reduce(function(a,b){return a+b;},0)/pcts.length : 0;
-    return s.name + ' (' + (avg>=0?'+':'') + avg.toFixed(2) + '%)';
-  }).join(', ');
-  var statSummary = statForecast
-    ? 'dirección ' + direction + ', persistencia promedio ' + avgPersistence + '%'
-    : 'dirección ' + direction + ' (sin datos históricos aún)';
-  var rpEl = document.getElementById('arg-riesgo');
-  var rpStr = rpEl && rpEl.textContent.trim() !== '···' ? rpEl.textContent.trim() : 'N/D';
-  var prompt = 'Eres un analista explicando a un inversor argentino sin experiencia tecnica.' +
-    ' Senales activas: ' + mktContext +
-    ' | Modelo: ' + statSummary +
-    ' | Riesgo pais: ' + rpStr +
-    ' | Escribe en espanol simple 3 parrafos cortos:' +
-    ' 1) Que esta pasando hoy.' +
-    ' 2) Que es probable que pase en 24-48hs.' +
-    ' 3) Que considerar si tenes pesos, dolares y CEDEARs.' +
-    ' Aclara que son aproximaciones estadisticas, no predicciones.';
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key':getCleanKey(),
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 500,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    var data = await res.json();
-    var txt = data.content && data.content[0] ? data.content[0].text.trim() : '';
-    if(aiEl && txt) {
-      aiEl.innerHTML = '<div style="margin-top:0.75rem">' +
-        txt.split('\n').filter(function(l){ return l.trim(); }).map(function(p) {
-          return '<p style="font-size:0.9rem;color:#c8c4bc;line-height:1.8;margin-bottom:0.75rem">' + p + '</p>';
-        }).join('') + '</div>';
+
+  // Dedup by category — pick dominant per cat
+  var byCategory = {};
+  active.forEach(function(s){
+    if(!byCategory[s.cat] || Math.abs(s.avg)>Math.abs(byCategory[s.cat].avg)){
+      byCategory[s.cat] = s;
     }
-  } catch(e) {
-    if(aiEl) aiEl.innerHTML = '<div style="color:var(--red);font-size:0.7rem;margin-top:0.5rem">Error: ' + e.message + '</div>';
+  });
+  var dominant = Object.values(byCategory);
+  var nAlerts = dominant.filter(function(s){return s.level==='alerta';}).length;
+  var nPositive = dominant.filter(function(s){return s.level==='positivo';}).length;
+  var nNeutral = dominant.length - nAlerts - nPositive;
+
+  // Build top movers list from tickers
+  var movers = [];
+  ['SPY','QQQ','NDX','VIX','GLD','TLT','BTC','EEM','WTI','NVDA','YPF','GGAL'].forEach(function(t){
+    var pct = getTickerChange(t);
+    if(pct !== null) movers.push({t:t, pct:pct});
+  });
+  movers.sort(function(a,b){return Math.abs(b.pct)-Math.abs(a.pct);});
+  var topMovers = movers.slice(0,3);
+
+  // Compose narrative
+  var html_out = '';
+
+  // Section 1: Régimen general
+  var regimen = '';
+  var regimenColor = 'var(--muted)';
+  if(nPositive > nAlerts + 1) {
+    regimen = 'risk-on';
+    regimenColor = 'var(--green)';
+  } else if(nAlerts > nPositive + 1) {
+    regimen = 'risk-off';
+    regimenColor = 'var(--red)';
+  } else if(nAlerts > 0 && nPositive > 0) {
+    regimen = 'mixto';
+    regimenColor = 'var(--gold)';
+  } else {
+    regimen = 'sin señales fuertes';
+    regimenColor = 'var(--muted)';
   }
-  if(btn) { btn.disabled = false; btn.textContent = 'Actualizar ▸'; }
+
+  html_out += '<p style="margin-bottom:0.75rem">';
+  html_out += '<strong style="color:'+regimenColor+';font-weight:600">Régimen actual: '+regimen+'.</strong> ';
+  if(dominant.length === 0) {
+    html_out += 'El mercado no muestra señales claras en este momento. Los activos se mueven dentro de rangos normales sin tendencia dominante.';
+  } else {
+    html_out += 'Se detectaron <strong style="color:var(--text)">'+dominant.length+' señales activas</strong>';
+    if(nAlerts && nPositive) html_out += ' ('+nPositive+' positivas, '+nAlerts+' alertas)';
+    else if(nAlerts) html_out += ' ('+nAlerts+' de tipo alerta)';
+    else if(nPositive) html_out += ' ('+nPositive+' positivas)';
+    html_out += ' distribuidas en distintas categorías del radar.';
+  }
+  html_out += '</p>';
+
+  // Section 2: Top movers
+  if(topMovers.length) {
+    html_out += '<p style="margin-bottom:0.75rem">';
+    html_out += '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase">Mayor movimiento del día: </span>';
+    html_out += topMovers.map(function(m){
+      var color = m.pct>0?'var(--green)':'var(--red)';
+      var sign = m.pct>0?'+':'';
+      return '<strong style="font-family:var(--mono);color:'+color+'">'+m.t+' '+sign+m.pct.toFixed(2)+'%</strong>';
+    }).join(' · ');
+    html_out += '.</p>';
+  }
+
+  // Section 3: Categorías destacadas
+  if(dominant.length) {
+    html_out += '<p style="margin-bottom:0">';
+    html_out += '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase">Categorías activas: </span>';
+    html_out += dominant.slice(0,5).map(function(s){
+      return '<span style="font-family:var(--mono);font-size:0.78rem;color:'+s.color+';font-weight:500">'+s.name+'</span>';
+    }).join(' · ');
+    if(dominant.length > 5) html_out += ' · <span style="color:var(--muted2)">+'+(dominant.length-5)+' más</span>';
+    html_out += '.</p>';
+  }
+
+  el.innerHTML = html_out;
 }
-window.addEventListener('load', function(){
-  // Check for editor URL param: ?editor=true
-  if(new URLSearchParams(window.location.search).get('editor') === 'true') {
-    showLogin();
-  }
-  var emailEl = document.getElementById('about-email');
-  if(emailEl) emailEl.textContent = ['julibesendorff','gmail.com'].join('@');
-  loadNotes();
-  loadCalendar();
-  loadArgMacro();
-  loadTicker();
-  loadForex();
-  loadWatchlistPrices();
-  setInterval(loadWatchlistPrices, 120000);
-  // Check ?section= param from landing pages
-  var urlSection = new URLSearchParams(window.location.search).get('section');
-  if(urlSection === 'radar') { showRadar(); }
-  else if(urlSection === 'analisis') { showAnalisis(); }
-  else if(urlSection === 'aprender') { showAprender(); }
-  else { showDiag(); }
-  // Pre-render analisis filters (hidden until tab clicked)
-  renderMobCards();
-});
-</script>
-<!-- CARTERA MODAL -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
-      <div>
-        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
-        <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text)">Cartera alternativa sugerida</div>
-      </div>
-      <button onclick="closeCartModal()" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:0.9rem;padding:0.3rem 0.6rem">✕</button>
-    </div>
-    <div id="cartModalContent" style="padding:1.25rem;max-height:60vh;overflow-y:auto"></div>
-    <div style="display:flex;gap:0.6rem;padding:1rem 1.25rem;border-top:1px solid var(--border2);flex-wrap:wrap">
-      <button onclick="exportCartPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Descargar PDF</button>
-      <button onclick="shareCartWhatsApp()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#25D366;color:#fff;border:none;cursor:pointer">WhatsApp ↗</button>
-      <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
-      <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
-    </div>
-    <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
-      ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
-    </div>
-  </div>
-</div>
-<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90vw">
-  <span style="color:var(--text)">Instalá <strong style="color:var(--gold)">Carry Note</strong> en tu pantalla de inicio</span>
-  <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
-  <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
-</div>
-<script>
-var pwaPrompt = null;
-window.addEventListener('beforeinstallprompt', function(e) {
-  e.preventDefault();
-  pwaPrompt = e;
-  var banner = document.getElementById('pwaInstallBanner');
-  if(banner) banner.style.display = 'flex';
-});
-document.addEventListener('DOMContentLoaded', function() {
-  var btn = document.getElementById('pwaInstallBtn');
-  if(btn) btn.addEventListener('click', function() {
-    if(pwaPrompt) {
-      pwaPrompt.prompt();
-      pwaPrompt.userChoice.then(function(r) {
-        if(r.outcome === 'accepted') {
-          document.getElementById('pwaInstallBanner').style.display = 'none';
-        }
-        pwaPrompt = null;
-      });
-    }
-  });
-});
-window.addEventListener('appinstalled', function() {
-  var banner = document.getElementById('pwaInstallBanner');
-  if(banner) banner.style.display = 'none';
-  pwaPrompt = null;
-});
-</script>
-<!-- CORR EXPLAINER MODAL -->
-<div id="corrExplainerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:700;overflow-y:auto;padding:2rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--gold);width:min(680px,100%);margin:auto;font-family:var(--mono)">
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border2)">
-      <div>
-        <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem">Carry Note · Radar Macro</div>
-        <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text)">¿Cómo leer las correlaciones?</div>
-      </div>
-      <button onclick="document.getElementById('corrExplainerModal').style.display='none'" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:1rem;padding:0.3rem 0.7rem">✕</button>
-    </div>
-    <div style="padding:1.5rem;font-size:0.88rem;color:#c8c4bc;line-height:1.85">
-      <p style="margin-bottom:1.25rem">La tabla que ves en el Radar muestra <strong style="color:var(--text)">24 patrones de mercado</strong> que el sistema monitorea todo el tiempo. Cada patrón es una combinación de activos que, cuando se mueven juntos en la misma dirección, manda una señal sobre el estado del mercado.</p>
-      <div style="background:var(--surface);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin-bottom:1.25rem">
-        <div style="font-size:0.62rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Los símbolos que ves</div>
-        <div style="display:grid;grid-template-columns:auto 1fr;gap:0.5rem 1rem;align-items:start">
-          <span style="color:#4caf7d;font-size:1rem">●</span><span><strong style="color:var(--text)">Punto lleno</strong> — señal activa hoy. Todos los activos del patrón se mueven en la dirección esperada con más de ±0.3%.</span>
-          <span style="color:#9d99a8;font-size:1rem">○</span><span><strong style="color:var(--text)">Punto vacío</strong> — señal inactiva. El patrón no se está cumpliendo ahora.</span>
-          <span style="color:#4caf7d">▲</span><span><strong style="color:var(--text)">Flecha arriba</strong> — los activos del patrón subieron en promedio hoy.</span>
-          <span style="color:#e05252">▼</span><span><strong style="color:var(--text)">Flecha abajo</strong> — los activos del patrón bajaron en promedio hoy.</span>
-          <span style="color:#9d99a8">→</span><span><strong style="color:var(--text)">Flecha derecha</strong> — movimiento muy pequeño, sin señal clara.</span>
-        </div>
-      </div>
-      <div style="background:var(--surface);border-left:3px solid #5b8dee;padding:1rem 1.25rem;margin-bottom:1.25rem">
-        <div style="font-size:0.62rem;font-weight:500;color:#5b8dee;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">El porcentaje a la derecha</div>
-        <p style="margin:0">Es el <strong style="color:var(--text)">promedio de variación del día</strong> de los activos del patrón. Si "Inflow Argentina" muestra ▼ -3.41%, significa que YPF y GGAL bajaron en promedio 3.41% hoy en la Bolsa de Nueva York.</p>
-      </div>
-      <div style="background:var(--surface);border-left:3px solid var(--green);padding:1rem 1.25rem;margin-bottom:1.25rem">
-        <div style="font-size:0.62rem;font-weight:500;color:var(--green);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">El badge r=X.XX</div>
-        <p style="margin:0">Es la <strong style="color:var(--text)">correlación histórica de Pearson</strong> — un número entre -1 y +1 que mide cuánto se mueven juntos esos activos en los últimos 30 días. Cuanto más cerca de 1, más confiable es la señal. r=0.80 es muy confiable. r=0.20 puede ser ruido.</p>
-      </div>
-      <div style="background:var(--surface);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin-bottom:1.25rem">
-        <div style="font-size:0.62rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">¿Por qué importa para el inversor argentino?</div>
-        <p style="margin:0">Estos patrones afectan directamente el precio de CEDEARs, bonos en dólares y acciones locales. Si "Outflow Argentina" está activo con ● en rojo, inversores extranjeros están saliendo de YPF y Galicia en Nueva York — eso suele anticipar presión en el mercado local al día siguiente.</p>
-      </div>
-      <div style="font-size:0.72rem;color:var(--muted2);line-height:1.7;padding:0.75rem;border:1px solid var(--border2)">
-        ⚠ Este sistema detecta patrones estadísticos, no predice el futuro. Una señal activa aumenta la probabilidad de cierto escenario pero no es garantía. Usá esta información como un insumo más.
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- SPONSORS PANEL -->
-<div id="sponsorsPanel" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:800;overflow-y:auto;padding:2rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--gold);width:min(700px,100%);margin:auto;font-family:var(--mono)">
-
-    <!-- Header -->
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid var(--border2)">
-      <div>
-        <div style="font-size:0.55rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.35rem">Carry Note · Oportunidades comerciales</div>
-        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.8rem;font-weight:600;color:var(--text)">Sponsorá Carry Note</div>
-      </div>
-      <button onclick="document.getElementById('sponsorsPanel').style.display='none'" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:1rem;padding:0.3rem 0.8rem">✕</button>
-    </div>
-
-    <div style="padding:2rem">
-
-      <!-- Intro -->
-      <p style="font-size:0.9rem;color:#c8c4bc;line-height:1.85;margin-bottom:2rem">Carry Note es un portal de análisis macroeconómico en español dirigido al inversor argentino. Combinamos datos de mercado en tiempo real, análisis técnico y contexto macro global en una sola herramienta. Gratuito, sin registro, sin publicidad intrusiva.</p>
-
-      <!-- Audiencia -->
-      <div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem 1.5rem;margin-bottom:1.5rem">
-        <div style="font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">La audiencia</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
-          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Inversores argentinos retail con portafolios activos en CEDEARs, bonos y acciones locales</div>
-          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Perfil con formación en ciencias económicas y finanzas</div>
-          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Usuarios que siguen el contexto macro global para tomar decisiones de cartera</div>
-          <div style="font-size:0.85rem;color:#c8c4bc;line-height:1.7">▸ Crecimiento orgánico vía comunidades de inversores y redes sociales</div>
-        </div>
-      </div>
-
-      <!-- Qué ofrecemos -->
-      <div style="margin-bottom:1.5rem">
-        <div style="font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">¿Qué puede incluir un sponsorship?</div>
-        <div style="display:flex;flex-direction:column;gap:0.5rem">
-          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
-            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
-            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Mención en el portal</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Logo o nombre de tu marca visible en el portal con link a tu sitio.</div></div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
-            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
-            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Views patrocinados</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Análisis técnicos o macroeconómicos publicados en el portal con mención de tu marca.</div></div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
-            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
-            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Newsletter y redes sociales</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Mención en publicaciones y contenido distribuido en X y otras plataformas.</div></div>
-          </div>
-          <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;background:var(--surface);border:1px solid var(--border2)">
-            <span style="color:var(--gold);font-size:0.7rem;margin-top:2px">●</span>
-            <div><div style="font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Formato a medida</div><div style="font-size:0.82rem;color:var(--muted);line-height:1.6">Abiertos a propuestas. Cada acuerdo se diseña según los objetivos del sponsor.</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid var(--gold);padding:1.5rem;text-align:center">
-        <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">¿Te interesa?</div>
-        <div style="font-size:0.85rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.6">Escribinos y coordinamos una llamada para ver cómo podemos trabajar juntos.</div>
-        <div style="font-family:var(--mono);font-size:0.85rem;color:var(--text);letter-spacing:0.04em">julibesendorff@gmail.com</div>
-      </div>
-
-    </div>
-  </div>
-</div>
-</body>
-</html>
+// Keep generateForecast as alias for backwards compatibility
+function generateForecast() { generatePanorama(); }
+>
