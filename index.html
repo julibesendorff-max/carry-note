@@ -1271,6 +1271,7 @@ if('serviceWorker' in navigator) {
       </div>
       <button onclick="runDiagEmpresa()" id="diagEmpresaBtn" style="font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.85rem 2rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;width:100%;margin-bottom:1rem">Generar diagn&#243;stico &#9658;</button>
       <div id="diagEmpresaResult" style="display:none"></div>
+      <div id="diagEmpresaCapture"></div>
       <div id="diagEmpresaActions" style="display:none;gap:0.6rem;margin-top:1rem">
         <button onclick="downloadEmpresaPDF()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1.2rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">&#8595; Descargar PDF</button>
       </div>
@@ -2270,6 +2271,57 @@ async function sendNewsletter(title, subtitle) {
   }
 }
 // ── NEWSLETTER ────────────────────────────────────────────
+async 
+// ── POST-DIAGNOSIS EMAIL CAPTURE (optional) ──────────────────
+function renderDiagCapture(containerId) {
+  var c = document.getElementById(containerId);
+  if(!c) return;
+  // Don't show if already subscribed this session
+  if(window._diagCaptureSubmitted) return;
+  c.innerHTML =
+    '<div style="margin-top:1.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.08),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem">' +
+      '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">▸ Recibí esto cada semana</div>' +
+      '<div style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">El análisis macro de la semana, en tu inbox</div>' +
+      '<p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">Resumen macro, señal destacada del radar y un dato clave del portal. Un mail por semana. Sin spam. (Opcional)</p>' +
+      '<div style="display:flex;gap:0.6rem;flex-wrap:wrap">' +
+        '<input type="email" id="diagCaptureEmail" placeholder="tu@email.com" style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.6rem 0.8rem;outline:none"/>' +
+        '<button onclick="submitDiagCapture()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.2rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap">Recibir el newsletter ▸</button>' +
+      '</div>' +
+      '<div id="diagCaptureMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.6rem;display:none"></div>' +
+    '</div>';
+}
+
+async function submitDiagCapture() {
+  var email = (document.getElementById('diagCaptureEmail').value || '').trim();
+  var msg = document.getElementById('diagCaptureMsg');
+  if(!email || !email.includes('@')) {
+    msg.textContent = '✗ Ingresá un email válido.';
+    msg.style.color = 'var(--red)'; msg.style.display = 'block';
+    return;
+  }
+  try {
+    var res = await sbFetch('/rest/v1/subscribers', {
+      method: 'POST',
+      headers: {'Prefer': 'return=minimal'},
+      body: JSON.stringify({email: email})
+    });
+    if(res.status === 409) {
+      msg.textContent = '✓ Ya estás suscripto. ¡Gracias!';
+      msg.style.color = 'var(--green)';
+      window._diagCaptureSubmitted = true;
+    } else if(res.ok) {
+      msg.textContent = '✓ Listo. Te llega el próximo newsletter.';
+      msg.style.color = 'var(--green)';
+      window._diagCaptureSubmitted = true;
+      document.getElementById('diagCaptureEmail').value = '';
+    } else { throw new Error(); }
+  } catch(e) {
+    msg.textContent = '✗ Error. Intentá de nuevo.';
+    msg.style.color = 'var(--red)';
+  }
+  msg.style.display = 'block';
+}
+
 async function subscribeNewsletter() {
   const email = document.getElementById('nlEmail').value.trim();
   const msg = document.getElementById('nlMsg');
@@ -2739,6 +2791,7 @@ async function runDiagCore() {
   btn.disabled=false; btn.textContent='Analizar de nuevo';
   // Show action buttons
   var dab=document.getElementById('diagActions'); if(dab) dab.style.display='flex';
+  renderDiagCapture('diagIndivCapture');
   // Show scenario + comparison panels
   var ds=document.getElementById('diagScenarios'); if(ds) ds.style.display='block';
   var dcomp=document.getElementById('diagComparison'); if(dcomp) dcomp.style.display='block';
@@ -3375,6 +3428,7 @@ async function runDiagEmpresa() {
     var txt=(data.content&&data.content[0]?data.content[0].text:'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:#a855f7}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
     if(actions) actions.style.display='flex';
+    renderDiagCapture('diagEmpresaCapture');
     window._lastEmpresaDiag={nombre:nombre,sector:sector,tamano:tamano,horizonte:horizonte,activos:activos,txt:txt,today:today};
   } catch(err) {
     result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
