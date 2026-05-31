@@ -2725,16 +2725,57 @@ async function runDiagCore() {
   result.style.display='block';
   result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:var(--gold)">Carry Note analizando tu cartera...</div>';
   var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  var spyVal = (document.getElementById('t-spx')||{}).textContent||'~570';
-  var btcVal = (document.getElementById('t-btc')||{}).textContent||'~69000';
-  var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
-  var goldVal = (document.getElementById('t-gld')||{}).textContent||'~295';
-  // Build liveData only with values actually loaded in ticker/sidebar
-  var liveLines = ['DATOS EN VIVO (' + today + '):'];
-  if(spyVal && spyVal.trim() !== '—') liveLines.push('- SPY: ' + spyVal.trim());
-  if(btcVal && btcVal.trim() !== '—') liveLines.push('- BTC: ' + btcVal.trim());
+  // Fetch REAL live prices from Finnhub for all key assets the user might hold
+  var priceSymbols = {
+    'SPY':'SPY', 'QQQ':'QQQ', 'BTC':'BINANCE:BTCUSDT', 'ETH':'BINANCE:ETHUSDT',
+    'NVDA':'NVDA', 'TSLA':'TSLA', 'AAPL':'AAPL', 'GLD':'GLD', 'TLT':'TLT'
+  };
+  var livePrices = {};
+  try {
+    var priceResults = await Promise.all(Object.keys(priceSymbols).map(function(k){
+      var sym = priceSymbols[k];
+      var isCrypto = sym.indexOf('BINANCE') === 0;
+      var quoteP = fetch('https://finnhub.io/api/v1/quote?symbol='+sym+'&token='+FINNHUB_KEY).then(function(r){return r.json();}).catch(function(){return {};});
+      // 52-week range only available for stocks via metric endpoint
+      var metricP = isCrypto ? Promise.resolve({}) :
+        fetch('https://finnhub.io/api/v1/stock/metric?symbol='+sym+'&metric=all&token='+FINNHUB_KEY).then(function(r){return r.json();}).catch(function(){return {};});
+      return Promise.all([quoteP, metricP]).then(function(arr){
+        var q = arr[0], m = (arr[1] && arr[1].metric) ? arr[1].metric : {};
+        return {k:k, c:q.c, pc:q.pc, hi52:m['52WeekHigh'], lo52:m['52WeekLow'], isCrypto:isCrypto};
+      }).catch(function(){ return {k:k, c:null}; });
+    }));
+    priceResults.forEach(function(p){ if(p.c) livePrices[p.k]=p; });
+  } catch(e) {}
+
+  // For crypto, fetch 52-week high/low via candle data
+  try {
+    var cryptoKeys = Object.keys(livePrices).filter(function(k){ return livePrices[k].isCrypto; });
+    var now = Math.floor(Date.now()/1000);
+    var yearAgo = now - 31536000;
+    await Promise.all(cryptoKeys.map(function(k){
+      return fetch('https://finnhub.io/api/v1/crypto/candle?symbol='+priceSymbols[k]+'&resolution=W&from='+yearAgo+'&to='+now+'&token='+FINNHUB_KEY)
+        .then(function(r){return r.json();})
+        .then(function(d){
+          if(d.h && d.h.length){ livePrices[k].hi52 = Math.max.apply(null, d.h); livePrices[k].lo52 = Math.min.apply(null, d.l); }
+        }).catch(function(){});
+    }));
+  } catch(e) {}
+
+  var liveLines = ['PRECIOS REALES EN VIVO (' + today + ') - fuente Finnhub:'];
+  Object.keys(livePrices).forEach(function(k){
+    var p = livePrices[k];
+    var pct = (p.c && p.pc) ? ((p.c-p.pc)/p.pc*100) : null;
+    var line = '- ' + k + ': $' + (p.c >= 100 ? p.c.toFixed(0) : p.c.toFixed(2));
+    if(pct !== null) line += ' (' + (pct>=0?'+':'') + pct.toFixed(2) + '% hoy)';
+    if(p.hi52 && p.lo52) {
+      var fromHigh = ((p.c - p.hi52) / p.hi52 * 100);
+      line += ' | rango 52sem: $' + (p.lo52>=100?p.lo52.toFixed(0):p.lo52.toFixed(2)) + ' - $' + (p.hi52>=100?p.hi52.toFixed(0):p.hi52.toFixed(2));
+      line += ' (' + (fromHigh>=0?'+':'') + fromHigh.toFixed(1) + '% vs maximo 52sem)';
+    }
+    liveLines.push(line);
+  });
+  var arsVal = (document.getElementById('t-ars')||{}).textContent||'';
   if(arsVal && arsVal.trim() !== '—') liveLines.push('- USD/ARS oficial: ' + arsVal.trim());
-  if(goldVal && goldVal.trim() !== '—') liveLines.push('- Gold (GLD): ' + goldVal.trim());
   var rpEl = document.getElementById('arg-riesgo');
   var rpLive = rpEl && rpEl.textContent && rpEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? rpEl.textContent.trim() : null;
   var blueEl = document.getElementById('arg-blue');
@@ -2744,6 +2785,9 @@ async function runDiagCore() {
   if(blueLive) arMacro.push('USD Blue: ' + blueLive);
   liveLines.push('MACRO AR: ' + arMacro.join(' | '));
   liveLines.push('MACRO EEUU: Fed 3.50-3.75% | CPI mar 3.3% YoY | Core CPI 2.6% | Desempleo 4.3%');
+  liveLines.push('');
+  liveLines.push('=== REGLA CRITICA SOBRE PRECIOS ===');
+  liveLines.push('Los precios y rangos de arriba son los UNICOS datos de mercado validos. Cuando hables de si un activo esta cerca o lejos de maximos, usa EXCLUSIVAMENTE el dato "% vs maximo 52sem" provisto arriba. NUNCA uses tu conocimiento previo de precios, que esta desactualizado. Si un activo no tiene rango 52sem listado, NO comentes su posicion relativa. Ejemplo: si BTC dice "-45% vs maximo 52sem", esta LEJOS de maximos, no cerca. Inventar o contradecir estos datos es un error grave.');
   var liveData = liveLines.join(' ||| ')
   try {
     const res = await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData})});
@@ -3385,6 +3429,17 @@ async function runDiagEmpresa() {
   promptLines.push('=== CONTEXTO MACRO ===');
   promptLines.push('Riesgo pais: '+rpLive+' | Blue: '+blueLive+' | MEP: '+mepLive);
   promptLines.push('IPC AR: 3.4% mensual | Reservas: USD 45.2B | Fed: 3.50-3.75% | CPI EEUU: 3.3% | Brent: $110');
+  var empPrices = '';
+  try {
+    var empSyms = {'SPY':'SPY','BTC':'BINANCE:BTCUSDT','GLD':'GLD','NVDA':'NVDA','QQQ':'QQQ'};
+    var empResults = await Promise.all(Object.keys(empSyms).map(function(k){
+      return fetch('https://finnhub.io/api/v1/quote?symbol='+empSyms[k]+'&token='+FINNHUB_KEY)
+        .then(function(r){return r.json();}).then(function(d){return d.c?(k+': $'+(d.c>=100?d.c.toFixed(0):d.c.toFixed(2))):'';}).catch(function(){return '';});
+    }));
+    empPrices = empResults.filter(Boolean).join(' | ');
+  } catch(e) {}
+  if(empPrices) promptLines.push('Precios reales en vivo (Finnhub): '+empPrices);
+  promptLines.push('REGLA CRITICA: No infieras ni afirmes niveles historicos de activos (maximos, minimos, cerca de records, % abajo del pico) salvo que el dato este explicito arriba. Si no tenes el dato historico, no comentes la posicion relativa del activo. Inventar niveles es un error grave.');
   promptLines.push('');
   promptLines.push('=== INSTRUCCIONES ===');
   promptLines.push('Solo menciona riesgo pais si empresa tiene deuda USD, exporta o importa.');
