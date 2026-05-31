@@ -1411,6 +1411,7 @@ if('serviceWorker' in navigator) {
         <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;padding:0.6rem 0.75rem;border:1px solid var(--border2);line-height:1.6">
           Lectura descriptiva del estado actual del mercado basada en las señales activas. No constituye asesoramiento financiero.
         </div>
+        <div id="panoramaCta"></div>
       </div>
       <!-- METHODOLOGY -->
       <div style="background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem">
@@ -2214,8 +2215,42 @@ async function sendNewsletter(title, subtitle) {
   }
 }
 // ── NEWSLETTER ────────────────────────────────────────────
-async 
 // ── POST-DIAGNOSIS EMAIL CAPTURE (optional) ──────────────────
+
+// ── COMPACT NEWSLETTER CTA (for radar/panorama) ──────────────
+function renderCompactNlCta(containerId) {
+  var c = document.getElementById(containerId);
+  if(!c) return;
+  if(window._diagCaptureSubmitted) { c.innerHTML=''; return; }
+  c.innerHTML =
+    '<div style="margin-top:1.5rem;background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:200px">' +
+        '<div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.25rem">▸ Newsletter semanal</div>' +
+        '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.5">Resumen macro + señal del radar, una vez por semana. Sin spam.</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:0.4rem;flex-wrap:wrap">' +
+        '<input type="email" id="cta_'+containerId+'" placeholder="tu@email.com" style="min-width:170px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.7rem;outline:none"/>' +
+        '<button onclick="submitCompactCta(\''+containerId+'\')" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;padding:0.5rem 1rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap">Suscribirme ▸</button>' +
+      '</div>' +
+    '</div>' +
+    '<div id="msg_'+containerId+'" style="font-family:var(--mono);font-size:0.62rem;margin-top:0.5rem;display:none"></div>';
+}
+
+async function submitCompactCta(containerId) {
+  var email = (document.getElementById('cta_'+containerId).value||'').trim();
+  var msg = document.getElementById('msg_'+containerId);
+  if(!email || !email.includes('@')) {
+    msg.textContent='✗ Email inválido.'; msg.style.color='var(--red)'; msg.style.display='block'; return;
+  }
+  try {
+    var res = await sbFetch('/rest/v1/subscribers',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({email:email})});
+    if(res.status===409){ msg.textContent='✓ Ya estás suscripto.'; msg.style.color='var(--green)'; window._diagCaptureSubmitted=true; }
+    else if(res.ok){ msg.textContent='✓ Listo. Te llega el próximo.'; msg.style.color='var(--green)'; window._diagCaptureSubmitted=true; }
+    else throw new Error();
+  } catch(e){ msg.textContent='✗ Error. Reintentá.'; msg.style.color='var(--red)'; }
+  msg.style.display='block';
+}
+
 function renderDiagCapture(containerId) {
   var c = document.getElementById(containerId);
   if(!c) return;
@@ -4348,6 +4383,12 @@ function showAnalisis(e) {
   // Reset away from removed 'views' filter
   if(!currentAnalisisFilter || currentAnalisisFilter === 'views') currentAnalisisFilter = 'macro_geo';
   setAnalisisFilter(currentAnalisisFilter);
+  // Ensure notes are loaded (in case initial load ran before activePanel was set)
+  if(!allNotes || allNotes.length === 0) {
+    loadNotes();
+  } else {
+    renderNotes();
+  }
 }
 var currentAnalisisFilter='all';
 function setAnalisisFilter(filter){
@@ -4772,6 +4813,7 @@ function generatePanorama() {
   html_out += '</div>';
 
   el.innerHTML = html_out;
+  renderCompactNlCta('panoramaCta');
 }
 
 // Keep generateForecast as alias for backwards compatibility
