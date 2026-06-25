@@ -1527,6 +1527,14 @@ if('serviceWorker' in navigator) {
           </a>
           <span style="font-family:var(--mono);font-size:0.65rem;color:#6b6875">thecarrynote.com</span>
         </div>
+
+        <!-- CONTACTO destacado -->
+        <div style="margin-top:2.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem 1.75rem">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem">&#9658; Contacto</div>
+          <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">&#191;Consultas, propuestas o feedback?</div>
+          <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">Escribime directamente. Respondo todos los mensajes.</p>
+          <a href="mailto:contacto@thecarrynote.com" style="display:inline-block;font-family:var(--mono);font-size:0.8rem;font-weight:500;letter-spacing:0.04em;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:0.6rem 1.25rem">contacto@thecarrynote.com</a>
+        </div>
       </div>
     </div>
     <!-- VIEWS TÉCNICOS PANEL -->
@@ -2093,7 +2101,7 @@ async function genAI(){
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: 'claude-opus-4-5',
           max_tokens: 2000,
           tools: [{type: 'web_search_20250305', name: 'web_search'}],
           system: `You are a senior economist and markets analyst based in Buenos Aires writing for Carry Note, a professional economic analysis publication. Write in Spanish.
@@ -2169,7 +2177,7 @@ async function polishNote(){
   const btn=document.getElementById('polishBtn');btn.disabled=true;btn.textContent='Puliendo con Claude...';
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
+    body:JSON.stringify({model:'claude-opus-4-5',max_tokens:1800,
       system:"You are the editor of Carry Note. Your task: take the economist's draft and polish it - improve structure, refine prose, make sure the thesis is clear in the first paragraph, close with concrete implications. Do not change the ideas. Respond ONLY with valid JSON without markdown: {\"title\":\"polished title\",\"subtitle\":\"subtitle (max 35 words)\",\"body\":\"HTML with <p>, <h3>, <div class='key-stat'>stat</div>\"}",
       messages:[{role:'user',content:'Title: ' + (title||'(no title)') + '\n\nDraft:\n' + body}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message);}
@@ -2790,10 +2798,32 @@ async function runDiagCore() {
   liveLines.push('Los precios y rangos de arriba son los UNICOS datos de mercado validos. Cuando hables de si un activo esta cerca o lejos de maximos, usa EXCLUSIVAMENTE el dato "% vs maximo 52sem" provisto arriba. NUNCA uses tu conocimiento previo de precios, que esta desactualizado. Si un activo no tiene rango 52sem listado, NO comentes su posicion relativa. Ejemplo: si BTC dice "-45% vs maximo 52sem", esta LEJOS de maximos, no cerca. Inventar o contradecir estos datos es un error grave.');
   var liveData = liveLines.join(' ||| ')
   try {
-    const res = await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData})});
-    if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
+    var freshKey=(localStorage.getItem('cn_akey')||'').trim();
+    if(freshKey) ANTHRO_KEY=freshKey;
+    if(!ANTHRO_KEY) throw new Error('Se necesita API key de Anthropic (mod\u00f3 editor).');
+    var assetsStr = assets.map(function(a){return a.tipo+': '+a.monto+' '+(a.moneda||'');}).join(' | ');
+    var diagPrompt = 'Sos un analista financiero. Analiz\u00e1 esta cartera de un inversor argentino y dale un diagn\u00f3stico DETALLADO y ESPEC\u00edFICO.\n\n' +
+      'CARTERA: ' + assetsStr + '\n' +
+      'Horizonte: ' + horizonte + ' | Perfil de riesgo: ' + riesgo + '\n\n' +
+      'DATOS DE MERCADO: ' + liveData + '\n\n' +
+      'INSTRUCCIONES:\n' +
+      'Solo mencion\u00e1 el riesgo pa\u00eds argentino si la cartera tiene activos argentinos (acciones AR, bonos AR, plazo fijo, FCI en pesos). Si es 100% en d\u00f3lares (CEDEARs, SPY, cripto, bonos hard dollar), NO menciones riesgo pa\u00eds.\n' +
+      'Respond\u00e9 en HTML con estas secciones:\n' +
+      '1. <div class="dscore"><span>Resumen ejecutivo 2 lineas</span><b>X/10</b></div>\n' +
+      '2. <div class="ds dg"><h3>FORTALEZAS</h3>...</div>\n' +
+      '3. <div class="ds dr"><h3>RIESGOS</h3>...</div>\n' +
+      '4. <div class="ds dy"><h3>DIVERSIFICACI\u00d3N</h3>...</div>\n' +
+      '5. <div class="ds"><h3>AN\u00c1LISIS POR ACTIVO</h3>...</div>\n' +
+      '6. <div class="ds dy"><h3>RECOMENDACIONES</h3> 4-5 acciones concretas para ' + horizonte + '</div>\n' +
+      'Us\u00e1 <p> y <ul><li> dentro de cada div. Espa\u00f1ol, profesional, directo. Sin generalidades.';
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2500,messages:[{role:'user',content:diagPrompt}]})
+    });
+    if(!res.ok){const e=await res.json();throw new Error((e.error&&e.error.message)||'HTTP '+res.status);}
     const data = await res.json();
-    const txt = (data.result||'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    const txt = (data.content&&data.content[0]?data.content[0].text:'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
     saveDiagHistory(assets, horizonte, riesgo, scoreMatch?scoreMatch[1]:null);
     // Save anonymized result to community feed
@@ -4584,7 +4614,7 @@ async function generateView(){
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,
+      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:900,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         system:'Sos un analista tecnico escribiendo para Carry Note. Escribí en español, tono profesional. Sin asteriscos ni markdown. Solo texto plano.',
         messages:[{role:'user',content:mktContext+' ||| Escribi un view tecnico/fundamental sobre '+ticker+' ('+(market==='ar'?'mercado argentino':'mercado americano')+') para '+tfLabel+'. Bias: '+biasLabel+'.'+(notes?' Notas: '+notes+'.':'')+' Busca noticias recientes. Maximo 4 parrafos. Usa los precios provistos.'}]})
@@ -4880,7 +4910,7 @@ window.addEventListener('load', function(){
     showLogin();
   }
   var emailEl = document.getElementById('about-email');
-  if(emailEl) emailEl.textContent = ['julibesendorff','gmail.com'].join('@');
+  if(emailEl) emailEl.textContent = ['contacto','thecarrynote.com'].join('@');
   loadNotes();
   loadCalendar();
   loadArgMacro();
