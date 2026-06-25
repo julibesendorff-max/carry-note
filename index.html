@@ -2788,11 +2788,11 @@ async function runDiagCore() {
   var rpLive = rpEl && rpEl.textContent && rpEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? rpEl.textContent.trim() : null;
   var blueEl = document.getElementById('arg-blue');
   var blueLive = blueEl && blueEl.textContent && blueEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? blueEl.textContent.trim() : null;
-  var arMacro = ['IPC mar 2026: 3.4% mensual, 32.6% interanual (INDEC)', 'Reservas BCRA: USD 45.4B'];
+  var arMacro = ['IPC may 2026: 2.1% mensual, 33.2% interanual (INDEC)', 'Reservas BCRA: USD 45.4B'];
   if(rpLive) arMacro.push('Riesgo pais EMBI+: ' + rpLive);
   if(blueLive) arMacro.push('USD Blue: ' + blueLive);
   liveLines.push('MACRO AR: ' + arMacro.join(' | '));
-  liveLines.push('MACRO EEUU: Fed 3.50-3.75% | CPI mar 3.3% YoY | Core CPI 2.6% | Desempleo 4.3%');
+  liveLines.push('MACRO EEUU: Fed 3.50-3.75% (hold may 2026) | IPC may AR: 2.1% mensual / 33.2% i.a. | Reservas BCRA: USD 47.5B | TC oficial: ~$1.480 | Plazo fijo: 19-19.5% TNA');
   liveLines.push('');
   liveLines.push('=== REGLA CRITICA SOBRE PRECIOS ===');
   liveLines.push('Los precios y rangos de arriba son los UNICOS datos de mercado validos. Cuando hables de si un activo esta cerca o lejos de maximos, usa EXCLUSIVAMENTE el dato "% vs maximo 52sem" provisto arriba. NUNCA uses tu conocimiento previo de precios, que esta desactualizado. Si un activo no tiene rango 52sem listado, NO comentes su posicion relativa. Ejemplo: si BTC dice "-45% vs maximo 52sem", esta LEJOS de maximos, no cerca. Inventar o contradecir estos datos es un error grave.');
@@ -2959,7 +2959,7 @@ async function runScenario(tipo) {
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl2 = document.getElementById('arg-riesgo');
   var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC may 2026: 2.1% mensual / 33.2% i.a. | Fed 3.50-3.75% (hold) | Reservas: USD 47.5B | TC oficial: ~$1.480';
   try {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
@@ -3000,7 +3000,7 @@ async function runComparison() {
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl2 = document.getElementById('arg-riesgo');
   var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC may 2026: 2.1% mensual / 33.2% i.a. | Fed 3.50-3.75% (hold) | Reservas: USD 47.5B | TC oficial: ~$1.480';
   try {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
@@ -3454,7 +3454,7 @@ async function runDiagEmpresa() {
   promptLines.push('');
   promptLines.push('=== CONTEXTO MACRO ===');
   promptLines.push('Riesgo pais: '+rpLive+' | Blue: '+blueLive+' | MEP: '+mepLive);
-  promptLines.push('IPC AR: 3.4% mensual | Reservas: USD 45.2B | Fed: 3.50-3.75% | CPI EEUU: 3.3% | Brent: $110');
+  promptLines.push('IPC AR: 2.1% mensual (may 2026) | 33.2% i.a. | Reservas BCRA: USD 47.5B | Fed: 3.50-3.75% (hold) | Plazo fijo: 19-19.5% TNA | Riesgo pais: <500bps | Tipo cambio oficial: ~$1.480');
   var empPrices = '';
   try {
     var empSyms = {'SPY':'SPY','BTC':'BINANCE:BTCUSDT','GLD':'GLD','NVDA':'NVDA','QQQ':'QQQ'};
@@ -4684,7 +4684,7 @@ async function runDiag(){
   var arsVal=(document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl=document.getElementById('arg-riesgo'),rpLive=rpEl&&rpEl.textContent.trim()!=='···'?rpEl.textContent.trim():'ver sidebar';
   var blueEl=document.getElementById('arg-blue'),blueLive=blueEl&&blueEl.textContent.trim()!=='···'?blueEl.textContent.trim():null;
-  var arMacro=['IPC mar 2026: 3.4% mensual, 32.6% interanual','Reservas BCRA: USD 45.2B'];
+  var arMacro=['IPC may 2026: 2.1% mensual, 33.2% interanual','Reservas BCRA: USD 47.5B'];
   if(rpLive)arMacro.push('Riesgo pais EMBI+: '+rpLive);
   if(blueLive)arMacro.push('USD Blue: '+blueLive);
   var liveData=['DATOS EN VIVO ('+today+'):'];
@@ -4692,7 +4692,7 @@ async function runDiag(){
   if(btcVal&&btcVal.trim()!=='—')liveData.push('- BTC: '+btcVal.trim());
   if(arsVal&&arsVal.trim()!=='—')liveData.push('- USD/ARS oficial: '+arsVal.trim());
   liveData.push('MACRO AR: '+arMacro.join(' | '));
-  liveData.push('MACRO EEUU: Fed 3.50-3.75% (hold abr 2026) | CPI mar 3.3% YoY | Core 2.6% | Desempleo 4.3%');
+  liveData.push('MACRO EEUU: Fed 3.50-3.75% (hold abr 2026) | IPC may 2.1% mensual | 33.2% interanual | acum. 2026: 14.7%');
   var liveDataStr=liveData.join(' ||| ');
   try{
     var res=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData:liveDataStr})});
