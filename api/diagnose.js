@@ -66,7 +66,7 @@ export default async function handler(req, res) {
   if (mode === 'scenario' && scenario) userContent += `\n\n${scenario}`;
 
   const maxTokens = 1600;
-  const model = 'claude-sonnet-4-20250514';
+  const model = 'claude-opus-4-5';
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
