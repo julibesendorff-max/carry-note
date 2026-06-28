@@ -1636,7 +1636,7 @@ if('serviceWorker' in navigator) {
   <div class="footer-logo">Carry<em>Note</em></div>
   <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
     <span>© 2025 · thecarrynote.com</span>
-    <a href="#" onclick="showSponsors(event)" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
+    <a href="#" onclick="var sp=document.getElementById('sponsorsPanel');if(sp){sp.style.display='block';sp.style.zIndex='9999';sp.style.position='fixed';}return false;" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
     <span>No constituye asesoramiento financiero</span>
   </div>
 </footer>
@@ -3176,7 +3176,7 @@ function downloadPDF() {
 </div>
 
     <!-- SPONSORS PANEL -->
-    <div id="sponsorsPanel" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);overflow-y:auto">
+    <div id="sponsorsPanel" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.8);overflow-y:auto">
       <div style="max-width:680px;margin:3rem auto;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--gold);padding:2.5rem">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem">
           <div>
