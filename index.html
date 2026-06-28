@@ -3174,6 +3174,72 @@ function downloadPDF() {
   <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
   <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
 </div>
+
+    <!-- SPONSORS PANEL -->
+    <div id="sponsorsPanel" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);overflow-y:auto">
+      <div style="max-width:680px;margin:3rem auto;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--gold);padding:2.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem">
+          <div>
+            <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem">&#9658; Oportunidades de sponsor</div>
+            <div style="font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--text)">Llegá a inversores argentinos</div>
+          </div>
+          <button onclick="document.getElementById('sponsorsPanel').style.display='none'" style="background:none;border:1px solid var(--border2);color:var(--muted2);font-size:0.8rem;padding:0.3rem 0.7rem;cursor:pointer">&#10005;</button>
+        </div>
+
+        <!-- Audiencia -->
+        <div style="background:var(--bg);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem;margin-bottom:1.5rem">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">Nuestra audiencia</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Inversores argentinos retail</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Formaci&#243;n en econom&#237;a/finanzas</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Segmento 25-45 a&#241;os</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Inter&#233;s activo en CEDEARs, FCI, cripto</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Decisi&#243;n propia de inversi&#243;n</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Usuarios recurrentes del portal</div>
+          </div>
+        </div>
+
+        <!-- Opciones -->
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Opciones de sponsorship</div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem">
+          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
+            <div>
+              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Banner en el portal</div>
+              <div style="font-size:0.8rem;color:var(--muted)">Visibilidad en todas las secciones del portal durante un mes</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
+            <div>
+              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Menci&#243;n en newsletter</div>
+              <div style="font-size:0.8rem;color:var(--muted)">Inclusi&#243;n destacada en el newsletter semanal a toda la base de suscriptores</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
+            <div>
+              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Patrocinio de secci&#243;n</div>
+              <div style="font-size:0.8rem;color:var(--muted)">Tu marca asociada a Diagn&#243;stico, Radar Macro o IA Watch</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
+          </div>
+          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
+            <div>
+              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Paquete completo</div>
+              <div style="font-size:0.8rem;color:var(--muted)">Banner + newsletter + menci&#243;n en redes sociales. Presencia total.</div>
+            </div>
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.25rem 1.5rem;text-align:center">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">&#191;Te interesa?</div>
+          <div style="font-size:0.9rem;color:var(--muted);margin-bottom:1rem">Escribinos y coordinamos una llamada para ver qu&#233; opci&#243;n se adapta mejor.</div>
+          <a href="mailto:contacto@thecarrynote.com?subject=Sponsor%20Carry%20Note" style="display:inline-block;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.06em;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:0.6rem 1.5rem">contacto@thecarrynote.com</a>
+        </div>
+      </div>
+    </div>
 </body></html>`);
   printWin.document.close();
 }
