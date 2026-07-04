@@ -139,6 +139,9 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-status{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-family:var(--mono);font-size:0.6rem;color:var(--muted2)}
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes portLoad{0%{width:0%}60%{width:85%}100%{width:95%}}
+.port-profile.port-sel{border-color:var(--gold)!important;background:rgba(201,168,76,0.06)}
+.port-horizon.port-sel{border-color:var(--gold)!important;color:var(--gold)!important;background:rgba(201,168,76,0.06)}
 main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:2.5rem}
 .editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
 .editor-panel.visible{display:block}
@@ -512,6 +515,7 @@ if('serviceWorker' in navigator) {
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
     <a data-filter="ia" id="iaTab" onclick="showIA(event)" style="color:#a855f7">● IA Watch</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
+    <a data-filter="portafolio" id="portafolioTab" onclick="showPortafolio(event)" style="color:var(--gold)">▸ Armar cartera</a>
     <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
 </header>
@@ -1443,7 +1447,7 @@ if('serviceWorker' in navigator) {
         <div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:flex-end">
           <div style="flex:1;min-width:200px;position:relative">
             <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.3rem">Buscar activo (símbolo o nombre)</div>
-            <input type="text" id="wlSearch" placeholder="ej: AAPL, Tesla, Bitcoin, EUR/USD..." autocomplete="off" oninput="wlHandleSearch(this.value)" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
+            <input type="text" id="wlSearch" placeholder="ej: AAPL, Tesla, Bitcoin, EUR/USD..." autocomplete="off" style="width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.6rem;outline:none"/>
             <div id="wlSearchResults" style="display:none;position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-top:none;z-index:50;max-height:220px;overflow-y:auto"></div>
           </div>
           <input type="hidden" id="wlSymbol" value=""/>
@@ -1467,6 +1471,94 @@ if('serviceWorker' in navigator) {
       </div>
     </div>
     <!-- SOBRE MI PANEL -->
+    <!-- ══ PORTAFOLIO PANEL ══════════════════════════════════════════ -->
+    <div id="portafolioPanel" style="display:none;margin-bottom:2rem">
+      <div style="max-width:860px">
+
+        <!-- Header -->
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem">▸ Constructor de portafolio · Carry Note</div>
+        <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1;margin-bottom:0.6rem">Tengo <em style="font-style:italic;color:var(--gold)">USD X</em>.<br>¿Qué hago?</div>
+        <p style="font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:580px">Ingresá tu capital, tu perfil y cuánto tiempo tenés. La IA de Carry Note te arma un portafolio con asignación por clase de activo e instrumentos concretos, en el contexto macroeconómico actual.</p>
+
+        <!-- EMAIL GATE -->
+        <div id="portGate" style="background:linear-gradient(135deg,rgba(201,168,76,0.07),transparent);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;margin-bottom:2rem">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">▸ Acceso gratuito</div>
+          <div style="font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Ingresá tu email para ver el portafolio</div>
+          <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;max-width:460px">La recomendación es gratis. Te la mostramos en pantalla y también te la enviamos al inbox para que la tengas guardada.</p>
+          <div style="display:flex;gap:0.6rem;flex-wrap:wrap">
+            <input type="email" id="portGateEmail" placeholder="tu@email.com" style="flex:1;min-width:220px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.75rem;padding:0.7rem 0.9rem;outline:none">
+            <button onclick="submitPortGate()" style="font-family:var(--mono);font-size:0.68rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.7rem 1.5rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;white-space:nowrap">Ver mi portafolio ▸</button>
+          </div>
+          <div id="portGateMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.6rem;display:none"></div>
+          <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.75rem">Sin spam. Podés darte de baja cuando quieras.</div>
+        </div>
+
+        <!-- FORMULARIO (oculto hasta confirmar email) -->
+        <div id="portForm" style="display:none">
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem">▸ Configurá tu portafolio</div>
+
+          <!-- Monto -->
+          <div style="margin-bottom:1.75rem">
+            <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.4rem">Capital disponible (en USD)</div>
+            <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-bottom:0.75rem">Podés ingresar el equivalente en pesos también — el análisis lo considera.</div>
+            <div style="display:flex;align-items:center;max-width:320px">
+              <span style="background:var(--surface2);border:1px solid var(--border);border-right:none;padding:0.75rem 0.9rem;font-family:var(--mono);font-size:0.85rem;color:var(--gold);font-weight:500;flex-shrink:0">USD</span>
+              <input type="number" id="portAmount" placeholder="100.000" min="1000" step="1000" oninput="checkPortReady()" style="flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:1rem;padding:0.75rem 0.9rem;outline:none;min-width:0">
+            </div>
+          </div>
+
+          <!-- Perfil -->
+          <div style="margin-bottom:1.75rem">
+            <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.75rem">¿Cuál describe mejor tu objetivo?</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem" id="portProfiles">
+              <div class="port-profile" data-profile="conservador" onclick="selectPortProfile(this)" style="border:1px solid var(--border2);padding:1.1rem;cursor:pointer">
+                <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.4rem">Preservar capital</div>
+                <div style="font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:0.6rem">Priorizo no perder. Acepto menor rendimiento a cambio de estabilidad.</div>
+                <span style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.15rem 0.4rem;border:1px solid var(--border2);color:var(--muted2)">Perfil conservador</span>
+              </div>
+              <div class="port-profile" data-profile="moderado" onclick="selectPortProfile(this)" style="border:1px solid var(--border2);padding:1.1rem;cursor:pointer">
+                <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.4rem">Quiero crecer</div>
+                <div style="font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:0.6rem">Busco rendimiento por encima de la inflación. Acepto algo de volatilidad.</div>
+                <span style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.15rem 0.4rem;border:1px solid var(--border2);color:var(--muted2)">Perfil moderado</span>
+              </div>
+              <div class="port-profile" data-profile="agresivo" onclick="selectPortProfile(this)" style="border:1px solid var(--border2);padding:1.1rem;cursor:pointer">
+                <div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.4rem">Me banco alta volatilidad</div>
+                <div style="font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:0.6rem">Busco maximizar retorno. Entiendo que puedo perder en el corto plazo.</div>
+                <span style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.15rem 0.4rem;border:1px solid var(--border2);color:var(--muted2)">Perfil agresivo</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Horizonte -->
+          <div style="margin-bottom:1.75rem">
+            <div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--text);margin-bottom:0.75rem">Horizonte de inversión</div>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap" id="portHorizons">
+              <button class="port-horizon" data-h="menos de 6 meses" onclick="selectPortHorizon(this)" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.5rem 1rem;border:1px solid var(--border2);color:var(--muted);background:transparent;cursor:pointer">Menos de 6 meses</button>
+              <button class="port-horizon" data-h="6 a 12 meses" onclick="selectPortHorizon(this)" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.5rem 1rem;border:1px solid var(--border2);color:var(--muted);background:transparent;cursor:pointer">6 a 12 meses</button>
+              <button class="port-horizon" data-h="1 a 3 años" onclick="selectPortHorizon(this)" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.5rem 1rem;border:1px solid var(--border2);color:var(--muted);background:transparent;cursor:pointer">1 a 3 años</button>
+              <button class="port-horizon" data-h="más de 3 años" onclick="selectPortHorizon(this)" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.5rem 1rem;border:1px solid var(--border2);color:var(--muted);background:transparent;cursor:pointer">Más de 3 años</button>
+            </div>
+          </div>
+
+          <!-- Generar -->
+          <button id="portGenBtn" onclick="generatePortfolio()" disabled style="width:100%;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:1rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-bottom:2rem;opacity:0.45">Armar mi portafolio ▸</button>
+
+          <!-- Loading -->
+          <div id="portLoading" style="display:none;padding:2.5rem 0;text-align:center">
+            <div id="portLoadingLabel" style="font-family:var(--mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1.2rem">Analizando contexto macro...</div>
+            <div style="width:100%;max-width:360px;height:2px;background:var(--border);margin:0 auto;overflow:hidden">
+              <div style="height:100%;background:var(--gold);animation:portLoad 2.8s ease-in-out infinite"></div>
+            </div>
+          </div>
+
+          <!-- Resultado -->
+          <div id="portResult" style="display:none;margin-bottom:2rem"></div>
+        </div>
+
+      </div>
+    </div>
+    <!-- ══ /PORTAFOLIO PANEL ══════════════════════════════════════════ -->
+
     <div id="sobrePanel" style="display:none;margin-bottom:2rem">
       <div style="max-width:600px">
         <!-- Header -->
@@ -1636,7 +1728,7 @@ if('serviceWorker' in navigator) {
   <div class="footer-logo">Carry<em>Note</em></div>
   <div style="display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap">
     <span>© 2025 · thecarrynote.com</span>
-    <a href="#" onclick="var sp=document.getElementById('sponsorsPanel');if(sp){sp.style.display='block';sp.style.zIndex='9999';sp.style.position='fixed';}return false;" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
+    <a href="#" onclick="showSponsors(event)" style="color:var(--muted2);text-decoration:none;letter-spacing:0.06em">Sponsors ↗</a>
     <span>No constituye asesoramiento financiero</span>
   </div>
 </footer>
@@ -2101,7 +2193,7 @@ async function genAI(){
           'anthropic-dangerous-direct-browser-access': 'true'
         },
         body: JSON.stringify({
-          model: 'claude-opus-4-5',
+          model: 'claude-sonnet-4-20250514',
           max_tokens: 2000,
           tools: [{type: 'web_search_20250305', name: 'web_search'}],
           system: `You are a senior economist and markets analyst based in Buenos Aires writing for Carry Note, a professional economic analysis publication. Write in Spanish.
@@ -2177,7 +2269,7 @@ async function polishNote(){
   const btn=document.getElementById('polishBtn');btn.disabled=true;btn.textContent='Puliendo con Claude...';
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify({model:'claude-opus-4-5',max_tokens:1800,
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1800,
       system:"You are the editor of Carry Note. Your task: take the economist's draft and polish it - improve structure, refine prose, make sure the thesis is clear in the first paragraph, close with concrete implications. Do not change the ideas. Respond ONLY with valid JSON without markdown: {\"title\":\"polished title\",\"subtitle\":\"subtitle (max 35 words)\",\"body\":\"HTML with <p>, <h3>, <div class='key-stat'>stat</div>\"}",
       messages:[{role:'user',content:'Title: ' + (title||'(no title)') + '\n\nDraft:\n' + body}]})});
     if(!res.ok){const e=await res.json();throw new Error(e.error?.message);}
@@ -2665,49 +2757,20 @@ function toggleLesson(id) {
 }
 // ── DIAGNOSTICO DE CARTERA ─────────────────────────────────
 const ASSET_TYPES = [
-  // Pesos / Renta Fija AR
-  {v:'plazo_fijo',l:'Plazo fijo ARS'},{v:'plazo_fijo_uva',l:'Plazo fijo UVA'},
-  {v:'money_market',l:'FCI Money Market'},{v:'fci_pesos',l:'FCI Renta Fija Pesos'},
-  {v:'fci_cer',l:'FCI / Bono CER'},{v:'lecap',l:'LECAP (Letra Capitalizable)'},
-  {v:'letes',l:'LETE (Letra del Tesoro USD)'},{v:'bono_dollar',l:'Bono / ON Hard Dollar'},
-  // Dólares
-  {v:'dolar_mep',l:'Dólar MEP / CCL'},{v:'dolar_billete',l:'Dólares billete'},
-  {v:'cuenta_usd',l:'Cuenta / Caja de ahorro USD'},{v:'pf_usd',l:'Plazo fijo USD'},
-  // Acciones argentinas
-  {v:'acciones_ar',l:'Acciones argentinas (general)'},
-  {v:'ggal',l:'GGAL — Grupo Galicia'},{v:'ypf_ar',l:'YPF'},
-  {v:'bma',l:'BMA — Banco Macro'},{v:'pamp',l:'PAMP — Pampa Energía'},
-  {v:'txar',l:'TXAR — Ternium Argentina'},{v:'come',l:'COME — Sociedad Comercial del Plata'},
-  {v:'teco2',l:'TECO2 — Telecom Argentina'},{v:'loma',l:'LOMA — Loma Negra'},
-  {v:'irsa',l:'IRSA — Real Estate AR'},{v:'valo',l:'VALO — Balanz Capital'},
-  {v:'cepu',l:'CEPU — Central Puerto'},{v:'harg',l:'HARG — Holcim Argentina'},
-  // CEDEARs
+  {v:'plazo_fijo',l:'Plazo fijo'},{v:'money_market',l:'FCI Money Market'},
+  {v:'fci_pesos',l:'FCI Renta Fija Pesos'},{v:'fci_cer',l:'FCI / Bono CER'},
+  {v:'bono_dollar',l:'Bono / ON Hard Dollar'},{v:'dolar_mep',l:'Dolar MEP / CCL'},
+  {v:'dolar_billete',l:'Dolares billete'},{v:'acciones_ar',l:'Acciones argentinas (generico)'},
+  {v:'ggal',l:'GGAL (Grupo Galicia)'},{v:'ypf_ar',l:'YPF'},
+  {v:'bma',l:'BMA (Banco Macro)'},{v:'pamp',l:'PAMP (Pampa Energia)'},
+  {v:'txar',l:'TXAR (Ternium Argentina)'},{v:'come',l:'COME (Sociedad Comercial del Plata)'},
   {v:'cedears',l:'CEDEARs (general)'},{v:'aapl_cedr',l:'CEDEAR: Apple (AAPL)'},
   {v:'nvda_cedr',l:'CEDEAR: NVIDIA (NVDA)'},{v:'tsla_cedr',l:'CEDEAR: Tesla (TSLA)'},
   {v:'msft_cedr',l:'CEDEAR: Microsoft (MSFT)'},{v:'amzn_cedr',l:'CEDEAR: Amazon (AMZN)'},
   {v:'googl_cedr',l:'CEDEAR: Alphabet (GOOGL)'},{v:'meta_cedr',l:'CEDEAR: Meta (META)'},
-  {v:'jpm_cedr',l:'CEDEAR: JPMorgan (JPM)'},{v:'brk_cedr',l:'CEDEAR: Berkshire (BRK.B)'},
-  {v:'ko_cedr',l:'CEDEAR: Coca-Cola (KO)'},{v:'wmt_cedr',l:'CEDEAR: Walmart (WMT)'},
-  {v:'xom_cedr',l:'CEDEAR: Exxon (XOM)'},{v:'baba_cedr',l:'CEDEAR: Alibaba (BABA)'},
-  // ETFs / Acciones EEUU
-  {v:'sp500',l:'S&P 500 (SPY ETF)'},{v:'nasdaq',l:'Nasdaq (QQQ ETF)'},
-  {v:'qqq3',l:'Nasdaq 3x (TQQQ ETF)'},{v:'vt',l:'VT — Acciones globales ETF'},
-  {v:'gld',l:'Oro ETF (GLD)'},{v:'tlt',l:'Bonos EEUU largo plazo (TLT)'},
-  {v:'etf_eeuu',l:'ETFs EEUU (otros)'},{v:'acciones_eeuu',l:'Acciones EEUU (general)'},
-  // Real Estate
-  {v:'re_ar',l:'Inmueble Argentina (residencial)'},{v:'re_ar_com',l:'Inmueble Argentina (comercial)'},
-  {v:'re_usa',l:'Inmueble EEUU / exterior'},{v:'reit',l:'REITs (Fondos inmobiliarios)'},
-  {v:'fidei',l:'Fideicomiso inmobiliario AR'},
-  // Commodities
-  {v:'oro',l:'Oro (físico o ETF)'},{v:'plata',l:'Plata'},
-  {v:'soja',l:'Soja (contratos / exposición)'},{v:'petroleo',l:'Petróleo (contratos / ETF)'},
-  // Crypto
+  {v:'sp500',l:'S&P 500 (SPY ETF)'},{v:'nasdaq',l:'Nasdaq (QQQ ETF)'},{v:'etf_eeuu',l:'ETFs EEUU (otros)'},{v:'acciones_eeuu',l:'Acciones EEUU (general)'},
   {v:'bitcoin',l:'Bitcoin (BTC)'},{v:'ethereum',l:'Ethereum (ETH)'},
-  {v:'sol',l:'Solana (SOL)'},{v:'usdt',l:'USDT / Stablecoins'},
-  {v:'crypto_otro',l:'Crypto (otras)'},
-  // Otros
-  {v:'startup',l:'Inversión en startup / privada'},
-  {v:'fondo_pe',l:'Fondo de private equity'},
+  {v:'crypto_otro',l:'Crypto (otras)'},{v:'oro',l:'Oro'},
   {v:'otro',l:'Otro'},
 ];
 let assetCount = 0;
@@ -2817,42 +2880,20 @@ async function runDiagCore() {
   var rpLive = rpEl && rpEl.textContent && rpEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? rpEl.textContent.trim() : null;
   var blueEl = document.getElementById('arg-blue');
   var blueLive = blueEl && blueEl.textContent && blueEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? blueEl.textContent.trim() : null;
-  var arMacro = ['IPC may 2026: 2.1% mensual, 33.2% interanual (INDEC)', 'Reservas BCRA: USD 45.4B'];
+  var arMacro = ['IPC mar 2026: 3.4% mensual, 32.6% interanual (INDEC)', 'Reservas BCRA: USD 45.4B'];
   if(rpLive) arMacro.push('Riesgo pais EMBI+: ' + rpLive);
   if(blueLive) arMacro.push('USD Blue: ' + blueLive);
   liveLines.push('MACRO AR: ' + arMacro.join(' | '));
-  liveLines.push('MACRO EEUU: Fed 3.50-3.75% (hold may 2026) | IPC may AR: 2.1% mensual / 33.2% i.a. | Reservas BCRA: USD 47.5B | TC oficial: ~$1.480 | Plazo fijo: 19-19.5% TNA');
+  liveLines.push('MACRO EEUU: Fed 3.50-3.75% | CPI mar 3.3% YoY | Core CPI 2.6% | Desempleo 4.3%');
   liveLines.push('');
   liveLines.push('=== REGLA CRITICA SOBRE PRECIOS ===');
   liveLines.push('Los precios y rangos de arriba son los UNICOS datos de mercado validos. Cuando hables de si un activo esta cerca o lejos de maximos, usa EXCLUSIVAMENTE el dato "% vs maximo 52sem" provisto arriba. NUNCA uses tu conocimiento previo de precios, que esta desactualizado. Si un activo no tiene rango 52sem listado, NO comentes su posicion relativa. Ejemplo: si BTC dice "-45% vs maximo 52sem", esta LEJOS de maximos, no cerca. Inventar o contradecir estos datos es un error grave.');
   var liveData = liveLines.join(' ||| ')
   try {
-    var freshKey=(localStorage.getItem('cn_akey')||'').trim();
-    if(freshKey) ANTHRO_KEY=freshKey;
-    if(!ANTHRO_KEY) throw new Error('Se necesita API key de Anthropic (mod\u00f3 editor).');
-    var assetsStr = assets.map(function(a){return a.tipo+': '+a.monto+' '+(a.moneda||'');}).join(' | ');
-    var diagPrompt = 'Sos un analista financiero. Analiz\u00e1 esta cartera de un inversor argentino y dale un diagn\u00f3stico DETALLADO y ESPEC\u00edFICO.\n\n' +
-      'CARTERA: ' + assetsStr + '\n' +
-      'Horizonte: ' + horizonte + ' | Perfil de riesgo: ' + riesgo + '\n\n' +
-      'DATOS DE MERCADO: ' + liveData + '\n\n' +
-      'INSTRUCCIONES:\n' +
-      'Solo mencion\u00e1 el riesgo pa\u00eds argentino si la cartera tiene activos argentinos (acciones AR, bonos AR, plazo fijo, FCI en pesos). Si es 100% en d\u00f3lares (CEDEARs, SPY, cripto, bonos hard dollar), NO menciones riesgo pa\u00eds.\n' +
-      'Respond\u00e9 en HTML con estas secciones:\n' +
-      '1. <div class="dscore"><span>Resumen ejecutivo 2 lineas</span><b>X/10</b></div>\n' +
-      '2. <div class="ds dg"><h3>FORTALEZAS</h3>...</div>\n' +
-      '3. <div class="ds dr"><h3>RIESGOS</h3>...</div>\n' +
-      '4. <div class="ds dy"><h3>DIVERSIFICACI\u00d3N</h3>...</div>\n' +
-      '5. <div class="ds"><h3>AN\u00c1LISIS POR ACTIVO</h3>...</div>\n' +
-      '6. <div class="ds dy"><h3>RECOMENDACIONES</h3> 4-5 acciones concretas para ' + horizonte + '</div>\n' +
-      'Us\u00e1 <p> y <ul><li> dentro de cada div. Espa\u00f1ol, profesional, directo. Sin generalidades.';
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:2500,messages:[{role:'user',content:diagPrompt}]})
-    });
-    if(!res.ok){const e=await res.json();throw new Error((e.error&&e.error.message)||'HTTP '+res.status);}
+    const res = await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData})});
+    if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
-    const txt = (data.content&&data.content[0]?data.content[0].text:'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
+    const txt = (data.result||'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
     saveDiagHistory(assets, horizonte, riesgo, scoreMatch?scoreMatch[1]:null);
     // Save anonymized result to community feed
@@ -2988,12 +3029,16 @@ async function runScenario(tipo) {
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl2 = document.getElementById('arg-riesgo');
   var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC may 2026: 2.1% mensual / 33.2% i.a. | Fed 3.50-3.75% (hold) | Reservas: USD 47.5B | TC oficial: ~$1.480';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
   try {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({assets, horizonte, riesgo, liveData, scenario, mode: 'scenario', short: true})
+      body: JSON.stringify({
+        assets, horizonte, riesgo, liveData,
+        scenario: scenario,
+        mode: 'scenario', short: true
+      })
     });
     if(!res.ok){const e=await res.json();throw new Error(e.error||'HTTP '+res.status);}
     const data = await res.json();
@@ -3029,7 +3074,7 @@ async function runComparison() {
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl2 = document.getElementById('arg-riesgo');
   var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC may 2026: 2.1% mensual / 33.2% i.a. | Fed 3.50-3.75% (hold) | Reservas: USD 47.5B | TC oficial: ~$1.480';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
   try {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
@@ -3174,72 +3219,6 @@ function downloadPDF() {
   <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
   <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
 </div>
-
-    <!-- SPONSORS PANEL -->
-    <div id="sponsorsPanel" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.8);overflow-y:auto">
-      <div style="max-width:680px;margin:3rem auto;background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--gold);padding:2.5rem">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem">
-          <div>
-            <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem">&#9658; Oportunidades de sponsor</div>
-            <div style="font-family:var(--serif);font-size:1.6rem;font-weight:600;color:var(--text)">Llegá a inversores argentinos</div>
-          </div>
-          <button onclick="document.getElementById('sponsorsPanel').style.display='none'"  style="background:none;border:1px solid var(--border2);color:var(--muted2);font-size:0.8rem;padding:0.3rem 0.7rem;cursor:pointer">&#10005;</button>
-        </div>
-
-        <!-- Audiencia -->
-        <div style="background:var(--bg);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem;margin-bottom:1.5rem">
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem">Nuestra audiencia</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem">
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Inversores argentinos retail</div>
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Formaci&#243;n en econom&#237;a/finanzas</div>
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Segmento 25-45 a&#241;os</div>
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Inter&#233;s activo en CEDEARs, FCI, cripto</div>
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Decisi&#243;n propia de inversi&#243;n</div>
-            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)">&#9658; Usuarios recurrentes del portal</div>
-          </div>
-        </div>
-
-        <!-- Opciones -->
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem">Opciones de sponsorship</div>
-        <div style="display:flex;flex-direction:column;gap:0.6rem;margin-bottom:1.5rem">
-          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
-            <div>
-              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Banner en el portal</div>
-              <div style="font-size:0.8rem;color:var(--muted)">Visibilidad en todas las secciones del portal durante un mes</div>
-            </div>
-            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
-            <div>
-              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Menci&#243;n en newsletter</div>
-              <div style="font-size:0.8rem;color:var(--muted)">Inclusi&#243;n destacada en el newsletter semanal a toda la base de suscriptores</div>
-            </div>
-            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
-            <div>
-              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Patrocinio de secci&#243;n</div>
-              <div style="font-size:0.8rem;color:var(--muted)">Tu marca asociada a Diagn&#243;stico, Radar Macro o IA Watch</div>
-            </div>
-            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
-          </div>
-          <div style="background:var(--bg);border:1px solid var(--border2);padding:1rem 1.25rem;display:flex;justify-content:space-between;align-items:center;gap:1rem">
-            <div>
-              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:500;color:var(--text);margin-bottom:0.2rem">Paquete completo</div>
-              <div style="font-size:0.8rem;color:var(--muted)">Banner + newsletter + menci&#243;n en redes sociales. Presencia total.</div>
-            </div>
-            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--gold);white-space:nowrap">A consultar</div>
-          </div>
-        </div>
-
-        <!-- CTA -->
-        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.25rem 1.5rem;text-align:center">
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">&#191;Te interesa?</div>
-          <div style="font-size:0.9rem;color:var(--muted);margin-bottom:1rem">Escribinos y coordinamos una llamada para ver qu&#233; opci&#243;n se adapta mejor.</div>
-          <a href="mailto:contacto@thecarrynote.com?subject=Sponsor%20Carry%20Note" style="display:inline-block;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.06em;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:0.6rem 1.5rem">contacto@thecarrynote.com</a>
-        </div>
-      </div>
-    </div>
 </body></html>`);
   printWin.document.close();
 }
@@ -3247,7 +3226,7 @@ function downloadPDF() {
 function hideAllPanels() {
   var allPanels = [
     'diagSelector','diagPanel','diagEmpresaPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
-    'sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
+    'portafolioPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
     'feed','newsletterBlock','noResults','feedHeader','emptyState',
     'analisisFilters','radarForecastWrap','corrExplainerModal'
   ];
@@ -3549,7 +3528,7 @@ async function runDiagEmpresa() {
   promptLines.push('');
   promptLines.push('=== CONTEXTO MACRO ===');
   promptLines.push('Riesgo pais: '+rpLive+' | Blue: '+blueLive+' | MEP: '+mepLive);
-  promptLines.push('IPC AR: 2.1% mensual (may 2026) | 33.2% i.a. | Reservas BCRA: USD 47.5B | Fed: 3.50-3.75% (hold) | Plazo fijo: 19-19.5% TNA | Riesgo pais: <500bps | Tipo cambio oficial: ~$1.480');
+  promptLines.push('IPC AR: 3.4% mensual | Reservas: USD 45.2B | Fed: 3.50-3.75% | CPI EEUU: 3.3% | Brent: $110');
   var empPrices = '';
   try {
     var empSyms = {'SPY':'SPY','BTC':'BINANCE:BTCUSDT','GLD':'GLD','NVDA':'NVDA','QQQ':'QQQ'};
@@ -3698,12 +3677,10 @@ function updateRadarLarge() {
 
 function showSponsors(e) {
   e && e.preventDefault();
-  var sp = document.getElementById('sponsorsPanel');
-  if(!sp) return;
-  sp.style.cssText = 'display:block!important;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);overflow-y:auto';
+  document.getElementById('sponsorsPanel').style.display = 'block';
   document.addEventListener('keydown', function esc(ev) {
     if(ev.key === 'Escape') {
-      sp.style.display = 'none';
+      document.getElementById('sponsorsPanel').style.display = 'none';
       document.removeEventListener('keydown', esc);
     }
   });
@@ -3967,6 +3944,212 @@ function showWatchlist(e){
   document.getElementById('watchlistTab').classList.add('active');
   renderWatchlist();
 }
+// ══ PORTAFOLIO ════════════════════════════════════════════════════════
+var _portState = { email: null, profile: null, horizon: null, loadingTimer: null };
+var PORT_PALETTE = ['#c9a84c','#4caf7d','#5b8dee','#e05252','#9d99a8','#e8c96a','#4db6ac'];
+var PORT_LOADING_MSGS = [
+  'Analizando contexto macro actual...',
+  'Evaluando tasas, brecha y riesgo país...',
+  'Construyendo asignación óptima...',
+  'Seleccionando instrumentos concretos...',
+  'Preparando tu portafolio...'
+];
+
+function showPortafolio(e) {
+  e && e.preventDefault();
+  hideAllPanels();
+  setSidebarVisible(false);
+  document.getElementById('portafolioPanel').style.display = 'block';
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('portafolioTab');
+  if (tab) tab.classList.add('active');
+}
+
+function submitPortGate() {
+  var input = document.getElementById('portGateEmail');
+  var msg   = document.getElementById('portGateMsg');
+  var email = (input.value || '').trim();
+  if (!email || !email.includes('@')) {
+    msg.textContent = '✗ Ingresá un email válido.';
+    msg.style.color = 'var(--red)'; msg.style.display = 'block'; return;
+  }
+  sbFetch('/rest/v1/subscribers', {
+    method: 'POST',
+    headers: { 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ email: email })
+  }).then(function(r) {
+    if (r.ok || r.status === 409) {
+      _portState.email = email;
+      document.getElementById('portGate').style.display = 'none';
+      document.getElementById('portForm').style.display  = 'block';
+      if (window.gtag) gtag('event', 'portfolio_gate_submit');
+    } else throw new Error();
+  }).catch(function() {
+    msg.textContent = '✗ Error al guardar. Intentá de nuevo.';
+    msg.style.color = 'var(--red)'; msg.style.display = 'block';
+  });
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && document.activeElement && document.activeElement.id === 'portGateEmail') submitPortGate();
+});
+
+function selectPortProfile(el) {
+  document.querySelectorAll('.port-profile').forEach(function(c){ c.classList.remove('port-sel'); });
+  el.classList.add('port-sel');
+  _portState.profile = el.dataset.profile;
+  checkPortReady();
+}
+function selectPortHorizon(el) {
+  document.querySelectorAll('.port-horizon').forEach(function(b){ b.classList.remove('port-sel'); });
+  el.classList.add('port-sel');
+  _portState.horizon = el.dataset.h;
+  checkPortReady();
+}
+function checkPortReady() {
+  var amount = parseFloat(document.getElementById('portAmount').value);
+  var ready  = amount >= 1000 && _portState.profile && _portState.horizon;
+  var btn    = document.getElementById('portGenBtn');
+  btn.disabled = !ready;
+  btn.style.opacity = ready ? '1' : '0.45';
+  btn.style.cursor  = ready ? 'pointer' : 'not-allowed';
+}
+
+async function generatePortfolio() {
+  var amount = parseFloat(document.getElementById('portAmount').value);
+  if (!amount || amount < 1000 || !_portState.profile || !_portState.horizon) return;
+
+  var btn = document.getElementById('portGenBtn');
+  btn.disabled = true; btn.style.opacity = '0.45';
+  document.getElementById('portResult').style.display = 'none';
+  document.getElementById('portLoading').style.display = 'block';
+
+  var msgIdx = 0;
+  var lbl = document.getElementById('portLoadingLabel');
+  lbl.textContent = PORT_LOADING_MSGS[0];
+  _portState.loadingTimer = setInterval(function() {
+    msgIdx = (msgIdx + 1) % PORT_LOADING_MSGS.length;
+    lbl.textContent = PORT_LOADING_MSGS[msgIdx];
+  }, 2200);
+
+  try {
+    var res = await fetch('/api/portafolio', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: amount, profile: _portState.profile, horizon: _portState.horizon, email: _portState.email })
+    });
+    if (!res.ok) throw new Error('API ' + res.status);
+    var data = await res.json();
+    renderPortResult(data, amount);
+    if (window.gtag) gtag('event', 'portfolio_generated', { profile: _portState.profile, horizon: _portState.horizon });
+  } catch(err) {
+    document.getElementById('portResult').innerHTML =
+      '<div style="font-family:var(--mono);font-size:0.75rem;color:var(--red);padding:1.5rem;border:1px solid var(--red);background:rgba(224,82,82,0.05)">✗ Error al generar el portafolio. Por favor intentá de nuevo en unos segundos.</div>';
+    document.getElementById('portResult').style.display = 'block';
+  } finally {
+    clearInterval(_portState.loadingTimer);
+    document.getElementById('portLoading').style.display = 'none';
+    btn.disabled = false; btn.style.opacity = '1';
+  }
+}
+
+function renderPortResult(data, amount) {
+  var r = document.getElementById('portResult');
+  var profileLabel = { conservador: 'Conservador', moderado: 'Moderado', agresivo: 'Agresivo' };
+  var html = '';
+
+  // Header
+  html += '<div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border2)">';
+  html += '<div style="font-family:var(--serif);font-size:1.8rem;font-weight:600;color:var(--text)">Tu portafolio recomendado</div>';
+  html += '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted);text-align:right;line-height:1.8">USD ' + parseFloat(amount).toLocaleString('es-AR') + ' · ' + profileLabel[_portState.profile] + '<br>Horizonte: ' + _portState.horizon + '</div>';
+  html += '</div>';
+
+  // Allocation list
+  if (data.allocation && data.allocation.length) {
+    html += '<div style="display:grid;grid-template-columns:160px 1fr;gap:1.5rem;align-items:start;margin-bottom:2rem">';
+    html += '<canvas id="portDonut" width="160" height="160" style="flex-shrink:0"></canvas>';
+    html += '<div style="display:flex;flex-direction:column;gap:0.55rem;padding-top:0.2rem">';
+    data.allocation.forEach(function(item, i) {
+      var color = PORT_PALETTE[i % PORT_PALETTE.length];
+      var usd   = Math.round(amount * item.pct / 100).toLocaleString('es-AR');
+      html += '<div style="display:flex;align-items:center;gap:0.6rem">';
+      html += '<span style="width:10px;height:10px;border-radius:50%;background:' + color + ';flex-shrink:0;display:inline-block"></span>';
+      html += '<span style="font-size:0.88rem;color:var(--text);flex:1">' + item.name + '</span>';
+      html += '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2)">~USD ' + usd + '</span>';
+      html += '<span style="font-family:var(--mono);font-size:0.78rem;color:var(--gold);font-weight:500;min-width:34px;text-align:right">' + item.pct + '%</span>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  }
+
+  // Analysis blocks
+  if (data.context) html += '<div style="border-left:2px solid var(--blue);padding-left:1.1rem;margin-bottom:1.5rem"><div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);margin-bottom:0.5rem">Contexto macro considerado</div><div style="font-size:0.9rem;color:var(--muted);line-height:1.75">' + data.context + '</div></div>';
+  if (data.rationale) html += '<div style="border-left:2px solid var(--green);padding-left:1.1rem;margin-bottom:1.5rem"><div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem">Por qué esta asignación</div><div style="font-size:0.9rem;color:var(--muted);line-height:1.75">' + data.rationale + '</div></div>';
+  if (data.risks)    html += '<div style="border-left:2px solid var(--gold);padding-left:1.1rem;margin-bottom:1.5rem"><div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">Riesgos a monitorear</div><div style="font-size:0.9rem;color:var(--muted);line-height:1.75">' + data.risks + '</div></div>';
+
+  // Instruments
+  if (data.instruments && data.instruments.length) {
+    html += '<div style="margin-bottom:2rem"><div style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);margin-bottom:1rem">Instrumentos sugeridos</div>';
+    data.instruments.forEach(function(inst, i) {
+      var color = PORT_PALETTE[i % PORT_PALETTE.length];
+      html += '<div style="display:flex;align-items:flex-start;gap:1rem;padding:0.85rem 1rem;border:1px solid var(--border2);background:var(--surface);margin-bottom:0.5rem">';
+      html += '<span style="width:8px;height:8px;border-radius:50%;background:' + color + ';flex-shrink:0;margin-top:5px;display:inline-block"></span>';
+      html += '<div style="flex:1">';
+      html += '<div style="font-family:var(--mono);font-size:0.75rem;color:var(--text);font-weight:500;margin-bottom:0.2rem">' + inst.name + '</div>';
+      html += '<div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">' + inst.category + '</div>';
+      html += '<div style="font-size:0.83rem;color:var(--muted);line-height:1.55">' + inst.why + '</div>';
+      html += '</div>';
+      if (inst.pct) html += '<span style="font-family:var(--mono);font-size:0.78rem;color:var(--gold);font-weight:500;flex-shrink:0;padding-top:2px">' + inst.pct + '%</span>';
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // Disclaimer + retry
+  html += '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);line-height:1.7;padding:1rem;border:1px solid var(--border2);background:var(--surface);margin-bottom:1.5rem">Este análisis es informativo y no constituye asesoramiento financiero. Los mercados tienen riesgo. Consultá con un asesor certificado antes de tomar decisiones de inversión.</div>';
+  html += '<button onclick="resetPortafolio()" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.2rem;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer">← Armar otro portafolio</button>';
+
+  r.innerHTML = html;
+  r.style.display = 'block';
+
+  // Draw donut
+  if (data.allocation && data.allocation.length) {
+    setTimeout(function() { drawPortDonut(data.allocation); }, 60);
+  }
+  r.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function drawPortDonut(allocation) {
+  var canvas = document.getElementById('portDonut');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var cx = 80, cy = 80, r = 66, inner = 40;
+  var total = allocation.reduce(function(s, a) { return s + a.pct; }, 0);
+  var angle = -Math.PI / 2;
+  ctx.clearRect(0, 0, 160, 160);
+  allocation.forEach(function(item, i) {
+    var slice = (item.pct / total) * 2 * Math.PI;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, angle, angle + slice);
+    ctx.closePath();
+    ctx.fillStyle = PORT_PALETTE[i % PORT_PALETTE.length];
+    ctx.fill();
+    angle += slice;
+  });
+  ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
+  ctx.fillStyle = '#0a0a0b'; ctx.fill();
+}
+
+function resetPortafolio() {
+  document.getElementById('portResult').style.display = 'none';
+  document.getElementById('portAmount').value = '';
+  document.querySelectorAll('.port-profile').forEach(function(c){ c.classList.remove('port-sel'); });
+  document.querySelectorAll('.port-horizon').forEach(function(b){ b.classList.remove('port-sel'); });
+  _portState.profile = null; _portState.horizon = null;
+  checkPortReady();
+  document.getElementById('portafolioPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+// ══ /PORTAFOLIO ═══════════════════════════════════════════════════════
+
 function showSobre(e){
   e&&e.preventDefault();
   activePanel='sobre';
@@ -4707,7 +4890,7 @@ async function generateView(){
   try{
     var res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',headers:{'Content-Type':'application/json','x-api-key':getCleanKey(),'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-opus-4-5',max_tokens:900,
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:900,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         system:'Sos un analista tecnico escribiendo para Carry Note. Escribí en español, tono profesional. Sin asteriscos ni markdown. Solo texto plano.',
         messages:[{role:'user',content:mktContext+' ||| Escribi un view tecnico/fundamental sobre '+ticker+' ('+(market==='ar'?'mercado argentino':'mercado americano')+') para '+tfLabel+'. Bias: '+biasLabel+'.'+(notes?' Notas: '+notes+'.':'')+' Busca noticias recientes. Maximo 4 parrafos. Usa los precios provistos.'}]})
@@ -4746,43 +4929,6 @@ function exportCartPDF(){
   printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Cartera Alternativa · Carry Note</title><style>body{font-family:Georgia,serif;max-width:700px;margin:40px auto;color:#1a1a1a;padding:0 20px}h1{font-size:1.6rem}p{line-height:1.75;margin-bottom:0.75rem;font-size:0.92rem}.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid #ddd;font-size:0.7rem;color:#888}</style></head><body><h1>Cartera alternativa sugerida</h1><p style="color:#888">'+today+'</p>'+content.innerHTML+'<div class="footer">⚠ Carácter educativo. No constituye asesoramiento financiero. Carry Note · thecarrynote.com</div><scr"+"ipt>window.onload=function(){window.print();}<\/scr"+"ipt></body></html>');
   printWin.document.close();
 }
-
-// ── WATCHLIST SEARCH HANDLER ──────────────────────────────────
-var wlSearchTimer = null;
-function wlHandleSearch(q) {
-  clearTimeout(wlSearchTimer);
-  var resEl = document.getElementById('wlSearchResults');
-  if(!q || q.length < 1) { resEl.style.display='none'; return; }
-  resEl.style.display='block';
-  resEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2);padding:0.6rem 0.8rem">··· buscando</div>';
-  wlSearchTimer = setTimeout(async function(){
-    var results = await wlSearchSymbol(q);
-    if(!results.length){
-      resEl.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2);padding:0.6rem 0.8rem">Sin resultados</div>';
-      return;
-    }
-    window._wlResults = results;
-    resEl.innerHTML = results.map(function(r,i){
-      var sym = r.symbol || r.displaySymbol || '';
-      var desc = r.description || '';
-      var type = r.type || '';
-      return '<div onclick="wlPickResult('+i+')" style="display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.8rem;cursor:pointer;border-bottom:1px solid var(--border2);font-family:var(--mono)">' +
-        '<div><span style="font-size:0.72rem;font-weight:500;color:var(--text)">'+ sym +'</span> <span style="font-size:0.62rem;color:var(--muted);margin-left:0.4rem">'+ desc +'</span></div>' +
-        '<span style="font-size:0.55rem;color:var(--muted2)">'+ type +'</span></div>';
-    }).join('');
-  }, 400);
-}
-function wlPickResult(i) {
-  var r = window._wlResults && window._wlResults[i];
-  if(!r) return;
-  wlSelectSymbol(r.symbol || r.displaySymbol || '', r.description || '');
-}
-function wlSelectSymbol(sym, desc) {
-  document.getElementById('wlSymbol').value = sym;
-  document.getElementById('wlSymbolLabel').value = desc || sym;
-  document.getElementById('wlSearch').value = desc ? desc + ' (' + sym + ')' : sym;
-  document.getElementById('wlSearchResults').style.display = 'none';
-}
 // ── WATCHLIST SEARCH ──────────────────────────────────────────
 async function wlSearchSymbol(q){
   if(q.length<1) return [];
@@ -4818,7 +4964,7 @@ async function runDiag(){
   var arsVal=(document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl=document.getElementById('arg-riesgo'),rpLive=rpEl&&rpEl.textContent.trim()!=='···'?rpEl.textContent.trim():'ver sidebar';
   var blueEl=document.getElementById('arg-blue'),blueLive=blueEl&&blueEl.textContent.trim()!=='···'?blueEl.textContent.trim():null;
-  var arMacro=['IPC may 2026: 2.1% mensual, 33.2% interanual','Reservas BCRA: USD 47.5B'];
+  var arMacro=['IPC mar 2026: 3.4% mensual, 32.6% interanual','Reservas BCRA: USD 45.2B'];
   if(rpLive)arMacro.push('Riesgo pais EMBI+: '+rpLive);
   if(blueLive)arMacro.push('USD Blue: '+blueLive);
   var liveData=['DATOS EN VIVO ('+today+'):'];
@@ -4826,7 +4972,7 @@ async function runDiag(){
   if(btcVal&&btcVal.trim()!=='—')liveData.push('- BTC: '+btcVal.trim());
   if(arsVal&&arsVal.trim()!=='—')liveData.push('- USD/ARS oficial: '+arsVal.trim());
   liveData.push('MACRO AR: '+arMacro.join(' | '));
-  liveData.push('MACRO EEUU: Fed 3.50-3.75% (hold abr 2026) | IPC may 2.1% mensual | 33.2% interanual | acum. 2026: 14.7%');
+  liveData.push('MACRO EEUU: Fed 3.50-3.75% (hold abr 2026) | CPI mar 3.3% YoY | Core 2.6% | Desempleo 4.3%');
   var liveDataStr=liveData.join(' ||| ');
   try{
     var res=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData:liveDataStr})});
