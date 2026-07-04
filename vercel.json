@@ -1,87 +1,37 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "diagnostico/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "radar/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "analisis/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "aprender/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "api/notify.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/diagnose.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "sponsors/index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "og-image.png",
-      "use": "@vercel/static"
-    }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "diagnostico/index.html", "use": "@vercel/static" },
+    { "src": "radar/index.html", "use": "@vercel/static" },
+    { "src": "analisis/index.html", "use": "@vercel/static" },
+    { "src": "aprender/index.html", "use": "@vercel/static" },
+    { "src": "sponsors/index.html", "use": "@vercel/static" },
+    { "src": "api/notify.js", "use": "@vercel/node" },
+    { "src": "api/diagnose.js", "use": "@vercel/node" },
+    { "src": "api/portafolio.js", "use": "@vercel/node" },
+    { "src": "og-image.png", "use": "@vercel/static" },
+    { "src": "sw.js", "use": "@vercel/static" },
+    { "src": "manifest.json", "use": "@vercel/static" },
+    { "src": "icon-192.png", "use": "@vercel/static" },
+    { "src": "icon-512.png", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/api/notify",
-      "dest": "/api/notify.js"
-    },
-    {
-      "src": "/api/diagnose",
-      "dest": "/api/diagnose.js"
-    },
-    {
-      "src": "/diagnostico",
-      "dest": "/diagnostico/index.html"
-    },
-    {
-      "src": "/radar",
-      "dest": "/radar/index.html"
-    },
-    {
-      "src": "/analisis",
-      "dest": "/analisis/index.html"
-    },
-    {
-      "src": "/aprender",
-      "dest": "/aprender/index.html"
-    },
-    {
-      "src": "/sponsors",
-      "dest": "/sponsors/index.html"
-    },
-    {
-      "src": "/og-image.png",
-      "dest": "/og-image.png"
-    },
-    {
-      "src": "/sitemap.xml",
-      "dest": "/sitemap.xml"
-    },
-    {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+    { "src": "/api/notify", "dest": "/api/notify.js" },
+    { "src": "/api/diagnose", "dest": "/api/diagnose.js" },
+    { "src": "/api/portafolio", "dest": "/api/portafolio.js" },
+    { "src": "/diagnostico", "dest": "/diagnostico/index.html" },
+    { "src": "/radar", "dest": "/radar/index.html" },
+    { "src": "/analisis", "dest": "/analisis/index.html" },
+    { "src": "/aprender", "dest": "/aprender/index.html" },
+    { "src": "/sponsors", "dest": "/sponsors/index.html" },
+    { "src": "/og-image.png", "dest": "/og-image.png" },
+    { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
+    { "src": "/robots.txt", "dest": "/robots.txt" },
+    { "src": "/sw.js", "dest": "/sw.js", "headers": { "Cache-Control": "no-cache" } },
+    { "src": "/manifest.json", "dest": "/manifest.json" },
+    { "src": "/icon-192.png", "dest": "/icon-192.png" },
+    { "src": "/icon-512.png", "dest": "/icon-512.png" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
