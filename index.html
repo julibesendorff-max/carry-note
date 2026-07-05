@@ -469,6 +469,64 @@ button:disabled {
     flex-direction: column !important;
   }
 }
+
+/* ── CARRY SCORE WIDGET ─────────────────────────────────── */
+.cs-widget{display:flex;align-items:center;gap:0.75rem;padding:0.55rem 1.25rem;border-left:1px solid var(--border2);cursor:pointer;transition:background 0.2s;user-select:none}
+.cs-widget:hover{background:var(--surface)}
+.cs-orb{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.cs-orb::after{content:'';position:absolute;inset:-3px;border-radius:50%;opacity:0.25}
+.cs-orb-inner{font-family:var(--mono);font-size:0.75rem;font-weight:600;line-height:1;z-index:1}
+.cs-info{display:flex;flex-direction:column;gap:0.1rem}
+.cs-label{font-family:var(--mono);font-size:0.48rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted2)}
+.cs-val{font-family:var(--mono);font-size:0.78rem;font-weight:600;line-height:1}
+.cs-desc{font-family:var(--mono);font-size:0.5rem;color:var(--muted2);white-space:nowrap}
+@media(max-width:768px){.cs-widget{display:none}}
+
+/* ── CARRY SCORE PANEL ───────────────────────────────────── */
+#carryScorePanel{display:none;margin-bottom:2rem}
+.cs-hero{background:var(--surface);border:1px solid var(--border);padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden}
+.cs-hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;opacity:0.06;background:radial-gradient(circle,var(--cs-color,var(--gold)),transparent)}
+.cs-hero-top{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem}
+.cs-big-num{font-family:var(--mono);font-size:5rem;font-weight:700;line-height:1;color:var(--cs-color,var(--gold))}
+.cs-big-label{font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--cs-color,var(--gold));margin-bottom:0.3rem}
+.cs-big-desc{font-size:0.9rem;color:var(--muted);line-height:1.65;max-width:480px}
+.cs-gauge{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:0.4rem}
+.cs-gauge-fill{height:100%;border-radius:3px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1),background 0.6s}
+.cs-gauge-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.5rem;color:var(--muted2)}
+.cs-components{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;border:1px solid var(--border2)}
+.cs-comp{padding:1rem 1.1rem;border-right:1px solid var(--border2);border-bottom:1px solid var(--border2)}
+.cs-comp:last-child{border-right:none}
+.cs-comp-label{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.35rem}
+.cs-comp-val{font-family:var(--mono);font-size:1.1rem;font-weight:600;margin-bottom:0.2rem}
+.cs-comp-note{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.5}
+.cs-comp-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:0.5rem}
+.cs-comp-bar-fill{height:100%;border-radius:2px}
+
+/* ── SIMULADOR CARRY ────────────────────────────────────── */
+#carrySimPanel{display:none;margin-bottom:2rem}
+.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+@media(max-width:700px){.sim-grid{grid-template-columns:1fr}}
+.sim-input-block{background:var(--surface);border:1px solid var(--border2);padding:1.5rem}
+.sim-label{font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;display:block}
+.sim-hint{font-family:var(--mono);font-size:0.52rem;color:var(--muted2);margin-bottom:0.75rem;display:block}
+.sim-input-wrap{display:flex;align-items:center}
+.sim-prefix{background:var(--surface2);border:1px solid var(--border);border-right:none;padding:0.7rem 0.8rem;font-family:var(--mono);font-size:0.78rem;color:var(--gold);font-weight:500;flex-shrink:0}
+.sim-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.9rem;padding:0.7rem 0.85rem;outline:none;min-width:0}
+.sim-input:focus{border-color:var(--gold)}
+.sim-result{background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--gold);padding:1.75rem}
+.sim-result-empty{font-family:var(--mono);font-size:0.7rem;color:var(--muted2);text-align:center;padding:2rem 0}
+.sim-kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border2);margin-bottom:1.5rem}
+.sim-kpi{background:var(--surface);padding:1.1rem 1.25rem}
+.sim-kpi-label{font-family:var(--mono);font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.4rem}
+.sim-kpi-val{font-family:var(--mono);font-size:1.6rem;font-weight:700;line-height:1;margin-bottom:0.2rem}
+.sim-kpi-note{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.5}
+.sim-verdict{padding:1rem 1.25rem;border-left:3px solid var(--gold);margin-bottom:1rem}
+.sim-verdict-label{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.4rem}
+.sim-verdict-text{font-size:0.9rem;color:var(--text);line-height:1.65}
+.sim-btn{width:100%;font-family:var(--mono);font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:0.9rem;background:var(--gold);color:var(--bg);border:none;cursor:pointer;margin-top:0.75rem}
+.sim-btn:hover{background:var(--gold2)}
+.sim-disclaimer{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2);margin-top:1rem}
+
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- v2.1 -->
@@ -504,12 +562,24 @@ if('serviceWorker' in navigator) {
       <div class="logo-name">Carry<em>Note</em></div>
       <div class="logo-tag">Macro · Mercados</div>
     </div>
+    <div class="cs-widget" onclick="showCarryScore(event)" title="Ver detalle del Carry Score">
+      <div class="cs-orb" id="csOrb" style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold)">
+        <span class="cs-orb-inner" id="csOrbNum" style="color:var(--gold)">—</span>
+      </div>
+      <div class="cs-info">
+        <span class="cs-label">Carry Score</span>
+        <span class="cs-val" id="csVal" style="color:var(--gold)">Calculando...</span>
+        <span class="cs-desc" id="csDesc"></span>
+      </div>
+    </div>
     <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip" id="navStrip">
+    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
+    <a data-filter="carryscore" id="carryScoreTab" onclick="showCarryScore(event)" style="color:var(--gold)">◈ Carry Score</a>
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="portafolio" id="portafolioTab" onclick="showPortafolio(event)" style="color:var(--gold)">▸ Armar cartera</a>
-    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
+    <a data-filter="carrysim" id="carrySimTab" onclick="showCarrySim(event)" style="color:var(--blue)">⟳ Simulador carry</a>
     <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
     <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#a855f7">● Views</a>
     <a data-filter="ia" id="iaTab" onclick="showIA(event)" style="color:#a855f7">● IA Watch</a>
@@ -1559,6 +1629,155 @@ if('serviceWorker' in navigator) {
     </div>
     <!-- ══ /PORTAFOLIO PANEL ══════════════════════════════════════════ -->
 
+
+    <!-- ══ CARRY SCORE PANEL ═══════════════════════════════════════════ -->
+    <div id="carryScorePanel" style="display:none;margin-bottom:2rem">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem">◈ Indicador diario · Carry Note</div>
+      <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1;margin-bottom:0.5rem">Carry <em style="font-style:italic;color:var(--gold)">Score</em></div>
+      <p style="font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:560px">Una métrica del 1 al 100 que resume qué tan atractivo está el carry en Argentina hoy, considerando tasas, tipo de cambio, riesgo país y contexto global.</p>
+
+      <!-- Hero -->
+      <div class="cs-hero" id="csHero">
+        <div class="cs-hero-top">
+          <div>
+            <div class="cs-big-label" id="csBigLabel">Calculando...</div>
+            <div class="cs-big-num" id="csBigNum" style="--cs-color:var(--gold)">—</div>
+            <div class="cs-big-desc" id="csBigDesc">Esperando datos del mercado...</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem">Actualizado</div>
+            <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted)" id="csTime">—</div>
+          </div>
+        </div>
+        <div class="cs-gauge">
+          <div class="cs-gauge-fill" id="csGaugeFill" style="width:0%;background:var(--gold)"></div>
+        </div>
+        <div class="cs-gauge-labels">
+          <span>0 · Carry negativo</span><span>50 · Neutro</span><span>100 · Carry óptimo</span>
+        </div>
+      </div>
+
+      <!-- Components -->
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;margin-top:1.5rem">Componentes del score</div>
+      <div class="cs-components">
+        <div class="cs-comp">
+          <div class="cs-comp-label">Tasa real en pesos</div>
+          <div class="cs-comp-val" id="cs-tasa" style="color:var(--gold)">—</div>
+          <div class="cs-comp-note" id="cs-tasa-note">TAMAR vs inflación esperada</div>
+          <div class="cs-comp-bar"><div class="cs-comp-bar-fill" id="cs-tasa-bar" style="width:50%;background:var(--gold)"></div></div>
+        </div>
+        <div class="cs-comp">
+          <div class="cs-comp-label">Tipo de cambio</div>
+          <div class="cs-comp-val" id="cs-fx" style="color:var(--gold)">—</div>
+          <div class="cs-comp-note" id="cs-fx-note">Brecha blue / estabilidad cambiaria</div>
+          <div class="cs-comp-bar"><div class="cs-comp-bar-fill" id="cs-fx-bar" style="width:50%;background:var(--gold)"></div></div>
+        </div>
+        <div class="cs-comp">
+          <div class="cs-comp-label">Riesgo país</div>
+          <div class="cs-comp-val" id="cs-rp" style="color:var(--gold)">—</div>
+          <div class="cs-comp-note" id="cs-rp-note">EMBI+ · Riesgo soberano</div>
+          <div class="cs-comp-bar"><div class="cs-comp-bar-fill" id="cs-rp-bar" style="width:50%;background:var(--gold)"></div></div>
+        </div>
+        <div class="cs-comp">
+          <div class="cs-comp-label">Contexto global</div>
+          <div class="cs-comp-val" id="cs-global" style="color:var(--gold)">—</div>
+          <div class="cs-comp-note" id="cs-global-note">VIX · Risk-on / Risk-off</div>
+          <div class="cs-comp-bar"><div class="cs-comp-bar-fill" id="cs-global-bar" style="width:50%;background:var(--gold)"></div></div>
+        </div>
+        <div class="cs-comp" style="border-right:none">
+          <div class="cs-comp-label">Señales del Radar</div>
+          <div class="cs-comp-val" id="cs-radar" style="color:var(--gold)">—</div>
+          <div class="cs-comp-note" id="cs-radar-note">Alertas activas hoy</div>
+          <div class="cs-comp-bar"><div class="cs-comp-bar-fill" id="cs-radar-bar" style="width:50%;background:var(--gold)"></div></div>
+        </div>
+      </div>
+
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2);margin-top:1.5rem">
+        El Carry Score es un indicador sintético de elaboración propia. No constituye recomendación de inversión. Los componentes se actualizan con los datos del mercado en tiempo real.
+      </div>
+    </div>
+    <!-- ══ /CARRY SCORE PANEL ════════════════════════════════════════ -->
+
+    <!-- ══ SIMULADOR CARRY PANEL ════════════════════════════════════ -->
+    <div id="carrySimPanel" style="display:none;margin-bottom:2rem">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:0.6rem">⟳ Herramienta · Carry Note</div>
+      <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1;margin-bottom:0.5rem">Simulador de <em style="font-style:italic;color:var(--blue)">carry trade</em></div>
+      <p style="font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:560px">Calculá cuánto rinde la operación, cuál es el tipo de cambio de break-even y si el carry justifica el riesgo dado el contexto actual.</p>
+
+      <div class="sim-grid">
+        <!-- Inputs -->
+        <div>
+          <div class="sim-input-block" style="margin-bottom:1rem">
+            <label class="sim-label" for="simCapital">Capital a invertir (USD)</label>
+            <span class="sim-hint">Cuántos dólares vas a vender para entrar al carry</span>
+            <div class="sim-input-wrap">
+              <span class="sim-prefix">USD</span>
+              <input type="number" id="simCapital" class="sim-input" placeholder="10.000" min="100" step="100" oninput="calcCarrySim()">
+            </div>
+          </div>
+          <div class="sim-input-block" style="margin-bottom:1rem">
+            <label class="sim-label" for="simTna">Tasa esperada en pesos (TNA %)</label>
+            <span class="sim-hint">Rendimiento del instrumento en pesos que vas a usar</span>
+            <div class="sim-input-wrap">
+              <span class="sim-prefix">%</span>
+              <input type="number" id="simTna" class="sim-input" placeholder="29" min="0" max="500" step="0.5" oninput="calcCarrySim()">
+            </div>
+          </div>
+          <div class="sim-input-block" style="margin-bottom:1rem">
+            <label class="sim-label" for="simDias">Horizonte (días)</label>
+            <span class="sim-hint">Plazo de la operación</span>
+            <div class="sim-input-wrap">
+              <span class="sim-prefix" style="font-size:0.7rem">DÍAS</span>
+              <input type="number" id="simDias" class="sim-input" placeholder="30" min="1" max="365" step="1" oninput="calcCarrySim()">
+            </div>
+          </div>
+          <div class="sim-input-block">
+            <label class="sim-label" for="simTcActual">Tipo de cambio de entrada (USD/ARS)</label>
+            <span class="sim-hint" id="simTcHint">MEP actual · se carga automáticamente</span>
+            <div class="sim-input-wrap">
+              <span class="sim-prefix" style="font-size:0.65rem">ARS/USD</span>
+              <input type="number" id="simTcActual" class="sim-input" placeholder="1.270" min="1" step="1" oninput="calcCarrySim()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Result -->
+        <div>
+          <div class="sim-result">
+            <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);margin-bottom:1rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border2)">Resultado de la simulación</div>
+            <div id="simResultBody">
+              <div class="sim-result-empty">Completá los campos para ver la simulación</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Context strip -->
+      <div style="background:var(--surface);border:1px solid var(--border2);padding:1.1rem 1.5rem;display:flex;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem">
+        <div>
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.25rem">MEP actual</div>
+          <div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--text)" id="simMepDisplay">—</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.25rem">Brecha blue</div>
+          <div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--text)" id="simBrechaDisplay">—</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.25rem">Carry Score hoy</div>
+          <div style="font-family:var(--mono);font-size:0.9rem;font-weight:600" id="simCarryScore" style="color:var(--gold)">—</div>
+        </div>
+        <div>
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.25rem">Riesgo país</div>
+          <div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--text)" id="simRpDisplay">—</div>
+        </div>
+      </div>
+
+      <div class="sim-disclaimer">
+        ⚠ Este simulador es educativo. El carry trade implica riesgo cambiario — una devaluación puede eliminar la ganancia en pesos. No constituye recomendación de inversión.
+      </div>
+    </div>
+    <!-- ══ /SIMULADOR CARRY PANEL ════════════════════════════════════ -->
+
     <div id="sobrePanel" style="display:none;margin-bottom:2rem">
       <div style="max-width:600px">
         <!-- Header -->
@@ -1870,6 +2089,8 @@ async function loadTicker() {
     status.className = 'ticker-status live';
     setTimeout(updateRadar, 500);
     updateRadar();
+    // Update Carry Score widget on every ticker refresh
+    setTimeout(function(){ renderCarryScoreWidget(); }, 800);
     // Refresh daily summary prices if diag panel is open
     var dp = document.getElementById('diagPanel');
     if(dp && dp.style.display !== 'none') renderDailySummary();
@@ -3222,7 +3443,7 @@ function downloadPDF() {
 function hideAllPanels() {
   var allPanels = [
     'diagSelector','diagPanel','diagEmpresaPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
-    'portafolioPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
+    'portafolioPanel','carryScorePanel','carrySimPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
     'feed','newsletterBlock','noResults','feedHeader','emptyState',
     'analisisFilters','radarForecastWrap','corrExplainerModal'
   ];
@@ -4145,6 +4366,314 @@ function resetPortafolio() {
   document.getElementById('portafolioPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 // ══ /PORTAFOLIO ═══════════════════════════════════════════════════════
+
+
+// ══ CARRY SCORE ══════════════════════════════════════════════════════
+var _carryScoreCache = null;
+
+function calcCarryScore() {
+  // ── Componente 1: Tasa real en pesos (peso 30%) ──────────────────
+  // TAMAR ~26.8% TNA, inflación mensual ~3.4% (40.8% anual)
+  // Tasa real = TNA - inflación anual esperada
+  var tna = 26.8; // TAMAR abr 2026
+  var inflAnual = 40.8; // IPC interanual mar 2026
+  var tasaReal = tna - inflAnual; // negativo = lleva el carry
+  // Score: cuanto más positiva la tasa real, mejor. Rango aprox -30 a +20
+  var tasaScore = Math.max(0, Math.min(100, 50 + tasaReal * 1.8));
+
+  // ── Componente 2: Tipo de cambio / brecha (peso 25%) ─────────────
+  var mepEl = document.getElementById('arg-mep');
+  var blueEl = document.getElementById('arg-blue');
+  var oficialEl = document.getElementById('arg-oficial');
+  var mepVal = null, blueVal = null, oficialVal = null;
+  function extractARS(el) {
+    if (!el) return null;
+    var txt = el.textContent || '';
+    var nums = txt.match(/[\d.,]+/g);
+    if (!nums) return null;
+    // Take the last number (usually "venta")
+    var n = parseFloat(nums[nums.length - 1].replace(/\./g, '').replace(',', '.'));
+    return isNaN(n) ? null : n;
+  }
+  mepVal = extractARS(mepEl);
+  blueVal = extractARS(blueEl);
+  oficialVal = extractARS(oficialEl);
+  var brecha = null;
+  if (mepVal && oficialVal && oficialVal > 0) brecha = ((mepVal - oficialVal) / oficialVal) * 100;
+  // Brecha baja = carry más seguro. 0-5% = muy bueno, 20%+ = riesgo alto
+  var fxScore = brecha !== null
+    ? Math.max(0, Math.min(100, 85 - brecha * 2.5))
+    : 50;
+
+  // ── Componente 3: Riesgo país (peso 25%) ─────────────────────────
+  var rpEl = document.getElementById('arg-riesgo');
+  var rpVal = null;
+  if (rpEl) {
+    var rpTxt = rpEl.textContent || '';
+    var rpMatch = rpTxt.match(/\d+/);
+    if (rpMatch) rpVal = parseInt(rpMatch[0]);
+  }
+  // 200pb = excelente (100), 600pb = neutro (50), 1500pb+ = muy malo (0)
+  var rpScore = rpVal !== null
+    ? Math.max(0, Math.min(100, 100 - (rpVal - 200) / 13))
+    : 50;
+
+  // ── Componente 4: Contexto global / VIX (peso 10%) ───────────────
+  var vixPct = getTickerChange('vix');
+  // VIX subiendo = risk-off = lleva el carry. Penaliza fuerte.
+  var globalScore = vixPct !== null
+    ? Math.max(0, Math.min(100, 60 - vixPct * 6))
+    : 55;
+
+  // ── Componente 5: Señales del Radar (peso 10%) ───────────────────
+  var activeAlerts = 0, activePositive = 0;
+  RADAR_PATTERNS.forEach(function(p) {
+    var pcts = p.assets.map(getTickerChange);
+    if (pcts.some(function(x) { return x === null; })) return;
+    var match = pcts.every(function(pct, i) { return p.dirs[i] > 0 ? pct > 0.3 : pct < -0.3; });
+    if (!match) return;
+    if (p.level === 'alerta') activeAlerts++;
+    else if (p.level === 'positivo') activePositive++;
+  });
+  var radarScore = Math.max(0, Math.min(100, 65 - activeAlerts * 12 + activePositive * 6));
+
+  // ── Score final ponderado ─────────────────────────────────────────
+  var total = Math.round(
+    tasaScore * 0.30 +
+    fxScore   * 0.25 +
+    rpScore   * 0.25 +
+    globalScore * 0.10 +
+    radarScore  * 0.10
+  );
+
+  var label, color, desc;
+  if (total >= 80) {
+    label = 'Carry muy atractivo'; color = '#4caf7d';
+    desc = 'Las condiciones son favorables: tasa real positiva, brecha contenida y contexto macro estable. Momento óptimo para el carry en pesos.';
+  } else if (total >= 65) {
+    label = 'Carry atractivo'; color = '#8bc34a';
+    desc = 'El diferencial de tasas justifica la operación con riesgo moderado. Monitorear el tipo de cambio y el contexto global.';
+  } else if (total >= 50) {
+    label = 'Carry moderado'; color = '#c9a84c';
+    desc = 'Condiciones neutras. El carry puede ser rentable pero el margen de seguridad es ajustado. Exige monitoreo activo.';
+  } else if (total >= 35) {
+    label = 'Carry con riesgo'; color = '#ff9800';
+    desc = 'La brecha, el riesgo país o el contexto global generan presión sobre la estrategia. No recomendable sin cobertura.';
+  } else {
+    label = 'Carry no recomendable'; color = '#e05252';
+    desc = 'Las condiciones actuales hacen que el riesgo cambiario supere ampliamente el diferencial de tasas. Evitar exposición sin cobertura.';
+  }
+
+  _carryScoreCache = {
+    total, label, color, desc, brecha, rpVal, mepVal,
+    components: {
+      tasa: { score: Math.round(tasaScore), val: tasaReal.toFixed(1) + '% real', note: 'TNA ' + tna + '% vs inflación ' + inflAnual + '%' },
+      fx:   { score: Math.round(fxScore),   val: brecha !== null ? brecha.toFixed(1) + '% brecha' : '—', note: 'MEP vs oficial' },
+      rp:   { score: Math.round(rpScore),   val: rpVal !== null ? rpVal + ' pb' : '—', note: 'EMBI+ Argentina' },
+      global:{ score: Math.round(globalScore), val: vixPct !== null ? (vixPct >= 0 ? '+' : '') + vixPct.toFixed(2) + '% VIX' : '—', note: 'Volatilidad global' },
+      radar: { score: Math.round(radarScore), val: activeAlerts + ' alertas', note: activePositive + ' señales positivas' }
+    }
+  };
+  return _carryScoreCache;
+}
+
+function renderCarryScoreWidget() {
+  var cs = calcCarryScore();
+  // Header widget
+  var orbEl = document.getElementById('csOrb');
+  var orbNum = document.getElementById('csOrbNum');
+  var csVal = document.getElementById('csVal');
+  var csDesc = document.getElementById('csDesc');
+  if (orbEl) { orbEl.style.background = cs.color + '22'; orbEl.style.borderColor = cs.color; }
+  if (orbNum) { orbNum.textContent = cs.total; orbNum.style.color = cs.color; }
+  if (csVal) { csVal.textContent = cs.label; csVal.style.color = cs.color; }
+  if (csDesc) csDesc.textContent = cs.total + '/100';
+}
+
+function renderCarryScorePanel() {
+  var cs = calcCarryScore();
+  // Big number
+  var bigNum = document.getElementById('csBigNum');
+  var bigLabel = document.getElementById('csBigLabel');
+  var bigDesc = document.getElementById('csBigDesc');
+  var gauge = document.getElementById('csGaugeFill');
+  var hero = document.getElementById('csHero');
+  var timeEl = document.getElementById('csTime');
+  if (bigNum) { bigNum.textContent = cs.total; bigNum.style.color = cs.color; }
+  if (bigLabel) { bigLabel.textContent = cs.label; bigLabel.style.color = cs.color; }
+  if (bigDesc) bigDesc.textContent = cs.desc;
+  if (gauge) { gauge.style.width = cs.total + '%'; gauge.style.background = cs.color; }
+  if (hero) hero.style.setProperty('--cs-color', cs.color);
+  if (timeEl) timeEl.textContent = new Date().toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'}) + ' · en vivo';
+
+  // Components
+  var comps = [
+    ['tasa', 'cs-tasa', 'cs-tasa-note', 'cs-tasa-bar'],
+    ['fx',   'cs-fx',   'cs-fx-note',   'cs-fx-bar'],
+    ['rp',   'cs-rp',   'cs-rp-note',   'cs-rp-bar'],
+    ['global','cs-global','cs-global-note','cs-global-bar'],
+    ['radar','cs-radar','cs-radar-note','cs-radar-bar'],
+  ];
+  comps.forEach(function(c) {
+    var comp = cs.components[c[0]];
+    var valEl = document.getElementById(c[1]);
+    var noteEl = document.getElementById(c[2]);
+    var barEl = document.getElementById(c[3]);
+    var compColor = comp.score >= 65 ? 'var(--green)' : comp.score >= 40 ? 'var(--gold)' : 'var(--red)';
+    if (valEl) { valEl.textContent = comp.val; valEl.style.color = compColor; }
+    if (noteEl) noteEl.textContent = comp.note;
+    if (barEl) { barEl.style.width = comp.score + '%'; barEl.style.background = compColor; }
+  });
+
+  // Update sim panel context strip too
+  updateSimContext();
+}
+
+function showCarryScore(e) {
+  e && e.preventDefault();
+  hideAllPanels();
+  setSidebarVisible(false);
+  var panel = document.getElementById('carryScorePanel');
+  if (panel) { panel.style.display = 'none'; void panel.offsetWidth; panel.style.display = 'block'; }
+  document.querySelectorAll('.nav-strip a').forEach(function(a) { a.classList.remove('active'); });
+  var tab = document.getElementById('carryScoreTab');
+  if (tab) tab.classList.add('active');
+  renderCarryScorePanel();
+}
+
+// ══ SIMULADOR CARRY ═══════════════════════════════════════════════════
+function updateSimContext() {
+  var mepEl = document.getElementById('arg-mep');
+  var blueEl = document.getElementById('arg-blue');
+  var oficialEl = document.getElementById('arg-oficial');
+  var rpEl = document.getElementById('arg-riesgo');
+
+  function extractLast(el) {
+    if (!el) return null;
+    var nums = (el.textContent||'').match(/[\d.,]+/g);
+    if (!nums) return null;
+    return parseFloat(nums[nums.length-1].replace(/\./g,'').replace(',','.'));
+  }
+
+  var mep = extractLast(mepEl);
+  var blue = extractLast(blueEl);
+  var oficial = extractLast(oficialEl);
+  var rp = rpEl ? (rpEl.textContent||'').trim() : '—';
+
+  var simMep = document.getElementById('simMepDisplay');
+  var simBrecha = document.getElementById('simBrechaDisplay');
+  var simRp = document.getElementById('simRpDisplay');
+  var simCs = document.getElementById('simCarryScore');
+  var simTcInput = document.getElementById('simTcActual');
+  var simTcHint = document.getElementById('simTcHint');
+
+  if (simMep && mep) simMep.textContent = '$ ' + Math.round(mep).toLocaleString('es-AR');
+  if (simBrecha && mep && oficial && oficial > 0) {
+    var brecha = ((mep - oficial) / oficial * 100);
+    simBrecha.textContent = brecha.toFixed(1) + '%';
+    simBrecha.style.color = brecha < 5 ? 'var(--green)' : brecha < 15 ? 'var(--gold)' : 'var(--red)';
+  }
+  if (simRp) simRp.textContent = rp;
+  if (simCs && _carryScoreCache) {
+    simCs.textContent = _carryScoreCache.total + ' · ' + _carryScoreCache.label;
+    simCs.style.color = _carryScoreCache.color;
+  }
+  // Pre-fill TC with MEP if empty
+  if (simTcInput && mep && !simTcInput.value) {
+    simTcInput.value = Math.round(mep);
+    if (simTcHint) simTcHint.textContent = 'MEP actual cargado automáticamente';
+    calcCarrySim();
+  }
+}
+
+function calcCarrySim() {
+  var capital = parseFloat((document.getElementById('simCapital')||{}).value) || 0;
+  var tna     = parseFloat((document.getElementById('simTna')||{}).value) || 0;
+  var dias    = parseFloat((document.getElementById('simDias')||{}).value) || 0;
+  var tc      = parseFloat((document.getElementById('simTcActual')||{}).value) || 0;
+  var body    = document.getElementById('simResultBody');
+  if (!body) return;
+  if (!capital || !tna || !dias || !tc) {
+    body.innerHTML = '<div class="sim-result-empty">Completá todos los campos para ver la simulación</div>';
+    return;
+  }
+
+  // Calculations
+  var capitalARS = capital * tc;
+  var tasaDiaria = tna / 100 / 365;
+  var rendimientoBruto = capitalARS * tasaDiaria * dias;
+  var capitalFinalARS = capitalARS + rendimientoBruto;
+  var rendimientoPct = (rendimientoBruto / capitalARS) * 100;
+
+  // Break-even: TC al vencimiento que hace que el carry sea 0
+  var tcBreakeven = capitalFinalARS / capital;
+  var depreciacionMaxima = ((tcBreakeven - tc) / tc) * 100;
+
+  // Gain in USD if TC stays flat
+  var gainUSDFlat = rendimientoBruto / tc;
+
+  // Carry atractivo?
+  var cs = _carryScoreCache;
+  var semaforo, semaforoColor, semaforoText;
+  if (depreciacionMaxima > 15) {
+    semaforo = '✓ Margen amplio'; semaforoColor = 'var(--green)';
+    semaforoText = 'El tipo de cambio puede subir hasta ' + depreciacionMaxima.toFixed(1) + '% antes de que la operación sea negativa. Con la brecha actual, el margen es considerable.';
+  } else if (depreciacionMaxima > 7) {
+    semaforo = '⚡ Margen moderado'; semaforoColor = 'var(--gold)';
+    semaforoText = 'El break-even está en ' + depreciacionMaxima.toFixed(1) + '% de depreciación. Llevable, pero exige monitoreo del tipo de cambio.';
+  } else {
+    semaforo = '⚠ Margen ajustado'; semaforoColor = 'var(--red)';
+    semaforoText = 'El tipo de cambio solo puede moverse ' + depreciacionMaxima.toFixed(1) + '% antes de que la operación sea negativa. Riesgo alto para este horizonte.';
+  }
+
+  body.innerHTML =
+    '<div class="sim-kpi-grid">' +
+      '<div class="sim-kpi">' +
+        '<div class="sim-kpi-label">Ganancia en pesos</div>' +
+        '<div class="sim-kpi-val" style="color:var(--green)">$ ' + Math.round(rendimientoBruto).toLocaleString('es-AR') + '</div>' +
+        '<div class="sim-kpi-note">En ' + dias + ' días · TNA ' + tna + '%</div>' +
+      '</div>' +
+      '<div class="sim-kpi">' +
+        '<div class="sim-kpi-label">Rendimiento período</div>' +
+        '<div class="sim-kpi-val" style="color:var(--green)">+' + rendimientoPct.toFixed(2) + '%</div>' +
+        '<div class="sim-kpi-note">Sobre el capital en pesos</div>' +
+      '</div>' +
+      '<div class="sim-kpi">' +
+        '<div class="sim-kpi-label">TC de break-even</div>' +
+        '<div class="sim-kpi-val" style="color:var(--gold)">$ ' + Math.round(tcBreakeven).toLocaleString('es-AR') + '</div>' +
+        '<div class="sim-kpi-note">TC máximo para no perder en USD</div>' +
+      '</div>' +
+      '<div class="sim-kpi">' +
+        '<div class="sim-kpi-label">Devaluación máxima tolerable</div>' +
+        '<div class="sim-kpi-val" style="color:' + semaforoColor + '">+' + depreciacionMaxima.toFixed(1) + '%</div>' +
+        '<div class="sim-kpi-note">Del TC de entrada hasta el vencimiento</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="sim-verdict" style="border-color:' + semaforoColor + ';background:' + semaforoColor + '0d">' +
+      '<div class="sim-verdict-label">Evaluación</div>' +
+      '<div style="font-family:var(--mono);font-size:0.72rem;font-weight:600;color:' + semaforoColor + ';margin-bottom:0.4rem">' + semaforo + '</div>' +
+      '<div class="sim-verdict-text">' + semaforoText + '</div>' +
+    '</div>' +
+    '<div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);line-height:1.8;padding-top:0.75rem;border-top:1px solid var(--border2)">' +
+      '<div>Capital inicial: <span style="color:var(--text)">USD ' + capital.toLocaleString('es-AR') + ' → $ ' + Math.round(capitalARS).toLocaleString('es-AR') + '</span></div>' +
+      '<div>Capital final (ARS): <span style="color:var(--text)">$ ' + Math.round(capitalFinalARS).toLocaleString('es-AR') + '</span></div>' +
+      '<div>Ganancia si TC no se mueve: <span style="color:var(--green)">+USD ' + gainUSDFlat.toFixed(0) + '</span></div>' +
+    '</div>';
+}
+
+function showCarrySim(e) {
+  e && e.preventDefault();
+  hideAllPanels();
+  setSidebarVisible(false);
+  if (!_carryScoreCache) calcCarryScore();
+  var panel = document.getElementById('carrySimPanel');
+  if (panel) { panel.style.display = 'none'; void panel.offsetWidth; panel.style.display = 'block'; }
+  document.querySelectorAll('.nav-strip a').forEach(function(a) { a.classList.remove('active'); });
+  var tab = document.getElementById('carrySimTab');
+  if (tab) tab.classList.add('active');
+  updateSimContext();
+}
+// ══ /CARRY SCORE & SIMULADOR ══════════════════════════════════════════
 
 function showSobre(e){
   e&&e.preventDefault();
@@ -5186,6 +5715,7 @@ window.addEventListener('load', function(){
   loadNotes();
   loadCalendar();
   loadArgMacro();
+  setTimeout(function(){ renderCarryScoreWidget(); }, 2000);
   loadTicker();
   loadForex();
   loadWatchlistPrices();
