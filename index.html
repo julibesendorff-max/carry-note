@@ -1910,15 +1910,15 @@ if('serviceWorker' in navigator) {
   </section>
   <aside class="sidebar">
     <div class="sb-block">
-      <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· abr 2026</span></div>
+      <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· jul 2026</span></div>
       <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">3.50–3.75%</span></div>
-      <div class="ind"><span class="ind-n">CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">mar</span></span><span class="ind-v dn">3.3%</span></div>
-      <div class="ind"><span class="ind-n">Core CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">mar</span></span><span class="ind-v dn">2.6%</span></div>
-      <div class="ind"><span class="ind-n">Core PCE YoY <span style="font-size:0.5rem;color:var(--muted2)">feb</span></span><span class="ind-v dn">2.7%</span></div>
-      <div class="ind"><span class="ind-n">Desempleo <span style="font-size:0.5rem;color:var(--muted2)">mar</span></span><span class="ind-v neu">4.3%</span></div>
-      <div class="ind"><span class="ind-n">PIB Q4 '25</span><span class="ind-v up">+2.4%</span></div>
-      <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v up">+18bp</span></div>
-      <div class="ind"><span class="ind-n">ISM Manufactura</span><span class="ind-v dn">49.0</span></div>
+      <div class="ind"><span class="ind-n">CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v dn">4.2%</span></div>
+      <div class="ind"><span class="ind-n">Core CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v dn">2.9%</span></div>
+      <div class="ind"><span class="ind-n">Core PCE YoY <span style="font-size:0.5rem;color:var(--muted2)">abr</span></span><span class="ind-v dn">3.3%</span></div>
+      <div class="ind"><span class="ind-n">Desempleo <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v neu">4.3%</span></div>
+      <div class="ind"><span class="ind-n">NFP <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v neu">+172k</span></div>
+      <div class="ind"><span class="ind-n">PIB 2026 proy.</span><span class="ind-v up">+2.2%</span></div>
+      <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v neu">plano</span></div>
       <div class="chart-box">
         <svg viewBox="0 0 300 80" preserveAspectRatio="none">
           <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></linearGradient></defs>
@@ -2360,10 +2360,10 @@ function buildPrompt(topic) {
     '- USD/ARS (official): ' + usdArs,
     '',
     'CURRENT US MACRO DATA (May 9, 2026):',
-    '- Fed Funds Rate: 3.50-3.75% (held for 3rd consecutive meeting Apr 29; last cut Dec 2025)',
-    '- US CPI YoY: 3.3% (March 2026 - spike driven by Iran war energy shock; April data out May 12)',
-    '- US Core CPI YoY: 2.6% (March 2026 - moderating from 2.8% a year ago)',
-    '- US Core PCE YoY: 2.7% (February 2026)',
+    '- Fed Funds Rate: 3.50-3.75% (hold jun 2026; primer meeting de Kevin Warsh como chair)',
+    '- US CPI YoY: 4.2% (mayo 2026 - suba por energía, guerra con Irán)',
+    '- US Core CPI YoY: 2.9% (mayo 2026)',
+    '- US Core PCE YoY: 3.3% (abril 2026)',
     '- US Unemployment: 4.3% (April 2026 - unchanged)',
     '- US GDP Q1 2026: pending; Q4 2025 was +2.4% annualized',
     '- NFP April 2026: +115,000 (below March revised +185,000; federal job cuts weigh)',
@@ -2662,10 +2662,11 @@ async function loadArgMacro() {
   const el = document.getElementById('argMacro');
   if(!el) return;
   const staticData = [
-    {n:'IPC mensual',       v:'3.4%',      cls:'dn',  note:'Mar 2026 · INDEC'},
-    {n:'IPC interanual',    v:'32.6%',     cls:'dn',  note:'Mar 2026 · INDEC'},
-    {n:'Acumulado 2026',    v:'9.4%',      cls:'dn',  note:'ene-mar · INDEC'},
-    {n:'TAMAR abr.',        v:'26.8% TNA', cls:'neu', note:'REM BCRA'},
+    {n:'IPC mensual',       v:'2.1%',      cls:'dn',  note:'May 2026 · INDEC'},
+    {n:'IPC junio est.',    v:'~1.9%',     cls:'dn',  note:'REM BCRA · jul 2026'},
+    {n:'IPC interanual',    v:'33.2%',     cls:'dn',  note:'May 2026 · INDEC'},
+    {n:'Acumulado 2026',    v:'14.7%',     cls:'dn',  note:'ene-may · INDEC'},
+    {n:'TAMAR jul.',        v:'22.5% TNA', cls:'neu', note:'REM BCRA'},
     {n:'Reservas brutas',   v:'···',       cls:'up',  note:'BCRA · en vivo', id:'arg-reservas'},
     {n:'Compras BCRA 2026', v:'USD 5.8B',  cls:'up',  note:'acum.'},
   ];
@@ -4384,8 +4385,8 @@ function calcCarryScore() {
   // ── Componente 1: Tasa real en pesos (peso 30%) ──────────────────
   // TAMAR ~26.8% TNA, inflación mensual ~3.4% (40.8% anual)
   // Tasa real = TNA - inflación anual esperada
-  var tna = 26.8; // TAMAR abr 2026
-  var inflAnual = 40.8; // IPC interanual mar 2026
+  var tna = 22.5; // TAMAR jul 2026
+  var inflAnual = 33.2; // IPC interanual may 2026
   var tasaReal = tna - inflAnual; // negativo = lleva el carry
   // Score: cuanto más positiva la tasa real, mejor. Rango aprox -30 a +20
   var tasaScore = Math.max(0, Math.min(100, 50 + tasaReal * 1.8));
