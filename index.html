@@ -4919,7 +4919,13 @@ function renderWatchlist(){
 function addToWatchlist(){
   var sym=document.getElementById('wlSymbol').value.trim().toUpperCase();
   var label=document.getElementById('wlSymbolLabel').value.trim();
-  if(!sym){alert('Buscá y seleccioná un activo primero.');return;}
+  // If no symbol selected from dropdown, use whatever is typed in the search box
+  if(!sym){
+    var typed=(document.getElementById('wlSearch').value||'').trim().toUpperCase();
+    if(!typed){alert('Escribí un ticker o buscá un activo primero.');return;}
+    sym=typed;
+    label=typed;
+  }
   var wl=getWatchlist();
   if(wl.find(function(x){return x.id===sym;})){alert('Ya está en tu watchlist.');return;}
   var low=parseFloat(document.getElementById('wlAlertLow').value)||null;
@@ -4931,6 +4937,7 @@ function addToWatchlist(){
   document.getElementById('wlSearch').value='';
   document.getElementById('wlAlertLow').value='';
   document.getElementById('wlAlertHigh').value='';
+  document.getElementById('wlSearchResults').style.display='none';
   renderWatchlist();
   loadWatchlistPrices();
 }
@@ -5465,19 +5472,124 @@ function exportCartPDF(){
   printWin.document.close();
 }
 // ── WATCHLIST SEARCH ──────────────────────────────────────────
+function selectWlResult(sym, label) {
+  document.getElementById('wlSymbol').value = sym;
+  document.getElementById('wlSymbolLabel').value = label;
+  document.getElementById('wlSearch').value = label + ' (' + sym + ')';
+  document.getElementById('wlSearchResults').style.display = 'none';
+}
+
 async function wlSearchSymbol(q){
-  if(q.length<1) return [];
-  try{
-    var r=await fetch('https://finnhub.io/api/v1/search?q='+encodeURIComponent(q)+'&token='+FINNHUB_KEY);
-    var results=[];
-    if(r.ok){var d=await r.json();results=(d.result||[]).filter(function(x){return x.type==='Common Stock'||x.type==='ETP'||x.type==='DR';}).slice(0,5);}
-    var cryptoMap=[{symbol:'BINANCE:BTCUSDT',description:'Bitcoin (BTC)',type:'Crypto'},{symbol:'BINANCE:ETHUSDT',description:'Ethereum (ETH)',type:'Crypto'},{symbol:'BINANCE:SOLUSDT',description:'Solana (SOL)',type:'Crypto'},{symbol:'BINANCE:BNBUSDT',description:'BNB',type:'Crypto'}];
-    var fxMap=[{symbol:'OANDA:EUR_USD',description:'EUR/USD',type:'FX'},{symbol:'OANDA:USD_JPY',description:'USD/JPY',type:'FX'},{symbol:'OANDA:GBP_USD',description:'GBP/USD',type:'FX'}];
-    var qLow=q.toLowerCase();
-    results=results.concat(cryptoMap.filter(function(c){return c.symbol.toLowerCase().includes(qLow)||c.description.toLowerCase().includes(qLow);}).slice(0,2));
-    results=results.concat(fxMap.filter(function(f){return f.symbol.toLowerCase().includes(qLow)||f.description.toLowerCase().includes(qLow);}).slice(0,2));
-    return results.slice(0,8);
-  }catch(e){return [];}
+  if(q.length < 1) return [];
+  var qL = q.toLowerCase();
+
+  // ── Catálogo local amplio ─────────────────────────────────────────
+  var LOCAL_CATALOG = [
+    // Índices
+    {symbol:'SPY',  description:'S&P 500 ETF (SPY)',         type:'Índice'},
+    {symbol:'QQQ',  description:'Nasdaq 100 ETF (QQQ)',       type:'Índice'},
+    {symbol:'DIA',  description:'Dow Jones ETF (DIA)',         type:'Índice'},
+    {symbol:'IWM',  description:'Russell 2000 ETF (IWM)',      type:'Índice'},
+    {symbol:'EEM',  description:'Mercados Emergentes (EEM)',   type:'Índice'},
+    {symbol:'VIX',  description:'VIX Volatility Index',        type:'Índice'},
+    {symbol:'VIXY', description:'VIX ETF (VIXY)',              type:'Índice'},
+    {symbol:'TLT',  description:'Bonos 20Y EEUU (TLT)',        type:'ETF'},
+    {symbol:'GLD',  description:'Oro ETF (GLD)',               type:'ETF'},
+    {symbol:'SLV',  description:'Plata ETF (SLV)',             type:'ETF'},
+    {symbol:'USO',  description:'Petróleo WTI ETF (USO)',      type:'ETF'},
+    {symbol:'XLE',  description:'Energía ETF (XLE)',           type:'ETF'},
+    {symbol:'XLF',  description:'Financiero ETF (XLF)',        type:'ETF'},
+    {symbol:'XLK',  description:'Tecnología ETF (XLK)',        type:'ETF'},
+    // Acciones EEUU
+    {symbol:'AAPL', description:'Apple',                       type:'Acción'},
+    {symbol:'MSFT', description:'Microsoft',                   type:'Acción'},
+    {symbol:'GOOGL',description:'Alphabet (Google)',           type:'Acción'},
+    {symbol:'AMZN', description:'Amazon',                      type:'Acción'},
+    {symbol:'META', description:'Meta (Facebook)',             type:'Acción'},
+    {symbol:'NVDA', description:'NVIDIA',                      type:'Acción'},
+    {symbol:'TSLA', description:'Tesla',                       type:'Acción'},
+    {symbol:'AMD',  description:'AMD',                         type:'Acción'},
+    {symbol:'AVGO', description:'Broadcom',                    type:'Acción'},
+    {symbol:'ORCL', description:'Oracle',                      type:'Acción'},
+    {symbol:'CRM',  description:'Salesforce',                  type:'Acción'},
+    {symbol:'PLTR', description:'Palantir',                    type:'Acción'},
+    {symbol:'ARM',  description:'ARM Holdings',                type:'Acción'},
+    {symbol:'SNOW', description:'Snowflake',                   type:'Acción'},
+    {symbol:'JPM',  description:'JPMorgan Chase',              type:'Acción'},
+    {symbol:'BAC',  description:'Bank of America',             type:'Acción'},
+    {symbol:'GS',   description:'Goldman Sachs',               type:'Acción'},
+    {symbol:'BRK.B',description:'Berkshire Hathaway B',        type:'Acción'},
+    {symbol:'XOM',  description:'ExxonMobil',                  type:'Acción'},
+    {symbol:'WMT',  description:'Walmart',                     type:'Acción'},
+    {symbol:'V',    description:'Visa',                        type:'Acción'},
+    {symbol:'MA',   description:'Mastercard',                  type:'Acción'},
+    {symbol:'UNH',  description:'UnitedHealth Group',          type:'Acción'},
+    {symbol:'NFLX', description:'Netflix',                     type:'Acción'},
+    {symbol:'DIS',  description:'Disney',                      type:'Acción'},
+    {symbol:'INTC', description:'Intel',                       type:'Acción'},
+    {symbol:'MU',   description:'Micron Technology',           type:'Acción'},
+    {symbol:'MRVL', description:'Marvell Technology',          type:'Acción'},
+    {symbol:'NOW',  description:'ServiceNow',                  type:'Acción'},
+    {symbol:'CEG',  description:'Constellation Energy',        type:'Acción'},
+    {symbol:'VST',  description:'Vistra Energy',               type:'Acción'},
+    // Acciones Argentina (ADRs en NY)
+    {symbol:'YPF',  description:'YPF S.A. (ADR)',             type:'Argentina'},
+    {symbol:'GGAL', description:'Grupo Galicia (ADR)',         type:'Argentina'},
+    {symbol:'BMA',  description:'Banco Macro (ADR)',           type:'Argentina'},
+    {symbol:'PAM',  description:'Pampa Energía (ADR)',         type:'Argentina'},
+    {symbol:'LOMA', description:'Loma Negra (ADR)',            type:'Argentina'},
+    {symbol:'SUPV', description:'Grupo Supervielle (ADR)',     type:'Argentina'},
+    {symbol:'CEPU', description:'Central Puerto (ADR)',        type:'Argentina'},
+    {symbol:'MELI', description:'MercadoLibre',                type:'Argentina'},
+    {symbol:'GLOB', description:'Globant',                     type:'Argentina'},
+    // Crypto
+    {symbol:'BINANCE:BTCUSDT', description:'Bitcoin (BTC)',    type:'Crypto'},
+    {symbol:'BINANCE:ETHUSDT', description:'Ethereum (ETH)',   type:'Crypto'},
+    {symbol:'BINANCE:SOLUSDT', description:'Solana (SOL)',     type:'Crypto'},
+    {symbol:'BINANCE:BNBUSDT', description:'BNB',              type:'Crypto'},
+    {symbol:'BINANCE:XRPUSDT', description:'XRP (Ripple)',     type:'Crypto'},
+    {symbol:'BINANCE:ADAUSDT', description:'Cardano (ADA)',    type:'Crypto'},
+    {symbol:'BINANCE:DOGEUSDT',description:'Dogecoin (DOGE)',  type:'Crypto'},
+    {symbol:'BINANCE:AVAXUSDT',description:'Avalanche (AVAX)', type:'Crypto'},
+    {symbol:'BINANCE:DOTUSDT', description:'Polkadot (DOT)',   type:'Crypto'},
+    {symbol:'BINANCE:LINKUSDT',description:'Chainlink (LINK)', type:'Crypto'},
+    // Forex
+    {symbol:'OANDA:EUR_USD', description:'Euro / Dólar (EUR/USD)',      type:'Forex'},
+    {symbol:'OANDA:USD_JPY', description:'Dólar / Yen (USD/JPY)',       type:'Forex'},
+    {symbol:'OANDA:GBP_USD', description:'Libra / Dólar (GBP/USD)',     type:'Forex'},
+    {symbol:'OANDA:USD_CHF', description:'Dólar / Franco Suizo',        type:'Forex'},
+    {symbol:'OANDA:AUD_USD', description:'Dólar Australiano / USD',     type:'Forex'},
+    {symbol:'OANDA:USD_BRL', description:'Dólar / Real Brasileño',      type:'Forex'},
+    {symbol:'OANDA:USD_MXN', description:'Dólar / Peso Mexicano',       type:'Forex'},
+    {symbol:'OANDA:USD_CLP', description:'Dólar / Peso Chileno',        type:'Forex'},
+  ];
+
+  // Filter local catalog
+  var localMatches = LOCAL_CATALOG.filter(function(item) {
+    return item.description.toLowerCase().includes(qL) ||
+           item.symbol.toLowerCase().includes(qL) ||
+           item.type.toLowerCase().includes(qL);
+  }).slice(0, 6);
+
+  // Also search Finnhub for stocks not in catalog
+  var finnhubResults = [];
+  try {
+    var r = await fetch('https://finnhub.io/api/v1/search?q=' + encodeURIComponent(q) + '&token=' + FINNHUB_KEY);
+    if(r.ok) {
+      var d = await r.json();
+      finnhubResults = (d.result||[])
+        .filter(function(x){ return x.type==='Common Stock'||x.type==='ETP'||x.type==='DR'; })
+        .filter(function(x){
+          // Don't duplicate local catalog
+          return !LOCAL_CATALOG.find(function(l){ return l.symbol === x.symbol; });
+        })
+        .slice(0, 4);
+    }
+  } catch(e) {}
+
+  // Merge: local first, then Finnhub
+  var combined = localMatches.concat(finnhubResults).slice(0, 8);
+  return combined;
 }
 async function runDiag(){
   var assets=[];
@@ -5716,6 +5828,39 @@ function generatePanorama() {
 function generateForecast() { generatePanorama(); }
 
 window.addEventListener('load', function(){
+  // Wire watchlist search input
+  var wlSearchEl = document.getElementById('wlSearch');
+  if(wlSearchEl) {
+    var wlDebounce;
+    wlSearchEl.addEventListener('input', function(){
+      clearTimeout(wlDebounce);
+      var q = this.value.trim();
+      document.getElementById('wlSymbol').value = '';
+      document.getElementById('wlSymbolLabel').value = '';
+      if(q.length < 1) { document.getElementById('wlSearchResults').style.display='none'; return; }
+      wlDebounce = setTimeout(async function(){
+        var results = await wlSearchSymbol(q);
+        var res = document.getElementById('wlSearchResults');
+        if(!results.length){ res.style.display='none'; return; }
+        res.innerHTML = results.map(function(r){
+          var typeColor = r.type==='Crypto'?'#a855f7':r.type==='Forex'?'var(--blue)':r.type==='Argentina'?'var(--green)':r.type==='Índice'||r.type==='ETF'?'var(--gold)':'var(--muted2)';
+          var sym = r.symbol.includes(':') ? r.symbol.split(':')[1] : r.symbol;
+          return '<div onclick="selectWlResult(\''+r.symbol+'\',\''+r.description.replace(/'/g,'').replace(/"/g,'')+'\')'+
+            '" style="padding:0.6rem 0.85rem;cursor:pointer;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center;gap:0.5rem" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'+
+            '<div>'+
+              '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--text)">'+r.description+'</div>'+
+              '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.1rem">'+sym+'</div>'+
+            '</div>'+
+            '<span style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;text-transform:uppercase;color:'+typeColor+';border:1px solid '+typeColor+';padding:0.1rem 0.35rem;white-space:nowrap;flex-shrink:0">'+r.type+'</span>'+
+            '</div>';
+        }).join('');
+        res.style.display = 'block';
+      }, 350);
+    });
+    wlSearchEl.addEventListener('keydown', function(e){
+      if(e.key === 'Enter') addToWatchlist();
+    });
+  }
   // Check for editor URL param: ?editor=true
   if(new URLSearchParams(window.location.search).get('editor') === 'true') {
     showLogin();
