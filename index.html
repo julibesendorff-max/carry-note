@@ -575,14 +575,15 @@ if('serviceWorker' in navigator) {
     <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip" id="navStrip">
+    <a data-filter="hoy" id="hoyTab" onclick="showHoy(event)" style="color:var(--gold)">◈ Hoy</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
+    <a data-filter="carteras" id="carterasTab" onclick="showCarteras(event)" style="color:var(--green)">▤ Carteras</a>
     <a data-filter="carryscore" id="carryScoreTab" onclick="showCarryScore(event)" style="color:var(--gold)">◈ Carry Score</a>
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="portafolio" id="portafolioTab" onclick="showPortafolio(event)" style="color:var(--gold)">▸ Armar cartera</a>
     <a data-filter="carrysim" id="carrySimTab" onclick="showCarrySim(event)" style="color:var(--blue)">⟳ Simulador carry</a>
     <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
     <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#a855f7">● Views</a>
-    <a data-filter="ia" id="iaTab" onclick="showIA(event)" style="color:#a855f7">● IA Watch</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
     <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
@@ -815,36 +816,37 @@ if('serviceWorker' in navigator) {
       </div>
     </div>
 
-    <!-- IA WATCH PANEL -->
-    <div id="iaPanel" style="display:none;margin-bottom:2rem">
-      <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.5rem">● IA Watch · Carry Note</div>
-        <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Empresas de IA · ¿Quién viene?</div>
-        <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;max-width:580px">Momentum, earnings y análisis de las principales empresas de inteligencia artificial. Datos en vivo.</div>
-      </div>
-      <div style="margin-bottom:2rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Momentum · precios en vivo</div>
-        <div id="iaMomentumGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:0;border:1px solid var(--border2)"></div>
-      </div>
-      <div style="margin-bottom:2rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Próximos earnings</div>
-        <div id="iaEarningsTable" style="border:1px solid var(--border2)"></div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border2)">Momentum del día · resumen</div>
-        <div id="iaSummary" style="display:flex;flex-direction:column;gap:0">
-          <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem 0">Cargando datos...</div>
-        </div>
-        <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border2);line-height:1.6">Datos en tiempo real vía Finnhub. No constituye recomendación de inversión.</div>
-      </div>
-    </div>
-
     <!-- FCI PANEL -->
     <div id="fciPanel" style="display:none;margin-bottom:2rem">
       <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border2)">▸ Fondos Comunes de Inversión · Argentina</div>
-      <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.7">
-        Comparativo de FCIs representativos para el inversor argentino. Rendimientos, composición y benchmark de referencia.
+      <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted);margin-bottom:1.25rem;line-height:1.7">
+        Comparativo de FCIs representativos para el inversor argentino, agrupados por tipo. Composición, benchmark y liquidez.
         <span style="color:var(--muted2);font-size:0.55rem;display:block;margin-top:0.3rem">Fuente: Cafci / BYMA · Actualización mensual</span>
+      </div>
+      <!-- Referencia de tasas (deriva de constantes macro del portal) -->
+      <div style="display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--border2);margin-bottom:1.5rem">
+        <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem;border-right:1px solid var(--border2)">
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">TAMAR (ref. Money Market)</div>
+          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--gold)">22.5% <span style="font-size:0.6rem;color:var(--muted2)">TNA</span></div>
+        </div>
+        <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem;border-right:1px solid var(--border2)">
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Inflación mensual (ref. CER)</div>
+          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:#a855f7">2.1% <span style="font-size:0.6rem;color:var(--muted2)">may · INDEC</span></div>
+        </div>
+        <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem">
+          <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Riesgo país (ref. USD)</div>
+          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--blue)" id="fciRpRef">···</div>
+        </div>
+      </div>
+      <!-- Filtros por categoría -->
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem;margin-bottom:1.25rem">
+        <button onclick="setFciFilter('all')" id="fci-all" class="af-btn af-active">Todos</button>
+        <button onclick="setFciFilter('mm')" id="fci-mm" class="af-btn">Money Market</button>
+        <button onclick="setFciFilter('pesos')" id="fci-pesos" class="af-btn">Renta Fija $</button>
+        <button onclick="setFciFilter('cer')" id="fci-cer" class="af-btn">CER</button>
+        <button onclick="setFciFilter('usd')" id="fci-usd" class="af-btn">Renta Fija USD</button>
+        <button onclick="setFciFilter('rv')" id="fci-rv" class="af-btn">Renta Variable</button>
+        <button onclick="setFciFilter('mixto')" id="fci-mixto" class="af-btn">Mixtos</button>
       </div>
       <div id="fciBody" style="display:flex;flex-direction:column;gap:0"></div>
       <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;line-height:1.6">
@@ -1319,6 +1321,8 @@ if('serviceWorker' in navigator) {
         <div id="diagHistoryFooter" style="display:none;border:1px solid var(--border2);padding:0.45rem 1rem;justify-content:space-between;align-items:center;margin-top:0"></div>
       </div>
       <div style="margin-bottom:1.5rem">
+        <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem">▤ Cartera / Cliente <span style="color:var(--muted2);text-transform:none;letter-spacing:0">(opcional — se guarda en tu panel)</span></div>
+        <input type="text" id="diagCarteraNombre" placeholder="Ej: Cliente Rodríguez — moderado" style="width:100%;max-width:420px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.55rem 0.75rem;outline:none;margin-bottom:1.5rem"/>
         <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem">Tu perfil de inversor</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem">
           <div>
@@ -1778,6 +1782,91 @@ if('serviceWorker' in navigator) {
     </div>
     <!-- ══ /SIMULADOR CARRY PANEL ════════════════════════════════════ -->
 
+
+    <!-- ══ HOY PANEL (resumen del día) ═══════════════════════════════ -->
+    <div id="hoyPanel" style="display:none;margin-bottom:2rem">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem">
+        <div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">◈ Resumen del día · Carry Note</div>
+          <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1" id="hoyGreeting">Hoy</div>
+        </div>
+        <div style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2)" id="hoyDate"></div>
+      </div>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.6;margin-bottom:1.75rem;max-width:560px">Todo lo que necesitás para arrancar el día en una sola vista: contexto, señales y el estado de tus carteras.</p>
+
+      <!-- Score + señales lado a lado -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem" id="hoyTopGrid">
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--gold);padding:1.4rem" id="hoyScoreCard">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem">Carry Score</div>
+          <div style="display:flex;align-items:center;gap:1rem">
+            <div style="font-family:var(--mono);font-size:3rem;font-weight:700;line-height:1" id="hoyScoreNum">—</div>
+            <div>
+              <div style="font-family:var(--mono);font-size:0.72rem;font-weight:600" id="hoyScoreLabel">Calculando...</div>
+              <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-top:0.2rem" id="hoyScoreDetail"></div>
+            </div>
+          </div>
+          <div style="margin-top:0.9rem;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+            <div id="hoyScoreBar" style="height:100%;width:0%;border-radius:2px;transition:width 0.6s"></div>
+          </div>
+          <a onclick="showCarryScore(event)" style="display:inline-block;font-family:var(--mono);font-size:0.55rem;color:var(--gold);cursor:pointer;margin-top:0.75rem;letter-spacing:0.06em">Ver componentes ▸</a>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-top:3px solid var(--red);padding:1.4rem">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem">Señales del Radar · ahora</div>
+          <div id="hoySignals" style="display:flex;flex-direction:column;gap:0.4rem">
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted2)">Esperando datos...</div>
+          </div>
+          <a onclick="showRadar(event)" style="display:inline-block;font-family:var(--mono);font-size:0.55rem;color:var(--red);cursor:pointer;margin-top:0.75rem;letter-spacing:0.06em">Ver radar completo ▸</a>
+        </div>
+      </div>
+
+      <!-- Mis carteras hoy -->
+      <div style="margin-bottom:1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">
+          <span style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green)">▤ Tus carteras hoy</span>
+          <a onclick="showCarteras(event)" style="font-family:var(--mono);font-size:0.55rem;color:var(--green);cursor:pointer;letter-spacing:0.06em">Gestionar ▸</a>
+        </div>
+        <div id="hoyCarteras"></div>
+      </div>
+
+      <!-- Movimientos + agenda -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" id="hoyBottomGrid">
+        <div style="background:var(--surface);border:1px solid var(--border2);padding:1.25rem">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem">Mayores movimientos</div>
+          <div id="hoyMovers" style="display:flex;flex-direction:column;gap:0.35rem">
+            <div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted2)">Cargando...</div>
+          </div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border2);padding:1.25rem">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.75rem">Agenda macro</div>
+          <div id="hoyAgenda" style="display:flex;flex-direction:column;gap:0"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ══ /HOY PANEL ════════════════════════════════════════════════ -->
+
+    <!-- ══ CARTERAS PANEL ═══════════════════════════════════════════ -->
+    <div id="carterasPanel" style="display:none;margin-bottom:2rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:0.5rem">
+        <div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem">▤ Panel de carteras · Carry Note</div>
+          <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1">Mis carteras</div>
+        </div>
+        <button onclick="nuevaCartera()" style="font-family:var(--mono);font-size:0.68rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.3rem;background:var(--green);color:#fff;border:none;cursor:pointer">+ Nueva cartera</button>
+      </div>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.6;margin-bottom:2rem;max-width:580px">Guardá y gestioná las carteras de tus clientes. Cada una mantiene su perfil, horizonte y último score. Re-diagnosticá cuando cambie el contexto.</p>
+      <div id="carterasList"></div>
+      <div id="carterasEmpty" style="display:none;text-align:center;padding:3.5rem 2rem;border:1px dashed var(--border)">
+        <div style="font-size:1.6rem;opacity:0.3;margin-bottom:0.75rem">▤</div>
+        <div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted);margin-bottom:0.4rem">Todavía no guardaste ninguna cartera</div>
+        <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);margin-bottom:1.25rem;line-height:1.7">Corré un diagnóstico con nombre de cliente y se guarda acá automáticamente.</div>
+        <button onclick="nuevaCartera()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.55rem 1.2rem;background:var(--green);color:#fff;border:none;cursor:pointer">Crear la primera ▸</button>
+      </div>
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2);margin-top:1.5rem">
+        Las carteras se guardan en este dispositivo (navegador). No se envían a ningún servidor.
+      </div>
+    </div>
+    <!-- ══ /CARTERAS PANEL ═══════════════════════════════════════════ -->
+
     <div id="sobrePanel" style="display:none;margin-bottom:2rem">
       <div style="max-width:600px">
         <!-- Header -->
@@ -2103,6 +2192,8 @@ async function loadTicker() {
     // Refresh daily summary prices if diag panel is open
     var dp = document.getElementById('diagPanel');
     if(dp && dp.style.display !== 'none') renderDailySummary();
+    var hp = document.getElementById('hoyPanel');
+    if(hp && hp.style.display !== 'none') renderHoy();
     // Update fear & greed if radar is open
     renderFearGreed();
     // Update cross alerts if radar is open
@@ -2870,6 +2961,10 @@ function showFCI(e) {
   var fp=document.getElementById('fciPanel'); if(fp) { fp.style.display='none'; void fp.offsetWidth; fp.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(a => a.classList.remove('active'));
   document.getElementById('fciTab').classList.add('active');
+  // Copy live risk-country into FCI reference strip
+  var rpSrc = document.getElementById('arg-riesgo');
+  var rpDst = document.getElementById('fciRpRef');
+  if(rpSrc && rpDst) rpDst.textContent = (rpSrc.textContent||'···').trim();
   renderFCI();
 }
 // Patch filterByTag to restore feed when clicking other tabs
@@ -3123,6 +3218,8 @@ async function runDiagCore() {
     const txt = (data.result||'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     var scoreMatch = txt.match(/<b>(\d+)\/10<\/b>/);
     saveDiagHistory(assets, horizonte, riesgo, scoreMatch?scoreMatch[1]:null);
+    var _carNom = (document.getElementById('diagCarteraNombre')||{}).value;
+    if(_carNom && _carNom.trim()) upsertCartera(_carNom.trim(), assets, horizonte, riesgo, scoreMatch?scoreMatch[1]:null);
     // Save anonymized result to community feed
     var gateData = JSON.parse(localStorage.getItem('cn_gate')||'{}');
     if(gateData.email) {
@@ -3453,7 +3550,7 @@ function downloadPDF() {
 function hideAllPanels() {
   var allPanels = [
     'diagSelector','diagPanel','diagEmpresaPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
-    'portafolioPanel','carryScorePanel','carrySimPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
+    'portafolioPanel','carryScorePanel','carrySimPanel','hoyPanel','carterasPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
     'feed','newsletterBlock','noResults','feedHeader','emptyState',
     'analisisFilters','radarForecastWrap','corrExplainerModal'
   ];
@@ -3471,176 +3568,6 @@ function hideAllPanels() {
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
 }
-
-// ── IA WATCH ─────────────────────────────────────────────
-var IA_COMPANIES = [
-  // Hiperscalers & Modelos
-  {sym:'NVDA', name:'NVIDIA',    desc:'GPUs · Data Center',    color:'#76b900', cat:'Hiperscalers & Modelos'},
-  {sym:'MSFT', name:'Microsoft', desc:'Azure · Copilot',       color:'#00a4ef', cat:'Hiperscalers & Modelos'},
-  {sym:'GOOGL',name:'Alphabet',  desc:'Gemini · TPUs',         color:'#4285f4', cat:'Hiperscalers & Modelos'},
-  {sym:'META', name:'Meta',      desc:'Llama · AI Infra',      color:'#0866ff', cat:'Hiperscalers & Modelos'},
-  {sym:'AMZN', name:'Amazon',    desc:'AWS · Bedrock',         color:'#ff9900', cat:'Hiperscalers & Modelos'},
-  {sym:'AAPL', name:'Apple',     desc:'Apple Intelligence',    color:'#888',    cat:'Hiperscalers & Modelos'},
-  {sym:'TSLA', name:'Tesla',     desc:'FSD · Optimus',         color:'#cc0000', cat:'Hiperscalers & Modelos'},
-  // Chips & Hardware
-  {sym:'AMD',  name:'AMD',       desc:'CPUs/GPUs · MI300',     color:'#e05252', cat:'Chips & Hardware'},
-  {sym:'AVGO', name:'Broadcom',  desc:'ASICs · Networking',    color:'#ca2026', cat:'Chips & Hardware'},
-  {sym:'ARM',  name:'ARM',       desc:'Arquitectura de chips', color:'#0091bd', cat:'Chips & Hardware'},
-  {sym:'MRVL', name:'Marvell',   desc:'Chips de red DC',       color:'#005eb8', cat:'Chips & Hardware'},
-  {sym:'MU',   name:'Micron',    desc:'Memoria HBM · GPUs',    color:'#0059a5', cat:'Chips & Hardware'},
-  // Nube & Plataformas
-  {sym:'ORCL', name:'Oracle',    desc:'Cloud · OpenAI partner',color:'#f80000', cat:'Nube & Plataformas'},
-  {sym:'SNOW', name:'Snowflake', desc:'Datos · IA empresarial',color:'#29b5e8', cat:'Nube & Plataformas'},
-  // Software & Aplicaciones
-  {sym:'PLTR', name:'Palantir',  desc:'IA defensa/gobierno',   color:'#7b42f6', cat:'Software & Apps'},
-  {sym:'CRM',  name:'Salesforce',desc:'Agentforce · CRM IA',   color:'#00a1e0', cat:'Software & Apps'},
-  {sym:'NOW',  name:'ServiceNow',desc:'Automatización IA',     color:'#81b5a1', cat:'Software & Apps'},
-  // Energía para IA
-  {sym:'CEG',  name:'Constellation',desc:'Nuclear · Data Centers',color:'#ffd700', cat:'Energía para IA'},
-  {sym:'VST',  name:'Vistra',    desc:'Energía · Hyperscalers',color:'#ff8c00', cat:'Energía para IA'},
-];
-var IA_EARNINGS = [
-  {sym:'NVDA', date:'2026-05-20',eps_est:'0.94', eps_prev:'0.89',note:'Q1 FY2027 — confirmado'},
-  {sym:'AVGO', date:'2026-06-03',eps_est:'2.32', eps_prev:'1.60',note:'Q2 FY2026 — confirmado'},
-  {sym:'ORCL', date:'2026-06-16',eps_est:'1.70', eps_prev:'1.63',note:'Q4 FY2026 — est.'},
-  {sym:'MU',   date:'2026-06-24',eps_est:'1.95', eps_prev:'0.82',note:'Q3 FY2026 — est.'},
-  {sym:'TSLA', date:'2026-07-21',eps_est:'0.51', eps_prev:'0.27',note:'Q2 2026 — est.'},
-  {sym:'MSFT', date:'2026-07-28',eps_est:'3.65', eps_prev:'3.46',note:'Q4 FY2026 — est.'},
-  {sym:'GOOGL',date:'2026-07-28',eps_est:'2.35', eps_prev:'2.12',note:'Q2 2026 — est.'},
-  {sym:'AMD',  date:'2026-07-28',eps_est:'1.25', eps_prev:'1.08',note:'Q2 2026 — est.'},
-  {sym:'MRVL', date:'2026-07-28',eps_est:'0.75', eps_prev:'0.61',note:'Q2 FY2027 — est.'},
-  {sym:'META', date:'2026-07-29',eps_est:'6.20', eps_prev:'5.63',note:'Q2 2026 — est.'},
-  {sym:'PLTR', date:'2026-07-29',eps_est:'0.13', eps_prev:'0.09',note:'Q2 2026 — est.'},
-  {sym:'CRM',  date:'2026-07-29',eps_est:'2.55', eps_prev:'2.44',note:'Q2 FY2027 — est.'},
-  {sym:'NOW',  date:'2026-07-29',eps_est:'4.10', eps_prev:'3.92',note:'Q2 2026 — est.'},
-  {sym:'AAPL', date:'2026-07-30',eps_est:'1.85', eps_prev:'1.65',note:'Q3 FY2026 — est.'},
-  {sym:'ARM',  date:'2026-07-30',eps_est:'0.42', eps_prev:'0.36',note:'Q1 FY2027 — est.'},
-  {sym:'AMZN', date:'2026-07-31',eps_est:'1.72', eps_prev:'1.59',note:'Q2 2026 — est.'},
-  {sym:'SNOW', date:'2026-08-20',eps_est:'0.22', eps_prev:'0.18',note:'Q2 FY2027 — est.'},
-  {sym:'CEG',  date:'2026-08-05',eps_est:'1.80', eps_prev:'1.52',note:'Q2 2026 — est.'},
-  {sym:'VST',  date:'2026-08-07',eps_est:'2.20', eps_prev:'1.95',note:'Q2 2026 — est.'},
-];
-function daysUntil(dateStr){var today=new Date();today.setHours(0,0,0,0);return Math.round((new Date(dateStr)-today)/86400000);}
-async function loadIAMomentum(){
-  var grid=document.getElementById('iaMomentumGrid');if(!grid)return;
-  grid.innerHTML='<div style="grid-column:1/-1;font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:1rem">··· cargando datos en vivo</div>';
-  var results=await Promise.all(IA_COMPANIES.map(function(c){return fetch('https://finnhub.io/api/v1/quote?symbol='+c.sym+'&token='+FINNHUB_KEY).then(function(r){return r.json();}).catch(function(){return{};});}));
-  var priceData=results.map(function(d,i){
-    var c=IA_COMPANIES[i];
-    var price=d.c?(d.c>=100?'$'+d.c.toFixed(0):'$'+d.c.toFixed(2)):'—';
-    var pct=(d.c&&d.pc)?((d.c-d.pc)/d.pc*100):null;
-    var pctStr=pct!==null?(pct>=0?'▲ +':'▼ ')+Math.abs(pct).toFixed(2)+'%':'—';
-    var pctColor=pct===null?'var(--muted2)':pct>0?'var(--green)':'var(--red)';
-    return {sym:c.sym,desc:c.desc,color:c.color,cat:c.cat,price:price,pct:pct,pctStr:pctStr,pctColor:pctColor};
-  });
-  // Group by category
-  var cats={};
-  priceData.forEach(function(d){
-    if(!cats[d.cat]) cats[d.cat]=[];
-    cats[d.cat].push(d);
-  });
-  var gridHtml='';
-  Object.keys(cats).forEach(function(cat){
-    gridHtml+='<div style="grid-column:1/-1;font-family:var(--mono);font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;padding:0.45rem 0.75rem;background:rgba(168,85,247,0.06);border-bottom:1px solid var(--border2)">'+cat+'</div>';
-    cats[cat].forEach(function(d){
-      gridHtml+='<div style="padding:0.85rem 0.75rem;border-bottom:1px solid var(--border2);border-right:1px solid var(--border2);background:var(--surface)">'+
-        '<span style="font-family:var(--mono);font-size:0.7rem;font-weight:600;color:'+d.color+'">'+d.sym+'</span>'+
-        '<div style="font-family:var(--mono);font-size:0.48rem;color:var(--muted2);margin:0.15rem 0 0.35rem">'+d.desc+'</div>'+
-        '<div style="font-family:var(--mono);font-size:0.95rem;font-weight:600;color:var(--text)">'+d.price+'</div>'+
-        '<div style="font-family:var(--mono);font-size:0.68rem;font-weight:500;color:'+d.pctColor+'">'+d.pctStr+'</div>'+
-      '</div>';
-    });
-  });
-  grid.innerHTML=gridHtml;
-  renderIASummary(priceData);
-}
-
-function renderIASummary(priceData) {
-  var el = document.getElementById('iaSummary');
-  if(!el) return;
-  if(!priceData || !priceData.length) {
-    el.innerHTML = '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.5rem 0">Cargando datos de mercado...</div>';
-    return;
-  }
-  // Sort by % change descending
-  var sorted = priceData.slice().sort(function(a,b){ return (b.pct||0)-(a.pct||0); });
-  var gainers = sorted.filter(function(x){ return x.pct > 0; });
-  var losers  = sorted.filter(function(x){ return x.pct <= 0; });
-  var rows = sorted.map(function(d) {
-    var pct = d.pct;
-    var pctStr = pct !== null ? (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%' : '—';
-    var pctColor = pct === null ? 'var(--muted2)' : pct > 0 ? 'var(--green)' : pct < 0 ? 'var(--red)' : 'var(--muted)';
-    var arrow = pct === null ? '→' : pct > 0 ? '▲' : '▼';
-    var bar = '';
-    if(pct !== null) {
-      var barPct = Math.min(Math.abs(pct) / 5 * 100, 100);
-      var barColor = pct >= 0 ? 'var(--green)' : 'var(--red)';
-      bar = '<div style="flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden;margin:0 0.75rem">' +
-            '<div style="width:'+barPct+'%;height:100%;background:'+barColor+';border-radius:2px"></div></div>';
-    }
-    return '<div style="display:flex;align-items:center;padding:0.5rem 0;border-bottom:1px solid var(--border2)">' +
-      '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:600;color:'+d.color+';min-width:52px">'+d.sym+'</span>' +
-      '<span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted2);min-width:100px">'+d.desc+'</span>' +
-      bar +
-      '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:600;color:'+pctColor+';min-width:60px;text-align:right">'+arrow+' '+pctStr+'</span>' +
-    '</div>';
-  }).join('');
-
-  // Top gainer / top loser callout
-  var topG = gainers.length ? gainers[0] : null;
-  var topL = losers.length ? losers[losers.length-1] : null;
-  var callout = '';
-  if(topG || topL) {
-    callout = '<div style="display:flex;gap:0;margin-bottom:0.75rem">';
-    if(topG) callout += '<div style="flex:1;padding:0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-right:0.5rem">' +
-      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--green);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Mejor hoy</div>' +
-      '<div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--green)">'+topG.sym+' +'+topG.pct.toFixed(2)+'%</div>' +
-      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+topG.desc+'</div></div>';
-    if(topL) callout += '<div style="flex:1;padding:0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2)">' +
-      '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.2rem">Peor hoy</div>' +
-      '<div style="font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--red)">'+topL.sym+' '+topL.pct.toFixed(2)+'%</div>' +
-      '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+topL.desc+'</div></div>';
-    callout += '</div>';
-  }
-  el.innerHTML = callout + rows;
-}
-
-
-function showIA(e){
-  e&&e.preventDefault();
-  activePanel='ia';
-  hideAllPanels();
-  setSidebarVisible(false);
-  var ip=document.getElementById('iaPanel'); if(ip) { ip.style.display='none'; void ip.offsetWidth; ip.style.display='block'; }
-  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
-  document.getElementById('iaTab').classList.add('active');
-  loadIAMomentum();
-  renderIAEarnings();
-}
-
-function renderIAEarnings(){
-  var table=document.getElementById('iaEarningsTable');if(!table)return;
-  var sorted=IA_EARNINGS.slice().sort(function(a,b){return new Date(a.date)-new Date(b.date);});
-  // Only show upcoming (not past more than 7 days)
-  var relevant=sorted.filter(function(e){return daysUntil(e.date)>=-7;});
-  if(!relevant.length){table.innerHTML='<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.75rem">Sin earnings próximos.</div>';return;}
-  table.innerHTML=relevant.map(function(e){
-    var days=daysUntil(e.date),isPast=days<0,isSoon=days>=0&&days<=14;
-    var dayLabel=isPast?'Reportado ✓':days===0?'⚡ HOY':'en '+days+' días';
-    var dayColor=isPast?'var(--muted2)':isSoon?'#a855f7':'var(--gold)';
-    var bg=isSoon?'background:rgba(168,85,247,0.05)':'';
-    return '<div style="display:grid;grid-template-columns:60px 1fr auto auto;align-items:center;gap:0.5rem 0.75rem;padding:0.65rem 0.9rem;border-bottom:1px solid var(--border2);'+bg+'">'+
-      '<span style="font-family:var(--mono);font-size:0.72rem;font-weight:600;color:var(--text)">'+e.sym+'</span>'+
-      '<div>'+
-        '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted)">'+e.note+'</div>'+
-        '<div style="font-family:var(--mono);font-size:0.52rem;color:var(--muted2)">EPS est: $'+e.eps_est+' · prev: $'+e.eps_prev+'</div>'+
-      '</div>'+
-      '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2)">'+new Date(e.date).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})+'</span>'+
-      '<span style="font-family:var(--mono);font-size:0.62rem;font-weight:500;color:'+dayColor+';white-space:nowrap">'+dayLabel+'</span>'+
-    '</div>';
-  }).join('');
-}
-
 
 // ── DIAG SELECTOR ─────────────────────────────────────────────
 function showDiagSelector() {
@@ -4685,6 +4612,292 @@ function showCarrySim(e) {
 }
 // ══ /CARRY SCORE & SIMULADOR ══════════════════════════════════════════
 
+
+// ══ CARTERAS MULTI-CLIENTE ════════════════════════════════════════════
+var _currentCarteraId = null;
+
+function getCarteras(){ try{ return JSON.parse(localStorage.getItem('cn_carteras')||'[]'); }catch(e){ return []; } }
+function saveCarteras(list){ localStorage.setItem('cn_carteras', JSON.stringify(list)); }
+
+function upsertCartera(nombre, assets, horizonte, riesgo, score){
+  var list = getCarteras();
+  var now = new Date().toISOString();
+  var existing = _currentCarteraId ? list.find(function(c){ return c.id === _currentCarteraId; }) : null;
+  if(!existing) existing = list.find(function(c){ return c.nombre.toLowerCase() === nombre.toLowerCase(); });
+  if(existing){
+    existing.nombre = nombre; existing.assets = assets; existing.horizonte = horizonte;
+    existing.riesgo = riesgo; existing.lastDiag = now;
+    if(score) existing.score = score;
+    _currentCarteraId = existing.id;
+  } else {
+    var id = 'c_' + Date.now();
+    list.push({ id:id, nombre:nombre, assets:assets, horizonte:horizonte, riesgo:riesgo, score:score||null, lastDiag:now });
+    _currentCarteraId = id;
+  }
+  saveCarteras(list);
+}
+
+function showCarteras(e){
+  e && e.preventDefault();
+  hideAllPanels();
+  setSidebarVisible(false);
+  var p = document.getElementById('carterasPanel');
+  if(p){ p.style.display='none'; void p.offsetWidth; p.style.display='block'; }
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('carterasTab'); if(tab) tab.classList.add('active');
+  renderCarteras();
+}
+
+function renderCarteras(){
+  var list = getCarteras();
+  var el = document.getElementById('carterasList');
+  var empty = document.getElementById('carterasEmpty');
+  if(!el) return;
+  if(!list.length){ el.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+  // Active radar alerts for cross-referencing
+  var activeSignalNames = _getActiveSignalNames();
+  el.innerHTML = list.map(function(c){
+    var scoreColor = !c.score ? 'var(--muted2)' : c.score >= 7 ? 'var(--green)' : c.score >= 5 ? 'var(--gold)' : 'var(--red)';
+    var fecha = c.lastDiag ? new Date(c.lastDiag).toLocaleDateString('es-AR',{day:'2-digit',month:'short'}) : '—';
+    var nAlerts = _countCarteraAlerts(c, activeSignalNames);
+    var alertBadge = nAlerts > 0
+      ? '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--red);border:1px solid var(--red);padding:0.12rem 0.45rem">⚡ '+nAlerts+' señal'+(nAlerts>1?'es':'')+' activa'+(nAlerts>1?'s':'')+'</span>'
+      : '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);border:1px solid var(--border2);padding:0.12rem 0.45rem">Sin alertas</span>';
+    var totARS = 0, totUSD = 0;
+    (c.assets||[]).forEach(function(a){ if(a.moneda==='USD') totUSD += a.monto; else totARS += a.monto; });
+    var totStr = [];
+    if(totUSD) totStr.push('USD ' + totUSD.toLocaleString('es-AR'));
+    if(totARS) totStr.push('$ ' + totARS.toLocaleString('es-AR'));
+    return '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--green);padding:1.1rem 1.3rem;margin-bottom:0.6rem;display:grid;grid-template-columns:1fr auto;gap:0.75rem 1.5rem;align-items:center">'+
+      '<div>'+
+        '<div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:0.3rem">'+
+          '<span style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--text)">'+c.nombre+'</span>'+
+          alertBadge+
+        '</div>'+
+        '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);line-height:1.7">'+
+          (c.riesgo||'—')+' · '+(c.horizonte||'—')+' · '+(c.assets||[]).length+' activos'+(totStr.length?' · '+totStr.join(' + '):'')+
+          ' · Últ. diagnóstico: '+fecha+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:center;gap:1rem;flex-shrink:0">'+
+        '<div style="text-align:right">'+
+          '<div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:'+scoreColor+';line-height:1">'+(c.score?c.score+'/10':'—')+'</div>'+
+          '<div style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);text-transform:uppercase;letter-spacing:0.06em">Score</div>'+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;gap:0.35rem">'+
+          '<button onclick="cargarCartera(\''+c.id+'\')" style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.4rem 0.85rem;background:var(--green);color:#fff;border:none;cursor:pointer;white-space:nowrap">Diagnosticar ▸</button>'+
+          '<button onclick="eliminarCartera(\''+c.id+'\')" style="font-family:var(--mono);font-size:0.55rem;padding:0.3rem 0.85rem;background:transparent;color:var(--muted2);border:1px solid var(--border2);cursor:pointer">Eliminar</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+function _getActiveSignalNames(){
+  var names = [];
+  try{
+    RADAR_PATTERNS.forEach(function(p){
+      var pcts = p.assets.map(getTickerChange);
+      if(pcts.some(function(x){ return x===null; })) return;
+      var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
+      if(match && p.level==='alerta') names.push(p.name);
+    });
+  }catch(e){}
+  return names;
+}
+
+function _countCarteraAlerts(cartera, activeNames){
+  if(!activeNames.length || !cartera.assets) return 0;
+  var typeMap={'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market','FCI Renta Fija Pesos':'fci_pesos','FCI / Bono CER':'fci_cer','Bono / ON Hard Dollar':'bono_dollar','Dolar MEP / CCL':'dolar_mep','Dolares billete':'dolar_mep','Acciones argentinas (generico)':'acciones_ar','GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar','CEDEARs (general)':'cedears','CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr','CEDEAR: Apple (AAPL)':'aapl_cedr','S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq','Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum','Oro':'oro'};
+  var count = 0, seen = {};
+  cartera.assets.forEach(function(a){
+    var key = typeMap[a.tipo]; if(!key) return;
+    var rel = ASSET_RADAR_MAP[key]||[];
+    rel.forEach(function(sig){
+      if(activeNames.indexOf(sig)!==-1 && !seen[sig]){ seen[sig]=true; count++; }
+    });
+  });
+  return count;
+}
+
+function cargarCartera(id){
+  var c = getCarteras().find(function(x){ return x.id===id; });
+  if(!c) return;
+  _currentCarteraId = id;
+  // Load into diag form
+  showDiag();
+  showDiagIndividual();
+  setTimeout(function(){
+    document.getElementById('diagAssets').innerHTML=''; assetCount=0;
+    (c.assets||[]).forEach(function(a){
+      addAsset();
+      var rows=document.querySelectorAll('#diagAssets > div'), row=rows[rows.length-1];
+      var sels=row.querySelectorAll('select'), inp=row.querySelector('input');
+      if(sels[0]) Array.from(sels[0].options).forEach(function(o){ if(o.text===a.tipo) sels[0].value=o.value; });
+      if(inp) inp.value=a.monto;
+      if(sels[1]) sels[1].value=a.moneda||'ARS';
+    });
+    if(c.horizonte) document.getElementById('diagHorizonte').value=c.horizonte;
+    if(c.riesgo) document.getElementById('diagRiesgo').value=c.riesgo;
+    var nom = document.getElementById('diagCarteraNombre');
+    if(nom) nom.value = c.nombre;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 100);
+}
+
+function eliminarCartera(id){
+  var c = getCarteras().find(function(x){ return x.id===id; });
+  if(!c) return;
+  if(!confirm('¿Eliminar la cartera "'+c.nombre+'"? Esta acción no se puede deshacer.')) return;
+  saveCarteras(getCarteras().filter(function(x){ return x.id!==id; }));
+  if(_currentCarteraId===id) _currentCarteraId=null;
+  renderCarteras();
+}
+
+function nuevaCartera(){
+  _currentCarteraId = null;
+  showDiag();
+  showDiagIndividual();
+  setTimeout(function(){
+    document.getElementById('diagAssets').innerHTML=''; assetCount=0;
+    addAsset(); addAsset(); addAsset();
+    var nom = document.getElementById('diagCarteraNombre');
+    if(nom){ nom.value=''; nom.focus(); }
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, 100);
+}
+
+// ══ HOY (resumen del día) ═════════════════════════════════════════════
+function showHoy(e){
+  e && e.preventDefault();
+  hideAllPanels();
+  setSidebarVisible(false);
+  var p = document.getElementById('hoyPanel');
+  if(p){ p.style.display='none'; void p.offsetWidth; p.style.display='block'; }
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('hoyTab'); if(tab) tab.classList.add('active');
+  renderHoy();
+}
+
+function renderHoy(){
+  // Fecha + saludo
+  var now = new Date();
+  var hora = now.getHours();
+  var saludo = hora < 12 ? 'Buen día' : hora < 19 ? 'Buenas tardes' : 'Buenas noches';
+  var g = document.getElementById('hoyGreeting');
+  if(g) g.textContent = saludo + '.';
+  var d = document.getElementById('hoyDate');
+  if(d) d.textContent = now.toLocaleDateString('es-AR',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+  // Carry Score
+  var cs = calcCarryScore();
+  var sn = document.getElementById('hoyScoreNum');
+  var sl = document.getElementById('hoyScoreLabel');
+  var sd = document.getElementById('hoyScoreDetail');
+  var sb = document.getElementById('hoyScoreBar');
+  if(sn){ sn.textContent = cs.total; sn.style.color = cs.color; }
+  if(sl){ sl.textContent = cs.label; sl.style.color = cs.color; }
+  if(sd) sd.textContent = (cs.brecha!==null? 'Brecha '+cs.brecha.toFixed(1)+'%':'') + (cs.rpVal? ' · RP '+cs.rpVal+'pb':'');
+  if(sb){ sb.style.width = cs.total+'%'; sb.style.background = cs.color; }
+
+  // Señales activas (dominantes por categoría)
+  var sig = document.getElementById('hoySignals');
+  if(sig){
+    var byCat = {};
+    RADAR_PATTERNS.forEach(function(p){
+      var pcts = p.assets.map(getTickerChange);
+      if(pcts.some(function(x){ return x===null; })) return;
+      var match = pcts.every(function(pct,i){ return p.dirs[i]>0 ? pct>0.3 : pct<-0.3; });
+      if(!match) return;
+      var avg = pcts.reduce(function(a,b){ return a+b; },0)/pcts.length;
+      var cat = p.cat||'Otros';
+      if(!byCat[cat] || Math.abs(avg) > Math.abs(byCat[cat].avg)) byCat[cat] = {name:p.name, color:p.color, level:p.level, avg:avg};
+    });
+    var doms = Object.values(byCat);
+    if(!doms.length){
+      sig.innerHTML = '<div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted2)">Sin señales activas. Mercado lateral.</div>';
+    } else {
+      sig.innerHTML = doms.slice(0,4).map(function(s){
+        return '<div style="display:flex;align-items:center;gap:0.5rem">'+
+          '<span style="color:'+s.color+';font-size:0.6rem">●</span>'+
+          '<span style="font-family:var(--mono);font-size:0.68rem;color:var(--text)">'+s.name+'</span>'+
+          '<span style="font-family:var(--mono);font-size:0.6rem;color:'+(s.avg>=0?'var(--green)':'var(--red)')+';margin-left:auto">'+(s.avg>=0?'▲ +':'▼ ')+Math.abs(s.avg).toFixed(2)+'%</span>'+
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // Carteras
+  var hc = document.getElementById('hoyCarteras');
+  if(hc){
+    var list = getCarteras();
+    if(!list.length){
+      hc.innerHTML = '<div style="font-family:var(--mono);font-size:0.65rem;color:var(--muted2);padding:1rem;border:1px dashed var(--border);text-align:center">No tenés carteras guardadas. <a onclick="nuevaCartera()" style="color:var(--green);cursor:pointer">Creá la primera ▸</a></div>';
+    } else {
+      var activeNames = _getActiveSignalNames();
+      hc.innerHTML = list.map(function(c){
+        var scoreColor = !c.score ? 'var(--muted2)' : c.score >= 7 ? 'var(--green)' : c.score >= 5 ? 'var(--gold)' : 'var(--red)';
+        var nAlerts = _countCarteraAlerts(c, activeNames);
+        var status = nAlerts > 0
+          ? '<span style="color:var(--red)">⚡ '+nAlerts+' señal'+(nAlerts>1?'es':'')+' relevante'+(nAlerts>1?'s':'')+'</span>'
+          : '<span style="color:var(--muted2)">Sin alertas</span>';
+        return '<div onclick="cargarCartera(\''+c.id+'\')" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:0.7rem 1rem;background:var(--surface);border:1px solid var(--border2);border-left:3px solid '+(nAlerts>0?'var(--red)':'var(--border)')+';margin-bottom:0.4rem;cursor:pointer">'+
+          '<div>'+
+            '<div style="font-family:var(--mono);font-size:0.72rem;color:var(--text);font-weight:500">'+c.nombre+'</div>'+
+            '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:0.15rem">'+status+'</div>'+
+          '</div>'+
+          '<div style="font-family:var(--mono);font-size:0.95rem;font-weight:600;color:'+scoreColor+'">'+(c.score?c.score+'/10':'—')+'</div>'+
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // Movers
+  var mv = document.getElementById('hoyMovers');
+  if(mv){
+    var keyT = ['spx','ndx','vix','gld','tlt','btc','eem','wti','nvda','ypf','ggal'];
+    var lbls = {spx:'SPY',ndx:'QQQ',vix:'VIX',gld:'GOLD',tlt:'TLT',btc:'BTC',eem:'EEM',wti:'WTI',nvda:'NVDA',ypf:'YPF',ggal:'GGAL'};
+    var movers = [];
+    keyT.forEach(function(t){ var p = getTickerChange(t); if(p!==null) movers.push({t:lbls[t], pct:p}); });
+    movers.sort(function(a,b){ return Math.abs(b.pct)-Math.abs(a.pct); });
+    if(!movers.length){
+      mv.innerHTML = '<div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted2)">Cargando precios...</div>';
+    } else {
+      mv.innerHTML = movers.slice(0,5).map(function(m){
+        var c = m.pct>=0?'var(--green)':'var(--red)';
+        return '<div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.7rem">'+
+          '<span style="color:var(--text)">'+m.t+'</span>'+
+          '<span style="color:'+c+';font-weight:500">'+(m.pct>=0?'▲ +':'▼ ')+Math.abs(m.pct).toFixed(2)+'%</span>'+
+        '</div>';
+      }).join('');
+    }
+  }
+
+  // Agenda
+  var ag = document.getElementById('hoyAgenda');
+  if(ag){
+    var today = new Date(); today.setHours(0,0,0,0);
+    var upcoming = MACRO_EVENTS.filter(function(e){ return new Date(e.date+'T12:00:00') >= today; }).slice(0,5);
+    if(!upcoming.length){
+      ag.innerHTML = '<div style="font-family:var(--mono);font-size:0.68rem;color:var(--muted2)">Sin eventos próximos.</div>';
+    } else {
+      ag.innerHTML = upcoming.map(function(e){
+        var dd = new Date(e.date+'T12:00:00');
+        var isToday = dd.toDateString() === new Date().toDateString();
+        var lbl = isToday ? 'HOY' : dd.toLocaleDateString('es-AR',{day:'2-digit',month:'short'});
+        var color = isToday ? 'var(--red)' : 'var(--gold)';
+        return '<div style="display:flex;gap:0.75rem;padding:0.35rem 0;font-family:var(--mono);font-size:0.65rem;border-bottom:1px solid var(--border2)">'+
+          '<span style="color:'+color+';min-width:44px;font-weight:'+(isToday?'600':'400')+'">'+lbl+'</span>'+
+          '<span style="color:var(--muted)">'+e.ev+'</span>'+
+        '</div>';
+      }).join('');
+    }
+  }
+}
+// ══ /CARTERAS & HOY ═══════════════════════════════════════════════════
+
+
 function showSobre(e){
   e&&e.preventDefault();
   activePanel='sobre';
@@ -5628,6 +5841,8 @@ async function runDiag(){
     var txt=(data.result||'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
     var scoreMatch=txt.match(/<b>(\d+)\/10<\/b>/);
     saveDiagHistory(assets,horizonte,riesgo,scoreMatch?scoreMatch[1]:null);
+    var _carNom=(document.getElementById('diagCarteraNombre')||{}).value;
+    if(_carNom&&_carNom.trim()) upsertCartera(_carNom.trim(),assets,horizonte,riesgo,scoreMatch?scoreMatch[1]:null);
     result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
   }catch(err){result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';}
   btn.disabled=false;btn.textContent='Analizar de nuevo';
@@ -5880,7 +6095,7 @@ window.addEventListener('load', function(){
   if(urlSection === 'radar') { showRadar(); }
   else if(urlSection === 'analisis') { showAnalisis(); }
   else if(urlSection === 'aprender') { showAprender(); }
-  else { showDiag(); }
+  else { showHoy(); }
   // Pre-render analisis filters (hidden until tab clicked)
   renderMobCards();
 });
