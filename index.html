@@ -2249,7 +2249,7 @@ async function deleteNote(id) {
 function renderNotes() {
   // Don't render notes if a special panel is visible
   if(typeof activePanel !== 'undefined' && activePanel !== 'analisis') return;
-  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel','iaPanel'];
+  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel','hoyPanel','carterasPanel','carryScorePanel','carrySimPanel'];
   for(var sp = 0; sp < specialPanels.length; sp++) {
     var spEl = document.getElementById(specialPanels[sp]);
     if(spEl && spEl.style.display !== 'none') return;
@@ -4260,10 +4260,24 @@ function renderPortResult(data, amount) {
 
   // Disclaimer + retry
   html += '<div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);line-height:1.7;padding:1rem;border:1px solid var(--border2);background:var(--surface);margin-bottom:1.5rem">Este análisis es informativo y no constituye asesoramiento financiero. Los mercados tienen riesgo. Consultá con un asesor certificado antes de tomar decisiones de inversión.</div>';
+
+  // Guardar en mis carteras
+  html += '<div style="background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);padding:1.25rem 1.5rem;margin-bottom:1.5rem">';
+  html += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);margin-bottom:0.5rem">▤ Guardar en mis carteras</div>';
+  html += '<div style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:0.9rem">Guardá esta cartera en tu panel para monitorearla día a día junto al resto de tus clientes.</div>';
+  html += '<div style="display:flex;gap:0.6rem;flex-wrap:wrap;align-items:center">';
+  html += '<input type="text" id="portSaveName" placeholder="Ej: Cliente Rodríguez — moderado" style="flex:1;min-width:220px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.6rem 0.8rem;outline:none">';
+  html += '<button onclick="savePortfolioToCarteras()" style="font-family:var(--mono);font-size:0.65rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.3rem;background:var(--green);color:#fff;border:none;cursor:pointer;white-space:nowrap">Guardar cartera ▸</button>';
+  html += '</div>';
+  html += '<div id="portSaveMsg" style="font-family:var(--mono);font-size:0.65rem;margin-top:0.6rem;display:none"></div>';
+  html += '</div>';
+
   html += '<button onclick="resetPortafolio()" style="font-family:var(--mono);font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.6rem 1.2rem;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer">← Armar otro portafolio</button>';
 
   r.innerHTML = html;
   r.style.display = 'block';
+  // Store allocation for saving
+  window._lastPortResult = { data: data, amount: amount };
 
   // Draw donut
   if (data.allocation && data.allocation.length) {
@@ -4291,6 +4305,59 @@ function drawPortDonut(allocation) {
   });
   ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
   ctx.fillStyle = '#0a0a0b'; ctx.fill();
+}
+
+function savePortfolioToCarteras() {
+  var msg = document.getElementById('portSaveMsg');
+  var nom = (document.getElementById('portSaveName')||{}).value || '';
+  nom = nom.trim();
+  if (!nom) {
+    if(msg){ msg.textContent = '✗ Poné un nombre para la cartera.'; msg.style.color='var(--red)'; msg.style.display='block'; }
+    return;
+  }
+  var lp = window._lastPortResult;
+  if (!lp || !lp.data || !lp.data.allocation) {
+    if(msg){ msg.textContent = '✗ No hay datos de cartera para guardar.'; msg.style.color='var(--red)'; msg.style.display='block'; }
+    return;
+  }
+  // Map allocation class names to diagnosis asset types
+  function mapClassToTipo(name) {
+    var n = (name||'').toLowerCase();
+    if (n.indexOf('money') >= 0 || n.indexOf('liquidez') >= 0) return 'FCI Money Market';
+    if (n.indexOf('cer') >= 0 || n.indexOf('inflaci') >= 0) return 'FCI / Bono CER';
+    if (n.indexOf('pesos') >= 0 && n.indexOf('renta fija') >= 0) return 'FCI Renta Fija Pesos';
+    if (n.indexOf('lecap') >= 0 || n.indexOf('letra') >= 0 || n.indexOf('bono') >= 0 && n.indexOf('peso') >= 0) return 'FCI Renta Fija Pesos';
+    if (n.indexOf('hard dollar') >= 0 || n.indexOf('on ') >= 0 || n.indexOf('obligaci') >= 0 || (n.indexOf('bono') >= 0 && (n.indexOf('dolar') >= 0 || n.indexOf('dólar') >= 0 || n.indexOf('usd') >= 0))) return 'Bono / ON Hard Dollar';
+    if (n.indexOf('mep') >= 0 || n.indexOf('ccl') >= 0 || (n.indexOf('dolar') >= 0 || n.indexOf('dólar') >= 0)) return 'Dolar MEP / CCL';
+    if (n.indexOf('cedear') >= 0) return 'CEDEARs (general)';
+    if (n.indexOf('acciones argentin') >= 0 || n.indexOf('merval') >= 0) return 'Acciones argentinas (generico)';
+    if (n.indexOf('s&p') >= 0 || n.indexOf('sp500') >= 0 || n.indexOf('spy') >= 0) return 'S&P 500 (SPY ETF)';
+    if (n.indexOf('nasdaq') >= 0 || n.indexOf('qqq') >= 0) return 'Nasdaq (QQQ ETF)';
+    if (n.indexOf('bitcoin') >= 0 || n.indexOf('btc') >= 0 || n.indexOf('crypto') >= 0 || n.indexOf('cripto') >= 0) return 'Bitcoin (BTC)';
+    if (n.indexOf('oro') >= 0 || n.indexOf('gold') >= 0) return 'Oro';
+    return 'Otro';
+  }
+  var amount = lp.amount;
+  var assets = lp.data.allocation.map(function(item) {
+    return {
+      tipo: mapClassToTipo(item.name),
+      monto: Math.round(amount * item.pct / 100),
+      moneda: 'USD'
+    };
+  });
+  // Map horizon to diag format
+  var h = _portState.horizon || '';
+  var horizonte = h.indexOf('3') >= 0 && h.indexOf('más') >= 0 ? 'largo' :
+                  h.indexOf('1 a 3') >= 0 ? 'medio' : 'corto';
+  var riesgo = _portState.profile || 'moderado';
+
+  _currentCarteraId = null; // force new cartera
+  upsertCartera(nom, assets, horizonte, riesgo, null);
+  if(msg){
+    msg.innerHTML = '✓ Cartera guardada. <a onclick="showCarteras()" style="color:var(--green);cursor:pointer;text-decoration:underline">Ver en mis carteras ▸</a>';
+    msg.style.color = 'var(--green)';
+    msg.style.display = 'block';
+  }
 }
 
 function resetPortafolio() {
@@ -4639,6 +4706,7 @@ function upsertCartera(nombre, assets, horizonte, riesgo, score){
 
 function showCarteras(e){
   e && e.preventDefault();
+  activePanel='carteras';
   hideAllPanels();
   setSidebarVisible(false);
   var p = document.getElementById('carterasPanel');
@@ -4771,6 +4839,7 @@ function nuevaCartera(){
 // ══ HOY (resumen del día) ═════════════════════════════════════════════
 function showHoy(e){
   e && e.preventDefault();
+  activePanel='hoy';
   hideAllPanels();
   setSidebarVisible(false);
   var p = document.getElementById('hoyPanel');
@@ -5494,7 +5563,7 @@ function showAnalisis(e) {
   var af=document.getElementById('analisisFilters');if(af)af.style.display='block';
   setSidebarVisible(true);
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
-  var tab=document.getElementById('analisisTab');if(tab)tab.classList.add('active');
+  var tab=document.getElementById('analisisTab2');if(tab)tab.classList.add('active');
   var ep=document.getElementById('editorPanel');if(ep)ep.style.display=isEditor?'block':'none';
   // Reset away from removed 'views' filter
   if(!currentAnalisisFilter || currentAnalisisFilter === 'views') currentAnalisisFilter = 'macro_geo';
