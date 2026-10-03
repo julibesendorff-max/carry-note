@@ -968,11 +968,11 @@ if('serviceWorker' in navigator) {
       <div style="display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--border2);margin-bottom:1.5rem">
         <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem;border-right:1px solid var(--border2)">
           <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">TAMAR (ref. Money Market)</div>
-          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--gold)">22.5% <span style="font-size:0.6rem;color:var(--muted2)">TNA</span></div>
+          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--gold)" id="fciTamarRef">22.5% <span style="font-size:0.6rem;color:var(--muted2)">TNA</span></div>
         </div>
         <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem;border-right:1px solid var(--border2)">
           <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Inflación mensual (ref. CER)</div>
-          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:#a855f7">2.1% <span style="font-size:0.6rem;color:var(--muted2)">may · INDEC</span></div>
+          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:#a855f7" id="fciInflRef">··· <span style="font-size:0.6rem;color:var(--muted2)">INDEC</span></div>
         </div>
         <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem">
           <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Riesgo país (ref. USD)</div>
@@ -2918,23 +2918,126 @@ async function subscribeNewsletter() {
   }
   msg.style.display = 'block';
 }
+
+// ══ MACRO CENTRALIZADO · fuente única de verdad ══════════════════════
+// Todos los paneles leen de acá. Se actualiza en vivo al cargar la página.
+var CN_MACRO = {
+  // Argentina — valores de respaldo, se sobrescriben con datos en vivo
+  ipcMensual: null, ipcMensualPeriodo: '',
+  ipcInteranual: null,
+  ipcAcum: null, ipcAcumPeriodo: '',
+  tamar: 22.5, tamarPeriodo: 'jul 2026',
+  riesgoPais: null, reservas: null,
+  // EEUU — se actualizan manualmente (no hay API pública estable y gratuita)
+  fedFunds: '3.50-3.75%',
+  cpiUSA: 4.2, cpiUSAPeriodo: 'may 2026',
+  coreCpiUSA: 2.9, corePceUSA: 3.3,
+  desempleoUSA: 4.3,
+  _loaded: false
+};
+
+// Formatea un número como porcentaje, o devuelve fallback si es null
+function mFmt(v, dec, suffix){
+  if(v === null || v === undefined || isNaN(v)) return '—';
+  return v.toFixed(dec === undefined ? 1 : dec) + (suffix === undefined ? '%' : suffix);
+}
+
+// Devuelve el bloque de contexto macro que se manda a la IA (prompts)
+function getMacroContextString(){
+  var p = [];
+  p.push('MACRO ARGENTINA:');
+  if(CN_MACRO.ipcMensual !== null) p.push('IPC mensual: ' + mFmt(CN_MACRO.ipcMensual) + (CN_MACRO.ipcMensualPeriodo ? ' (' + CN_MACRO.ipcMensualPeriodo + ')' : ''));
+  if(CN_MACRO.ipcInteranual !== null) p.push('IPC interanual: ' + mFmt(CN_MACRO.ipcInteranual));
+  if(CN_MACRO.ipcAcum !== null) p.push('IPC acumulado 2026: ' + mFmt(CN_MACRO.ipcAcum));
+  p.push('TAMAR: ' + CN_MACRO.tamar + '% TNA (' + CN_MACRO.tamarPeriodo + ')');
+  if(CN_MACRO.riesgoPais) p.push('Riesgo pais EMBI+: ' + CN_MACRO.riesgoPais + ' pb');
+  if(CN_MACRO.reservas) p.push('Reservas BCRA: USD ' + CN_MACRO.reservas + 'B');
+  p.push('MACRO EEUU: Fed ' + CN_MACRO.fedFunds + ' | CPI ' + mFmt(CN_MACRO.cpiUSA) + ' YoY (' + CN_MACRO.cpiUSAPeriodo + ') | Core CPI ' + mFmt(CN_MACRO.coreCpiUSA) + ' | Core PCE ' + mFmt(CN_MACRO.corePceUSA) + ' | Desempleo ' + mFmt(CN_MACRO.desempleoUSA));
+  return p.join(' | ');
+}
+
+// Carga inflación en vivo desde argentinadatos
+async function loadMacroLive(){
+  try{
+    var res = await fetch('https://api.argentinadatos.com/v1/finanzas/indices/inflacion');
+    if(res.ok){
+      var data = await res.json();
+      if(Array.isArray(data) && data.length){
+        // El endpoint devuelve serie historica ascendente; tomamos el ultimo
+        var last = data[data.length - 1];
+        if(last && last.valor !== undefined){
+          CN_MACRO.ipcMensual = parseFloat(last.valor);
+          if(last.fecha){
+            var d = new Date(last.fecha + 'T12:00:00');
+            CN_MACRO.ipcMensualPeriodo = d.toLocaleDateString('es-AR',{month:'short',year:'numeric'});
+          }
+        }
+        // Acumulado del año en curso
+        var yr = new Date().getFullYear();
+        var thisYear = data.filter(function(x){ return x.fecha && x.fecha.indexOf(String(yr)) === 0; });
+        if(thisYear.length){
+          var acum = 1;
+          thisYear.forEach(function(x){ acum *= (1 + parseFloat(x.valor)/100); });
+          CN_MACRO.ipcAcum = (acum - 1) * 100;
+          CN_MACRO.ipcAcumPeriodo = thisYear.length + ' meses ' + yr;
+        }
+        // Interanual: componer ultimos 12 meses
+        if(data.length >= 12){
+          var last12 = data.slice(-12), ia = 1;
+          last12.forEach(function(x){ ia *= (1 + parseFloat(x.valor)/100); });
+          CN_MACRO.ipcInteranual = (ia - 1) * 100;
+        }
+      }
+    }
+  }catch(e){ console.log('inflacion live error', e); }
+  CN_MACRO._loaded = true;
+  applyMacroToUI();
+}
+
+// Vuelca CN_MACRO a todos los lugares de la UI que lo muestran
+function applyMacroToUI(){
+  // Sidebar Argentina
+  var elIpcM = document.getElementById('macro-ipc-mensual');
+  var elIpcI = document.getElementById('macro-ipc-interanual');
+  var elIpcA = document.getElementById('macro-ipc-acum');
+  var elTamar = document.getElementById('macro-tamar');
+  if(elIpcM){ elIpcM.textContent = mFmt(CN_MACRO.ipcMensual); }
+  if(elIpcI){ elIpcI.textContent = mFmt(CN_MACRO.ipcInteranual); }
+  if(elIpcA){ elIpcA.textContent = mFmt(CN_MACRO.ipcAcum); }
+  if(elTamar){ elTamar.textContent = CN_MACRO.tamar + '% TNA'; }
+  // Notas de periodo
+  var noteM = document.getElementById('macro-ipc-mensual-note');
+  if(noteM && CN_MACRO.ipcMensualPeriodo) noteM.textContent = CN_MACRO.ipcMensualPeriodo + ' · INDEC';
+  var noteI = document.getElementById('macro-ipc-interanual-note');
+  if(noteI && CN_MACRO.ipcMensualPeriodo) noteI.textContent = CN_MACRO.ipcMensualPeriodo + ' · INDEC';
+  // FCI reference strip
+  var fciInfl = document.getElementById('fciInflRef');
+  if(fciInfl){ fciInfl.innerHTML = mFmt(CN_MACRO.ipcMensual) + ' <span style="font-size:0.6rem;color:var(--muted2)">' + (CN_MACRO.ipcMensualPeriodo||'') + ' · INDEC</span>'; }
+  var fciTamar = document.getElementById('fciTamarRef');
+  if(fciTamar){ fciTamar.innerHTML = CN_MACRO.tamar + '% <span style="font-size:0.6rem;color:var(--muted2)">TNA</span>'; }
+  // Carry Score se recalcula con los nuevos valores
+  if(typeof renderCarryScoreWidget === 'function') renderCarryScoreWidget();
+  var csP = document.getElementById('carryScorePanel');
+  if(csP && csP.style.display !== 'none' && typeof renderCarryScorePanel === 'function') renderCarryScorePanel();
+}
+// ══ /MACRO CENTRALIZADO ══════════════════════════════════════════════
+
 // ── ARGENTINA MACRO ────────────────────────────────────────
 async function loadArgMacro() {
   const el = document.getElementById('argMacro');
   if(!el) return;
   const staticData = [
-    {n:'IPC mensual',       v:'2.1%',      cls:'dn',  note:'May 2026 · INDEC'},
-    {n:'IPC junio est.',    v:'~1.9%',     cls:'dn',  note:'REM BCRA · jul 2026'},
-    {n:'IPC interanual',    v:'33.2%',     cls:'dn',  note:'May 2026 · INDEC'},
-    {n:'Acumulado 2026',    v:'14.7%',     cls:'dn',  note:'ene-may · INDEC'},
-    {n:'TAMAR jul.',        v:'22.5% TNA', cls:'neu', note:'REM BCRA'},
+    {n:'IPC mensual',       v:'···',       cls:'dn',  note:'INDEC', id:'macro-ipc-mensual', noteId:'macro-ipc-mensual-note'},
+    {n:'IPC interanual',    v:'···',       cls:'dn',  note:'INDEC', id:'macro-ipc-interanual', noteId:'macro-ipc-interanual-note'},
+    {n:'Acumulado 2026',    v:'···',       cls:'dn',  note:'INDEC', id:'macro-ipc-acum'},
+    {n:'TAMAR',             v:'22.5% TNA', cls:'neu', note:'REM BCRA', id:'macro-tamar'},
     {n:'Reservas brutas',   v:'···',       cls:'up',  note:'BCRA · en vivo', id:'arg-reservas'},
     {n:'Compras BCRA 2026', v:'USD 5.8B',  cls:'up',  note:'acum.'},
   ];
   el.innerHTML = staticData.map(d =>
     '<div class="ind">' +
     '<span class="ind-n">' + d.n +
-      (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)">' + d.note + '</span>' : '') +
+      (d.note ? ' <span style="font-size:0.5rem;color:var(--muted2)"' + (d.noteId ? ' id="'+d.noteId+'"' : '') + '>' + d.note + '</span>' : '') +
     '</span><span class="ind-v ' + d.cls + '"' + (d.id ? ' id="'+d.id+'"' : '') + '>' + d.v + '</span></div>'
   ).join('') +
   '<div class="ind"><span class="ind-n">Riesgo país <span style="font-size:0.5rem;color:var(--muted2)">EMBI+ JPM</span></span><span class="ind-v dn" id="arg-riesgo">···</span></div>' +
@@ -2984,6 +3087,7 @@ async function loadArgMacro() {
       if(rpEl && rpVal) {
         rpEl.textContent = Math.round(rpVal) + ' pb';
         rpEl.className = rpVal > 800 ? 'ind-v dn' : 'ind-v neu';
+        CN_MACRO.riesgoPais = Math.round(rpVal);
       }
       var msRp = document.getElementById('ms-rp');
       if(msRp && rpVal) msRp.textContent = Math.round(rpVal) + 'pb';
@@ -3007,6 +3111,7 @@ async function loadArgMacro() {
         var resBillones = (resVal / 1000).toFixed(1);
         resEl.textContent = 'USD ' + resBillones + 'B';
         resEl.className = 'ind-v up';
+        CN_MACRO.reservas = resBillones;
       }
     }
   } catch(e) {}
@@ -3135,6 +3240,7 @@ function showFCI(e) {
   var rpSrc = document.getElementById('arg-riesgo');
   var rpDst = document.getElementById('fciRpRef');
   if(rpSrc && rpDst) rpDst.textContent = (rpSrc.textContent||'···').trim();
+  applyMacroToUI();
   renderFCI();
 }
 // Patch filterByTag to restore feed when clicking other tabs
@@ -3448,11 +3554,13 @@ async function runDiagCore() {
   var rpLive = rpEl && rpEl.textContent && rpEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? rpEl.textContent.trim() : null;
   var blueEl = document.getElementById('arg-blue');
   var blueLive = blueEl && blueEl.textContent && blueEl.textContent.trim() !== '\u00b7\u00b7\u00b7' ? blueEl.textContent.trim() : null;
-  var arMacro = ['IPC mar 2026: 3.4% mensual, 32.6% interanual (INDEC)', 'Reservas BCRA: USD 45.4B'];
+  var arMacro = [];
+  if(CN_MACRO.ipcMensual !== null) arMacro.push('IPC ' + (CN_MACRO.ipcMensualPeriodo||'') + ': ' + mFmt(CN_MACRO.ipcMensual) + ' mensual, ' + mFmt(CN_MACRO.ipcInteranual) + ' interanual (INDEC)');
+  if(CN_MACRO.reservas) arMacro.push('Reservas BCRA: USD ' + CN_MACRO.reservas + 'B');
   if(rpLive) arMacro.push('Riesgo pais EMBI+: ' + rpLive);
   if(blueLive) arMacro.push('USD Blue: ' + blueLive);
   liveLines.push('MACRO AR: ' + arMacro.join(' | '));
-  liveLines.push('MACRO EEUU: Fed 3.50-3.75% | CPI mar 3.3% YoY | Core CPI 2.6% | Desempleo 4.3%');
+  liveLines.push('MACRO EEUU: Fed ' + CN_MACRO.fedFunds + ' | CPI ' + mFmt(CN_MACRO.cpiUSA) + ' YoY (' + CN_MACRO.cpiUSAPeriodo + ') | Core CPI ' + mFmt(CN_MACRO.coreCpiUSA) + ' | Desempleo ' + mFmt(CN_MACRO.desempleoUSA));
   liveLines.push('');
   liveLines.push('=== REGLA CRITICA SOBRE PRECIOS ===');
   liveLines.push('Los precios y rangos de arriba son los UNICOS datos de mercado validos. Cuando hables de si un activo esta cerca o lejos de maximos, usa EXCLUSIVAMENTE el dato "% vs maximo 52sem" provisto arriba. NUNCA uses tu conocimiento previo de precios, que esta desactualizado. Si un activo no tiene rango 52sem listado, NO comentes su posicion relativa. Ejemplo: si BTC dice "-45% vs maximo 52sem", esta LEJOS de maximos, no cerca. Inventar o contradecir estos datos es un error grave.');
@@ -3599,7 +3707,7 @@ async function runScenario(tipo) {
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl2 = document.getElementById('arg-riesgo');
   var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | ' + getMacroContextString();
   try {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
@@ -3644,7 +3752,7 @@ async function runComparison() {
   var arsVal = (document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl2 = document.getElementById('arg-riesgo');
   var rpLive = rpEl2 && rpEl2.textContent && rpEl2.textContent.trim() !== '···' ? rpEl2.textContent.trim() : 'ver sidebar';
-  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | Riesgo pais EMBI+: ' + rpLive + ' | IPC mar 3.4% mensual | Fed 3.50-3.75% | CPI EEUU 3.3% YoY';
+  var liveData = 'Contexto actual ('+today+'): USD/ARS ' + (arsVal||'N/D') + ' | ' + getMacroContextString();
   try {
     const res = await fetch('/api/diagnose', {
       method: 'POST',
@@ -3928,7 +4036,7 @@ async function runDiagEmpresa() {
   promptLines.push('');
   promptLines.push('=== CONTEXTO MACRO ===');
   promptLines.push('Riesgo pais: '+rpLive+' | Blue: '+blueLive+' | MEP: '+mepLive);
-  promptLines.push('IPC AR: 3.4% mensual | Reservas: USD 45.2B | Fed: 3.50-3.75% | CPI EEUU: 3.3% | Brent: $110');
+  promptLines.push(getMacroContextString());
   var empPrices = '';
   try {
     var empSyms = {'SPY':'SPY','BTC':'BINANCE:BTCUSDT','GLD':'GLD','NVDA':'NVDA','QQQ':'QQQ'};
@@ -4625,8 +4733,8 @@ function calcCarryScore() {
   // ── Componente 1: Tasa real en pesos (peso 30%) ──────────────────
   // TAMAR ~26.8% TNA, inflación mensual ~3.4% (40.8% anual)
   // Tasa real = TNA - inflación anual esperada
-  var tna = 22.5; // TAMAR jul 2026
-  var inflAnual = 33.2; // IPC interanual may 2026
+  var tna = CN_MACRO.tamar;
+  var inflAnual = (CN_MACRO.ipcInteranual !== null) ? CN_MACRO.ipcInteranual : 33.2;
   var tasaReal = tna - inflAnual; // negativo = lleva el carry
   // Score: cuanto más positiva la tasa real, mejor. Rango aprox -30 a +20
   var tasaScore = Math.max(0, Math.min(100, 50 + tasaReal * 1.8));
@@ -6307,7 +6415,9 @@ async function runDiag(){
   var arsVal=(document.getElementById('t-ars')||{}).textContent||'~1080';
   var rpEl=document.getElementById('arg-riesgo'),rpLive=rpEl&&rpEl.textContent.trim()!=='···'?rpEl.textContent.trim():'ver sidebar';
   var blueEl=document.getElementById('arg-blue'),blueLive=blueEl&&blueEl.textContent.trim()!=='···'?blueEl.textContent.trim():null;
-  var arMacro=['IPC mar 2026: 3.4% mensual, 32.6% interanual','Reservas BCRA: USD 45.2B'];
+  var arMacro=[];
+  if(CN_MACRO.ipcMensual !== null) arMacro.push('IPC ' + (CN_MACRO.ipcMensualPeriodo||'') + ': ' + mFmt(CN_MACRO.ipcMensual) + ' mensual, ' + mFmt(CN_MACRO.ipcInteranual) + ' interanual');
+  if(CN_MACRO.reservas) arMacro.push('Reservas BCRA: USD ' + CN_MACRO.reservas + 'B');
   if(rpLive)arMacro.push('Riesgo pais EMBI+: '+rpLive);
   if(blueLive)arMacro.push('USD Blue: '+blueLive);
   var liveData=['DATOS EN VIVO ('+today+'):'];
@@ -6315,7 +6425,7 @@ async function runDiag(){
   if(btcVal&&btcVal.trim()!=='—')liveData.push('- BTC: '+btcVal.trim());
   if(arsVal&&arsVal.trim()!=='—')liveData.push('- USD/ARS oficial: '+arsVal.trim());
   liveData.push('MACRO AR: '+arMacro.join(' | '));
-  liveData.push('MACRO EEUU: Fed 3.50-3.75% (hold abr 2026) | CPI mar 3.3% YoY | Core 2.6% | Desempleo 4.3%');
+  liveData.push('MACRO EEUU: Fed ' + CN_MACRO.fedFunds + ' | CPI ' + mFmt(CN_MACRO.cpiUSA) + ' YoY (' + CN_MACRO.cpiUSAPeriodo + ') | Core ' + mFmt(CN_MACRO.coreCpiUSA) + ' | Desempleo ' + mFmt(CN_MACRO.desempleoUSA));
   var liveDataStr=liveData.join(' ||| ');
   try{
     var res=await fetch('/api/diagnose',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({assets,horizonte,riesgo,liveData:liveDataStr})});
@@ -6568,6 +6678,7 @@ window.addEventListener('load', function(){
   loadNotes();
   loadCalendar();
   loadArgMacro();
+  loadMacroLive();
   setTimeout(function(){ renderCarryScoreWidget(); }, 2000);
   loadTicker();
   loadForex();
