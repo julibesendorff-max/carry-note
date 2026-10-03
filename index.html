@@ -575,18 +575,19 @@ if('serviceWorker' in navigator) {
     <div class="issue-badge">EST. 2025</div>
   </div>
   <nav class="nav-strip" id="navStrip">
-    <a data-filter="hoy" id="hoyTab" onclick="showHoy(event)" style="color:var(--gold)">◈ Hoy</a>
-    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
-    <a data-filter="carteras" id="carterasTab" onclick="showCarteras(event)" style="color:var(--green)">▤ Carteras</a>
-    <a data-filter="carryscore" id="carryScoreTab" onclick="showCarryScore(event)" style="color:var(--gold)">◈ Carry Score</a>
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
     <a data-filter="portafolio" id="portafolioTab" onclick="showPortafolio(event)" style="color:var(--gold)">▸ Armar cartera</a>
-    <a data-filter="carrysim" id="carrySimTab" onclick="showCarrySim(event)" style="color:var(--blue)">⟳ Simulador carry</a>
-    <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
-    <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#a855f7">● Views</a>
     <a data-filter="watchlist" id="watchlistTab" onclick="showWatchlist(event)" style="color:var(--blue)">☆ Watchlist</a>
-    <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
     <a data-filter="aprender" id="aprenderTab" onclick="showAprender(event)">Aprender</a>
+    <a data-filter="all" id="analisisTab2" onclick="showAnalisis(event)">Análisis</a>
+    <a data-filter="fci" id="fciTab" onclick="showFCI(event)">FCI</a>
+    <a data-filter="carryscore" id="carryScoreTab" onclick="showCarryScore(event)" style="color:var(--gold)">◈ Carry Score</a>
+    <a data-filter="hoy" id="hoyTab" onclick="showHoy(event)" style="color:var(--gold)">◈ Hoy</a>
+    <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
+    <a data-filter="carrysim" id="carrySimTab" onclick="showCarrySim(event)" style="color:var(--blue)">⟳ Simulador carry</a>
+    <a data-filter="rebalanceo" id="rebalanceoTab" onclick="showRebalanceo(event)" style="color:#a855f7">⚖ Rebalanceo</a>
+    <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#a855f7">● Views</a>
+    <a data-filter="carteras" id="carterasTab" onclick="showCarteras(event)" style="color:var(--green)">▤ Carteras</a>
     <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
 </header>
@@ -1867,6 +1868,35 @@ if('serviceWorker' in navigator) {
     </div>
     <!-- ══ /CARTERAS PANEL ═══════════════════════════════════════════ -->
 
+
+    <!-- ══ REBALANCEO PANEL ═══════════════════════════════════════════ -->
+    <div id="rebalanceoPanel" style="display:none;margin-bottom:2rem">
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.6rem">⚖ Calculadora · Carry Note</div>
+      <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1;margin-bottom:0.5rem">Rebalanceo de cartera</div>
+      <p style="font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:600px">Definí tu asignación objetivo por clase de activo, cargá los montos actuales, y calculá exactamente cuánto comprar o vender de cada una para volver al objetivo.</p>
+
+      <div style="margin-bottom:1rem">
+        <div style="display:grid;grid-template-columns:1.6fr 100px 140px;gap:0.6rem;margin-bottom:0.6rem;font-family:var(--mono);font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted2);padding:0 0.2rem">
+          <span>Clase de activo</span><span style="text-align:center">Objetivo %</span><span style="text-align:right">Monto actual (USD)</span>
+        </div>
+        <div id="rebalRows"></div>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding:0.6rem 0.2rem;border-top:1px solid var(--border2)">
+        <span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted)">Suma de objetivos: <b id="rebalPctSum" style="color:var(--text)">0%</b></span>
+        <span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted)">Total cartera: <b id="rebalTotal" style="color:var(--gold)">USD 0</b></span>
+      </div>
+
+      <div id="rebalWarning" style="display:none;font-family:var(--mono);font-size:0.62rem;color:var(--red);background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.3);padding:0.6rem 0.9rem;margin-bottom:1.5rem"></div>
+
+      <div id="rebalResult" style="display:none;margin-bottom:1.5rem"></div>
+
+      <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2)">
+        Esta calculadora trabaja a nivel de clase de activo, no de instrumento individual. Los montos se guardan en este dispositivo mientras navegás, pero no persisten entre visitas. No constituye recomendación de inversión.
+      </div>
+    </div>
+    <!-- ══ /REBALANCEO PANEL ══════════════════════════════════════════ -->
+
     <div id="sobrePanel" style="display:none;margin-bottom:2rem">
       <div style="max-width:600px">
         <!-- Header -->
@@ -2249,7 +2279,7 @@ async function deleteNote(id) {
 function renderNotes() {
   // Don't render notes if a special panel is visible
   if(typeof activePanel !== 'undefined' && activePanel !== 'analisis') return;
-  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel','hoyPanel','carterasPanel','carryScorePanel','carrySimPanel'];
+  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel','hoyPanel','carterasPanel','carryScorePanel','carrySimPanel','rebalanceoPanel'];
   for(var sp = 0; sp < specialPanels.length; sp++) {
     var spEl = document.getElementById(specialPanels[sp]);
     if(spEl && spEl.style.display !== 'none') return;
@@ -3079,21 +3109,85 @@ function toggleLesson(id) {
 }
 // ── DIAGNOSTICO DE CARTERA ─────────────────────────────────
 const ASSET_TYPES = [
-  {v:'plazo_fijo',l:'Plazo fijo'},{v:'money_market',l:'FCI Money Market'},
-  {v:'fci_pesos',l:'FCI Renta Fija Pesos'},{v:'fci_cer',l:'FCI / Bono CER'},
-  {v:'bono_dollar',l:'Bono / ON Hard Dollar'},{v:'dolar_mep',l:'Dolar MEP / CCL'},
-  {v:'dolar_billete',l:'Dolares billete'},{v:'acciones_ar',l:'Acciones argentinas (generico)'},
-  {v:'ggal',l:'GGAL (Grupo Galicia)'},{v:'ypf_ar',l:'YPF'},
-  {v:'bma',l:'BMA (Banco Macro)'},{v:'pamp',l:'PAMP (Pampa Energia)'},
-  {v:'txar',l:'TXAR (Ternium Argentina)'},{v:'come',l:'COME (Sociedad Comercial del Plata)'},
-  {v:'cedears',l:'CEDEARs (general)'},{v:'aapl_cedr',l:'CEDEAR: Apple (AAPL)'},
-  {v:'nvda_cedr',l:'CEDEAR: NVIDIA (NVDA)'},{v:'tsla_cedr',l:'CEDEAR: Tesla (TSLA)'},
-  {v:'msft_cedr',l:'CEDEAR: Microsoft (MSFT)'},{v:'amzn_cedr',l:'CEDEAR: Amazon (AMZN)'},
-  {v:'googl_cedr',l:'CEDEAR: Alphabet (GOOGL)'},{v:'meta_cedr',l:'CEDEAR: Meta (META)'},
-  {v:'sp500',l:'S&P 500 (SPY ETF)'},{v:'nasdaq',l:'Nasdaq (QQQ ETF)'},{v:'etf_eeuu',l:'ETFs EEUU (otros)'},{v:'acciones_eeuu',l:'Acciones EEUU (general)'},
-  {v:'bitcoin',l:'Bitcoin (BTC)'},{v:'ethereum',l:'Ethereum (ETH)'},
-  {v:'crypto_otro',l:'Crypto (otras)'},{v:'oro',l:'Oro'},
-  {v:'otro',l:'Otro'},
+  // ── Liquidez / Tipo de cambio ──────────────────────────────
+  {v:'plazo_fijo',l:'Plazo fijo',grp:'Liquidez'},
+  {v:'money_market',l:'FCI Money Market',grp:'Liquidez'},
+  {v:'dolar_mep',l:'Dolar MEP / CCL',grp:'Liquidez'},
+  {v:'dolar_billete',l:'Dolares billete',grp:'Liquidez'},
+
+  // ── Renta Fija · Tasa fija en pesos ────────────────────────
+  {v:'lecap',l:'Lecap',grp:'Renta Fija · Tasa fija $'},
+  {v:'boncap',l:'Boncap',grp:'Renta Fija · Tasa fija $'},
+  {v:'fci_pesos',l:'FCI Renta Fija Pesos',grp:'Renta Fija · Tasa fija $'},
+
+  // ── Renta Fija · CER (inflación) ───────────────────────────
+  {v:'lecer',l:'Lecer',grp:'Renta Fija · CER'},
+  {v:'bono_cer',l:'Bono CER',grp:'Renta Fija · CER'},
+  {v:'fci_cer',l:'FCI / Bono CER',grp:'Renta Fija · CER'},
+
+  // ── Renta Fija · Dollar Linked ──────────────────────────────
+  {v:'dollar_linked',l:'Bono Dollar Linked',grp:'Renta Fija · Dollar Linked'},
+
+  // ── Renta Fija · Soberano hard dollar ──────────────────────
+  {v:'al29_gd29',l:'AL29 / GD29 (2029)',grp:'Renta Fija · Soberano USD'},
+  {v:'al30_gd30',l:'AL30 / GD30 (2030)',grp:'Renta Fija · Soberano USD'},
+  {v:'al35_gd35',l:'AL35 / GD35 (2035)',grp:'Renta Fija · Soberano USD'},
+  {v:'ae38_gd38',l:'AE38 / GD38 (2038)',grp:'Renta Fija · Soberano USD'},
+  {v:'al41_gd41',l:'AL41 / GD41 (2041)',grp:'Renta Fija · Soberano USD'},
+  {v:'bopreal',l:'Bopreal',grp:'Renta Fija · Soberano USD'},
+  {v:'bono_dollar',l:'Bono soberano USD (otro)',grp:'Renta Fija · Soberano USD'},
+
+  // ── Renta Fija · Corporativo (ON) hard dollar ──────────────
+  {v:'on_ypf',l:'ON YPF',grp:'Renta Fija · ON Corporativas'},
+  {v:'on_pampa',l:'ON Pampa Energía',grp:'Renta Fija · ON Corporativas'},
+  {v:'on_vista',l:'ON Vista Energy',grp:'Renta Fija · ON Corporativas'},
+  {v:'on_telecom',l:'ON Telecom Argentina',grp:'Renta Fija · ON Corporativas'},
+  {v:'on_galicia',l:'ON Banco Galicia',grp:'Renta Fija · ON Corporativas'},
+  {v:'on_macro',l:'ON Banco Macro',grp:'Renta Fija · ON Corporativas'},
+  {v:'on_generica',l:'ON hard dollar (otra)',grp:'Renta Fija · ON Corporativas'},
+
+  // ── Renta Fija · Fondos / EEUU ─────────────────────────────
+  {v:'fci_usd',l:'FCI Renta Fija USD',grp:'Renta Fija · Fondos'},
+
+  // ── Renta Variable · Acciones Argentina ────────────────────
+  {v:'ggal',l:'GGAL (Grupo Galicia)',grp:'Renta Variable · Argentina'},
+  {v:'ypf_ar',l:'YPF',grp:'Renta Variable · Argentina'},
+  {v:'bma',l:'BMA (Banco Macro)',grp:'Renta Variable · Argentina'},
+  {v:'pamp',l:'PAMP (Pampa Energia)',grp:'Renta Variable · Argentina'},
+  {v:'txar',l:'TXAR (Ternium Argentina)',grp:'Renta Variable · Argentina'},
+  {v:'come',l:'COME (Sociedad Comercial del Plata)',grp:'Renta Variable · Argentina'},
+  {v:'cepu',l:'CEPU (Central Puerto)',grp:'Renta Variable · Argentina'},
+  {v:'supv',l:'SUPV (Grupo Supervielle)',grp:'Renta Variable · Argentina'},
+  {v:'alua',l:'ALUA (Aluar)',grp:'Renta Variable · Argentina'},
+
+  // ── Renta Variable · CEDEARs específicos ───────────────────
+  {v:'aapl_cedr',l:'CEDEAR: Apple (AAPL)',grp:'Renta Variable · CEDEARs'},
+  {v:'nvda_cedr',l:'CEDEAR: NVIDIA (NVDA)',grp:'Renta Variable · CEDEARs'},
+  {v:'tsla_cedr',l:'CEDEAR: Tesla (TSLA)',grp:'Renta Variable · CEDEARs'},
+  {v:'msft_cedr',l:'CEDEAR: Microsoft (MSFT)',grp:'Renta Variable · CEDEARs'},
+  {v:'amzn_cedr',l:'CEDEAR: Amazon (AMZN)',grp:'Renta Variable · CEDEARs'},
+  {v:'googl_cedr',l:'CEDEAR: Alphabet (GOOGL)',grp:'Renta Variable · CEDEARs'},
+  {v:'meta_cedr',l:'CEDEAR: Meta (META)',grp:'Renta Variable · CEDEARs'},
+  {v:'jpm_cedr',l:'CEDEAR: JPMorgan (JPM)',grp:'Renta Variable · CEDEARs'},
+  {v:'ko_cedr',l:'CEDEAR: Coca-Cola (KO)',grp:'Renta Variable · CEDEARs'},
+  {v:'dis_cedr',l:'CEDEAR: Disney (DIS)',grp:'Renta Variable · CEDEARs'},
+  {v:'cedears',l:'CEDEARs (cartera diversificada)',grp:'Renta Variable · CEDEARs'},
+
+  // ── Renta Variable · Índices y ETFs ────────────────────────
+  {v:'sp500',l:'S&P 500 (SPY ETF)',grp:'Renta Variable · Índices'},
+  {v:'nasdaq',l:'Nasdaq (QQQ ETF)',grp:'Renta Variable · Índices'},
+  {v:'russell',l:'Russell 2000 / Small Caps (IWM)',grp:'Renta Variable · Índices'},
+  {v:'eem_etf',l:'Mercados Emergentes (EEM)',grp:'Renta Variable · Índices'},
+  {v:'etf_eeuu',l:'ETFs EEUU (otros)',grp:'Renta Variable · Índices'},
+
+  // ── Crypto ──────────────────────────────────────────────────
+  {v:'bitcoin',l:'Bitcoin (BTC)',grp:'Crypto'},
+  {v:'ethereum',l:'Ethereum (ETH)',grp:'Crypto'},
+  {v:'crypto_otro',l:'Crypto (otras)',grp:'Crypto'},
+
+  // ── Otros ───────────────────────────────────────────────────
+  {v:'oro',l:'Oro',grp:'Otros'},
+  {v:'otro',l:'Otro',grp:'Otros'},
 ];
 let assetCount = 0;
 function addAsset() {
@@ -3102,7 +3196,19 @@ function addAsset() {
   const div = document.createElement('div');
   div.id = id;
   div.style.cssText = 'display:grid;grid-template-columns:2fr 120px 80px 32px;gap:0.5rem;align-items:center;margin-bottom:0.5rem';
-  const opts = ASSET_TYPES.map(function(a){ return '<option value="' + a.v + '">' + a.l + '</option>'; }).join('');
+  const opts = (function(){
+    var groups = []; var byGrp = {};
+    ASSET_TYPES.forEach(function(a){
+      var g = a.grp || 'Otros';
+      if(!byGrp[g]){ byGrp[g] = []; groups.push(g); }
+      byGrp[g].push(a);
+    });
+    return groups.map(function(g){
+      return '<optgroup label="' + g + '">' +
+        byGrp[g].map(function(a){ return '<option value="' + a.v + '">' + a.l + '</option>'; }).join('') +
+        '</optgroup>';
+    }).join('');
+  })();
   const removeBtn = document.createElement('button');
   removeBtn.textContent = 'x';
   removeBtn.style.cssText = 'background:transparent;border:1px solid var(--border2);color:var(--muted2);cursor:pointer;font-size:0.8rem;padding:0.3rem 0.6rem';
@@ -3550,7 +3656,7 @@ function downloadPDF() {
 function hideAllPanels() {
   var allPanels = [
     'diagSelector','diagPanel','diagEmpresaPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
-    'portafolioPanel','carryScorePanel','carrySimPanel','hoyPanel','carterasPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
+    'portafolioPanel','carryScorePanel','carrySimPanel','hoyPanel','carterasPanel','rebalanceoPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
     'feed','newsletterBlock','noResults','feedHeader','emptyState',
     'analisisFilters','radarForecastWrap','corrExplainerModal'
   ];
@@ -4755,6 +4861,7 @@ function renderCarteras(){
         '</div>'+
         '<div style="display:flex;flex-direction:column;gap:0.35rem">'+
           '<button onclick="cargarCartera(\''+c.id+'\')" style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;padding:0.4rem 0.85rem;background:var(--green);color:#fff;border:none;cursor:pointer;white-space:nowrap">Diagnosticar ▸</button>'+
+          '<button onclick="exportCarteraPDF(\''+c.id+'\')" style="font-family:var(--mono);font-size:0.55rem;padding:0.3rem 0.85rem;background:var(--surface2);color:var(--text);border:1px solid var(--border);cursor:pointer">↓ Exportar PDF</button>'+
           '<button onclick="eliminarCartera(\''+c.id+'\')" style="font-family:var(--mono);font-size:0.55rem;padding:0.3rem 0.85rem;background:transparent;color:var(--muted2);border:1px solid var(--border2);cursor:pointer">Eliminar</button>'+
         '</div>'+
       '</div>'+
@@ -4777,7 +4884,18 @@ function _getActiveSignalNames(){
 
 function _countCarteraAlerts(cartera, activeNames){
   if(!activeNames.length || !cartera.assets) return 0;
-  var typeMap={'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market','FCI Renta Fija Pesos':'fci_pesos','FCI / Bono CER':'fci_cer','Bono / ON Hard Dollar':'bono_dollar','Dolar MEP / CCL':'dolar_mep','Dolares billete':'dolar_mep','Acciones argentinas (generico)':'acciones_ar','GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar','CEDEARs (general)':'cedears','CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr','CEDEAR: Apple (AAPL)':'aapl_cedr','S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq','Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum','Oro':'oro'};
+  var typeMap={
+    'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market','Dolar MEP / CCL':'dolar_mep','Dolares billete':'dolar_mep',
+    'Lecap':'fci_pesos','Boncap':'fci_pesos','FCI Renta Fija Pesos':'fci_pesos',
+    'Lecer':'fci_cer','Bono CER':'fci_cer','FCI / Bono CER':'fci_cer',
+    'Bono Dollar Linked':'dolar_mep',
+    'AL29 / GD29 (2029)':'bono_dollar','AL30 / GD30 (2030)':'bono_dollar','AL35 / GD35 (2035)':'bono_dollar','AE38 / GD38 (2038)':'bono_dollar','AL41 / GD41 (2041)':'bono_dollar','Bopreal':'bono_dollar','Bono soberano USD (otro)':'bono_dollar',
+    'ON YPF':'bono_dollar','ON Pampa Energía':'bono_dollar','ON Vista Energy':'bono_dollar','ON Telecom Argentina':'bono_dollar','ON Banco Galicia':'bono_dollar','ON Banco Macro':'bono_dollar','ON hard dollar (otra)':'bono_dollar','FCI Renta Fija USD':'bono_dollar',
+    'GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar','BMA (Banco Macro)':'acciones_ar','PAMP (Pampa Energia)':'acciones_ar','TXAR (Ternium Argentina)':'acciones_ar','COME (Sociedad Comercial del Plata)':'acciones_ar','CEPU (Central Puerto)':'acciones_ar','SUPV (Grupo Supervielle)':'acciones_ar','ALUA (Aluar)':'acciones_ar',
+    'CEDEAR: Apple (AAPL)':'aapl_cedr','CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr','CEDEAR: Microsoft (MSFT)':'cedears','CEDEAR: Amazon (AMZN)':'cedears','CEDEAR: Alphabet (GOOGL)':'cedears','CEDEAR: Meta (META)':'cedears','CEDEAR: JPMorgan (JPM)':'cedears','CEDEAR: Coca-Cola (KO)':'cedears','CEDEAR: Disney (DIS)':'cedears','CEDEARs (cartera diversificada)':'cedears',
+    'S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq','Russell 2000 / Small Caps (IWM)':'sp500','Mercados Emergentes (EEM)':'eem_signal','ETFs EEUU (otros)':'sp500',
+    'Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum','Oro':'oro'
+  };
   var count = 0, seen = {};
   cartera.assets.forEach(function(a){
     var key = typeMap[a.tipo]; if(!key) return;
@@ -4787,6 +4905,54 @@ function _countCarteraAlerts(cartera, activeNames){
     });
   });
   return count;
+}
+
+
+function exportCarteraPDF(id){
+  var c = getCarteras().find(function(x){ return x.id===id; });
+  if(!c) return;
+  var today = new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  var assetsHtml = (c.assets||[]).map(function(a){
+    return '<div style="font-family:Courier New,monospace;font-size:0.85rem;padding:0.3rem 0;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between"><span>'+a.tipo+'</span><span>'+Number(a.monto).toLocaleString()+' '+a.moneda+'</span></div>';
+  }).join('');
+  var totARS=0, totUSD=0;
+  (c.assets||[]).forEach(function(a){ if(a.moneda==='USD') totUSD+=a.monto; else totARS+=a.monto; });
+  var scoreStr = c.score ? c.score+'/10' : 'Sin diagnóstico reciente';
+  var lastDiagStr = c.lastDiag ? new Date(c.lastDiag).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+  var printWin = window.open('', '_blank');
+  printWin.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8">'+
+  '<title>Cartera \u00b7 '+c.nombre+'</title>'+
+  '<style>'+
+    'body{font-family:Georgia,serif;max-width:750px;margin:40px auto;color:#1a1a1a;background:#fff;padding:0 20px}'+
+    'h1{font-size:2rem;margin-bottom:0.25rem;color:#1a1a1a}'+
+    '.gold{color:#b8860b}.mono{font-family:Courier New,monospace;font-size:0.85rem}'+
+    '.tag{display:inline-block;font-family:Courier New,monospace;font-size:0.7rem;padding:0.2rem 0.5rem;border:1px solid #b8860b;color:#b8860b;margin-bottom:1rem}'+
+    '.divider{border:none;border-top:1px solid #ddd;margin:1.5rem 0}'+
+    '.section{margin-bottom:1.5rem}'+
+    '.section h2{font-family:Courier New,monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.75rem;border-bottom:1px solid #eee;padding-bottom:0.4rem}'+
+    '.score-box{background:#f9f5eb;border:1px solid #b8860b;border-left:4px solid #b8860b;padding:1rem 1.25rem;margin:1.5rem 0;display:flex;justify-content:space-between;align-items:center}'+
+    '.score-num{font-size:2.5rem;font-weight:bold;color:#b8860b;font-family:Courier New,monospace}'+
+    '.footer{margin-top:3rem;padding-top:1rem;border-top:1px solid #ddd;font-family:Courier New,monospace;font-size:0.7rem;color:#888;display:flex;justify-content:space-between}'+
+    '.disclaimer{background:#fff8f8;border:1px solid #e8c8c8;border-left:3px solid #c0392b;padding:0.75rem 1rem;margin-top:1.5rem;font-family:Courier New,monospace;font-size:0.72rem;color:#666;line-height:1.6}'+
+    '@media print{body{margin:20px}}'+
+  '</style></head><body>'+
+    '<div class="tag">\u25b8 CARRY NOTE \u00b7 FICHA DE CARTERA</div>'+
+    '<h1>'+c.nombre+'</h1>'+
+    '<p class="mono" style="color:#888;margin-bottom:1.5rem">'+today+' \u00b7 Perfil '+(c.riesgo||'\u2014')+' \u00b7 Horizonte '+(c.horizonte||'\u2014')+'</p>'+
+    '<hr class="divider">'+
+    '<div class="section"><h2>Activos de la cartera</h2>'+assetsHtml+
+      '<div style="font-family:Courier New,monospace;font-size:0.8rem;color:#888;padding-top:0.75rem;margin-top:0.5rem;border-top:1px solid #ddd">'+
+      (totUSD?('Total USD: '+totUSD.toLocaleString()+'  '):'')+(totARS?('Total ARS: '+totARS.toLocaleString()):'')+
+      '</div></div>'+
+    '<div class="score-box"><div>'+
+      '<div style="font-family:Courier New,monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:0.3rem">Score \u00e9 ltimo diagn\u00f3stico</div>'+
+      '<div style="font-size:0.9rem;color:#555">'+lastDiagStr+'</div>'+
+    '</div><div class="score-num">'+scoreStr+'</div></div>'+
+    '<div class="disclaimer">\u26a0 Esta ficha resume la composici\u00f3n declarada de la cartera y el \u00faltimo score calculado. Car\u00e1cter educativo e informativo. No constituye asesoramiento financiero ni recomendaci\u00f3n de inversi\u00f3n.</div>'+
+    '<div class="footer"><span>Carry Note \u00b7 thecarrynote.com</span><span>'+today+'</span></div>'+
+    '<scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt>'+
+  '</body></html>');
+  printWin.document.close();
 }
 
 function cargarCartera(id){
@@ -4967,6 +5133,95 @@ function renderHoy(){
 // ══ /CARTERAS & HOY ═══════════════════════════════════════════════════
 
 
+
+// ══ REBALANCEO DE CARTERA ═════════════════════════════════════════════
+var REBAL_CLASSES = [
+  {k:'rf_pesos',  l:'Renta Fija Pesos (tasa fija / CER)', pct:25},
+  {k:'rf_usd',    l:'Renta Fija USD (soberano / ON)',     pct:20},
+  {k:'acciones',  l:'Acciones / CEDEARs',                 pct:25},
+  {k:'cripto',    l:'Cripto',                              pct:5},
+  {k:'oro',       l:'Oro',                                 pct:5},
+  {k:'liquidez',  l:'Liquidez (MEP / plazo fijo / money market)', pct:20},
+];
+var _rebalInitialized = false;
+
+function showRebalanceo(e){
+  e && e.preventDefault();
+  activePanel='rebalanceo';
+  hideAllPanels();
+  setSidebarVisible(false);
+  var p = document.getElementById('rebalanceoPanel');
+  if(p){ p.style.display='none'; void p.offsetWidth; p.style.display='block'; }
+  document.querySelectorAll('.nav-strip a').forEach(function(a){ a.classList.remove('active'); });
+  var tab = document.getElementById('rebalanceoTab'); if(tab) tab.classList.add('active');
+  if(!_rebalInitialized){ renderRebalRows(); _rebalInitialized = true; }
+  calcRebalanceo();
+}
+
+function renderRebalRows(){
+  var el = document.getElementById('rebalRows');
+  if(!el) return;
+  el.innerHTML = REBAL_CLASSES.map(function(c){
+    return '<div style="display:grid;grid-template-columns:1.6fr 100px 140px;gap:0.6rem;align-items:center;margin-bottom:0.5rem">'+
+      '<span style="font-family:var(--mono);font-size:0.72rem;color:var(--text)">'+c.l+'</span>'+
+      '<input type="number" id="rebalPct_'+c.k+'" value="'+c.pct+'" min="0" max="100" step="1" oninput="calcRebalanceo()" style="width:100%;text-align:center;background:var(--bg);border:1px solid var(--border);color:var(--gold);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.4rem;outline:none"/>'+
+      '<input type="number" id="rebalAmt_'+c.k+'" placeholder="0" min="0" step="100" oninput="calcRebalanceo()" style="width:100%;text-align:right;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.72rem;padding:0.5rem 0.6rem;outline:none"/>'+
+    '</div>';
+  }).join('');
+}
+
+function calcRebalanceo(){
+  var pctSum = 0, total = 0;
+  var rows = REBAL_CLASSES.map(function(c){
+    var pctEl = document.getElementById('rebalPct_'+c.k);
+    var amtEl = document.getElementById('rebalAmt_'+c.k);
+    var pct = pctEl ? (parseFloat(pctEl.value)||0) : c.pct;
+    var amt = amtEl ? (parseFloat(amtEl.value)||0) : 0;
+    pctSum += pct; total += amt;
+    return { k:c.k, l:c.l, pct:pct, amt:amt };
+  });
+
+  var pctSumEl = document.getElementById('rebalPctSum');
+  var totalEl = document.getElementById('rebalTotal');
+  var warnEl = document.getElementById('rebalWarning');
+  var resEl = document.getElementById('rebalResult');
+  if(pctSumEl){ pctSumEl.textContent = pctSum + '%'; pctSumEl.style.color = Math.abs(pctSum-100)<0.5 ? 'var(--green)' : 'var(--red)'; }
+  if(totalEl) totalEl.textContent = 'USD ' + total.toLocaleString('es-AR');
+
+  if(Math.abs(pctSum - 100) > 0.5){
+    if(warnEl){ warnEl.style.display='block'; warnEl.textContent = '⚠ Los objetivos suman ' + pctSum + '%, no 100%. Ajustá los porcentajes antes de usar el resultado.'; }
+  } else if(warnEl){ warnEl.style.display='none'; }
+
+  if(total <= 0){
+    if(resEl){ resEl.style.display='none'; }
+    return;
+  }
+
+  rows.forEach(function(r){
+    r.actualPct = total > 0 ? (r.amt / total * 100) : 0;
+    r.targetAmt = total * r.pct / 100;
+    r.diff = r.targetAmt - r.amt;
+  });
+
+  if(resEl){
+    resEl.style.display = 'block';
+    resEl.innerHTML =
+      '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Movimientos para rebalancear</div>' +
+      rows.map(function(r){
+        var action = Math.abs(r.diff) < total*0.005 ? 'En línea' : r.diff > 0 ? 'Comprar' : 'Vender';
+        var color = Math.abs(r.diff) < total*0.005 ? 'var(--muted2)' : r.diff > 0 ? 'var(--green)' : 'var(--red)';
+        return '<div style="display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:0.6rem;align-items:center;padding:0.65rem 0.2rem;border-bottom:1px solid var(--border2)">'+
+          '<span style="font-family:var(--mono);font-size:0.68rem;color:var(--text)">'+r.l+'</span>'+
+          '<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Actual: '+r.actualPct.toFixed(1)+'% <span style="color:var(--muted2)">('+r.pct.toFixed(0)+'% obj.)</span></span>'+
+          '<span style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);text-align:right">USD '+Math.round(r.amt).toLocaleString('es-AR')+' → '+Math.round(r.targetAmt).toLocaleString('es-AR')+'</span>'+
+          '<span style="font-family:var(--mono);font-size:0.7rem;font-weight:600;color:'+color+';text-align:right">'+action+(Math.abs(r.diff)>=total*0.005?' USD '+Math.round(Math.abs(r.diff)).toLocaleString('es-AR'):'')+'</span>'+
+        '</div>';
+      }).join('');
+  }
+}
+// ══ /REBALANCEO ════════════════════════════════════════════════════════
+
+
 function showSobre(e){
   e&&e.preventDefault();
   activePanel='sobre';
@@ -5094,7 +5349,8 @@ var ASSET_RADAR_MAP = {
   'oro':['Flight to quality','Cobertura activa','Dólar débil','Dólar fuerte'],
   'dolar_mep':['Dólar débil','Dólar fuerte','Inflow Argentina','Outflow Argentina'],
   'ypf_ar':['Inflow Argentina','Outflow Argentina','Oil shock'],'ggal':['Inflow Argentina','Outflow Argentina'],
-  'acciones_ar':['Inflow Argentina','Outflow Argentina']
+  'acciones_ar':['Inflow Argentina','Outflow Argentina'],
+  'eem_signal':['Rally emergentes','Salida de emergentes']
 };
 function getCrossAlerts() {
   var saved=getSavedPortfolio();
@@ -5108,7 +5364,18 @@ function getCrossAlerts() {
   });
   if(!activeSignals.length) return [];
   var alerts=[];
-  var typeMap={'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market','FCI Renta Fija Pesos':'fci_pesos','FCI / Bono CER':'fci_cer','Bono / ON Hard Dollar':'bono_dollar','Dolar MEP / CCL':'dolar_mep','Dolares billete':'dolar_mep','Acciones argentinas (generico)':'acciones_ar','GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar','CEDEARs (general)':'cedears','CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr','CEDEAR: Apple (AAPL)':'aapl_cedr','S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq','Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum','Oro':'oro'};
+  var typeMap={
+    'Plazo fijo':'plazo_fijo','FCI Money Market':'money_market','Dolar MEP / CCL':'dolar_mep','Dolares billete':'dolar_mep',
+    'Lecap':'fci_pesos','Boncap':'fci_pesos','FCI Renta Fija Pesos':'fci_pesos',
+    'Lecer':'fci_cer','Bono CER':'fci_cer','FCI / Bono CER':'fci_cer',
+    'Bono Dollar Linked':'dolar_mep',
+    'AL29 / GD29 (2029)':'bono_dollar','AL30 / GD30 (2030)':'bono_dollar','AL35 / GD35 (2035)':'bono_dollar','AE38 / GD38 (2038)':'bono_dollar','AL41 / GD41 (2041)':'bono_dollar','Bopreal':'bono_dollar','Bono soberano USD (otro)':'bono_dollar',
+    'ON YPF':'bono_dollar','ON Pampa Energía':'bono_dollar','ON Vista Energy':'bono_dollar','ON Telecom Argentina':'bono_dollar','ON Banco Galicia':'bono_dollar','ON Banco Macro':'bono_dollar','ON hard dollar (otra)':'bono_dollar','FCI Renta Fija USD':'bono_dollar',
+    'GGAL (Grupo Galicia)':'ggal','YPF':'ypf_ar','BMA (Banco Macro)':'acciones_ar','PAMP (Pampa Energia)':'acciones_ar','TXAR (Ternium Argentina)':'acciones_ar','COME (Sociedad Comercial del Plata)':'acciones_ar','CEPU (Central Puerto)':'acciones_ar','SUPV (Grupo Supervielle)':'acciones_ar','ALUA (Aluar)':'acciones_ar',
+    'CEDEAR: Apple (AAPL)':'aapl_cedr','CEDEAR: NVIDIA (NVDA)':'nvda_cedr','CEDEAR: Tesla (TSLA)':'tsla_cedr','CEDEAR: Microsoft (MSFT)':'cedears','CEDEAR: Amazon (AMZN)':'cedears','CEDEAR: Alphabet (GOOGL)':'cedears','CEDEAR: Meta (META)':'cedears','CEDEAR: JPMorgan (JPM)':'cedears','CEDEAR: Coca-Cola (KO)':'cedears','CEDEAR: Disney (DIS)':'cedears','CEDEARs (cartera diversificada)':'cedears',
+    'S&P 500 (SPY ETF)':'sp500','Nasdaq (QQQ ETF)':'nasdaq','Russell 2000 / Small Caps (IWM)':'sp500','Mercados Emergentes (EEM)':'eem_signal','ETFs EEUU (otros)':'sp500',
+    'Bitcoin (BTC)':'bitcoin','Ethereum (ETH)':'ethereum','Oro':'oro'
+  };
   // Build active signals map with category dedup (same logic as radar display)
   var activeByCat = {};
   RADAR_PATTERNS.forEach(function(p){
@@ -5606,9 +5873,16 @@ async function loadViews(){
   try{
     var url='/rest/v1/views?select=*&order=created_at.desc';
     if(currentViewsMarket!=='all')url+='&market=eq.'+currentViewsMarket;
-    var res=await sbFetch(url);if(!res.ok)throw new Error();
+    var res=await sbFetch(url);if(!res.ok)throw new Error('HTTP '+res.status);
     var views=await res.json();
-    if(!views.length){el.innerHTML='';if(emptyEl)emptyEl.style.display='block';return;}
+    if(!views.length){
+      el.innerHTML='';if(emptyEl)emptyEl.style.display='block';
+      var elS0=document.getElementById('viewsListStandalone');
+      var emptyS0=document.getElementById('viewsEmptyStandalone');
+      if(elS0) elS0.innerHTML='';
+      if(emptyS0) emptyS0.style.display='block';
+      return;
+    }
     if(emptyEl)emptyEl.style.display='none';
     var cardsHtml = views.map(function(v){return buildViewCard(v);}).join('');
     el.innerHTML = cardsHtml;
