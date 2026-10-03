@@ -527,6 +527,143 @@ button:disabled {
 .sim-btn:hover{background:var(--gold2)}
 .sim-disclaimer{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);line-height:1.7;padding:0.75rem 1rem;border:1px solid var(--border2);margin-top:1rem}
 
+
+/* ══════════════════════════════════════════════════════════════
+   REDISEÑO MINIMALISTA · capa de refinamiento
+   Más aire, menos bordes, jerarquía por peso y espacio
+   ══════════════════════════════════════════════════════════════ */
+
+:root{
+  --radius:10px;
+  --ring:rgba(201,168,76,0.22);
+  --surface-soft:rgba(255,255,255,0.022);
+  --hairline:rgba(255,255,255,0.07);
+}
+
+/* ── Tipografía general: más aire ───────────────────────────── */
+body{font-size:15.5px;letter-spacing:0.005em}
+
+/* ── HEADER: más limpio y espacioso ─────────────────────────── */
+header{border-bottom:1px solid var(--hairline);backdrop-filter:blur(12px);background:rgba(10,10,11,0.88)}
+.header-main{padding:1.5rem 3rem;gap:1.5rem}
+.logo-name{font-size:2.1rem;letter-spacing:-0.025em;font-weight:600}
+.logo-tag{font-size:0.58rem;letter-spacing:0.22em;color:var(--muted2);margin-top:0.3rem}
+
+/* LinkedIn button en header */
+.hdr-li{display:inline-flex;align-items:center;gap:0.45rem;font-family:var(--mono);font-size:0.62rem;
+  letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;
+  padding:0.45rem 0.9rem;border:1px solid var(--hairline);border-radius:var(--radius);
+  transition:all 0.2s ease;white-space:nowrap;flex-shrink:0}
+.hdr-li:hover{color:#5b8dee;border-color:rgba(91,141,238,0.5);background:rgba(91,141,238,0.07)}
+.hdr-li svg{opacity:0.85;flex-shrink:0}
+
+/* ── CARRY SCORE widget: integrado, sin borde duro ──────────── */
+.cs-widget{border-left:none;padding:0.5rem 1rem;border-radius:var(--radius);margin-left:auto;gap:0.7rem}
+.cs-widget:hover{background:var(--surface-soft)}
+.cs-orb{width:34px;height:34px}
+.cs-orb::after{display:none}
+.cs-label{font-size:0.46rem;letter-spacing:0.18em}
+.cs-val{font-size:0.74rem}
+.cs-desc{font-size:0.48rem;opacity:0.7}
+
+/* ── NAV: pills, sin divisores verticales ───────────────────── */
+.nav-strip{border-top:1px solid var(--hairline);padding:0.55rem 3rem;gap:0.15rem;align-items:center}
+.nav-strip a{border-right:none;padding:0.5rem 0.95rem;font-size:0.645rem;letter-spacing:0.09em;
+  border-radius:7px;opacity:0.72;transition:all 0.18s ease}
+.nav-strip a:hover{background:var(--surface-soft);opacity:1}
+.nav-strip a.active{background:rgba(201,168,76,0.1);opacity:1;border-bottom:none !important;
+  box-shadow:inset 0 0 0 1px var(--ring)}
+
+/* ── MAIN: más respiro ──────────────────────────────────────── */
+main{padding:3rem;gap:3rem;max-width:1440px}
+
+/* ── TICKER: más sutil ──────────────────────────────────────── */
+.ticker{background:transparent;border-bottom:1px solid var(--hairline);padding:0.55rem 0;opacity:0.82}
+.t-lbl{font-size:0.66rem;letter-spacing:0.06em}
+.t-val{font-size:0.8rem}
+
+/* ── PANEL HEADERS: jerarquía por tamaño, no por borde ─────── */
+#diagPanel > div:first-child,
+#radarPanel > div:first-child,
+#carryScorePanel > div:first-child,
+#watchlistPanel > div:first-child,
+#viewsStandalonePanel > div:first-child,
+#aprenderPanel > div:first-child{border-bottom:1px solid var(--hairline) !important;padding-bottom:1.75rem !important;margin-bottom:2.25rem !important}
+
+/* ── CARDS / SURFACES: redondeo y bordes suaves ────────────── */
+.sb-block,
+#carterasList > div,
+.cs-hero,
+.cs-components,
+.sim-input-block,
+.sim-result,
+#hoyScoreCard,
+#hoyPanel [style*="border:1px solid var(--border)"],
+#hoyPanel [style*="border:1px solid var(--border2)"],
+#carterasEmpty{
+  border-radius:var(--radius) !important;
+  border-color:var(--hairline) !important;
+}
+.sb-block{background:var(--surface-soft);padding:1.4rem}
+.sb-title{font-size:0.58rem;letter-spacing:0.16em;border-bottom:1px solid var(--hairline);
+  padding-bottom:0.75rem;margin-bottom:1.1rem;color:var(--muted)}
+
+/* ── INPUTS / SELECTS: consistentes y redondeados ──────────── */
+input[type=text],input[type=number],input[type=email],input[type=password],select,textarea{
+  border-radius:7px !important;border-color:var(--hairline) !important;
+  transition:border-color 0.18s ease,box-shadow 0.18s ease !important}
+input:focus,select:focus,textarea:focus{
+  border-color:var(--gold) !important;box-shadow:0 0 0 3px var(--ring) !important;outline:none !important}
+select optgroup{background:var(--surface);color:var(--gold);font-family:var(--mono);
+  font-size:0.62rem;letter-spacing:0.08em;font-style:normal;font-weight:500;padding:0.3rem 0}
+select option{background:var(--bg);color:var(--text);font-weight:400;padding:0.3rem 0}
+
+/* ── BUTTONS: redondeo uniforme ────────────────────────────── */
+button{border-radius:7px !important}
+.af-btn{border-radius:999px !important;padding:0.42rem 0.95rem;border-color:var(--hairline)}
+.af-active{box-shadow:0 0 0 1px var(--gold)}
+
+/* ── FEED / NOTAS: más aire entre piezas ───────────────────── */
+.note-card{border-bottom:1px solid var(--hairline);padding:2.5rem 0}
+.note-title{font-size:1.95rem;letter-spacing:-0.015em;line-height:1.22}
+.note-sub{font-size:1.02rem;line-height:1.8;color:var(--muted)}
+.note-tag{border-radius:999px;padding:0.22rem 0.65rem;font-size:0.58rem}
+
+/* ── INDICADORES sidebar ───────────────────────────────────── */
+.ind{padding:0.55rem 0;border-bottom:1px solid var(--hairline)}
+.ind-n{font-size:0.72rem}
+.ind-v{font-size:0.78rem}
+
+/* ── TABLAS / FILAS de datos ───────────────────────────────── */
+.comp-row,.cal-row{border-bottom:1px solid var(--hairline)}
+
+/* ── FOOTER: discreto ──────────────────────────────────────── */
+footer{border-top:1px solid var(--hairline);padding:2rem 3rem;opacity:0.65;font-size:0.65rem}
+
+/* ── SCROLLBAR sutil ───────────────────────────────────────── */
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:999px}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.18)}
+
+/* ── Menos ruido en el grano de fondo ──────────────────────── */
+body::before{opacity:0.2}
+
+/* ── MOBILE: ajustes del rediseño ──────────────────────────── */
+@media(max-width:768px){
+  body{font-size:15px}
+  .header-main{padding:0.9rem 1rem;gap:0.75rem}
+  .logo-name{font-size:1.6rem}
+  .hdr-li{padding:0.4rem 0.7rem;font-size:0.56rem}
+  .hdr-li span{display:none}
+  .nav-strip{padding:0.45rem 0.65rem;gap:0.1rem}
+  .nav-strip a{padding:0.45rem 0.75rem;font-size:0.58rem;border-radius:6px}
+  main{padding:1.1rem;gap:1.25rem}
+  .note-card{padding:1.6rem 0}
+  .note-title{font-size:1.4rem}
+  footer{padding:1.25rem 1rem}
+}
+
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- v2.1 -->
@@ -572,7 +709,10 @@ if('serviceWorker' in navigator) {
         <span class="cs-desc" id="csDesc"></span>
       </div>
     </div>
-    <div class="issue-badge">EST. 2025</div>
+    <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" rel="noopener" class="hdr-li" title="Julián Besendorff en LinkedIn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      <span>LinkedIn</span>
+    </a>
   </div>
   <nav class="nav-strip" id="navStrip">
     <a data-filter="diagnostico" id="diagTab" onclick="showDiag(event)" style="color:var(--green)">▸ Diagnóstico</a>
