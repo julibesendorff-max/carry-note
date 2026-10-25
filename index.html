@@ -2588,29 +2588,52 @@ async function loadForex() {
     console.log('Forex fetch error:', e);
   }
 }
+
+// ══ CACHÉ DE COTIZACIONES ════════════════════════════════════════════
+// Pinta precios al instante desde el último valor conocido mientras
+// llegan los datos frescos. Evita la pantalla con guiones al entrar.
+var _quoteCache = {};
+try{ _quoteCache = JSON.parse(localStorage.getItem('cn_quotes')||'{}'); }catch(e){ _quoteCache = {}; }
+
+function paintCachedQuotes(){
+  var MAX_AGE = 36*60*60*1000; // 36h: sirve para cubrir fines de semana
+  var now = Date.now();
+  var painted = 0;
+  Object.keys(_quoteCache).forEach(function(id){
+    var q = _quoteCache[id];
+    if(!q || !q.c) return;
+    if(q.t && (now - q.t) > MAX_AGE) return;
+    try{ setTicker(id, q.c, q.pct, q.fmt); painted++; }catch(e){}
+  });
+  if(painted){
+    var st = document.getElementById('tickerStatus');
+    if(st){ st.textContent = '· actualizando'; st.className = 'ticker-status'; }
+    // Dependientes del ticker pueden calcularse ya con estos valores
+    try{ if(typeof renderCarryScoreWidget === 'function') renderCarryScoreWidget(); }catch(e){}
+  }
+}
+// ══ /CACHÉ ═══════════════════════════════════════════════════════════
+
 async function loadTicker() {
   const status = document.getElementById('tickerStatus');
   try {
     // Load Finnhub symbols (excluding forex)
     const finnhubSymbols = tickerSymbols.filter(s => s.id !== 'eur' && s.id !== 'ars');
-    // Batch requests to avoid rate limiting on free Finnhub plan
-    const quotes = [];
-    for(let i = 0; i < finnhubSymbols.length; i++) {
-      const q = await fetchQuote(finnhubSymbols[i].sym);
-      quotes.push(q);
-      if(i % 5 === 4) await new Promise(r => setTimeout(r, 300)); // pause every 5 requests
-    }
-    quotes.forEach((q, i) => {
-      if (q && q.c && q.c > 0 && q.pc && q.pc > 0) {
-        const pct = ((q.c - q.pc) / q.pc) * 100;
-        setTicker(finnhubSymbols[i].id, q.c, pct, finnhubSymbols[i].fmt);
-      } else {
-        // Show label with dashes for unavailable symbols
-        console.log('No data for:', finnhubSymbols[i].sym, q);
-      }
+    // Paralelo: cada cotizacion se pinta apenas llega, sin esperar al resto
+    const tickerJobs = finnhubSymbols.map(function(s){
+      return fetchQuote(s.sym).then(function(q){
+        if (q && q.c && q.c > 0 && q.pc && q.pc > 0) {
+          var pct = ((q.c - q.pc) / q.pc) * 100;
+          setTicker(s.id, q.c, pct, s.fmt);
+          _quoteCache[s.id] = {c:q.c, pct:pct, fmt:s.fmt, t:Date.now()};
+          try{ localStorage.setItem('cn_quotes', JSON.stringify(_quoteCache)); }catch(e){}
+        }
+        return q;
+      }).catch(function(){ return null; });
     });
-    // Load forex separately
-    await loadForex();
+    // Forex arranca al mismo tiempo que el resto
+    const forexJob = loadForex();
+    await Promise.all(tickerJobs.concat([forexJob]));
     status.textContent = '● EN VIVO';
     status.className = 'ticker-status live';
     setTimeout(updateRadar, 500);
@@ -2642,9 +2665,10 @@ async function loadTicker() {
     status.textContent = '○ sin conexión';
   }
 }
-// Refresh ticker every 2 minutes
+// Pintar valores cacheados de inmediato, despues traer frescos
+paintCachedQuotes();
 loadTicker();
-setInterval(loadTicker, 60000); // refresh every minute
+setInterval(loadTicker, 45000); // refresco cada 45s
 // ── SUPABASE ─────────────────────────────────────────────────
 async function sbFetch(path, opts={}) {
   return fetch(SUPABASE_URL+path, {...opts, headers:{'Content-Type':'application/json','apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,...(opts.headers||{})}});
@@ -5997,31 +6021,33 @@ function addToWatchlist(){
   loadWatchlistPrices();
 }
 async function loadWatchlistPrices(){
-  var wl=getWatchlist();
-  for(var i=0;i<wl.length;i++){
-    var item=wl[i];
-    if(!item.custom) continue;
-    try{
-      var sym=item.id;
-      var isFX=sym.startsWith('OANDA:');
-      if(isFX){
-        var pair=sym.replace('OANDA:','').replace('_','/');
-        var base=pair.split('/')[0];
-        var fxRes=await fetch('https://api.exchangerate-api.com/v4/latest/'+base);
-        if(fxRes.ok){var fxData=await fxRes.json();var rate=fxData.rates&&fxData.rates[pair.split('/')[1]];if(rate)wlPriceCache[item.id]={price:rate<1?rate.toFixed(4):rate.toFixed(2),pct:null,noChange:true};}
-      } else {
-        var r=await fetch('https://finnhub.io/api/v1/quote?symbol='+encodeURIComponent(sym)+'&token='+FINNHUB_KEY);
-        if(!r.ok) continue;
-        var d=await r.json();
-        if(d.c&&d.pc&&d.c>0){
+  var wl=getWatchlist().filter(function(x){ return x.custom; });
+  if(!wl.length){ renderWatchlist(); return; }
+  // Paralelo: cada activo se repinta apenas llega su precio
+  await Promise.all(wl.map(function(item){
+    var sym=item.id;
+    var isFX=sym.indexOf('OANDA:')===0;
+    if(isFX){
+      var pair=sym.replace('OANDA:','').replace('_','/');
+      var base=pair.split('/')[0], quote=pair.split('/')[1];
+      return fetch('https://api.exchangerate-api.com/v4/latest/'+base)
+        .then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(d){
+          var rate=d && d.rates && d.rates[quote];
+          if(rate){ wlPriceCache[item.id]={price:rate<1?rate.toFixed(4):rate.toFixed(2),pct:null,noChange:true}; renderWatchlist(); }
+        }).catch(function(){});
+    }
+    return fetch('https://finnhub.io/api/v1/quote?symbol='+encodeURIComponent(sym)+'&token='+FINNHUB_KEY)
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(d && d.c && d.pc && d.c>0){
           var pct=((d.c-d.pc)/d.pc)*100;
           var price=d.c>=1000?'$'+d.c.toLocaleString('en-US',{maximumFractionDigits:0}):'$'+d.c.toFixed(2);
-          wlPriceCache[item.id]={price,pct};
+          wlPriceCache[item.id]={price:price,pct:pct};
+          renderWatchlist();
         }
-      }
-      await new Promise(function(r){setTimeout(r,250);});
-    }catch(e){}
-  }
+      }).catch(function(){});
+  }));
   renderWatchlist();
 }
 // ── RADAR MACRO ────────────────────────────────────────────
@@ -6108,10 +6134,8 @@ function corrLabel(r) {
 async function loadHistoricalData() {
   if(_historicalLoaded) return;
   var syms=['spx','ndx','vix','tlt','wti','gld','btc','nvda','tsla','ypf','ggal','eem'];
-  for(var i=0;i<syms.length;i++){
-    await fetchHistoricalReturns(syms[i],30);
-    await new Promise(function(r){setTimeout(r,250);});
-  }
+  // Paralelo en vez de secuencial con pausas
+  await Promise.all(syms.map(function(s){ return fetchHistoricalReturns(s,30); }));
   _historicalLoaded=true;
 }
 function calcSignalPersistence(pattern) {
