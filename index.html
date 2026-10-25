@@ -26,7 +26,7 @@
 <meta name="twitter:image" content="https://thecarrynote.com/og-image.png">
 
 <!-- Theme color for mobile browsers -->
-<meta name="theme-color" content="#0e0e10">
+<meta name="theme-color" content="#ffffff">
 
 <!-- Schema.org structured data -->
 <script type="application/ld+json">
@@ -88,15 +88,17 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CarryNote">
 <link rel="apple-touch-icon" href="/icon-192.png">
-<meta name="theme-color" content="#0a0a0b">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230a0a0b'/><text y='24' x='4' font-size='22' font-family='Georgia,serif' fill='%23c9a84c' font-style='italic'>C</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@300;400;500&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23ffffff'/><text y='24' x='5' font-size='22' font-family='Source Sans 3,sans-serif' fill='%231434CB' font-weight='700'>C</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg:#0a0a0b;--surface:#111114;--surface2:#18181d;--border:#2a2a32;--border2:#1e1e24;
-  --gold:#c9a84c;--gold2:#e8c96a;--text:#f0ede8;--muted:#9d99a8;--muted2:#6b6875;
-  --green:#4caf7d;--red:#e05252;--blue:#5b8dee;
-  --serif:'Inter',-apple-system,sans-serif;--mono:'DM Mono',monospace;--sans:'Inter',sans-serif;
+  --bg:#ffffff;--surface:#f6f9fd;--surface2:#eaf1fa;--border:#d3e0ef;--border2:#e6eef8;
+  --gold:#1434CB;--gold2:#0f27a0;--text:#0a1f44;--muted:#55678a;--muted2:#8a9ab5;
+  --green:#0b8a5c;--red:#c62036;--blue:#006FCF;
+  --serif:'Source Sans 3',-apple-system,sans-serif;
+  --mono:'Source Sans 3',-apple-system,sans-serif;
+  --sans:'Source Sans 3',-apple-system,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{overflow-x:hidden;max-width:100vw}
@@ -124,7 +126,7 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .eb-status{font-size:0.62rem}.eb-status.ok{color:var(--green)}.eb-status.err{color:var(--red)}
 .login-toggle{font-family:var(--mono);font-size:0.58rem;color:var(--muted2);text-align:center;padding:0.4rem;cursor:pointer;border-bottom:1px solid var(--border2);letter-spacing:0.06em;transition:color 0.2s}
 .login-toggle:hover{color:var(--muted)}
-#loginModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center}
+#loginModal{display:none;position:fixed;inset:0;background:rgba(10,31,68,0.45);z-index:200;align-items:center;justify-content:center}
 #loginModal.open{display:flex}
 /* TICKER */
 .ticker{background:var(--surface2);border-bottom:1px solid var(--border);padding:0.65rem 0;overflow:hidden;font-family:var(--mono);font-size:0.82rem;position:relative;width:100%}
@@ -140,8 +142,8 @@ header{border-bottom:1px solid var(--border);background:var(--bg);position:stick
 .ticker-status.live{color:var(--green)}
 @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 @keyframes portLoad{0%{width:0%}60%{width:85%}100%{width:95%}}
-.port-profile.port-sel{border-color:var(--gold)!important;background:rgba(201,168,76,0.06)}
-.port-horizon.port-sel{border-color:var(--gold)!important;color:var(--gold)!important;background:rgba(201,168,76,0.06)}
+.port-profile.port-sel{border-color:var(--gold)!important;background:rgba(20,52,203,0.06)}
+.port-horizon.port-sel{border-color:var(--gold)!important;color:var(--gold)!important;background:rgba(20,52,203,0.06)}
 main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-columns:1fr 320px;gap:2.5rem}
 .editor-panel{display:none;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.5rem;margin-bottom:2rem}
 .editor-panel.visible{display:block}
@@ -188,15 +190,15 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .note-tag.geo{border-color:var(--blue);color:var(--blue)}
 .note-tag.markets{border-color:var(--text);color:var(--text)}
 .note-tag.policy{border-color:var(--green);color:var(--green)}
-.note-tag.latam{border-color:#a855f7;color:#a855f7}
-.note-tag.semanal{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+.note-tag.latam{border-color:#5b21b6;color:#5b21b6}
+.note-tag.semanal{border-color:var(--gold);color:var(--gold);background:rgba(20,52,203,0.08)}
 .note-date{font-family:var(--mono);font-size:0.7rem;color:var(--muted)}
 .note-num{font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto;letter-spacing:0.1em}
 .note-title{font-family:var(--serif);font-size:2.1rem;font-weight:600;line-height:1.2;color:var(--text);margin-bottom:0.5rem;cursor:pointer;transition:color 0.2s}
 .note-title:hover{color:var(--gold)}
-.note-sub{font-family:var(--sans);font-size:1.05rem;font-style:normal;color:#f0ede8;line-height:1.75;margin-bottom:1.2rem;font-weight:300;letter-spacing:0.01em}
+.note-sub{font-family:var(--sans);font-size:1.05rem;font-style:normal;color:#0a1f44;line-height:1.75;margin-bottom:1.2rem;font-weight:300;letter-spacing:0.01em}
 .note-body{display:none}.note-body.open{display:block}
-.note-body p{font-size:1.1rem;line-height:1.9;color:#f0ede8;font-weight:300;margin-bottom:1.1rem;letter-spacing:0.01em}
+.note-body p{font-size:1.1rem;line-height:1.9;color:#0a1f44;font-weight:300;margin-bottom:1.1rem;letter-spacing:0.01em}
 .note-body .src{font-family:var(--mono);font-size:0.58rem;color:var(--muted2);letter-spacing:0.03em;margin-left:0.2rem}
 .note-body h3{font-family:var(--serif);font-size:1.35rem;font-weight:600;color:var(--text);margin:1.6rem 0 0.6rem}
 .note-body .key-stat{background:var(--surface2);border-left:2px solid var(--gold);padding:0.9rem 1.2rem;margin:1.3rem 0;font-family:var(--mono);font-size:0.85rem;color:var(--gold2);line-height:1.55}
@@ -247,13 +249,13 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .about-link:hover{border-bottom-color:var(--gold)}
 #cartModal.open{display:flex}
 .comp-row{display:flex;gap:1rem;padding:0.85rem 1rem;border-bottom:1px solid var(--border2);align-items:flex-start}
-.comp-row.comp-new{background:rgba(76,175,125,0.06);border-left:3px solid var(--green)}
+.comp-row.comp-new{background:rgba(11,138,92,0.06);border-left:3px solid var(--green)}
 .comp-row:not(.comp-new){border-left:3px solid var(--border)}
 .comp-label{font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);min-width:120px;padding-top:0.15rem;flex-shrink:0}
 .comp-val{font-size:0.82rem;color:var(--text);line-height:1.6}
 .comp-new .comp-label{color:var(--green)}
 .comp-changes{padding:1rem;background:var(--surface2)}
-.comp-changes p{font-size:0.82rem;color:#f0ede8;line-height:1.7;margin-bottom:0.5rem}
+.comp-changes p{font-size:0.82rem;color:#0a1f44;line-height:1.7;margin-bottom:0.5rem}
 .comp-changes p:last-child{margin-bottom:0}
 .scen-btn{font-family:var(--mono);font-size:0.62rem;padding:0.35rem 0.75rem;background:var(--surface);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all 0.15s;letter-spacing:0.04em}
 .scen-btn:hover{border-color:var(--gold);color:var(--gold)}
@@ -266,7 +268,7 @@ main{max-width:1500px;margin:0 auto;padding:2.5rem;display:grid;grid-template-co
 .mob-card-price{font-family:var(--mono);font-size:1.05rem;font-weight:500;color:var(--text);margin-bottom:0.15rem}
 .mob-card-chg{font-family:var(--mono);font-size:0.68rem;font-weight:500}
 .mob-card-chg.up{color:var(--green)}.mob-card-chg.dn{color:var(--red)}.mob-card-chg.neu{color:var(--muted)}
-.mob-card-pm{font-family:var(--mono);font-size:0.55rem;color:#a855f7;margin-top:0.15rem}
+.mob-card-pm{font-family:var(--mono);font-size:0.55rem;color:#5b21b6;margin-top:0.15rem}
 .mob-fx-row{display:flex;justify-content:space-between;padding:0.65rem 1rem;border-bottom:1px solid var(--border2);font-family:var(--mono);font-size:0.72rem}
 .mob-fx-lbl{color:var(--muted);font-size:0.62rem}
 .mob-fx-val{color:var(--text);font-weight:500}
@@ -432,12 +434,12 @@ button:disabled {
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease !important;
 }
 #diagSelector button:hover {
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 20px rgba(10,31,68,0.12);
   transform: translateY(-2px) !important;
   border-color: var(--gold) !important;
 }
 #diagSelector button:nth-child(2):hover {
-  border-color: #a855f7 !important;
+  border-color: #5b21b6 !important;
 }
 
 /* ── EMPRESA PANEL MOBILE ─────────────────────────────────── */
@@ -535,16 +537,16 @@ button:disabled {
 
 :root{
   --radius:10px;
-  --ring:rgba(201,168,76,0.22);
-  --surface-soft:rgba(255,255,255,0.022);
-  --hairline:rgba(255,255,255,0.07);
+  --ring:rgba(20,52,203,0.2);
+  --surface-soft:rgba(20,52,203,0.028);
+  --hairline:rgba(10,31,68,0.1);
 }
 
 /* ── Tipografía general: más aire ───────────────────────────── */
 body{font-size:15.5px;letter-spacing:0.005em}
 
 /* ── HEADER: más limpio y espacioso ─────────────────────────── */
-header{border-bottom:1px solid var(--hairline);backdrop-filter:blur(12px);background:rgba(10,10,11,0.88)}
+header{border-bottom:1px solid var(--hairline);backdrop-filter:blur(12px);background:rgba(255,255,255,0.9)}
 .header-main{padding:1.5rem 3rem;gap:1.5rem}
 .logo-name{font-size:2.1rem;letter-spacing:-0.025em;font-weight:600}
 .logo-tag{font-size:0.58rem;letter-spacing:0.22em;color:var(--muted2);margin-top:0.3rem}
@@ -554,7 +556,7 @@ header{border-bottom:1px solid var(--hairline);backdrop-filter:blur(12px);backgr
   letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;
   padding:0.45rem 0.9rem;border:1px solid var(--hairline);border-radius:var(--radius);
   transition:all 0.2s ease;white-space:nowrap;flex-shrink:0}
-.hdr-li:hover{color:#5b8dee;border-color:rgba(91,141,238,0.5);background:rgba(91,141,238,0.07)}
+.hdr-li:hover{color:#006FCF;border-color:rgba(0,111,207,0.5);background:rgba(0,111,207,0.07)}
 .hdr-li svg{opacity:0.85;flex-shrink:0}
 
 /* ── CARRY SCORE widget: integrado, sin borde duro ──────────── */
@@ -571,7 +573,7 @@ header{border-bottom:1px solid var(--hairline);backdrop-filter:blur(12px);backgr
 .nav-strip a{border-right:none;padding:0.5rem 0.95rem;font-size:0.645rem;letter-spacing:0.09em;
   border-radius:7px;opacity:0.72;transition:all 0.18s ease}
 .nav-strip a:hover{background:var(--surface-soft);opacity:1}
-.nav-strip a.active{background:rgba(201,168,76,0.1);opacity:1;border-bottom:none !important;
+.nav-strip a.active{background:rgba(20,52,203,0.1);opacity:1;border-bottom:none !important;
   box-shadow:inset 0 0 0 1px var(--ring)}
 
 /* ── MAIN: más respiro ──────────────────────────────────────── */
@@ -643,8 +645,8 @@ footer{border-top:1px solid var(--hairline);padding:2rem 3rem;opacity:0.65;font-
 /* ── SCROLLBAR sutil ───────────────────────────────────────── */
 ::-webkit-scrollbar{width:9px;height:9px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:999px}
-::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.18)}
+::-webkit-scrollbar-thumb{background:rgba(10,31,68,0.16);border-radius:999px}
+::-webkit-scrollbar-thumb:hover{background:rgba(10,31,68,0.26)}
 
 /* ── Menos ruido en el grano de fondo ──────────────────────── */
 body::before{opacity:0.2}
@@ -662,6 +664,262 @@ body::before{opacity:0.2}
   .note-card{padding:1.6rem 0}
   .note-title{font-size:1.4rem}
   footer{padding:1.25rem 1rem}
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   TEMA CLARO · ajustes finos
+   ══════════════════════════════════════════════════════════════ */
+
+/* Una sola familia en TODO el portal */
+*,*::before,*::after{font-family:'Source Sans 3',-apple-system,BlinkMacSystemFont,sans-serif}
+
+/* Datos numéricos: cifras tabulares para que alineen como un mono */
+.t-val,.t-up,.t-dn,.ind-v,.cs-orb-inner,.cs-big-num,.sim-kpi-val,.cs-comp-val,
+.mob-card-price,.mob-card-chg,.mob-fx-val,.note-num,.cal-date,
+input[type=number],.score-num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1}
+
+/* Sin grano: en claro ensucia */
+body::before{display:none}
+
+body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+
+/* Header limpio con hairline azulado */
+header{background:rgba(255,255,255,0.92);border-bottom:1px solid var(--border2)}
+.logo-name{color:var(--text);font-weight:700;letter-spacing:-0.02em}
+.logo-name em{color:var(--gold);font-style:normal;font-weight:700}
+.logo-tag{color:var(--muted2)}
+.footer-logo em{font-style:normal;color:var(--gold)}
+
+/* Nav: pills azules */
+.nav-strip{border-top:1px solid var(--border2);background:#fff}
+.nav-strip a{color:var(--muted);font-weight:600}
+.nav-strip a:hover{background:var(--surface2);color:var(--text)}
+.nav-strip a.active{background:rgba(20,52,203,0.08);color:var(--gold) !important;
+  box-shadow:inset 0 0 0 1px rgba(20,52,203,0.25)}
+
+/* Superficies con sombra suave en vez de borde duro */
+.sb-block,.cs-hero,.sim-input-block,.sim-result,#carterasList > div,
+#hoyScoreCard,.note-card{background:#fff}
+.sb-block,.cs-hero,.sim-result,#carterasList > div{
+  box-shadow:0 1px 2px rgba(10,31,68,0.04),0 4px 14px rgba(10,31,68,0.045);
+  border:1px solid var(--border2) !important}
+
+/* Ticker sobre fondo claro */
+.ticker{background:var(--surface);border-bottom:1px solid var(--border2);opacity:1}
+.t-lbl{color:var(--muted2);font-weight:600}
+.t-val{color:var(--text);font-weight:600}
+.t-up{color:var(--green);font-weight:600}
+.t-dn{color:var(--red);font-weight:600}
+.t-sep{color:var(--border)}
+
+/* Inputs claros */
+input,select,textarea{background:#fff !important;color:var(--text) !important;
+  border:1px solid var(--border) !important;font-weight:500}
+input::placeholder,textarea::placeholder{color:var(--muted2) !important}
+input:focus,select:focus,textarea:focus{border-color:var(--gold) !important;
+  box-shadow:0 0 0 3px rgba(20,52,203,0.13) !important}
+select optgroup{background:#fff;color:var(--gold);font-weight:700}
+select option{background:#fff;color:var(--text)}
+
+/* Botones primarios en azul Visa */
+.gen-go,.eb-save,.w-publish,.sim-btn,#diagBtn,#portGenBtn,#diagEmpresaBtn{
+  background:var(--gold) !important;color:#fff !important;font-weight:600;letter-spacing:0.06em}
+.gen-go:hover,.eb-save:hover,.w-publish:hover,.sim-btn:hover,
+#diagBtn:hover,#portGenBtn:hover{background:var(--gold2) !important}
+.af-btn{color:var(--muted);border-color:var(--border);background:#fff;font-weight:600}
+.af-btn:hover{color:var(--gold);border-color:var(--gold)}
+.af-active{background:var(--gold) !important;color:#fff !important;border-color:var(--gold) !important}
+
+/* LinkedIn en header */
+.hdr-li{color:var(--muted);border-color:var(--border);background:#fff;font-weight:600}
+.hdr-li:hover{color:var(--blue);border-color:var(--blue);background:rgba(0,111,207,0.06)}
+
+/* Tipografía de contenido */
+.note-title{color:var(--text);font-weight:700;letter-spacing:-0.015em}
+.note-title:hover{color:var(--gold)}
+.note-sub{color:var(--muted);font-weight:400}
+.note-body p{color:#243a5e;font-weight:400}
+.note-body h3{color:var(--text);font-weight:700}
+.note-body .key-stat{background:var(--surface2);border-left:3px solid var(--gold);color:var(--gold)}
+.note-tag{font-weight:600}
+.note-date,.note-num{color:var(--muted2);font-weight:500}
+
+/* Etiquetas en mayúscula: peso en vez de monoespaciado */
+.sb-title,.cs-label,.cs-comp-label,.sim-label,.mob-card-lbl,.ep-label,.logo-tag,
+.geo-region,.about-item-label,.feed-count{font-weight:700;letter-spacing:0.14em}
+
+/* Sidebar */
+.ind{border-bottom:1px solid var(--border2)}
+.ind-n{color:var(--muted);font-weight:500}
+.ind-v{font-weight:700}
+.ind-v.up{color:var(--green)}.ind-v.dn{color:var(--red)}.ind-v.neu{color:var(--text)}
+.chart-box{background:var(--surface2);border-radius:8px}
+
+/* Modales en claro */
+#loginModal > div,#cartModal > div,#corrExplainerModal > div{
+  background:#fff !important;border:1px solid var(--border) !important;
+  box-shadow:0 20px 60px rgba(10,31,68,0.18)}
+
+/* Tablas / filas */
+.comp-row,.cal-row{border-bottom:1px solid var(--border2)}
+.cal-ev{color:var(--muted)}
+.comp-changes{background:var(--surface)}
+.comp-changes p{color:#243a5e}
+
+/* Skeleton loader claro */
+.skel{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);
+  background-size:200% 100%;border-radius:4px}
+
+/* Mobile widget */
+.mob-market{background:#fff}
+.mob-card,.mob-fx-row{border-color:var(--border2)}
+.mob-card-price{color:var(--text);font-weight:700}
+
+/* Footer */
+footer{color:var(--muted2);border-top:1px solid var(--border2)}
+
+/* Scrollbar en claro */
+::-webkit-scrollbar-thumb{background:rgba(10,31,68,0.18)}
+::-webkit-scrollbar-thumb:hover{background:rgba(10,31,68,0.3)}
+
+/* Selección de texto */
+::selection{background:rgba(20,52,203,0.15);color:var(--text)}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PROFUNDIDAD · menos blanco plano, más estructura visual
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Fondo con capas: nunca blanco puro ─────────────────────── */
+body{
+  background:
+    radial-gradient(1100px 620px at 12% -8%, rgba(20,52,203,0.075), transparent 62%),
+    radial-gradient(900px 540px at 92% 2%, rgba(0,111,207,0.065), transparent 58%),
+    linear-gradient(180deg, #eef3fb 0%, #f4f8fd 42%, #eef4fb 100%);
+  background-attachment:fixed;
+  font-size:17px;
+}
+
+/* Textura diagonal muy sutil que rompe el plano */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:repeating-linear-gradient(135deg,
+    rgba(10,31,68,0.016) 0px, rgba(10,31,68,0.016) 1px,
+    transparent 1px, transparent 7px);
+}
+header,main,footer,.ticker,.mob-market{position:relative;z-index:1}
+
+/* ── El contenido flota sobre el fondo ──────────────────────── */
+main{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 1px 3px rgba(10,31,68,0.05), 0 12px 44px rgba(10,31,68,0.08);
+  margin-top:1.75rem;margin-bottom:2.5rem;
+  padding:2.75rem;
+  border:1px solid rgba(255,255,255,0.9);
+}
+
+/* ── TIPOGRAFÍA más grande en todo ──────────────────────────── */
+.note-title{font-size:2.15rem;line-height:1.2}
+.note-sub{font-size:1.1rem;line-height:1.75}
+.note-body p,.note-body li{font-size:1.06rem;line-height:1.85}
+.note-body h3{font-size:1.42rem}
+.ind-n{font-size:0.82rem}
+.ind-v{font-size:0.88rem}
+.sb-title{font-size:0.65rem}
+.nav-strip a{font-size:0.715rem}
+.t-lbl{font-size:0.74rem}
+.t-val{font-size:0.88rem}
+.cs-val{font-size:0.82rem}
+.cs-label{font-size:0.52rem}
+.cs-orb-inner{font-size:0.84rem}
+.cs-comp-label{font-size:0.6rem}
+.cs-comp-val{font-size:1.25rem}
+.cs-comp-note{font-size:0.64rem}
+.sim-label{font-size:0.66rem}
+.sim-kpi-label{font-size:0.6rem}
+.sim-kpi-val{font-size:1.75rem}
+.sim-kpi-note{font-size:0.63rem}
+.af-btn{font-size:0.74rem}
+.hdr-li{font-size:0.68rem}
+.logo-name{font-size:2.35rem}
+.logo-tag{font-size:0.63rem}
+.cal-row{font-size:0.82rem}
+.geo-text{font-size:0.95rem}
+.about-bio{font-size:0.98rem}
+.note-tag{font-size:0.64rem}
+.note-date{font-size:0.76rem}
+footer{font-size:0.72rem}
+
+/* Paneles: subo el piso de las fuentes chicas inline */
+#diagPanel,#radarPanel,#carryScorePanel,#carrySimPanel,#carterasPanel,
+#hoyPanel,#rebalanceoPanel,#fciPanel,#watchlistPanel,#portafolioPanel,
+#aprenderPanel,#viewsStandalonePanel,#sobrePanel{font-size:1.02rem}
+
+/* ── Encabezados de panel con acento azul ───────────────────── */
+#diagPanel > div:first-child,
+#radarPanel > div:first-child,
+#carryScorePanel > div:first-child,
+#carrySimPanel > div:first-child,
+#carterasPanel > div:first-child,
+#rebalanceoPanel > div:first-child,
+#watchlistPanel > div:first-child,
+#hoyPanel > div:first-child{position:relative}
+
+/* ── Cards con más presencia ────────────────────────────────── */
+.sb-block{
+  background:linear-gradient(180deg,#fff 0%,#fafcfe 100%);
+  box-shadow:0 1px 2px rgba(10,31,68,0.045), 0 6px 20px rgba(10,31,68,0.055);
+  border:1px solid var(--border2) !important;
+  padding:1.5rem}
+.sb-title{
+  background:linear-gradient(90deg, rgba(20,52,203,0.07), transparent);
+  margin:-1.5rem -1.5rem 1.2rem;padding:0.95rem 1.5rem;
+  border-bottom:1px solid var(--border2);border-radius:10px 10px 0 0;
+  color:var(--gold)}
+
+#carterasList > div,.cs-hero,.sim-result,.sim-input-block,#hoyScoreCard{
+  box-shadow:0 1px 2px rgba(10,31,68,0.045), 0 8px 26px rgba(10,31,68,0.06) !important}
+
+.cs-hero{background:linear-gradient(135deg,#fff 0%,#f4f8fe 100%)}
+
+/* ── Zebra en listas de datos ───────────────────────────────── */
+.ind:nth-child(even){background:rgba(20,52,203,0.018)}
+.ind{padding-left:0.5rem;padding-right:0.5rem;border-radius:4px}
+
+/* ── Ticker con fondo propio ────────────────────────────────── */
+.ticker{
+  background:linear-gradient(90deg,#eaf1fa,#f3f8fd 45%,#eaf1fa);
+  border-bottom:1px solid var(--border2);padding:0.7rem 0}
+
+/* ── Header más sólido ──────────────────────────────────────── */
+header{
+  background:rgba(255,255,255,0.97);
+  box-shadow:0 1px 0 var(--border2), 0 4px 20px rgba(10,31,68,0.05)}
+
+/* ── Notas con aire y separador suave ───────────────────────── */
+.note-card{padding:2.75rem 0;border-bottom:1px solid var(--border2)}
+
+/* ── Newsletter destacado ───────────────────────────────────── */
+#newsletterBlock{
+  background:linear-gradient(135deg, rgba(20,52,203,0.055), rgba(0,111,207,0.03)) !important;
+  border:1px solid rgba(20,52,203,0.16) !important;border-radius:14px;
+  box-shadow:0 6px 24px rgba(10,31,68,0.06)}
+
+/* ── Footer sobre el fondo, no sobre la tarjeta ─────────────── */
+footer{background:transparent;border-top:none;max-width:1440px;padding:0 3rem 2.5rem}
+
+/* ── MOBILE ─────────────────────────────────────────────────── */
+@media(max-width:768px){
+  body{font-size:16.5px;background-attachment:scroll}
+  main{border-radius:14px;padding:1.3rem;margin:0.85rem 0.6rem 1.5rem}
+  footer{padding:0 1rem 1.5rem}
+  .note-title{font-size:1.62rem}
+  .note-sub{font-size:1rem}
+  .note-body p{font-size:1.02rem}
+  .logo-name{font-size:1.75rem}
+  .sb-title{margin:-1.5rem -1.5rem 1.2rem}
 }
 
 </style>
@@ -700,7 +958,7 @@ if('serviceWorker' in navigator) {
       <div class="logo-tag">Macro · Mercados</div>
     </div>
     <div class="cs-widget" onclick="showCarryScore(event)" title="Ver detalle del Carry Score">
-      <div class="cs-orb" id="csOrb" style="background:rgba(201,168,76,0.15);border:1.5px solid var(--gold)">
+      <div class="cs-orb" id="csOrb" style="background:rgba(20,52,203,0.15);border:1.5px solid var(--gold)">
         <span class="cs-orb-inner" id="csOrbNum" style="color:var(--gold)">—</span>
       </div>
       <div class="cs-info">
@@ -725,8 +983,8 @@ if('serviceWorker' in navigator) {
     <a data-filter="hoy" id="hoyTab" onclick="showHoy(event)" style="color:var(--gold)">◈ Hoy</a>
     <a data-filter="radar" id="radarTab" onclick="showRadar(event)" style="color:var(--red)">◉ Radar</a>
     <a data-filter="carrysim" id="carrySimTab" onclick="showCarrySim(event)" style="color:var(--blue)">⟳ Simulador carry</a>
-    <a data-filter="rebalanceo" id="rebalanceoTab" onclick="showRebalanceo(event)" style="color:#a855f7">⚖ Rebalanceo</a>
-    <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#a855f7">● Views</a>
+    <a data-filter="rebalanceo" id="rebalanceoTab" onclick="showRebalanceo(event)" style="color:#5b21b6">⚖ Rebalanceo</a>
+    <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#5b21b6">● Views</a>
     <a data-filter="carteras" id="carterasTab" onclick="showCarteras(event)" style="color:var(--green)">▤ Carteras</a>
     <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
@@ -910,7 +1168,7 @@ if('serviceWorker' in navigator) {
     <!-- VIEWS TÉCNICOS STANDALONE PANEL -->
     <div id="viewsStandalonePanel" style="display:none;margin-bottom:2rem">
       <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:1.5rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.5rem">● Views Técnicos · Carry Note</div>
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#5b21b6;margin-bottom:0.5rem">● Views Técnicos · Carry Note</div>
         <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Análisis técnicos</div>
         <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;max-width:560px">Views técnicos y fundamentales sobre activos de EEUU y Argentina. Cada análisis incluye el gráfico interactivo del activo vía TradingView.</div>
       </div>
@@ -972,7 +1230,7 @@ if('serviceWorker' in navigator) {
         </div>
         <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem;border-right:1px solid var(--border2)">
           <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Inflación mensual (ref. CER)</div>
-          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:#a855f7" id="fciInflRef">··· <span style="font-size:0.6rem;color:var(--muted2)">INDEC</span></div>
+          <div style="font-family:var(--mono);font-size:1rem;font-weight:600;color:#5b21b6" id="fciInflRef">··· <span style="font-size:0.6rem;color:var(--muted2)">INDEC</span></div>
         </div>
         <div style="flex:1;min-width:140px;padding:0.85rem 1.1rem">
           <div style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted2);margin-bottom:0.3rem">Riesgo país (ref. USD)</div>
@@ -1017,11 +1275,11 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">¿Por qué invertir?</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">El impacto de la inflación en los ahorros y por qué no invertir tiene un costo real.</div>
             <div id="l1" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">En Argentina, mantener pesos en efectivo o en una cuenta sin rendimiento implica perder poder adquisitivo todos los meses. Con una inflación del 54% anual (INDEC, 2025), $100.000 de hoy equivalen a aproximadamente $64.900 en poder de compra dentro de un año si no los invertís.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Invertir no es especular ni apostar. Es tomar una decisión consciente de dónde ponés tus ahorros para que al menos preserven su valor. La inflación es el costo de no hacerlo.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">En Argentina, mantener pesos en efectivo o en una cuenta sin rendimiento implica perder poder adquisitivo todos los meses. Con una inflación del 54% anual (INDEC, 2025), $100.000 de hoy equivalen a aproximadamente $64.900 en poder de compra dentro de un año si no los invertís.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">Invertir no es especular ni apostar. Es tomar una decisión consciente de dónde ponés tus ahorros para que al menos preserven su valor. La inflación es el costo de no hacerlo.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">\$100.000 sin invertir → vale \$64.900 en un año (inflación 54% anual · Fuente: INDEC)</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El primer objetivo de cualquier inversión no es ganar dinero sino no perderlo. Vencer a la inflación es la meta básica. Todo lo que supere ese umbral es ganancia real.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Las opciones más simples para empezar: Fondos Money Market (liquidez inmediata, rinden similar a la tasa BCRA), plazos fijos (tasa fija garantizada) o FCIs de renta fija en pesos. Ninguna de estas requiere conocimiento técnico avanzado.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El primer objetivo de cualquier inversión no es ganar dinero sino no perderlo. Vencer a la inflación es la meta básica. Todo lo que supere ese umbral es ganancia real.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">Las opciones más simples para empezar: Fondos Money Market (liquidez inmediata, rinden similar a la tasa BCRA), plazos fijos (tasa fija garantizada) o FCIs de renta fija en pesos. Ninguna de estas requiere conocimiento técnico avanzado.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1030,10 +1288,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Riesgo y retorno</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">La relación fundamental de las finanzas: a mayor rendimiento esperado, mayor riesgo asumido.</div>
             <div id="l2" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">No existe el activo que rinde mucho y tiene riesgo bajo. Si alguien te ofrece eso, es una señal de alerta. El mercado es eficiente en el largo plazo: los activos más riesgosos ofrecen mayor retorno potencial precisamente para compensar ese riesgo.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">No existe el activo que rinde mucho y tiene riesgo bajo. Si alguien te ofrece eso, es una señal de alerta. El mercado es eficiente en el largo plazo: los activos más riesgosos ofrecen mayor retorno potencial precisamente para compensar ese riesgo.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Money Market (~29% TNA) → Acciones Merval (~188% anual) · Mayor retorno = mayor volatilidad</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El riesgo no es malo en sí mismo — es algo que hay que gestionar. La clave es entender cuánto riesgo podés tolerar en función de tu horizonte de inversión y tu situación financiera.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Si necesitás el dinero en 3 meses, no pongas todo en acciones. Si tenés 10 años de horizonte, el riesgo de corto plazo importa menos. El tiempo es el principal aliado del inversor.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El riesgo no es malo en sí mismo — es algo que hay que gestionar. La clave es entender cuánto riesgo podés tolerar en función de tu horizonte de inversión y tu situación financiera.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">Si necesitás el dinero en 3 meses, no pongas todo en acciones. Si tenés 10 años de horizonte, el riesgo de corto plazo importa menos. El tiempo es el principal aliado del inversor.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1042,11 +1300,11 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo empezar a invertir</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Paso a paso: abrir una cuenta en un broker, elegir el primer instrumento y ejecutar la primera operación.</div>
             <div id="l3" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 1: Abrí una cuenta en un broker.</strong> En Argentina los principales son Balanz, IOL (InvertirOnline), Bull Market y PPI. Todos son regulados por la CNV. El proceso es 100% online y tarda entre 24 y 48 horas. Necesitás DNI, CUIL y una cuenta bancaria.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 2: Transferí fondos.</strong> Una vez aprobada la cuenta, transferís pesos desde tu banco al CVU del broker. El dinero está disponible en minutos.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 3: Primera inversión.</strong> Para empezar, lo más simple es un Fondo Money Market. Liquidez inmediata, sin plazo mínimo, y rinde similar a la tasa de política monetaria del BCRA (~29% TNA).</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 1: Abrí una cuenta en un broker.</strong> En Argentina los principales son Balanz, IOL (InvertirOnline), Bull Market y PPI. Todos son regulados por la CNV. El proceso es 100% online y tarda entre 24 y 48 horas. Necesitás DNI, CUIL y una cuenta bancaria.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 2: Transferí fondos.</strong> Una vez aprobada la cuenta, transferís pesos desde tu banco al CVU del broker. El dinero está disponible en minutos.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Paso 3: Primera inversión.</strong> Para empezar, lo más simple es un Fondo Money Market. Liquidez inmediata, sin plazo mínimo, y rinde similar a la tasa de política monetaria del BCRA (~29% TNA).</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Brokers regulados CNV: Balanz · IOL · Bull Market · PPI · Cocos Capital</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">No hay monto mínimo obligatorio en la mayoría de los brokers. Podés empezar con cualquier suma.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">No hay monto mínimo obligatorio en la mayoría de los brokers. Podés empezar con cualquier suma.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1055,10 +1313,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Diversificación</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Por qué no conviene poner todos los huevos en la misma canasta y cómo diversificar con poco capital.</div>
             <div id="l4" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Diversificar significa distribuir el capital entre distintos activos para que el mal desempeño de uno no destruya toda la cartera. No elimina el riesgo pero lo reduce significativamente.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">Diversificar significa distribuir el capital entre distintos activos para que el mal desempeño de uno no destruya toda la cartera. No elimina el riesgo pero lo reduce significativamente.</p>
               <div style="background:var(--surface2);border-left:2px solid var(--gold);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:var(--gold2)">Ejemplo: 40% Money Market · 30% Renta Fija CER · 20% ON hard dollar · 10% Acciones</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">En Argentina, la diversificación también implica diversificar en moneda: tener parte en pesos (para cubrir gastos cotidianos) y parte en dólares (para preservar valor a largo plazo).</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">La diversificación no significa tener 30 activos distintos. Con 3 o 4 instrumentos bien elegidos ya se logra una cartera razonablemente diversificada.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">En Argentina, la diversificación también implica diversificar en moneda: tener parte en pesos (para cubrir gastos cotidianos) y parte en dólares (para preservar valor a largo plazo).</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">La diversificación no significa tener 30 activos distintos. Con 3 o 4 instrumentos bien elegidos ya se logra una cartera razonablemente diversificada.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1072,10 +1330,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Renta fija: bonos y letras</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Cómo funcionan los instrumentos de renta fija, qué es la duration y cómo leer una curva de rendimientos.</div>
             <div id="m1" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Un bono es un préstamo que hacés al emisor (Estado o empresa). A cambio, te pagan un cupón periódico y devuelven el capital al vencimiento. La tasa de interés que recibís se llama rendimiento o TIR (Tasa Interna de Retorno).</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Precio del bono sube → rendimiento baja · Precio baja → rendimiento sube</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">La <strong style="color:var(--text)">duration</strong> mide la sensibilidad del precio de un bono ante cambios en las tasas de interés. Un bono con duration de 5 años pierde aproximadamente 5% de precio si las tasas suben 1%. Por eso en contexto de suba de tasas conviene privilegiar bonos cortos.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">En Argentina los principales instrumentos son: Lecaps (letras del Tesoro en pesos, corto plazo), Boncaps (bonos en pesos a tasa fija), Boncer/Lecer (ajustados por CER/inflación) y bonos soberanos en dólares (Globales y Bonares).</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">Un bono es un préstamo que hacés al emisor (Estado o empresa). A cambio, te pagan un cupón periódico y devuelven el capital al vencimiento. La tasa de interés que recibís se llama rendimiento o TIR (Tasa Interna de Retorno).</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">Precio del bono sube → rendimiento baja · Precio baja → rendimiento sube</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">La <strong style="color:var(--text)">duration</strong> mide la sensibilidad del precio de un bono ante cambios en las tasas de interés. Un bono con duration de 5 años pierde aproximadamente 5% de precio si las tasas suben 1%. Por eso en contexto de suba de tasas conviene privilegiar bonos cortos.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">En Argentina los principales instrumentos son: Lecaps (letras del Tesoro en pesos, corto plazo), Boncaps (bonos en pesos a tasa fija), Boncer/Lecer (ajustados por CER/inflación) y bonos soberanos en dólares (Globales y Bonares).</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1084,10 +1342,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">El tipo de cambio y tus inversiones</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Oficial, blue, MEP y CCL: qué es cada uno y cómo impactan en las decisiones de inversión.</div>
             <div id="m2" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar oficial:</strong> el tipo de cambio que fija el BCRA. Accesible para importaciones y algunas transacciones reguladas. Para el ahorrista individual tiene el límite del cepo.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar MEP (o bolsa):</strong> se obtiene comprando un bono en pesos y vendiéndolo en dólares dentro del mercado local. Es legal, no tiene límite de monto y es la forma más eficiente de dolarizarse para el inversor. La brecha con el oficial refleja la prima de riesgo del sistema.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar blue:</strong> mercado informal, ilegal. Su precio refleja la demanda de cobertura cambiaria pero conlleva riesgo legal y operacional.</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Para dolarizarse legalmente: MEP vía bono AL30 o GD30 a través de cualquier broker regulado por CNV</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar oficial:</strong> el tipo de cambio que fija el BCRA. Accesible para importaciones y algunas transacciones reguladas. Para el ahorrista individual tiene el límite del cepo.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar MEP (o bolsa):</strong> se obtiene comprando un bono en pesos y vendiéndolo en dólares dentro del mercado local. Es legal, no tiene límite de monto y es la forma más eficiente de dolarizarse para el inversor. La brecha con el oficial refleja la prima de riesgo del sistema.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Dólar blue:</strong> mercado informal, ilegal. Su precio refleja la demanda de cobertura cambiaria pero conlleva riesgo legal y operacional.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">Para dolarizarse legalmente: MEP vía bono AL30 o GD30 a través de cualquier broker regulado por CNV</div>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1096,9 +1354,9 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo armar una cartera</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Metodología para construir un portafolio acorde a tu perfil de riesgo y horizonte de inversión.</div>
             <div id="m3" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Antes de elegir activos, definí tres cosas: <strong style="color:var(--text)">(1) horizonte temporal</strong> — ¿cuándo vas a necesitar el dinero?, <strong style="color:var(--text)">(2) tolerancia al riesgo</strong> — ¿podés soportar ver tu cartera bajar 20% sin vender?, <strong style="color:var(--text)">(3) objetivo</strong> — ¿preservar capital, crecer en términos reales o generar renta?</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Conservador: 60% renta fija · 30% dólares (MEP/ON) · 10% acciones<br>Moderado: 40% renta fija · 35% dólares · 25% acciones<br>Agresivo: 20% renta fija · 30% dólares · 50% acciones</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Estas son referencias orientativas. Una cartera personalizada requiere analizar tu situación fiscal, tu flujo de ingresos y tu contexto particular.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">Antes de elegir activos, definí tres cosas: <strong style="color:var(--text)">(1) horizonte temporal</strong> — ¿cuándo vas a necesitar el dinero?, <strong style="color:var(--text)">(2) tolerancia al riesgo</strong> — ¿podés soportar ver tu cartera bajar 20% sin vender?, <strong style="color:var(--text)">(3) objetivo</strong> — ¿preservar capital, crecer en términos reales o generar renta?</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">Conservador: 60% renta fija · 30% dólares (MEP/ON) · 10% acciones<br>Moderado: 40% renta fija · 35% dólares · 25% acciones<br>Agresivo: 20% renta fija · 30% dólares · 50% acciones</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">Estas son referencias orientativas. Una cartera personalizada requiere analizar tu situación fiscal, tu flujo de ingresos y tu contexto particular.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1107,10 +1365,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Carry trade en Argentina</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué es el carry, por qué es atractivo y cuáles son sus riesgos reales en el contexto actual.</div>
             <div id="m4" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El carry trade consiste en tomar deuda en una moneda de baja tasa e invertir en una moneda de alta tasa, capturando el diferencial. En Argentina implica vender dólares, invertir en pesos a tasas altas y recomprar dólares al vencimiento, ganando si el tipo de cambio no se mueve más de lo que rindió la tasa en pesos.</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Carry positivo: tasa en pesos (~29% TNA) > depreciación esperada del peso</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El riesgo es un salto cambiario abrupto (devaluación) que licúe la ganancia en pesos. En el contexto actual con banda cambiaria y acuerdo FMI, el carry tiene menor riesgo de cola que en años anteriores — pero el riesgo nunca es cero.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Es una estrategia de corto plazo. No es adecuada como base de una cartera de largo plazo.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El carry trade consiste en tomar deuda en una moneda de baja tasa e invertir en una moneda de alta tasa, capturando el diferencial. En Argentina implica vender dólares, invertir en pesos a tasas altas y recomprar dólares al vencimiento, ganando si el tipo de cambio no se mueve más de lo que rindió la tasa en pesos.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">Carry positivo: tasa en pesos (~29% TNA) > depreciación esperada del peso</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El riesgo es un salto cambiario abrupto (devaluación) que licúe la ganancia en pesos. En el contexto actual con banda cambiaria y acuerdo FMI, el carry tiene menor riesgo de cola que en años anteriores — pero el riesgo nunca es cero.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">Es una estrategia de corto plazo. No es adecuada como base de una cartera de largo plazo.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1119,10 +1377,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">CEDEARs: dolarizarse con acciones</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué son los CEDEARs, cómo funcionan, ratio de conversión y cómo usarlos para dolarizar una cartera desde Argentina.</div>
             <div id="m5" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Un CEDEAR (Certificado de Depósito Argentino) es un instrumento que cotiza en pesos en la Bolsa de Buenos Aires pero representa acciones de empresas extranjeras: Apple, Google, Tesla, Nvidia, entre otras. Comprando CEDEARs accedés a acciones globales desde un broker local, sin necesidad de una cuenta en el exterior.</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">CEDEAR de Apple (AAPL) en Argentina = fracción de una acción AAPL en NYSE · Precio en pesos ajustado por el tipo de cambio implícito (CCL)</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El <strong style="color:var(--text)">ratio de conversión</strong> indica cuántos CEDEARs equivalen a una acción original. Apple tiene un ratio de 10:1 — necesitás 10 CEDEARs para representar 1 acción AAPL. El precio en pesos surge de multiplicar el precio en dólares por el tipo de cambio CCL.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">La ventaja: dolarizarte legalmente desde cualquier broker argentino con cualquier monto. El riesgo: estás expuesto tanto al precio de la acción subyacente como al movimiento del tipo de cambio.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">Un CEDEAR (Certificado de Depósito Argentino) es un instrumento que cotiza en pesos en la Bolsa de Buenos Aires pero representa acciones de empresas extranjeras: Apple, Google, Tesla, Nvidia, entre otras. Comprando CEDEARs accedés a acciones globales desde un broker local, sin necesidad de una cuenta en el exterior.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">CEDEAR de Apple (AAPL) en Argentina = fracción de una acción AAPL en NYSE · Precio en pesos ajustado por el tipo de cambio implícito (CCL)</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El <strong style="color:var(--text)">ratio de conversión</strong> indica cuántos CEDEARs equivalen a una acción original. Apple tiene un ratio de 10:1 — necesitás 10 CEDEARs para representar 1 acción AAPL. El precio en pesos surge de multiplicar el precio en dólares por el tipo de cambio CCL.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">La ventaja: dolarizarte legalmente desde cualquier broker argentino con cualquier monto. El riesgo: estás expuesto tanto al precio de la acción subyacente como al movimiento del tipo de cambio.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1131,10 +1389,10 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Cómo leer un balance trimestral</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">EPS, revenue, guidance y márgenes: qué mirar cuando una empresa publica resultados y cómo interpretarlo.</div>
             <div id="m6" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">Cuando una empresa publica resultados trimestrales (earnings), los cuatro números clave son: <strong style="color:var(--text)">Revenue</strong> (ingresos totales), <strong style="color:var(--text)">EPS</strong> (ganancia por acción), <strong style="color:var(--text)">Margen operativo</strong> y <strong style="color:var(--text)">Guidance</strong> (proyección de la empresa para el próximo trimestre).</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Beat = resultado mejor que lo esperado · Miss = peor que lo esperado · Lo que mueve el precio no es el número sino la diferencia vs expectativas</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El mercado no reacciona al resultado absoluto sino a la <strong style="color:var(--text)">sorpresa</strong>. Una empresa puede reportar ganancias récord y caer si el mercado esperaba más. El guidance define si los analistas van a subir o bajar sus estimaciones futuras — y eso mueve el precio más que el resultado pasado.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Para el inversor argentino en CEDEARs, los earnings de NVIDIA, Apple o Tesla son eventos que pueden mover el precio 10-20% en una sola jornada, y suelen operar en el after-hours antes de que abra el mercado local.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">Cuando una empresa publica resultados trimestrales (earnings), los cuatro números clave son: <strong style="color:var(--text)">Revenue</strong> (ingresos totales), <strong style="color:var(--text)">EPS</strong> (ganancia por acción), <strong style="color:var(--text)">Margen operativo</strong> y <strong style="color:var(--text)">Guidance</strong> (proyección de la empresa para el próximo trimestre).</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">Beat = resultado mejor que lo esperado · Miss = peor que lo esperado · Lo que mueve el precio no es el número sino la diferencia vs expectativas</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El mercado no reacciona al resultado absoluto sino a la <strong style="color:var(--text)">sorpresa</strong>. Una empresa puede reportar ganancias récord y caer si el mercado esperaba más. El guidance define si los analistas van a subir o bajar sus estimaciones futuras — y eso mueve el precio más que el resultado pasado.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">Para el inversor argentino en CEDEARs, los earnings de NVIDIA, Apple o Tesla son eventos que pueden mover el precio 10-20% en una sola jornada, y suelen operar en el after-hours antes de que abra el mercado local.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1143,12 +1401,12 @@ if('serviceWorker' in navigator) {
             <div style="font-family:var(--serif);font-size:1.1rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Pre-market y after-market</div>
             <div style="font-size:0.78rem;color:var(--muted);line-height:1.5">Qué pasa con los precios antes y después del cierre de Wall Street, y por qué importa para el inversor de CEDEARs.</div>
             <div id="m7" style="display:none;margin-top:1rem;border-top:1px solid var(--border2);padding-top:1rem">
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem">El mercado regular de EEUU opera entre las <strong style="color:var(--text)">9:30 AM y las 4:00 PM ET</strong> (10:30 AM a 5:00 PM en Argentina). Fuera de ese horario existen dos sesiones extendidas con menor volumen y mayor volatilidad.</p>
-              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#5b8dee">Pre-market: 4:00–9:30 AM ET · After-market: 4:00–8:00 PM ET · Menor volumen = mayor volatilidad</div>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Pre-market (4:00–9:30 AM ET):</strong> antes de la apertura. Los precios reflejan reacciones a noticias overnight: earnings publicados después del cierre, datos macro de Asia o Europa, o eventos geopolíticos. Los movimientos suelen ser exagerados y pueden revertirse al abrir el mercado regular.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">After-market (4:00–8:00 PM ET):</strong> después del cierre. La mayoría de las empresas del S&amp;P 500 publican sus resultados trimestrales en este horario, lo que genera los movimientos más bruscos del día. NVDA, AAPL o TSLA pueden moverse entre 5% y 20% en after-hours cuando reportan.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Por qué importa para el inversor de CEDEARs:</strong> los movimientos del after/pre impactan directamente en el precio del CEDEAR al día siguiente. Si NVDA sube 10% en after-hours, el CEDEAR de NVDA va a abrir aproximadamente 10% más alto al otro día en el BCBA.</p>
-              <p style="font-size:0.95rem;color:#f0ede8;line-height:1.8">Para ver precios en tiempo extendido podés usar TradingView (gratuito), Yahoo Finance, o la app de tu broker.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem">El mercado regular de EEUU opera entre las <strong style="color:var(--text)">9:30 AM y las 4:00 PM ET</strong> (10:30 AM a 5:00 PM en Argentina). Fuera de ese horario existen dos sesiones extendidas con menor volumen y mayor volatilidad.</p>
+              <div style="background:var(--surface2);border-left:2px solid var(--blue);padding:0.75rem 1rem;margin:1rem 0;font-family:var(--mono);font-size:0.75rem;color:#006FCF">Pre-market: 4:00–9:30 AM ET · After-market: 4:00–8:00 PM ET · Menor volumen = mayor volatilidad</div>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Pre-market (4:00–9:30 AM ET):</strong> antes de la apertura. Los precios reflejan reacciones a noticias overnight: earnings publicados después del cierre, datos macro de Asia o Europa, o eventos geopolíticos. Los movimientos suelen ser exagerados y pueden revertirse al abrir el mercado regular.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">After-market (4:00–8:00 PM ET):</strong> después del cierre. La mayoría de las empresas del S&amp;P 500 publican sus resultados trimestrales en este horario, lo que genera los movimientos más bruscos del día. NVDA, AAPL o TSLA pueden moverse entre 5% y 20% en after-hours cuando reportan.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8;margin-bottom:1rem"><strong style="color:var(--text)">Por qué importa para el inversor de CEDEARs:</strong> los movimientos del after/pre impactan directamente en el precio del CEDEAR al día siguiente. Si NVDA sube 10% en after-hours, el CEDEAR de NVDA va a abrir aproximadamente 10% más alto al otro día en el BCBA.</p>
+              <p style="font-size:0.95rem;color:#0a1f44;line-height:1.8">Para ver precios en tiempo extendido podés usar TradingView (gratuito), Yahoo Finance, o la app de tu broker.</p>
             </div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--blue);margin-top:0.75rem" class="lesson-toggle-lbl">Leer más ▸</div>
           </div>
@@ -1339,8 +1597,8 @@ if('serviceWorker' in navigator) {
           <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Cartera personal</div>
           <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);line-height:1.65">An&#225;lisis de tu cartera de inversi&#243;n. CEDEARs, bonos, acciones, cripto, FCI y m&#225;s.</div>
         </button>
-        <button onclick="showDiagEmpresa()" style="background:var(--surface);border:1px solid var(--border2);border-top:3px solid #a855f7;padding:2rem 1.5rem;cursor:pointer;text-align:left">
-          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.75rem">&#9670; Empresa</div>
+        <button onclick="showDiagEmpresa()" style="background:var(--surface);border:1px solid var(--border2);border-top:3px solid #5b21b6;padding:2rem 1.5rem;cursor:pointer;text-align:left">
+          <div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#5b21b6;margin-bottom:0.75rem">&#9670; Empresa</div>
           <div style="font-family:var(--serif);font-size:1.3rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Diagn&#243;stico empresarial</div>
           <div style="font-family:var(--mono);font-size:0.78rem;color:var(--muted);line-height:1.65">An&#225;lisis para empresas. Activos financieros, exposici&#243;n cambiaria y datos operativos. Informe PDF.</div>
         </button>
@@ -1352,13 +1610,13 @@ if('serviceWorker' in navigator) {
       <div style="border-bottom:1px solid var(--border2);padding-bottom:1.5rem;margin-bottom:2rem">
         <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem">
           <button onclick="showDiagSelector()" style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);background:none;border:1px solid var(--border2);padding:0.2rem 0.6rem;cursor:pointer">&#8592; Volver</button>
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7">&#9670; Diagn&#243;stico empresarial &middot; Carry Note</div>
+          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#5b21b6">&#9670; Diagn&#243;stico empresarial &middot; Carry Note</div>
         </div>
         <div style="font-family:var(--serif);font-size:1.9rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">Diagn&#243;stico de empresa</div>
         <div style="font-size:0.9rem;color:var(--muted);line-height:1.6;max-width:560px">An&#225;lisis macroecon&#243;mico y financiero para empresas. Complet&#225; los datos para obtener un informe detallado.</div>
       </div>
-      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid #a855f7;padding:1.5rem;margin-bottom:1rem">
-        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:1rem">Datos de la empresa</div>
+      <div style="background:var(--surface);border:1px solid var(--border2);border-top:2px solid #5b21b6;padding:1.5rem;margin-bottom:1rem">
+        <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#5b21b6;margin-bottom:1rem">Datos de la empresa</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
           <div>
             <div style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-bottom:0.3rem">Nombre</div>
@@ -1626,7 +1884,7 @@ if('serviceWorker' in navigator) {
           <div style="font-family:var(--mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.2rem">Panorama del día</div>
           <div style="font-family:var(--serif);font-size:1.4rem;font-weight:600;color:var(--text);line-height:1.2">Lectura del mercado en este momento</div>
         </div>
-        <div id="panoramaContent" style="font-size:0.92rem;color:#c8c4bc;line-height:1.8"></div>
+        <div id="panoramaContent" style="font-size:0.92rem;color:#44587d;line-height:1.8"></div>
         <div style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-top:1rem;padding:0.6rem 0.75rem;border:1px solid var(--border2);line-height:1.6">
           Lectura descriptiva del estado actual del mercado basada en las señales activas. No constituye asesoramiento financiero.
         </div>
@@ -1696,7 +1954,7 @@ if('serviceWorker' in navigator) {
         <p style="font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:580px">Ingresá tu capital, tu perfil y cuánto tiempo tenés. La IA de Carry Note te arma un portafolio con asignación por clase de activo e instrumentos concretos, en el contexto macroeconómico actual.</p>
 
         <!-- EMAIL GATE -->
-        <div id="portGate" style="background:linear-gradient(135deg,rgba(201,168,76,0.07),transparent);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;margin-bottom:2rem">
+        <div id="portGate" style="background:linear-gradient(135deg,rgba(20,52,203,0.07),transparent);border:1px solid var(--border);border-top:2px solid var(--gold);padding:2rem;margin-bottom:2rem">
           <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">▸ Acceso gratuito</div>
           <div style="font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">Ingresá tu email para ver el portafolio</div>
           <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem;max-width:460px">La recomendación es gratis. Te la mostramos en pantalla y también te la enviamos al inbox para que la tengas guardada.</p>
@@ -2011,7 +2269,7 @@ if('serviceWorker' in navigator) {
 
     <!-- ══ REBALANCEO PANEL ═══════════════════════════════════════════ -->
     <div id="rebalanceoPanel" style="display:none;margin-bottom:2rem">
-      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#a855f7;margin-bottom:0.6rem">⚖ Calculadora · Carry Note</div>
+      <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#5b21b6;margin-bottom:0.6rem">⚖ Calculadora · Carry Note</div>
       <div style="font-family:var(--serif);font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1;margin-bottom:0.5rem">Rebalanceo de cartera</div>
       <p style="font-size:0.95rem;color:var(--muted);line-height:1.7;margin-bottom:2rem;max-width:600px">Definí tu asignación objetivo por clase de activo, cargá los montos actuales, y calculá exactamente cuánto comprar o vender de cada una para volver al objetivo.</p>
 
@@ -2027,7 +2285,7 @@ if('serviceWorker' in navigator) {
         <span style="font-family:var(--mono);font-size:0.62rem;color:var(--muted)">Total cartera: <b id="rebalTotal" style="color:var(--gold)">USD 0</b></span>
       </div>
 
-      <div id="rebalWarning" style="display:none;font-family:var(--mono);font-size:0.62rem;color:var(--red);background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.3);padding:0.6rem 0.9rem;margin-bottom:1.5rem"></div>
+      <div id="rebalWarning" style="display:none;font-family:var(--mono);font-size:0.62rem;color:var(--red);background:rgba(198,32,54,0.08);border:1px solid rgba(198,32,54,0.3);padding:0.6rem 0.9rem;margin-bottom:1.5rem"></div>
 
       <div id="rebalResult" style="display:none;margin-bottom:1.5rem"></div>
 
@@ -2040,49 +2298,49 @@ if('serviceWorker' in navigator) {
     <div id="sobrePanel" style="display:none;margin-bottom:2rem">
       <div style="max-width:600px">
         <!-- Header -->
-        <div style="border-bottom:1px solid #2a2a32;padding-bottom:2rem;margin-bottom:2rem">
+        <div style="border-bottom:1px solid #d3e0ef;padding-bottom:2rem;margin-bottom:2rem">
           <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem">
-          <img src="data:image/jpeg;base64,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" alt="Julian Besendorff" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #2a2a32;flex-shrink:0">
+          <img src="data:image/jpeg;base64,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" alt="Julian Besendorff" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #d3e0ef;flex-shrink:0">
           <div>
-            <div style="font-family:'Inter',-apple-system,sans-serif;font-size:2.2rem;font-weight:600;color:var(--text);line-height:1.1;margin-bottom:0.3rem">Julián Besendorff</div>
+            <div style="font-family:var(--serif);font-size:2.2rem;font-weight:700;color:var(--text);line-height:1.1;margin-bottom:0.3rem;letter-spacing:-0.02em">Julián Besendorff</div>
             <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase">Analista · Carry Note</div>
           </div>
         </div>
-          <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8;margin-bottom:1rem">
+          <p style="font-size:0.95rem;color:#44587d;line-height:1.8;margin-bottom:1rem">
             Me formé en Administración en la UBA.
           </p>
-          <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8;margin-bottom:1.25rem">
+          <p style="font-size:0.95rem;color:#44587d;line-height:1.8;margin-bottom:1.25rem">
             Carry Note nació de una necesidad personal: quería una herramienta en español que integrara datos macro en tiempo real con análisis de cartera inteligente. Lo que empezó como un proyecto de fin de semana se convirtió en algo que uso todos los días y que hoy comparto de forma gratuita.
           </p>
-          <p style="font-size:0.95rem;color:#c8c4bc;line-height:1.8">
+          <p style="font-size:0.95rem;color:#44587d;line-height:1.8">
             Me apasionan los mercados emergentes, la política monetaria y entender cómo las decisiones macro impactan en las inversiones del día a día. 
           </p>
         </div>
         <!-- Experience -->
-        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #2a2a32">
-          <div style="font-family:var(--mono);font-size:0.55rem;color:#4a4855;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Experiencia</div>
+        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #d3e0ef">
+          <div style="font-family:var(--mono);font-size:0.55rem;color:#8a9ab5;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Experiencia</div>
           <div style="display:flex;flex-direction:column;gap:0.6rem">
             <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:0.88rem;color:#e8e6e0;font-weight:500">J.P. Morgan</span>
-              <span style="font-family:var(--mono);font-size:0.58rem;color:#4a4855">2022 — presente</span>
+              <span style="font-size:0.88rem;color:#0a1f44;font-weight:500">J.P. Morgan</span>
+              <span style="font-family:var(--mono);font-size:0.58rem;color:#8a9ab5">2022 — presente</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:0.88rem;color:#9d99a8">KPMG</span>
-              <span style="font-family:var(--mono);font-size:0.58rem;color:#4a4855">Auditoría</span>
+              <span style="font-size:0.88rem;color:#55678a">KPMG</span>
+              <span style="font-family:var(--mono);font-size:0.58rem;color:#8a9ab5">Auditoría</span>
             </div>
             <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:0.88rem;color:#9d99a8">HSBC</span>
-              <span style="font-family:var(--mono);font-size:0.58rem;color:#4a4855">Créditos</span>
+              <span style="font-size:0.88rem;color:#55678a">HSBC</span>
+              <span style="font-family:var(--mono);font-size:0.58rem;color:#8a9ab5">Créditos</span>
             </div>
           </div>
         </div>
         <!-- Education -->
-        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #2a2a32">
-          <div style="font-family:var(--mono);font-size:0.55rem;color:#4a4855;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Formación</div>
+        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #d3e0ef">
+          <div style="font-family:var(--mono);font-size:0.55rem;color:#8a9ab5;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Formación</div>
           <div style="display:flex;flex-direction:column;gap:0.5rem">
             <div>
-              <div style="font-size:0.88rem;color:#9d99a8">Licenciado en Administración</div>
-              <div style="font-family:var(--mono);font-size:0.62rem;color:#6b6875">UBA · 2019–2024</div>
+              <div style="font-size:0.88rem;color:#55678a">Licenciado en Administración</div>
+              <div style="font-family:var(--mono);font-size:0.62rem;color:#8a9ab5">UBA · 2019–2024</div>
             </div>
           </div>
         </div>
@@ -2092,11 +2350,11 @@ if('serviceWorker' in navigator) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
             LinkedIn · Julián Besendorff
           </a>
-          <span style="font-family:var(--mono);font-size:0.65rem;color:#6b6875">thecarrynote.com</span>
+          <span style="font-family:var(--mono);font-size:0.65rem;color:#8a9ab5">thecarrynote.com</span>
         </div>
 
         <!-- CONTACTO destacado -->
-        <div style="margin-top:2.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.1),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem 1.75rem;margin-bottom:1.5rem">
+        <div style="margin-top:2.5rem;background:linear-gradient(135deg,rgba(20,52,203,0.1),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem 1.75rem;margin-bottom:1.5rem">
           <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem">&#9658; Contacto</div>
           <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">&#191;Consultas, propuestas o feedback?</div>
           <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">Escribime directamente. Respondo todos los mensajes.</p>
@@ -2180,10 +2438,10 @@ if('serviceWorker' in navigator) {
       <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v neu">plano</span></div>
       <div class="chart-box">
         <svg viewBox="0 0 300 80" preserveAspectRatio="none">
-          <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#c9a84c" stop-opacity="0.25"/><stop offset="100%" stop-color="#c9a84c" stop-opacity="0"/></linearGradient></defs>
-          <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+          <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1434CB" stop-opacity="0.25"/><stop offset="100%" stop-color="#1434CB" stop-opacity="0"/></linearGradient></defs>
+          <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22" fill="none" stroke="#1434CB" stroke-width="1.5"/>
           <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22 L300,80 L0,80Z" fill="url(#gld)"/>
-          <text x="4" y="76" font-family="DM Mono" font-size="6.5" fill="#6b6875">10Y UST YIELD · 24M</text>
+          <text x="4" y="76" font-family="Source Sans 3, sans-serif" font-size="6.5" font-weight="600" fill="#8a9ab5">10Y UST YIELD · 24M</text>
         </svg>
       </div>
     </div>
@@ -2196,7 +2454,7 @@ if('serviceWorker' in navigator) {
       <div class="sb-title">Calendario de Eventos</div>
       <div id="calendarFeed"><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div></div>
       </div>
-    <div class="sb-block" style="border-top-color:#5b8dee">
+    <div class="sb-block" style="border-top-color:#006FCF">
       <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">Indicadores · Argentina <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">INDEC / BCRA</span></div>
       <div id="argMacro">
         <div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div>
@@ -2467,9 +2725,9 @@ function buildCard(n, num) {
   const ds = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(n.created_at).toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
   const aid = 'nb'+n.id;
   const pubDate = new Date(n.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
-  const disclaimer = '<div style="margin-top:2rem;padding:1rem 1.25rem;background:#1a0a00;border:1px solid #c8401a;border-left:4px solid #c8401a">' +
-    '<div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:#e05252;letter-spacing:0.06em;margin-bottom:0.3rem">⚠ AVISO IMPORTANTE</div>' +
-    '<div style="font-family:var(--mono);font-size:0.68rem;color:#d4b8a8;line-height:1.7">Este análisis es de carácter <strong style="color:#e8e6e0">estrictamente informativo y educativo</strong>. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del lector.</div>' +
+  const disclaimer = '<div style="margin-top:2rem;padding:1rem 1.25rem;background:#fff5f5;border:1px solid #c62036;border-left:4px solid #c62036">' +
+    '<div style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:#c62036;letter-spacing:0.06em;margin-bottom:0.3rem">⚠ AVISO IMPORTANTE</div>' +
+    '<div style="font-family:var(--mono);font-size:0.68rem;color:#6b4a3a;line-height:1.7">Este análisis es de carácter <strong style="color:#0a1f44">estrictamente informativo y educativo</strong>. No constituye asesoramiento financiero, recomendación de inversión ni oferta de compra o venta de ningún activo. Las decisiones de inversión son responsabilidad exclusiva del lector.</div>' +
     '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2);margin-top:0.5rem">Carry Note · ' + pubDate + ' · thecarrynote.com</div>' +
     '</div>';
   card.innerHTML = `
@@ -2813,7 +3071,7 @@ function renderCompactNlCta(containerId) {
     '<div style="margin-top:1.5rem;background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">' +
       '<div style="flex:1;min-width:200px">' +
         '<div style="font-family:var(--mono);font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:0.25rem">▸ Newsletter semanal</div>' +
-        '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.5">Resumen macro + señal del radar, una vez por semana. Sin spam.</div>' +
+        '<div style="font-size:0.85rem;color:#44587d;line-height:1.5">Resumen macro + señal del radar, una vez por semana. Sin spam.</div>' +
       '</div>' +
       '<div style="display:flex;gap:0.4rem;flex-wrap:wrap">' +
         '<input type="email" id="cta_'+containerId+'" placeholder="tu@email.com" style="min-width:170px;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:var(--mono);font-size:0.7rem;padding:0.5rem 0.7rem;outline:none"/>' +
@@ -2844,7 +3102,7 @@ function renderDiagCapture(containerId) {
   // Don't show if already subscribed this session
   if(window._diagCaptureSubmitted) return;
   c.innerHTML =
-    '<div style="margin-top:1.5rem;background:linear-gradient(135deg,rgba(201,168,76,0.08),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem">' +
+    '<div style="margin-top:1.5rem;background:linear-gradient(135deg,rgba(20,52,203,0.08),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem">' +
       '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem">▸ Recibí esto cada semana</div>' +
       '<div style="font-family:var(--serif);font-size:1.15rem;font-weight:600;color:var(--text);margin-bottom:0.4rem">El análisis macro de la semana, en tu inbox</div>' +
       '<p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">Resumen macro, señal destacada del radar y un dato clave del portal. Un mail por semana. Sin spam. (Opcional)</p>' +
@@ -3187,7 +3445,7 @@ function renderFCI() {
   if(!el) return;
   var filtered = currentFciFilter === 'all' ? FCI_DATA : FCI_DATA.filter(function(f){ return f.cat === currentFciFilter; });
   var catLabels = {mm:'Money Market',pesos:'Renta Fija Pesos',cer:'CER / Inflación',usd:'Renta Fija USD',rv:'Renta Variable',mixto:'Mixtos / Balanceados'};
-  var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#a855f7',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
+  var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#5b21b6',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
   if(currentFciFilter === 'all') {
     // Group by category
     var cats = ['mm','pesos','cer','usd','rv','mixto'];
@@ -3206,7 +3464,7 @@ function renderFCI() {
 }
 function renderFciCard(f, i) {
   var bg = i % 2 === 0 ? 'background:var(--surface)' : 'background:var(--surface2)';
-  var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#a855f7',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
+  var catColors = {mm:'var(--green)',pesos:'var(--gold)',cer:'#5b21b6',usd:'var(--blue)',rv:'var(--red)',mixto:'var(--muted)'};
   var color = catColors[f.cat] || 'var(--gold)';
   return '<div style="'+bg+';border-bottom:1px solid var(--border2);padding:0.85rem 1rem;display:grid;grid-template-columns:1fr 1fr 80px;gap:0.5rem 1.5rem">' +
     '<div style="grid-column:1/-1;display:flex;align-items:center;gap:0.75rem;margin-bottom:0.2rem">' +
@@ -3583,7 +3841,7 @@ async function runDiagCore() {
         body: JSON.stringify({diagnostico: txt.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,800)})
       }).catch(function(){});
     }
-    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
+    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#0a1f44;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+
     txt+'';
   } catch(err) {
     result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';
@@ -3724,7 +3982,7 @@ async function runScenario(tipo) {
     scenResult.innerHTML =
       '<div style="background:var(--surface);border:1px solid var(--border2);border-left:3px solid var(--gold);padding:1.25rem 1.5rem">' +
       '<div style="font-family:var(--mono);font-size:0.55rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Análisis de escenario</div>' +
-      '<div style="font-size:0.82rem;color:#f0ede8;line-height:1.7">' + cleanResult + '</div></div>';
+      '<div style="font-size:0.82rem;color:#0a1f44;line-height:1.7">' + cleanResult + '</div></div>';
   } catch(err) {
     scenResult.innerHTML = '<div style="color:var(--red);font-family:var(--mono);font-size:0.72rem;padding:0.75rem">Error: '+err.message+'</div>';
   }
@@ -3867,8 +4125,8 @@ function downloadPDF() {
   <scr'+'ipt>window.onload=function(){window.print();}<\/scr'+'ipt>
   
 <!-- CARTERA MODAL -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
+<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(10,31,68,0.5);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
+  <div style="background:#f6f9fd;border:1px solid #d3e0ef;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
     <!-- Header -->
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
       <div>
@@ -3887,12 +4145,12 @@ function downloadPDF() {
       <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
     </div>
     <!-- Disclaimer -->
-    <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
+    <div style="padding:0.75rem 1.25rem;background:rgba(198,32,54,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#8a5a4a;line-height:1.6">
       \u26a0 Car\u00e1cter educativo e informativo. No constituye recomendaci\u00f3n de inversi\u00f3n ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
     </div>
   </div>
 </div>
-<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;display:flex;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90vw">
+<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;display:flex;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(10,31,68,0.18);max-width:90vw">
   <span style="color:var(--text)">Instalá <strong style="color:var(--gold)">Carry Note</strong> en tu pantalla de inicio</span>
   <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
   <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
@@ -4010,7 +4268,7 @@ async function runDiagEmpresa() {
   var mepEl=document.getElementById('arg-mep'),mepLive=mepEl?mepEl.textContent.trim():'N/D';
   btn.disabled=true; btn.textContent='Generando diagnóstico...';
   result.style.display='block';
-  result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:#a855f7">Analizando con Claude Opus 4…</div>';
+  result.innerHTML='<div style="background:var(--surface);border:1px solid var(--border);border-top:2px solid #5b21b6;padding:2rem;text-align:center;font-family:var(--mono);font-size:0.7rem;color:#5b21b6">Analizando con Claude Opus 4…</div>';
   var activosStr=activos.length?activos.map(function(a){return a.tipo+': '+Number(a.monto).toLocaleString()+' '+a.moneda;}).join(' | '):'Sin activos financieros declarados';
   var isExporter = sector.toLowerCase().includes('export');
   var isImporter = sector.toLowerCase().includes('import') || costoUSD > 30;
@@ -4067,7 +4325,7 @@ async function runDiagEmpresa() {
     if(!res.ok){var e=await res.json();throw new Error((e.error&&e.error.message)||'HTTP '+res.status);}
     var data=await res.json();
     var txt=(data.content&&data.content[0]?data.content[0].text:'').replace(/^```html\s*/i,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
-    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid #a855f7;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:#a855f7}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
+    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#0a1f44;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid #5b21b6;padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:#5b21b6}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
     if(actions) actions.style.display='flex';
     renderDiagCapture('diagEmpresaCapture');
     window._lastEmpresaDiag={nombre:nombre,sector:sector,tamano:tamano,horizonte:horizonte,activos:activos,txt:txt,today:today};
@@ -4121,11 +4379,11 @@ function updateRadarLarge() {
   var alerts=active.filter(function(s){return s.level==='alerta';});
   var positive=active.filter(function(s){return s.level==='positivo'||s.level==='atencion';});
   var tone,toneColor,orbColor,orbBorder;
-  if(alerts.length>=2){tone='Estrés de mercado — múltiples alertas activas';toneColor='#e05252';orbColor='rgba(224,82,82,0.2)';orbBorder='#e05252';}
-  else if(alerts.length){tone='Cautela — señal de riesgo detectada';toneColor='#c9a84c';orbColor='rgba(201,168,76,0.2)';orbBorder='#c9a84c';}
-  else if(positive.length>=2){tone='Apetito de riesgo — momentum positivo';toneColor='#4caf7d';orbColor='rgba(76,175,125,0.2)';orbBorder='#4caf7d';}
-  else if(positive.length){tone='Mercado mixto — señal positiva aislada';toneColor='#5b8dee';orbColor='rgba(91,141,238,0.2)';orbBorder='#5b8dee';}
-  else{tone='Sin señales claras — mercado lateral';toneColor='#9d99a8';orbColor='var(--surface2)';orbBorder='var(--border)';}
+  if(alerts.length>=2){tone='Estrés de mercado — múltiples alertas activas';toneColor='#c62036';orbColor='rgba(198,32,54,0.2)';orbBorder='#c62036';}
+  else if(alerts.length){tone='Cautela — señal de riesgo detectada';toneColor='#1434CB';orbColor='rgba(20,52,203,0.2)';orbBorder='#1434CB';}
+  else if(positive.length>=2){tone='Apetito de riesgo — momentum positivo';toneColor='#0b8a5c';orbColor='rgba(11,138,92,0.2)';orbBorder='#0b8a5c';}
+  else if(positive.length){tone='Mercado mixto — señal positiva aislada';toneColor='#006FCF';orbColor='rgba(0,111,207,0.2)';orbBorder='#006FCF';}
+  else{tone='Sin señales claras — mercado lateral';toneColor='#55678a';orbColor='var(--surface2)';orbBorder='var(--border)';}
   signalEl.textContent=tone; signalEl.style.color=toneColor;
   if(orbEl){orbEl.style.background=orbColor;orbEl.style.borderColor=orbBorder;}
   if(orbInner) orbInner.style.background=toneColor;
@@ -4147,8 +4405,8 @@ function updateRadarLarge() {
         signals.sort(function(a,b){ return Math.abs(b._avg||0) - Math.abs(a._avg||0); });
         var s = signals[0];
         var conflict = signals.length > 1;
-        var bg = s.level==='alerta' ? 'rgba(224,82,82,0.06)' : s.level==='positivo' ? 'rgba(76,175,125,0.06)' : 'rgba(201,168,76,0.06)';
-        var brd = s.level==='alerta' ? 'rgba(224,82,82,0.2)' : s.level==='positivo' ? 'rgba(76,175,125,0.2)' : 'rgba(201,168,76,0.2)';
+        var bg = s.level==='alerta' ? 'rgba(198,32,54,0.06)' : s.level==='positivo' ? 'rgba(11,138,92,0.06)' : 'rgba(20,52,203,0.06)';
+        var brd = s.level==='alerta' ? 'rgba(198,32,54,0.2)' : s.level==='positivo' ? 'rgba(11,138,92,0.2)' : 'rgba(20,52,203,0.2)';
         var conflictNote = conflict ? ' <span style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);letter-spacing:0.04em">· señal mixta</span>' : '';
         htmlOut += '<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.65rem 0.75rem;background:'+bg+';border:1px solid '+brd+';border-left:3px solid '+s.color+';margin-bottom:0.35rem">'+
           '<span style="color:'+s.color+';font-size:0.75rem;flex-shrink:0;margin-top:3px">●</span>'+
@@ -4157,7 +4415,7 @@ function updateRadarLarge() {
               '<span style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:'+s.color+'">'+s.name+conflictNote+'</span>'+
               '<span style="font-family:var(--mono);font-size:0.5rem;color:var(--muted2);margin-left:auto;text-transform:uppercase;letter-spacing:0.06em">'+cat+'</span>'+
             '</div>'+
-            '<div style="font-size:0.85rem;color:#c8c4bc;line-height:1.65">'+s.desc+'</div>'+
+            '<div style="font-size:0.85rem;color:#44587d;line-height:1.65">'+s.desc+'</div>'+
           '</div>'+
         '</div>';
       });
@@ -4172,12 +4430,12 @@ function updateRadarLarge() {
   rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
   corrEl.innerHTML=rows.map(function(r){
     var arrow=r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';
-    var cls=r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'#9d99a8';
-    var bg=r.active?'background:rgba(255,255,255,0.03);border-left:2px solid '+r.color:'border-left:2px solid var(--border2)';
+    var cls=r.avg>0.3?'#0b8a5c':r.avg<-0.3?'#c62036':'#55678a';
+    var bg=r.active?'background:rgba(20,52,203,0.035);border-left:2px solid '+r.color:'border-left:2px solid var(--border2)';
     var corrStat=_historicalLoaded?getPatternCorrelation(r):null;
     var corrBadge=corrStat?'<span style="font-family:var(--mono);font-size:0.52rem;color:'+corrLabel(corrStat.r).color+';border:1px solid '+corrLabel(corrStat.r).color+';padding:0.08rem 0.3rem;margin-left:0.4rem">r='+corrStat.r.toFixed(2)+'</span>':'';
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.75rem;'+bg+';border-bottom:1px solid var(--border2)">'+
-      '<div><span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#9d99a8')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>'+
+      '<div><span style="font-family:var(--mono);font-size:0.72rem;color:'+(r.active?r.color:'#55678a')+';font-weight:'+(r.active?'500':'400')+'">'+(r.active?'● ':'○ ')+r.name+'</span>'+
       '<span style="font-family:var(--mono);font-size:0.58rem;color:var(--muted2);margin-left:0.4rem">('+r.assets.join(', ')+')</span>'+corrBadge+'</div>'+
       '<span style="font-family:var(--mono);font-size:0.78rem;font-weight:500;color:'+cls+'">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(2)+'%</span></div>';
   }).join('');
@@ -4454,7 +4712,7 @@ function showWatchlist(e){
 }
 // ══ PORTAFOLIO ════════════════════════════════════════════════════════
 var _portState = { email: null, profile: null, horizon: null, loadingTimer: null };
-var PORT_PALETTE = ['#c9a84c','#4caf7d','#5b8dee','#e05252','#9d99a8','#e8c96a','#4db6ac'];
+var PORT_PALETTE = ['#1434CB','#0b8a5c','#006FCF','#c62036','#55678a','#0f27a0','#4db6ac'];
 var PORT_LOADING_MSGS = [
   'Analizando contexto macro actual...',
   'Evaluando tasas, brecha y riesgo país...',
@@ -4551,7 +4809,7 @@ async function generatePortfolio() {
     if (window.gtag) gtag('event', 'portfolio_generated', { profile: _portState.profile, horizon: _portState.horizon });
   } catch(err) {
     document.getElementById('portResult').innerHTML =
-      '<div style="font-family:var(--mono);font-size:0.75rem;color:var(--red);padding:1.5rem;border:1px solid var(--red);background:rgba(224,82,82,0.05)">✗ Error al generar el portafolio. Por favor intentá de nuevo en unos segundos.</div>';
+      '<div style="font-family:var(--mono);font-size:0.75rem;color:var(--red);padding:1.5rem;border:1px solid var(--red);background:rgba(198,32,54,0.05)">✗ Error al generar el portafolio. Por favor intentá de nuevo en unos segundos.</div>';
     document.getElementById('portResult').style.display = 'block';
   } finally {
     clearInterval(_portState.loadingTimer);
@@ -4658,7 +4916,7 @@ function drawPortDonut(allocation) {
     angle += slice;
   });
   ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-  ctx.fillStyle = '#0a0a0b'; ctx.fill();
+  ctx.fillStyle = '#ffffff'; ctx.fill();
 }
 
 function savePortfolioToCarteras() {
@@ -4806,19 +5064,19 @@ function calcCarryScore() {
 
   var label, color, desc;
   if (total >= 80) {
-    label = 'Carry muy atractivo'; color = '#4caf7d';
+    label = 'Carry muy atractivo'; color = '#0b8a5c';
     desc = 'Las condiciones son favorables: tasa real positiva, brecha contenida y contexto macro estable. Momento óptimo para el carry en pesos.';
   } else if (total >= 65) {
-    label = 'Carry atractivo'; color = '#8bc34a';
+    label = 'Carry atractivo'; color = '#0b8a5c';
     desc = 'El diferencial de tasas justifica la operación con riesgo moderado. Monitorear el tipo de cambio y el contexto global.';
   } else if (total >= 50) {
-    label = 'Carry moderado'; color = '#c9a84c';
+    label = 'Carry moderado'; color = '#1434CB';
     desc = 'Condiciones neutras. El carry puede ser rentable pero el margen de seguridad es ajustado. Exige monitoreo activo.';
   } else if (total >= 35) {
-    label = 'Carry con riesgo'; color = '#ff9800';
+    label = 'Carry con riesgo'; color = '#d97706';
     desc = 'La brecha, el riesgo país o el contexto global generan presión sobre la estrategia. No recomendable sin cobertura.';
   } else {
-    label = 'Carry no recomendable'; color = '#e05252';
+    label = 'Carry no recomendable'; color = '#c62036';
     desc = 'Las condiciones actuales hacen que el riesgo cambiario supere ampliamente el diferencial de tasas. Evitar exposición sin cobertura.';
   }
 
@@ -5454,7 +5712,7 @@ function calcRebalanceo(){
   if(resEl){
     resEl.style.display = 'block';
     resEl.innerHTML =
-      '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#a855f7;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Movimientos para rebalancear</div>' +
+      '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#5b21b6;margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border2)">Movimientos para rebalancear</div>' +
       rows.map(function(r){
         var action = Math.abs(r.diff) < total*0.005 ? 'En línea' : r.diff > 0 ? 'Comprar' : 'Vender';
         var color = Math.abs(r.diff) < total*0.005 ? 'var(--muted2)' : r.diff > 0 ? 'var(--green)' : 'var(--red)';
@@ -5545,9 +5803,9 @@ function getTickerChange(id) {
   return el.className.indexOf('t-dn')>=0?-v:v;
 }
 function getSignalIntensity(avgAbs) {
-  if(avgAbs>=2.0) return {label:'Fuerte', color:'#e05252', dot:'●●●'};
-  if(avgAbs>=0.8) return {label:'Moderada',color:'#c9a84c', dot:'●●○'};
-  return {label:'Débil', color:'#6b6875', dot:'●○○'};
+  if(avgAbs>=2.0) return {label:'Fuerte', color:'#c62036', dot:'●●●'};
+  if(avgAbs>=0.8) return {label:'Moderada',color:'#1434CB', dot:'●●○'};
+  return {label:'Débil', color:'#8a9ab5', dot:'●○○'};
 }
 // ── FEAR & GREED ──────────────────────────────────────────────
 function calcFearGreed() {
@@ -5563,13 +5821,13 @@ function calcFearGreed() {
   var gldScore=gldPct!==null?Math.max(0,Math.min(100,50-gldPct*6)):50;
   var score=Math.round(vixScore*0.30+spxScore*0.25+btcScore*0.15+tltScore*0.15+gldScore*0.15);
   var label,color,bg;
-  if(score>=75){label='Codicia extrema';color='#4caf7d';bg='rgba(76,175,125,0.12)';}
-  else if(score>=60){label='Codicia';color='#8bc34a';bg='rgba(139,195,74,0.10)';}
-  else if(score>=55){label='Leve codicia';color='#a8c34a';bg='rgba(168,195,74,0.08)';}
-  else if(score>=45){label='Neutral';color='#c9a84c';bg='rgba(201,168,76,0.10)';}
-  else if(score>=40){label='Leve miedo';color='#e0962b';bg='rgba(224,150,43,0.08)';}
-  else if(score>=25){label='Miedo';color='#ff9800';bg='rgba(255,152,0,0.10)';}
-  else{label='Miedo extremo';color='#e05252';bg='rgba(224,82,82,0.12)';}
+  if(score>=75){label='Codicia extrema';color='#0b8a5c';bg='rgba(11,138,92,0.12)';}
+  else if(score>=60){label='Codicia';color='#0b8a5c';bg='rgba(11,138,92,0.10)';}
+  else if(score>=55){label='Leve codicia';color='#0b8a5c';bg='rgba(168,195,74,0.08)';}
+  else if(score>=45){label='Neutral';color='#1434CB';bg='rgba(20,52,203,0.10)';}
+  else if(score>=40){label='Leve miedo';color='#d97706';bg='rgba(224,150,43,0.08)';}
+  else if(score>=25){label='Miedo';color='#d97706';bg='rgba(217,119,6,0.10)';}
+  else{label='Miedo extremo';color='#c62036';bg='rgba(198,32,54,0.12)';}
   return {score,label,color,bg};
 }
 function renderFearGreed() {
@@ -5669,7 +5927,7 @@ function renderCrossAlerts() {
   wrap.style.display='block';
   if(!alerts.length){el.innerHTML='<div style="font-family:var(--mono);font-size:0.72rem;color:var(--muted2);padding:0.75rem">No hay señales activas relevantes para tu cartera en este momento.</div>';return;}
   el.innerHTML=alerts.map(function(a){
-    var bgColor=a.level==='alerta'?'rgba(224,82,82,0.08)':a.level==='positivo'?'rgba(76,175,125,0.08)':'rgba(201,168,76,0.06)';
+    var bgColor=a.level==='alerta'?'rgba(198,32,54,0.08)':a.level==='positivo'?'rgba(11,138,92,0.08)':'rgba(20,52,203,0.06)';
     var borderColor=a.level==='alerta'?'var(--red)':a.level==='positivo'?'var(--green)':'var(--gold)';
     return '<div style="padding:0.75rem 1rem;border-left:3px solid '+borderColor+';background:'+bgColor+';margin-bottom:0.5rem">'+
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem">'+
@@ -5944,19 +6202,19 @@ async function generateSignalExplanations(activeSignals, allRows) {
     if(alertsEl&&alerts2.length){
       alertsEl.innerHTML=alerts2.map(function(s){
         var exp=lines[idx++]||s.desc;
-        return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.2);margin-bottom:0.4rem">'+
-          '<span style="color:#e05252;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
-          '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#e05252;margin-bottom:0.2rem">'+s.name+'</div>'+
-          '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+exp+'</div></div></div>';
+        return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(198,32,54,0.08);border:1px solid rgba(198,32,54,0.2);margin-bottom:0.4rem">'+
+          '<span style="color:#c62036;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
+          '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#c62036;margin-bottom:0.2rem">'+s.name+'</div>'+
+          '<div style="font-size:0.88rem;color:#0a1f44;line-height:1.6">'+exp+'</div></div></div>';
       }).join('');
     }
     if(positiveEl&&positive2.length){
       positiveEl.innerHTML=positive2.map(function(s){
         var exp=lines[idx++]||s.desc;
-        return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(76,175,125,0.08);border:1px solid rgba(76,175,125,0.2);margin-bottom:0.4rem">'+
-          '<span style="color:#4caf7d;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
-          '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#4caf7d;margin-bottom:0.2rem">'+s.name+'</div>'+
-          '<div style="font-size:0.88rem;color:#e8e6e0;line-height:1.6">'+exp+'</div></div></div>';
+        return '<div style="display:flex;align-items:flex-start;gap:0.5rem;padding:0.7rem 0.75rem;background:rgba(11,138,92,0.08);border:1px solid rgba(11,138,92,0.2);margin-bottom:0.4rem">'+
+          '<span style="color:#0b8a5c;font-size:0.8rem;flex-shrink:0;margin-top:2px">●</span>'+
+          '<div><div style="font-family:var(--mono);font-size:0.65rem;font-weight:500;color:#0b8a5c;margin-bottom:0.2rem">'+s.name+'</div>'+
+          '<div style="font-size:0.88rem;color:#0a1f44;line-height:1.6">'+exp+'</div></div></div>';
       }).join('');
     }
   } catch(e) { console.log('explain error',e); }
@@ -6172,7 +6430,7 @@ function buildViewCard(v){
   var biasColor=v.bias==='compra'?'var(--green)':v.bias==='venta'?'var(--red)':'var(--muted)';
   var biasLabel=v.bias==='compra'?'▲ COMPRA':v.bias==='venta'?'▼ VENTA':'→ NEUTRAL';
   var mktLabel=v.market==='eeuu'?'EEUU':'ARGENTINA';
-  var mktColor=v.market==='eeuu'?'var(--blue)':'#a855f7';
+  var mktColor=v.market==='eeuu'?'var(--blue)':'#5b21b6';
   var tfLabel={corto:'Corto plazo',medio:'Mediano plazo',largo:'Largo plazo'}[v.timeframe]||v.timeframe;
   var ds=new Date(v.created_at).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'});
   var tvSym=getTVSymbol(v.ticker,v.market);
@@ -6188,7 +6446,7 @@ function buildViewCard(v){
         '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2)">'+tfLabel+'</span>'+
         '<span style="font-family:var(--mono);font-size:0.55rem;color:var(--muted2);margin-left:auto">'+ds+'</span>'+
       '</div>'+
-      '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.75;margin-bottom:'+(v.image_data?'0.75rem':'1.25rem')+'">'+v.body+'</div>'+
+      '<div style="font-size:0.88rem;color:#44587d;line-height:1.75;margin-bottom:'+(v.image_data?'0.75rem':'1.25rem')+'">'+v.body+'</div>'+
       (v.image_data?'<div style="margin-bottom:1.25rem"><img src="'+v.image_data+'" style="max-width:100%;max-height:340px;object-fit:contain;border:1px solid var(--border2);display:block" loading="lazy"/></div>':'')+
       '<div style="border-top:1px solid var(--border2);padding-top:0.85rem">'+
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">'+
@@ -6436,7 +6694,7 @@ async function runDiag(){
     saveDiagHistory(assets,horizonte,riesgo,scoreMatch?scoreMatch[1]:null);
     var _carNom=(document.getElementById('diagCarteraNombre')||{}).value;
     if(_carNom&&_carNom.trim()) upsertCartera(_carNom.trim(),assets,horizonte,riesgo,scoreMatch?scoreMatch[1]:null);
-    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#f0ede8;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
+    result.innerHTML='<style>.ds{background:var(--surface);border:1px solid var(--border2);padding:1.25rem 1.5rem;margin-bottom:0.75rem}.ds h3{font-family:var(--mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.75rem;color:var(--muted)}.dg h3{color:var(--green)}.dr h3{color:var(--red)}.dy h3{color:var(--gold)}.ds p,.ds ul{font-size:0.95rem;color:#0a1f44;line-height:1.8}.ds ul{padding-left:1.2rem}.ds li{margin-bottom:0.5rem}.dscore{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:1.25rem 1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.75rem;font-family:var(--mono)}.dscore b{font-size:1.4rem;color:var(--gold)}.dscore span{font-size:0.68rem;color:var(--muted)}</style>'+txt;
   }catch(err){result.innerHTML='<div style="background:var(--surface);border:1px solid var(--red);padding:1.5rem;font-family:var(--mono);font-size:0.72rem;color:var(--red)">Error: '+err.message+'</div>';}
   btn.disabled=false;btn.textContent='Analizar de nuevo';
   var dab=document.getElementById('diagActions');if(dab)dab.style.display='flex';
@@ -6500,20 +6758,20 @@ function updateRadar(){
   var alerts=active.filter(function(s){return s.level==='alerta';}).length;
   var positive=active.filter(function(s){return s.level==='positivo';}).length;
   var tone,toneColor,orbColor,orbBorder;
-  if(alerts>=2){tone='Estrés de mercado · múltiples alertas activas';toneColor='#e05252';orbColor='rgba(224,82,82,0.15)';orbBorder='#e05252';}
-  else if(alerts===1){tone='Cautela · señal de riesgo detectada';toneColor='#c9a84c';orbColor='rgba(201,168,76,0.15)';orbBorder='#c9a84c';}
-  else if(positive>=2){tone='Apetito de riesgo · momentum positivo';toneColor='#4caf7d';orbColor='rgba(76,175,125,0.15)';orbBorder='#4caf7d';}
-  else if(positive===1){tone='Mercado mixto · señal positiva aislada';toneColor='#5b8dee';orbColor='rgba(91,141,238,0.15)';orbBorder='#5b8dee';}
-  else{tone='Sin señales claras · mercado lateral';toneColor='#6b6875';orbColor='var(--surface2)';orbBorder='var(--border)';}
+  if(alerts>=2){tone='Estrés de mercado · múltiples alertas activas';toneColor='#c62036';orbColor='rgba(198,32,54,0.15)';orbBorder='#c62036';}
+  else if(alerts===1){tone='Cautela · señal de riesgo detectada';toneColor='#1434CB';orbColor='rgba(20,52,203,0.15)';orbBorder='#1434CB';}
+  else if(positive>=2){tone='Apetito de riesgo · momentum positivo';toneColor='#0b8a5c';orbColor='rgba(11,138,92,0.15)';orbBorder='#0b8a5c';}
+  else if(positive===1){tone='Mercado mixto · señal positiva aislada';toneColor='#006FCF';orbColor='rgba(0,111,207,0.15)';orbBorder='#006FCF';}
+  else{tone='Sin señales claras · mercado lateral';toneColor='#8a9ab5';orbColor='var(--surface2)';orbBorder='var(--border)';}
   signalEl.textContent=tone;signalEl.style.color=toneColor;
   if(orbEl){orbEl.style.background=orbColor;orbEl.style.borderColor=orbBorder;}
   if(orbInner)orbInner.style.background=toneColor;
-  if(active.length>0){alertsEl.innerHTML=active.slice(0,3).map(function(s){return '<div style="display:flex;align-items:center;gap:0.35rem"><span style="color:'+s.color+';font-size:0.6rem;flex-shrink:0">●</span><span style="font-family:var(--mono);font-size:0.68rem;color:#c8c4bc;line-height:1.5">'+s.desc+'</span></div>';}).join('');}
-  else{alertsEl.innerHTML='<div style="font-family:var(--mono);font-size:0.68rem;color:#6b6875">Sin alertas activas</div>';}
+  if(active.length>0){alertsEl.innerHTML=active.slice(0,3).map(function(s){return '<div style="display:flex;align-items:center;gap:0.35rem"><span style="color:'+s.color+';font-size:0.6rem;flex-shrink:0">●</span><span style="font-family:var(--mono);font-size:0.68rem;color:#44587d;line-height:1.5">'+s.desc+'</span></div>';}).join('');}
+  else{alertsEl.innerHTML='<div style="font-family:var(--mono);font-size:0.68rem;color:#8a9ab5">Sin alertas activas</div>';}
   rows.sort(function(a,b){return Math.abs(b.avg)-Math.abs(a.avg);});
   corrEl.innerHTML=rows.slice(0,4).map(function(r){
-    var arrow=r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';var cls=r.avg>0.3?'#4caf7d':r.avg<-0.3?'#e05252':'var(--muted2)';
-    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem"><span style="font-family:var(--mono);font-size:0.68rem;color:'+(r.active?r.color:'#9d99a8')+'">'+(r.active?'● ':'○ ')+r.name+'</span><span style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:'+cls+';white-space:nowrap">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(1)+'%</span></div>';
+    var arrow=r.avg>0.3?'▲':r.avg<-0.3?'▼':'→';var cls=r.avg>0.3?'#0b8a5c':r.avg<-0.3?'#c62036':'var(--muted2)';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;gap:0.75rem"><span style="font-family:var(--mono);font-size:0.68rem;color:'+(r.active?r.color:'#55678a')+'">'+(r.active?'● ':'○ ')+r.name+'</span><span style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:'+cls+';white-space:nowrap">'+arrow+' '+(r.avg>=0?'+':'')+r.avg.toFixed(1)+'%</span></div>';
   }).join('');
 }
 function generatePanorama() {
@@ -6573,7 +6831,7 @@ function generatePanorama() {
   html_out += '<div style="background:linear-gradient(135deg, '+regimenColor+'15, transparent);border-left:3px solid '+regimenColor+';padding:1rem 1.2rem;margin-bottom:1.2rem">';
   html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:'+regimenColor+';margin-bottom:0.4rem">R\u00e9gimen del momento</div>';
   html_out += '<div style="font-family:var(--serif);font-size:1.25rem;font-weight:600;color:'+regimenColor+';margin-bottom:0.5rem">'+regimenLabel+'</div>';
-  html_out += '<div style="font-size:0.9rem;color:#c8c4bc;line-height:1.75">'+regimenText+'</div>';
+  html_out += '<div style="font-size:0.9rem;color:#44587d;line-height:1.75">'+regimenText+'</div>';
   html_out += '</div>';
 
   // === Top movers ===
@@ -6602,11 +6860,11 @@ function generatePanorama() {
     html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem">Qu\u00e9 est\u00e1 pasando</div>';
     html_out += '<div style="display:flex;flex-direction:column;gap:0.4rem">';
     interpretParts.slice(0,5).forEach(function(s){
-      var bg = s.level==='alerta' ? 'rgba(224,82,82,0.05)' : s.level==='positivo' ? 'rgba(76,175,125,0.05)' : 'rgba(201,168,76,0.05)';
+      var bg = s.level==='alerta' ? 'rgba(198,32,54,0.05)' : s.level==='positivo' ? 'rgba(11,138,92,0.05)' : 'rgba(20,52,203,0.05)';
       html_out += '<div style="display:flex;align-items:flex-start;gap:0.6rem;padding:0.6rem 0.75rem;background:'+bg+';border-left:2px solid '+s.color+'">';
       html_out += '<span style="color:'+s.color+';font-size:0.65rem;margin-top:3px">\u25cf</span>';
       html_out += '<div><span style="font-family:var(--mono);font-size:0.7rem;font-weight:500;color:'+s.color+'">'+s.name+'</span>';
-      if(s.desc) html_out += '<div style="font-size:0.82rem;color:#b8b4ac;margin-top:0.15rem;line-height:1.55">'+s.desc+'</div>';
+      if(s.desc) html_out += '<div style="font-size:0.82rem;color:#55678a;margin-top:0.15rem;line-height:1.55">'+s.desc+'</div>';
       html_out += '</div></div>';
     });
     html_out += '</div></div>';
@@ -6625,7 +6883,7 @@ function generatePanorama() {
   }
   html_out += '<div style="background:var(--surface);border:1px solid var(--border2);padding:0.85rem 1rem">';
   html_out += '<div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.4rem">Implicancias pr\u00e1cticas</div>';
-  html_out += '<div style="font-size:0.88rem;color:#c8c4bc;line-height:1.7">'+implicancias+'</div>';
+  html_out += '<div style="font-size:0.88rem;color:#44587d;line-height:1.7">'+implicancias+'</div>';
   html_out += '</div>';
 
   el.innerHTML = html_out;
@@ -6651,7 +6909,7 @@ window.addEventListener('load', function(){
         var res = document.getElementById('wlSearchResults');
         if(!results.length){ res.style.display='none'; return; }
         res.innerHTML = results.map(function(r){
-          var typeColor = r.type==='Crypto'?'#a855f7':r.type==='Forex'?'var(--blue)':r.type==='Argentina'?'var(--green)':r.type==='Índice'||r.type==='ETF'?'var(--gold)':'var(--muted2)';
+          var typeColor = r.type==='Crypto'?'#5b21b6':r.type==='Forex'?'var(--blue)':r.type==='Argentina'?'var(--green)':r.type==='Índice'||r.type==='ETF'?'var(--gold)':'var(--muted2)';
           var sym = r.symbol.includes(':') ? r.symbol.split(':')[1] : r.symbol;
           return '<div onclick="selectWlResult(\''+r.symbol+'\',\''+r.description.replace(/'/g,'').replace(/"/g,'')+'\')'+
             '" style="padding:0.6rem 0.85rem;cursor:pointer;border-bottom:1px solid var(--border2);display:flex;justify-content:space-between;align-items:center;gap:0.5rem" onmouseover="this.style.background=\'var(--surface2)\'" onmouseout="this.style.background=\'\'">'+
@@ -6695,8 +6953,8 @@ window.addEventListener('load', function(){
 });
 </script>
 <!-- CARTERA MODAL -->
-<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
+<div id="cartModal" style="display:none;position:fixed;inset:0;background:rgba(10,31,68,0.5);z-index:600;justify-content:center;align-items:flex-start;overflow-y:auto;padding:1.5rem 1rem">
+  <div style="background:#f6f9fd;border:1px solid #d3e0ef;border-top:3px solid var(--green);width:min(680px,100%);font-family:var(--mono);margin:auto">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border2)">
       <div>
         <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--green);margin-bottom:0.2rem">Carry Note · Diagnóstico</div>
@@ -6711,12 +6969,12 @@ window.addEventListener('load', function(){
       <button onclick="shareCartLinkedIn()" style="font-family:var(--mono);font-size:0.62rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:0.5rem 1rem;background:#0A66C2;color:#fff;border:none;cursor:pointer">LinkedIn ↗</button>
       <button onclick="closeCartModal()" style="font-family:var(--mono);font-size:0.62rem;padding:0.5rem 1rem;background:transparent;color:var(--muted);border:1px solid var(--border2);cursor:pointer;margin-left:auto">Cerrar</button>
     </div>
-    <div style="padding:0.75rem 1.25rem;background:rgba(224,82,82,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#c8a090;line-height:1.6">
+    <div style="padding:0.75rem 1.25rem;background:rgba(198,32,54,0.06);border-top:1px solid var(--border2);font-size:0.58rem;color:#8a5a4a;line-height:1.6">
       ⚠ Carácter educativo e informativo. No constituye recomendación de inversión ni asesoramiento financiero. Las decisiones son responsabilidad exclusiva del inversor.
     </div>
   </div>
 </div>
-<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90vw">
+<div id="pwaInstallBanner" style="display:none;position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:500;background:var(--surface);border:1px solid var(--gold);padding:0.75rem 1.25rem;font-family:var(--mono);font-size:0.7rem;align-items:center;gap:1rem;box-shadow:0 4px 20px rgba(10,31,68,0.18);max-width:90vw">
   <span style="color:var(--text)">Instalá <strong style="color:var(--gold)">Carry Note</strong> en tu pantalla de inicio</span>
   <button id="pwaInstallBtn" style="background:var(--gold);color:var(--bg);border:none;font-family:var(--mono);font-size:0.65rem;font-weight:500;padding:0.4rem 0.85rem;cursor:pointer;white-space:nowrap">Instalar ▸</button>
   <button onclick="document.getElementById('pwaInstallBanner').style.display='none'" style="background:transparent;border:none;color:var(--muted2);cursor:pointer;font-size:1rem;padding:0 0.2rem">✕</button>
@@ -6750,8 +7008,8 @@ window.addEventListener('appinstalled', function() {
 });
 </script>
 <!-- CORR EXPLAINER MODAL -->
-<div id="corrExplainerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:700;overflow-y:auto;padding:2rem 1rem">
-  <div style="background:#111114;border:1px solid #2a2a32;border-top:3px solid var(--gold);width:min(680px,100%);margin:auto;font-family:var(--mono)">
+<div id="corrExplainerModal" style="display:none;position:fixed;inset:0;background:rgba(10,31,68,0.45);z-index:700;overflow-y:auto;padding:2rem 1rem">
+  <div style="background:#f6f9fd;border:1px solid #d3e0ef;border-top:3px solid var(--gold);width:min(680px,100%);margin:auto;font-family:var(--mono)">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border2)">
       <div>
         <div style="font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem">Carry Note · Radar Macro</div>
@@ -6759,20 +7017,20 @@ window.addEventListener('appinstalled', function() {
       </div>
       <button onclick="document.getElementById('corrExplainerModal').style.display='none'" style="background:transparent;border:1px solid var(--border2);color:var(--muted);cursor:pointer;font-size:1rem;padding:0.3rem 0.7rem">✕</button>
     </div>
-    <div style="padding:1.5rem;font-size:0.88rem;color:#c8c4bc;line-height:1.85">
+    <div style="padding:1.5rem;font-size:0.88rem;color:#44587d;line-height:1.85">
       <p style="margin-bottom:1.25rem">La tabla que ves en el Radar muestra <strong style="color:var(--text)">24 patrones de mercado</strong> que el sistema monitorea todo el tiempo. Cada patrón es una combinación de activos que, cuando se mueven juntos en la misma dirección, manda una señal sobre el estado del mercado.</p>
       <div style="background:var(--surface);border-left:3px solid var(--gold);padding:1rem 1.25rem;margin-bottom:1.25rem">
         <div style="font-size:0.62rem;font-weight:500;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">Los símbolos que ves</div>
         <div style="display:grid;grid-template-columns:auto 1fr;gap:0.5rem 1rem;align-items:start">
-          <span style="color:#4caf7d;font-size:1rem">●</span><span><strong style="color:var(--text)">Punto lleno</strong> — señal activa hoy. Todos los activos del patrón se mueven en la dirección esperada con más de ±0.3%.</span>
-          <span style="color:#9d99a8;font-size:1rem">○</span><span><strong style="color:var(--text)">Punto vacío</strong> — señal inactiva. El patrón no se está cumpliendo ahora.</span>
-          <span style="color:#4caf7d">▲</span><span><strong style="color:var(--text)">Flecha arriba</strong> — los activos del patrón subieron en promedio hoy.</span>
-          <span style="color:#e05252">▼</span><span><strong style="color:var(--text)">Flecha abajo</strong> — los activos del patrón bajaron en promedio hoy.</span>
-          <span style="color:#9d99a8">→</span><span><strong style="color:var(--text)">Flecha derecha</strong> — movimiento muy pequeño, sin señal clara.</span>
+          <span style="color:#0b8a5c;font-size:1rem">●</span><span><strong style="color:var(--text)">Punto lleno</strong> — señal activa hoy. Todos los activos del patrón se mueven en la dirección esperada con más de ±0.3%.</span>
+          <span style="color:#55678a;font-size:1rem">○</span><span><strong style="color:var(--text)">Punto vacío</strong> — señal inactiva. El patrón no se está cumpliendo ahora.</span>
+          <span style="color:#0b8a5c">▲</span><span><strong style="color:var(--text)">Flecha arriba</strong> — los activos del patrón subieron en promedio hoy.</span>
+          <span style="color:#c62036">▼</span><span><strong style="color:var(--text)">Flecha abajo</strong> — los activos del patrón bajaron en promedio hoy.</span>
+          <span style="color:#55678a">→</span><span><strong style="color:var(--text)">Flecha derecha</strong> — movimiento muy pequeño, sin señal clara.</span>
         </div>
       </div>
-      <div style="background:var(--surface);border-left:3px solid #5b8dee;padding:1rem 1.25rem;margin-bottom:1.25rem">
-        <div style="font-size:0.62rem;font-weight:500;color:#5b8dee;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">El porcentaje a la derecha</div>
+      <div style="background:var(--surface);border-left:3px solid #006FCF;padding:1rem 1.25rem;margin-bottom:1.25rem">
+        <div style="font-size:0.62rem;font-weight:500;color:#006FCF;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem">El porcentaje a la derecha</div>
         <p style="margin:0">Es el <strong style="color:var(--text)">promedio de variación del día</strong> de los activos del patrón. Si "Inflow Argentina" muestra ▼ -3.41%, significa que YPF y GGAL bajaron en promedio 3.41% hoy en la Bolsa de Nueva York.</p>
       </div>
       <div style="background:var(--surface);border-left:3px solid var(--green);padding:1rem 1.25rem;margin-bottom:1.25rem">
