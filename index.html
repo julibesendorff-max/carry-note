@@ -2426,25 +2426,7 @@ if('serviceWorker' in navigator) {
     </div>
   </section>
   <aside class="sidebar">
-    <div class="sb-block">
-      <div class="sb-title">Indicadores Macro · EEUU <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">· jul 2026</span></div>
-      <div class="ind"><span class="ind-n">Fed Funds Rate</span><span class="ind-v neu">3.50–3.75%</span></div>
-      <div class="ind"><span class="ind-n">CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v dn">4.2%</span></div>
-      <div class="ind"><span class="ind-n">Core CPI YoY <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v dn">2.9%</span></div>
-      <div class="ind"><span class="ind-n">Core PCE YoY <span style="font-size:0.5rem;color:var(--muted2)">abr</span></span><span class="ind-v dn">3.3%</span></div>
-      <div class="ind"><span class="ind-n">Desempleo <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v neu">4.3%</span></div>
-      <div class="ind"><span class="ind-n">NFP <span style="font-size:0.5rem;color:var(--muted2)">may</span></span><span class="ind-v neu">+172k</span></div>
-      <div class="ind"><span class="ind-n">PIB 2026 proy.</span><span class="ind-v up">+2.2%</span></div>
-      <div class="ind"><span class="ind-n">Spread 10Y–2Y</span><span class="ind-v neu">plano</span></div>
-      <div class="chart-box">
-        <svg viewBox="0 0 300 80" preserveAspectRatio="none">
-          <defs><linearGradient id="gld" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1434CB" stop-opacity="0.25"/><stop offset="100%" stop-color="#1434CB" stop-opacity="0"/></linearGradient></defs>
-          <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22" fill="none" stroke="#1434CB" stroke-width="1.5"/>
-          <path d="M0,68 C25,65 45,52 75,48 S115,62 145,57 S185,34 215,36 S265,28 300,22 L300,80 L0,80Z" fill="url(#gld)"/>
-          <text x="4" y="76" font-family="Source Sans 3, sans-serif" font-size="6.5" font-weight="600" fill="#8a9ab5">10Y UST YIELD · 24M</text>
-        </svg>
-      </div>
-    </div>
+    
     
       
       
@@ -3210,7 +3192,7 @@ var CN_MACRO = {
   ipcAcum: null, ipcAcumPeriodo: '',
   tamar: 22.5, tamarPeriodo: 'jul 2026',
   riesgoPais: null, reservas: null,
-  // EEUU — se actualizan manualmente (no hay API pública estable y gratuita)
+  // EEUU — se actualizan a mano acá (único lugar del archivo)
   fedFunds: '3.50-3.75%',
   cpiUSA: 4.2, cpiUSAPeriodo: 'may 2026',
   coreCpiUSA: 2.9, corePceUSA: 3.3,
