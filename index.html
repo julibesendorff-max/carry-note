@@ -2434,7 +2434,17 @@ if('serviceWorker' in navigator) {
     </div>
     <div class="sb-block">
       <div class="sb-title">Calendario de Eventos</div>
-      <div id="calendarFeed"><div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Cargando...</div></div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.25rem;margin-bottom:0.75rem">
+        <button onclick="setCalFilter('all')"  id="calf-all"  style="font-size:0.58rem;font-weight:600;letter-spacing:0.04em;padding:0.22rem 0.5rem;border:1px solid var(--gold);background:var(--gold);color:#fff;border-radius:999px;cursor:pointer">Todo</button>
+        <button onclick="setCalFilter('fed')"  id="calf-fed"  style="font-size:0.58rem;font-weight:600;letter-spacing:0.04em;padding:0.22rem 0.5rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px;cursor:pointer">◉ Fed</button>
+        <button onclick="setCalFilter('usa')"  id="calf-usa"  style="font-size:0.58rem;font-weight:600;letter-spacing:0.04em;padding:0.22rem 0.5rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px;cursor:pointer">▲ EEUU</button>
+        <button onclick="setCalFilter('arg')"  id="calf-arg"  style="font-size:0.58rem;font-weight:600;letter-spacing:0.04em;padding:0.22rem 0.5rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px;cursor:pointer">◆ Arg</button>
+        <button onclick="setCalFilter('earn')" id="calf-earn" style="font-size:0.58rem;font-weight:600;letter-spacing:0.04em;padding:0.22rem 0.5rem;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px;cursor:pointer">$ Earnings</button>
+      </div>
+      <div id="calendarFeed"><div style="font-size:0.7rem;color:var(--muted2)">Cargando...</div></div>
+      <div style="font-size:0.52rem;color:var(--muted2);line-height:1.6;margin-top:0.75rem;padding-top:0.6rem;border-top:1px solid var(--border2)">
+        FOMC según calendario oficial de la Fed. Fechas de earnings estimadas según patrón histórico de cada empresa.
+      </div>
       </div>
     <div class="sb-block" style="border-top-color:#006FCF">
       <div class="sb-title" style="display:flex;justify-content:space-between;align-items:center">Indicadores · Argentina <span style="font-size:0.5rem;color:var(--muted2);font-weight:300">INDEC / BCRA</span></div>
@@ -3527,51 +3537,130 @@ function filterByTag(tag) {
 }
 // ── DYNAMIC CALENDAR ───────────────────────────────────────
 const MACRO_EVENTS = [
-  {date:'2026-04-04', ev:'NFP Marzo · EEUU'},
-  {date:'2026-04-07', ev:'RBA Decision · Australia'},
-  {date:'2026-04-09', ev:'BCE Actas · Eurozona'},
-  {date:'2026-04-10', ev:'CPI Marzo · EEUU'},
-  {date:'2026-04-11', ev:'PPI Marzo · EEUU'},
-  {date:'2026-04-14', ev:'PIB Q1 · China'},
-  {date:'2026-04-15', ev:'CPI Marzo · Eurozona'},
-  {date:'2026-04-16', ev:'Ventas minoristas · EEUU'},
-  {date:'2026-04-22', ev:'PMI Manufacturero · Global'},
-  {date:'2026-04-24', ev:'Decisión de tasas · BCE'},
-  {date:'2026-04-25', ev:'PIB Q1 Advance · EEUU'},
-  {date:'2026-04-28', ev:'Core PCE Marzo · EEUU'},
-  {date:'2026-04-30', ev:'FOMC Decision · Fed'},
-  {date:'2026-04-30', ev:'IPC Marzo · Argentina'},
-  {date:'2026-05-02', ev:'NFP Abril · EEUU'},
-  {date:'2026-05-07', ev:'Decisión de tasas · BoE'},
-  {date:'2026-05-13', ev:'CPI Abril · EEUU'},
-  {date:'2026-05-14', ev:'PIB Q1 · Eurozona'},
-  {date:'2026-05-20', ev:'EMAE Marzo · Argentina'},
-  {date:'2026-05-22', ev:'Actas FOMC · Fed'},
-  {date:'2026-05-29', ev:'Core PCE Abril · EEUU'},
-  {date:'2026-06-05', ev:'NFP Mayo · EEUU'},
-  {date:'2026-06-06', ev:'Decisión de tasas · BCE'},
-  {date:'2026-06-11', ev:'CPI Mayo · EEUU'},
-  {date:'2026-06-17', ev:'FOMC Decision · Fed'},
-  {date:'2026-06-19', ev:'Decisión de tasas · BoJ · Japón'},
-  {date:'2026-06-25', ev:'IPC Mayo · Argentina'},
-  {date:'2026-06-26', ev:'Core PCE Mayo · EEUU'},
+  // tipo: fed | usa | arg | earn | global
+  // ── Noviembre 2026 ──────────────────────────────────────────
+  {date:'2026-11-03', ev:'Apple · Q4 FY26',              tipo:'earn'},
+  {date:'2026-11-06', ev:'NFP Octubre',                  tipo:'usa'},
+  {date:'2026-11-12', ev:'CPI Octubre',                  tipo:'usa'},
+  {date:'2026-11-12', ev:'IPC Octubre · INDEC',          tipo:'arg'},
+  {date:'2026-11-13', ev:'PPI Octubre',                  tipo:'usa'},
+  {date:'2026-11-17', ev:'Ventas minoristas Oct',        tipo:'usa'},
+  {date:'2026-11-18', ev:'NVIDIA · Q3 FY27',             tipo:'earn'},
+  {date:'2026-11-19', ev:'YPF · Q3 2026',                tipo:'earn'},
+  {date:'2026-11-20', ev:'Galicia · Q3 2026',            tipo:'earn'},
+  {date:'2026-11-24', ev:'EMAE Septiembre · INDEC',      tipo:'arg'},
+  {date:'2026-11-25', ev:'Beige Book · Fed',             tipo:'fed'},
+  {date:'2026-11-25', ev:'Core PCE Octubre',             tipo:'usa'},
+  // ── Diciembre 2026 ──────────────────────────────────────────
+  {date:'2026-12-04', ev:'NFP Noviembre',                tipo:'usa'},
+  {date:'2026-12-09', ev:'FOMC · decisión de tasas',     tipo:'fed', hot:true},
+  {date:'2026-12-10', ev:'CPI Noviembre',                tipo:'usa'},
+  {date:'2026-12-11', ev:'IPC Noviembre · INDEC',        tipo:'arg'},
+  {date:'2026-12-17', ev:'Decisión de tasas · BCE',      tipo:'global'},
+  {date:'2026-12-18', ev:'Decisión de tasas · BoJ',      tipo:'global'},
+  {date:'2026-12-22', ev:'EMAE Octubre · INDEC',         tipo:'arg'},
+  {date:'2026-12-23', ev:'Core PCE Noviembre',           tipo:'usa'},
+  // ── Enero 2027 ──────────────────────────────────────────────
+  {date:'2027-01-08', ev:'NFP Diciembre',                tipo:'usa'},
+  {date:'2027-01-13', ev:'CPI Diciembre',                tipo:'usa'},
+  {date:'2027-01-13', ev:'Beige Book · Fed',             tipo:'fed'},
+  {date:'2027-01-14', ev:'IPC Diciembre · INDEC',        tipo:'arg'},
+  {date:'2027-01-14', ev:'JPMorgan · Q4 2026',           tipo:'earn'},
+  {date:'2027-01-15', ev:'Goldman Sachs · Q4 2026',      tipo:'earn'},
+  {date:'2027-01-20', ev:'Netflix · Q4 2026',            tipo:'earn'},
+  {date:'2027-01-26', ev:'Tesla · Q4 2026',              tipo:'earn'},
+  {date:'2027-01-27', ev:'FOMC · decisión de tasas',     tipo:'fed', hot:true},
+  {date:'2027-01-27', ev:'Microsoft · Q2 FY27',          tipo:'earn'},
+  {date:'2027-01-28', ev:'Meta · Q4 2026',               tipo:'earn'},
+  {date:'2027-01-28', ev:'PIB Q4 Advance · EEUU',        tipo:'usa'},
+  {date:'2027-01-29', ev:'Core PCE Diciembre',           tipo:'usa'},
+  // ── Febrero 2027 ────────────────────────────────────────────
+  {date:'2027-02-02', ev:'Apple · Q1 FY27',              tipo:'earn'},
+  {date:'2027-02-04', ev:'Amazon · Q4 2026',             tipo:'earn'},
+  {date:'2027-02-05', ev:'NFP Enero',                    tipo:'usa'},
+  {date:'2027-02-10', ev:'CPI Enero',                    tipo:'usa'},
+  {date:'2027-02-11', ev:'IPC Enero · INDEC',            tipo:'arg'},
+  {date:'2027-02-24', ev:'NVIDIA · Q4 FY27',             tipo:'earn'},
+  {date:'2027-02-26', ev:'Core PCE Enero',               tipo:'usa'},
+  // ── Marzo 2027 ──────────────────────────────────────────────
+  {date:'2027-03-05', ev:'NFP Febrero',                  tipo:'usa'},
+  {date:'2027-03-10', ev:'CPI Febrero',                  tipo:'usa'},
+  {date:'2027-03-11', ev:'IPC Febrero · INDEC',          tipo:'arg'},
+  {date:'2027-03-17', ev:'FOMC · decisión + dot plot',   tipo:'fed', hot:true},
+  {date:'2027-03-31', ev:'Core PCE Febrero',             tipo:'usa'},
+  // ── Resto 2027 · FOMC ───────────────────────────────────────
+  {date:'2027-04-28', ev:'FOMC · decisión de tasas',     tipo:'fed', hot:true},
+  {date:'2027-06-09', ev:'FOMC · decisión + dot plot',   tipo:'fed', hot:true},
+  {date:'2027-07-28', ev:'FOMC · decisión de tasas',     tipo:'fed', hot:true},
+  {date:'2027-09-15', ev:'FOMC · decisión + dot plot',   tipo:'fed', hot:true},
+  {date:'2027-10-27', ev:'FOMC · decisión de tasas',     tipo:'fed', hot:true},
+  {date:'2027-12-08', ev:'FOMC · decisión + dot plot',   tipo:'fed', hot:true},
 ];
+
+var CAL_META = {
+  fed:    {ico:'◉', color:'var(--red)',    lbl:'Fed'},
+  usa:    {ico:'▲', color:'var(--blue)',   lbl:'EEUU'},
+  arg:    {ico:'◆', color:'var(--gold)',   lbl:'Argentina'},
+  earn:   {ico:'$', color:'var(--green)',  lbl:'Earnings'},
+  global: {ico:'○', color:'#5b21b6',       lbl:'Global'},
+};
+var _calFilter = 'all';
+
+function setCalFilter(f){
+  _calFilter = f;
+  ['all','fed','usa','arg','earn'].forEach(function(k){
+    var b = document.getElementById('calf-'+k);
+    if(b){
+      var on = (k === f);
+      b.style.background = on ? 'var(--gold)' : 'transparent';
+      b.style.color      = on ? '#fff' : 'var(--muted)';
+      b.style.borderColor= on ? 'var(--gold)' : 'var(--border)';
+    }
+  });
+  loadCalendar();
+}
+
 function loadCalendar() {
   const now = new Date(); now.setHours(0,0,0,0);
-  const upcoming = MACRO_EVENTS
-    .filter(e => new Date(e.date + 'T12:00:00') >= now)
-    .slice(0, 8);
+  var list = MACRO_EVENTS.filter(function(e){
+    if(new Date(e.date + 'T12:00:00') < now) return false;
+    if(_calFilter !== 'all' && e.tipo !== _calFilter) return false;
+    return true;
+  }).slice(0, 10);
+
   const feed = document.getElementById('calendarFeed');
   if(!feed) return;
-  if(!upcoming.length) { feed.innerHTML = '<div style="font-family:var(--mono);font-size:0.6rem;color:var(--muted2)">Sin eventos próximos.</div>'; return; }
-  feed.innerHTML = upcoming.map(e => {
-    const d = new Date(e.date + 'T12:00:00');
-    const label = d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
-    const isToday = d.toDateString() === new Date().toDateString();
-    const isSoon = (d - now) < 3*24*60*60*1000;
-    const accent = isToday ? 'var(--red)' : isSoon ? 'var(--gold)' : 'var(--blue)';
-    return '<div class="cal-row"><span class="cal-date" style="color:'+accent+'">'+label+'</span><span class="cal-ev">'+e.ev+'</span></div>';
-  }).join('');
+  if(!list.length){
+    feed.innerHTML = '<div style="font-size:0.7rem;color:var(--muted2);padding:0.5rem 0">Sin eventos en esta categoría.</div>';
+    return;
+  }
+
+  var out = '';
+  var lastMonth = '';
+  list.forEach(function(e){
+    var d = new Date(e.date + 'T12:00:00');
+    var monthKey = d.toLocaleDateString('es-AR',{month:'long',year:'numeric'});
+    if(monthKey !== lastMonth){
+      out += '<div style="font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted2);' +
+             'font-weight:700;padding:0.6rem 0 0.35rem;margin-top:' + (lastMonth?'0.4rem':'0') + '">' + monthKey + '</div>';
+      lastMonth = monthKey;
+    }
+    var meta = CAL_META[e.tipo] || CAL_META.usa;
+    var days = Math.round((d - now) / 86400000);
+    var isToday = days === 0;
+    var isSoon = days >= 0 && days <= 3;
+    var dayLbl = d.toLocaleDateString('es-AR',{day:'2-digit',month:'short'}).replace('.','');
+    var badge = isToday ? '<span style="font-size:0.5rem;font-weight:700;color:#fff;background:var(--red);padding:0.08rem 0.3rem;border-radius:3px;margin-left:0.3rem">HOY</span>'
+              : isSoon  ? '<span style="font-size:0.5rem;font-weight:700;color:var(--gold);margin-left:0.3rem">en ' + days + 'd</span>'
+              : '';
+    var bg = e.hot ? 'background:rgba(198,32,54,0.045);' : '';
+    out += '<div class="cal-row" style="' + bg + 'display:grid;grid-template-columns:14px 52px 1fr;gap:0.45rem;align-items:baseline;padding:0.4rem 0.35rem;border-radius:5px">' +
+             '<span style="color:' + meta.color + ';font-size:0.62rem;font-weight:700">' + meta.ico + '</span>' +
+             '<span style="color:' + (isToday?'var(--red)':isSoon?'var(--gold)':'var(--muted2)') + ';font-weight:600;font-size:0.68rem;white-space:nowrap">' + dayLbl + '</span>' +
+             '<span style="color:var(--muted);font-size:0.74rem;line-height:1.4">' + e.ev + badge + '</span>' +
+           '</div>';
+  });
+  feed.innerHTML = out;
 }
 // ── APRENDER ────────────────────────────────────────────────
 function showAprender(e) {
