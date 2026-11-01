@@ -6,7 +6,6 @@
 <title>Carry Note · Análisis macro y mercados en español</title>
 <meta name="description" content="Carry Note es un portal de análisis macroeconómico y de mercados en español para inversores argentinos. Diagnóstico de cartera, radar de señales en tiempo real, seguimiento de empresas de IA, views técnicos y más. Gratis, sin registro.">
 <meta name="keywords" content="análisis macro, mercados, inversiones, Argentina, CEDEARs, bonos, dólar, BCRA, Fed, inversor argentino, macroeconomía, finanzas, carry trade, análisis financiero">
-<meta name="author" content="Julián Besendorff">
 <link rel="canonical" href="https://thecarrynote.com/">
 
 <!-- Open Graph / Facebook / WhatsApp -->
@@ -37,15 +36,10 @@
   "alternateName": "Carry Note · Análisis Macro",
   "url": "https://thecarrynote.com/",
   "description": "Portal de análisis macroeconómico y de mercados financieros en español para inversores argentinos.",
-  "inLanguage": "es-AR",
-  "author": {
-    "@type": "Person",
-    "name": "Julián Besendorff"
-  }
+  "inLanguage": "es-AR"
 }
 </script>
 <meta name="keywords" content="macro, análisis económico, inversiones, Argentina, Fed, bonos, mercados financieros, carry trade, riesgo país, FCI">
-<meta name="author" content="Julián Besendorff">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.thecarrynote.com">
 <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -73,13 +67,7 @@
   "name": "Carry Note",
   "sameAs": ["https://www.thecarrynote.com/diagnostico","https://www.thecarrynote.com/radar","https://www.thecarrynote.com/analisis","https://www.thecarrynote.com/aprender"],
   "url": "https://www.thecarrynote.com",
-  "description": "Análisis macroeconómico, geopolítico y de mercados financieros",
-  "author": {
-    "@type": "Person",
-    "name": "Julián Besendorff",
-    "jobTitle": "Analista Macroeconómico",
-    "worksFor": {"@type": "Organization", "name": "J.P. Morgan"}
-  }
+  "description": "Análisis macroeconómico, geopolítico y de mercados financieros"
 }
 </script>
 <link rel="manifest" href="/manifest.json">
@@ -390,8 +378,7 @@ button:disabled {
 
 /* ── Cross-fade entry for panels ──────────────────────────── */
 #diagPanel, #diagSelector, #diagEmpresaPanel, #radarPanel,
-#fciPanel, #aprenderPanel, #watchlistPanel, #sobrePanel,
-#viewsStandalonePanel, #iaPanel, .feed {
+#fciPanel, #aprenderPanel, #watchlistPanel, #viewsStandalonePanel, #iaPanel, .feed {
   animation: crossFade 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 @keyframes crossFade {
@@ -406,26 +393,26 @@ button:disabled {
 }
 #diagPanel > *, #diagSelector > *, #diagEmpresaPanel > *,
 #radarPanel > *, #fciPanel > *, #aprenderPanel > *,
-#watchlistPanel > *, #sobrePanel > *, #viewsStandalonePanel > *,
+#watchlistPanel > *, > *, #viewsStandalonePanel > *,
 #iaPanel > * {
   animation: staggerIn 0.4s ease-out both;
 }
 #diagPanel > *:nth-child(2), #diagSelector > *:nth-child(2),
 #diagEmpresaPanel > *:nth-child(2), #radarPanel > *:nth-child(2),
-#fciPanel > *:nth-child(2), #sobrePanel > *:nth-child(2),
+#fciPanel > *:nth-child(2), > *:nth-child(2),
 #iaPanel > *:nth-child(2) { animation-delay: 0.04s; }
 #diagPanel > *:nth-child(3), #diagSelector > *:nth-child(3),
 #diagEmpresaPanel > *:nth-child(3), #radarPanel > *:nth-child(3),
-#fciPanel > *:nth-child(3), #sobrePanel > *:nth-child(3),
+#fciPanel > *:nth-child(3), > *:nth-child(3),
 #iaPanel > *:nth-child(3) { animation-delay: 0.08s; }
 #diagPanel > *:nth-child(n+4), #diagEmpresaPanel > *:nth-child(n+4),
 #radarPanel > *:nth-child(n+4), #fciPanel > *:nth-child(n+4),
-#sobrePanel > *:nth-child(n+4), #iaPanel > *:nth-child(n+4) { animation-delay: 0.12s; }
+> *:nth-child(n+4), #iaPanel > *:nth-child(n+4) { animation-delay: 0.12s; }
 
 @media (prefers-reduced-motion: reduce) {
   #diagPanel > *, #diagSelector > *, #diagEmpresaPanel > *,
   #radarPanel > *, #fciPanel > *, #aprenderPanel > *,
-  #watchlistPanel > *, #sobrePanel > *, #viewsStandalonePanel > *,
+  #watchlistPanel > *, > *, #viewsStandalonePanel > *,
   #iaPanel > * { animation: none !important; }
 }
 
@@ -551,13 +538,6 @@ header{border-bottom:1px solid var(--hairline);backdrop-filter:blur(12px);backgr
 .logo-name{font-size:2.1rem;letter-spacing:-0.025em;font-weight:600}
 .logo-tag{font-size:0.58rem;letter-spacing:0.22em;color:var(--muted2);margin-top:0.3rem}
 
-/* LinkedIn button en header */
-.hdr-li{display:inline-flex;align-items:center;gap:0.45rem;font-family:var(--mono);font-size:0.62rem;
-  letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;
-  padding:0.45rem 0.9rem;border:1px solid var(--hairline);border-radius:var(--radius);
-  transition:all 0.2s ease;white-space:nowrap;flex-shrink:0}
-.hdr-li:hover{color:#006FCF;border-color:rgba(0,111,207,0.5);background:rgba(0,111,207,0.07)}
-.hdr-li svg{opacity:0.85;flex-shrink:0}
 
 /* ── CARRY SCORE widget: integrado, sin borde duro ──────────── */
 .cs-widget{border-left:none;padding:0.5rem 1rem;border-radius:var(--radius);margin-left:auto;gap:0.7rem}
@@ -656,8 +636,6 @@ body::before{opacity:0.2}
   body{font-size:15px}
   .header-main{padding:0.9rem 1rem;gap:0.75rem}
   .logo-name{font-size:1.6rem}
-  .hdr-li{padding:0.4rem 0.7rem;font-size:0.56rem}
-  .hdr-li span{display:none}
   .nav-strip{padding:0.45rem 0.65rem;gap:0.1rem}
   .nav-strip a{padding:0.45rem 0.75rem;font-size:0.58rem;border-radius:6px}
   main{padding:1.1rem;gap:1.25rem}
@@ -731,9 +709,6 @@ select option{background:#fff;color:var(--text)}
 .af-btn:hover{color:var(--gold);border-color:var(--gold)}
 .af-active{background:var(--gold) !important;color:#fff !important;border-color:var(--gold) !important}
 
-/* LinkedIn en header */
-.hdr-li{color:var(--muted);border-color:var(--border);background:#fff;font-weight:600}
-.hdr-li:hover{color:var(--blue);border-color:var(--blue);background:rgba(0,111,207,0.06)}
 
 /* Tipografía de contenido */
 .note-title{color:var(--text);font-weight:700;letter-spacing:-0.015em}
@@ -842,7 +817,6 @@ main{
 .sim-kpi-val{font-size:1.75rem}
 .sim-kpi-note{font-size:0.63rem}
 .af-btn{font-size:0.74rem}
-.hdr-li{font-size:0.68rem}
 .logo-name{font-size:2.35rem}
 .logo-tag{font-size:0.63rem}
 .cal-row{font-size:0.82rem}
@@ -855,7 +829,7 @@ footer{font-size:0.72rem}
 /* Paneles: subo el piso de las fuentes chicas inline */
 #diagPanel,#radarPanel,#carryScorePanel,#carrySimPanel,#carterasPanel,
 #hoyPanel,#rebalanceoPanel,#fciPanel,#watchlistPanel,#portafolioPanel,
-#aprenderPanel,#viewsStandalonePanel,#sobrePanel{font-size:1.02rem}
+#aprenderPanel,#viewsStandalonePanel,{font-size:1.02rem}
 
 /* ── Encabezados de panel con acento azul ───────────────────── */
 #diagPanel > div:first-child,
@@ -922,6 +896,62 @@ footer{background:transparent;border-top:none;max-width:1440px;padding:0 3rem 2.
   .sb-title{margin:-1.5rem -1.5rem 1.2rem}
 }
 
+
+/* ── LinkedIn en header ─────────────────────────────────────── */
+.hdr-li{display:inline-flex;align-items:center;gap:0.45rem;font-size:0.68rem;font-weight:600;
+  letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;
+  padding:0.45rem 0.9rem;border:1px solid var(--border);border-radius:var(--radius);
+  background:#fff;transition:all 0.2s ease;white-space:nowrap;flex-shrink:0}
+.hdr-li:hover{color:var(--blue);border-color:var(--blue);background:rgba(0,111,207,0.06)}
+.hdr-li svg{opacity:0.85;flex-shrink:0}
+
+/* ══════════════════════════════════════════════════════════════
+   MENÚ MOBILE · desplegable agrupado
+   ══════════════════════════════════════════════════════════════ */
+.menu-btn{display:none;align-items:center;gap:0.55rem;background:#fff;
+  border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;
+  padding:0.6rem 0.95rem;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--text);width:100%;justify-content:space-between}
+.menu-btn:hover{border-color:var(--gold)}
+.menu-btn-label{display:flex;align-items:center;gap:0.55rem}
+.menu-bars{display:inline-flex;flex-direction:column;gap:3px;flex-shrink:0}
+.menu-bars i{display:block;width:16px;height:2px;background:var(--gold);border-radius:2px}
+.menu-current{color:var(--gold)}
+.menu-caret{font-size:0.6rem;color:var(--muted2);transition:transform 0.22s ease}
+.menu-open .menu-caret{transform:rotate(180deg)}
+
+#mobMenu{display:none;position:fixed;inset:0;z-index:300;background:rgba(10,31,68,0.35);
+  backdrop-filter:blur(3px);opacity:0;transition:opacity 0.2s ease}
+#mobMenu.open{display:block;opacity:1}
+#mobMenuSheet{position:absolute;left:0;right:0;top:0;background:#fff;
+  border-radius:0 0 18px 18px;box-shadow:0 18px 50px rgba(10,31,68,0.22);
+  padding:1rem 1rem 1.35rem;max-height:88vh;overflow-y:auto;
+  transform:translateY(-14px);transition:transform 0.24s cubic-bezier(0.22,0.61,0.36,1);
+  padding-top:calc(1rem + env(safe-area-inset-top,0px))}
+#mobMenu.open #mobMenuSheet{transform:translateY(0)}
+.mm-head{display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:0.85rem;margin-bottom:0.5rem;border-bottom:1px solid var(--border2)}
+.mm-title{font-size:0.6rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted2)}
+.mm-close{background:transparent;border:1px solid var(--border);border-radius:8px;
+  color:var(--muted);font-size:0.95rem;line-height:1;padding:0.35rem 0.6rem;cursor:pointer}
+.mm-group{font-size:0.56rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--gold);padding:0.9rem 0.35rem 0.45rem}
+.mm-item{display:flex;align-items:center;gap:0.7rem;width:100%;text-align:left;
+  background:transparent;border:none;border-radius:9px;cursor:pointer;
+  padding:0.7rem 0.6rem;font-size:0.95rem;font-weight:500;color:var(--text)}
+.mm-item:hover{background:var(--surface2)}
+.mm-item.active{background:rgba(20,52,203,0.08);color:var(--gold);font-weight:700}
+.mm-ico{width:19px;text-align:center;font-size:0.82rem;flex-shrink:0}
+.mm-desc{font-size:0.72rem;color:var(--muted2);font-weight:400;margin-top:0.08rem}
+
+@media(max-width:768px){
+  .nav-strip{display:none}
+  .menu-btn{display:flex}
+  .header-main{flex-wrap:wrap}
+  .hdr-li{padding:0.4rem 0.7rem;font-size:0.58rem}
+  .hdr-li span{display:none}
+}
+
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- v2.1 -->
@@ -967,7 +997,8 @@ if('serviceWorker' in navigator) {
         <span class="cs-desc" id="csDesc"></span>
       </div>
     </div>
-    <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" rel="noopener" class="hdr-li" title="Julián Besendorff en LinkedIn">
+
+    <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" rel="noopener" class="hdr-li" title="LinkedIn">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
       <span>LinkedIn</span>
     </a>
@@ -986,8 +1017,14 @@ if('serviceWorker' in navigator) {
     <a data-filter="rebalanceo" id="rebalanceoTab" onclick="showRebalanceo(event)" style="color:#5b21b6">⚖ Rebalanceo</a>
     <a data-filter="views" id="viewsTab" onclick="showViewsTab(event)" style="color:#5b21b6">● Views</a>
     <a data-filter="carteras" id="carterasTab" onclick="showCarteras(event)" style="color:var(--green)">▤ Carteras</a>
-    <a data-filter="sobre" id="sobreTab" onclick="showSobre(event)" style="color:var(--muted)">Sobre mí</a>
   </nav>
+  <button class="menu-btn" id="menuBtn" onclick="toggleMobMenu()" aria-label="Abrir menú">
+    <span class="menu-btn-label">
+      <span class="menu-bars"><i></i><i></i><i></i></span>
+      <span>Menú · <span class="menu-current" id="menuCurrent">Hoy</span></span>
+    </span>
+    <span class="menu-caret">▼</span>
+  </button>
 </header>
 <div class="editor-bar" id="editorBar">
   <label>▸ MODO EDITOR</label>
@@ -1008,6 +1045,18 @@ if('serviceWorker' in navigator) {
     <div id="loginErr" style="color:var(--red);font-size:0.62rem;margin-top:0.5rem"></div>
   </div>
 </div>
+
+<!-- MENÚ MOBILE -->
+<div id="mobMenu" onclick="if(event.target===this) closeMobMenu()">
+  <div id="mobMenuSheet">
+    <div class="mm-head">
+      <span class="mm-title">Secciones</span>
+      <button class="mm-close" onclick="closeMobMenu()" aria-label="Cerrar">✕</button>
+    </div>
+    <div id="mobMenuBody"></div>
+  </div>
+</div>
+
 <!-- TICKER -->
 <div class="ticker">
   <div class="ticker-inner" id="tickerInner">
@@ -2295,82 +2344,6 @@ if('serviceWorker' in navigator) {
     </div>
     <!-- ══ /REBALANCEO PANEL ══════════════════════════════════════════ -->
 
-    <div id="sobrePanel" style="display:none;margin-bottom:2rem">
-      <div style="max-width:600px">
-        <!-- Header -->
-        <div style="border-bottom:1px solid #d3e0ef;padding-bottom:2rem;margin-bottom:2rem">
-          <div style="display:flex;align-items:center;gap:1.25rem;margin-bottom:1.25rem">
-          <img src="data:image/jpeg;base64,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" alt="Julian Besendorff" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid #d3e0ef;flex-shrink:0">
-          <div>
-            <div style="font-family:var(--serif);font-size:2.2rem;font-weight:700;color:var(--text);line-height:1.1;margin-bottom:0.3rem;letter-spacing:-0.02em">Julián Besendorff</div>
-            <div style="font-family:var(--mono);font-size:0.6rem;color:var(--gold);letter-spacing:0.12em;text-transform:uppercase">Analista · Carry Note</div>
-          </div>
-        </div>
-          <p style="font-size:0.95rem;color:#44587d;line-height:1.8;margin-bottom:1rem">
-            Me formé en Administración en la UBA.
-          </p>
-          <p style="font-size:0.95rem;color:#44587d;line-height:1.8;margin-bottom:1.25rem">
-            Carry Note nació de una necesidad personal: quería una herramienta en español que integrara datos macro en tiempo real con análisis de cartera inteligente. Lo que empezó como un proyecto de fin de semana se convirtió en algo que uso todos los días y que hoy comparto de forma gratuita.
-          </p>
-          <p style="font-size:0.95rem;color:#44587d;line-height:1.8">
-            Me apasionan los mercados emergentes, la política monetaria y entender cómo las decisiones macro impactan en las inversiones del día a día. 
-          </p>
-        </div>
-        <!-- Experience -->
-        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #d3e0ef">
-          <div style="font-family:var(--mono);font-size:0.55rem;color:#8a9ab5;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Experiencia</div>
-          <div style="display:flex;flex-direction:column;gap:0.6rem">
-            <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:0.88rem;color:#0a1f44;font-weight:500">J.P. Morgan</span>
-              <span style="font-family:var(--mono);font-size:0.58rem;color:#8a9ab5">2022 — presente</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:0.88rem;color:#55678a">KPMG</span>
-              <span style="font-family:var(--mono);font-size:0.58rem;color:#8a9ab5">Auditoría</span>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:baseline">
-              <span style="font-size:0.88rem;color:#55678a">HSBC</span>
-              <span style="font-family:var(--mono);font-size:0.58rem;color:#8a9ab5">Créditos</span>
-            </div>
-          </div>
-        </div>
-        <!-- Education -->
-        <div style="margin-bottom:2rem;padding-bottom:2rem;border-bottom:1px solid #d3e0ef">
-          <div style="font-family:var(--mono);font-size:0.55rem;color:#8a9ab5;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:0.75rem">Formación</div>
-          <div style="display:flex;flex-direction:column;gap:0.5rem">
-            <div>
-              <div style="font-size:0.88rem;color:#55678a">Licenciado en Administración</div>
-              <div style="font-family:var(--mono);font-size:0.62rem;color:#8a9ab5">UBA · 2019–2024</div>
-            </div>
-          </div>
-        </div>
-        <!-- Contact -->
-        <div style="display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;margin-bottom:0.5rem">
-          <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="display:inline-flex;align-items:center;gap:0.6rem;font-family:var(--mono);font-size:0.8rem;font-weight:500;color:#0A66C2;text-decoration:none;letter-spacing:0.06em;border:1px solid #0A66C2;padding:0.55rem 1.1rem;transition:all 0.2s">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            LinkedIn · Julián Besendorff
-          </a>
-          <span style="font-family:var(--mono);font-size:0.65rem;color:#8a9ab5">thecarrynote.com</span>
-        </div>
-
-        <!-- CONTACTO destacado -->
-        <div style="margin-top:2.5rem;background:linear-gradient(135deg,rgba(20,52,203,0.1),transparent);border:1px solid var(--border);border-left:3px solid var(--gold);padding:1.5rem 1.75rem;margin-bottom:1.5rem">
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:0.6rem">&#9658; Contacto</div>
-          <div style="font-family:var(--serif);font-size:1.2rem;font-weight:600;color:var(--text);margin-bottom:0.5rem">&#191;Consultas, propuestas o feedback?</div>
-          <p style="font-size:0.88rem;color:var(--muted);line-height:1.6;margin-bottom:1rem">Escribime directamente. Respondo todos los mensajes.</p>
-          <a href="mailto:contacto@thecarrynote.com" style="display:inline-block;font-family:var(--mono);font-size:0.8rem;font-weight:500;letter-spacing:0.04em;color:var(--gold);text-decoration:none;border:1px solid var(--gold);padding:0.6rem 1.25rem">contacto@thecarrynote.com</a>
-        </div>
-
-        <!-- SPONSORS -->
-        <div style="background:var(--surface);border:1px solid var(--border2);padding:1.75rem">
-          <div style="font-family:var(--mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;padding-bottom:0.6rem;border-bottom:1px solid var(--border2)">Sponsors &amp; Partners</div>
-          <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;margin-bottom:1.25rem">Carry Note llega a inversores argentinos que siguen los mercados de forma activa. Si tu marca quiere llegar a esta audiencia, ofrecemos integración en el portal y menciones editoriales. Escribime.</p>
-          <a href="mailto:contacto@thecarrynote.com" style="display:inline-block;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.06em;color:var(--text);text-decoration:none;border:1px solid var(--border);padding:0.55rem 1.1rem;margin-right:0.75rem">contacto@thecarrynote.com ↗</a>
-          <a href="https://www.linkedin.com/in/julianbesendorff" target="_blank" style="display:inline-block;font-family:var(--mono);font-size:0.75rem;font-weight:500;letter-spacing:0.06em;color:#0A66C2;text-decoration:none;border:1px solid #0A66C2;padding:0.55rem 1.1rem">LinkedIn ↗</a>
-        </div>
-
-      </div>
-    </div>
     <!-- VIEWS TÉCNICOS PANEL -->
     <div id="viewsPanel" style="display:none;margin-bottom:2rem">
       <!-- HEADER -->
@@ -2693,7 +2666,7 @@ async function deleteNote(id) {
 function renderNotes() {
   // Don't render notes if a special panel is visible
   if(typeof activePanel !== 'undefined' && activePanel !== 'analisis') return;
-  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','sobrePanel','viewsStandalonePanel','hoyPanel','carterasPanel','carryScorePanel','carrySimPanel','rebalanceoPanel'];
+  var specialPanels = ['fciPanel','aprenderPanel','diagPanel','radarPanel','watchlistPanel','viewsStandalonePanel','hoyPanel','carterasPanel','carryScorePanel','carrySimPanel','rebalanceoPanel'];
   for(var sp = 0; sp < specialPanels.length; sp++) {
     var spEl = document.getElementById(specialPanels[sp]);
     if(spEl && spEl.style.display !== 'none') return;
@@ -2790,7 +2763,6 @@ document.querySelectorAll('.nav-strip a').forEach(a => {
     if(a.id === 'diagTab') return; // handled by showDiag
     if(a.id === 'radarTab') return; // handled by showRadar
     if(a.id === 'watchlistTab') return; // handled by showWatchlist
-    if(a.id === 'sobreTab') return; // handled by showSobre
     if(a.id === 'analisisTab' || a.id === 'analisisTab2') return; // handled by showAnalisis
     // Restore feed, hide special panels
     ['fciPanel','aprenderPanel','diagPanel','radarPanel'].forEach(id => {
@@ -3602,7 +3574,7 @@ var CAL_META = {
   usa:    {ico:'▲', color:'var(--blue)',   lbl:'EEUU'},
   arg:    {ico:'◆', color:'var(--gold)',   lbl:'Argentina'},
   earn:   {ico:'$', color:'var(--green)',  lbl:'Earnings'},
-  global: {ico:'○', color:'#5b21b6',       lbl:'Global'},
+  global: {ico:'○', color:'#5b21b6',       lbl:'Global'}
 };
 var _calFilter = 'all';
 
@@ -3670,7 +3642,7 @@ function showAprender(e) {
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
   var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
@@ -4257,7 +4229,7 @@ function downloadPDF() {
 function hideAllPanels() {
   var allPanels = [
     'diagSelector','diagPanel','diagEmpresaPanel','radarPanel','fciPanel','aprenderPanel','watchlistPanel',
-    'portafolioPanel','carryScorePanel','carrySimPanel','hoyPanel','carterasPanel','rebalanceoPanel','sobrePanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
+    'portafolioPanel','carryScorePanel','carrySimPanel','hoyPanel','carterasPanel','rebalanceoPanel','editorPanel','viewsStandalonePanel','viewsPanel','iaPanel',
     'feed','newsletterBlock','noResults','feedHeader','emptyState',
     'analisisFilters','radarForecastWrap','corrExplainerModal'
   ];
@@ -4563,7 +4535,7 @@ function showRadar(e) {
   var af=document.getElementById('analisisFilters'); if(af) af.style.display='none';
   var vp=document.getElementById('viewsPanel'); if(vp) vp.style.display='none';
   setSidebarVisible(false);
-  ['sobrePanel','watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['watchlistPanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   var wll=document.getElementById('wlList');if(wll)wll.innerHTML='';
   ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','editorPanel'].forEach(function(id){
     var el = document.getElementById(id); if(el) el.style.display = 'none';
@@ -4798,7 +4770,7 @@ function showWatchlist(e){
   hideAllPanels();
   if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
   if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','sobrePanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
   var wp=document.getElementById('watchlistPanel'); if(wp) { wp.style.display='none'; void wp.offsetWidth; wp.style.display='block'; }
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
@@ -5604,6 +5576,114 @@ function nuevaCartera(){
 }
 
 // ══ HOY (resumen del día) ═════════════════════════════════════════════
+
+
+// ══ MENÚ MOBILE AGRUPADO ═════════════════════════════════════════════
+var MOB_MENU = [
+  { grupo:'Uso diario', items:[
+    {id:'hoyTab',        ico:'◈', lbl:'Hoy',               desc:'Resumen del día', fn:'showHoy'},
+    {id:'carryScoreTab', ico:'◈', lbl:'Carry Score',       desc:'Indicador del carry hoy', fn:'showCarryScore'},
+    {id:'radarTab',      ico:'◉', lbl:'Radar',             desc:'Señales macro en vivo', fn:'showRadar'},
+  ]},
+  { grupo:'Herramientas', items:[
+    {id:'diagTab',       ico:'▸', lbl:'Diagnóstico',       desc:'Analizá una cartera', fn:'showDiag'},
+    {id:'portafolioTab', ico:'▸', lbl:'Armar cartera',     desc:'Portafolio desde cero', fn:'showPortafolio'},
+    {id:'rebalanceoTab', ico:'⚖', lbl:'Rebalanceo',        desc:'Volver a tu asignación objetivo', fn:'showRebalanceo'},
+    {id:'carrySimTab',   ico:'⟳', lbl:'Simulador carry',   desc:'Break-even y rendimiento', fn:'showCarrySim'},
+    {id:'carterasTab',   ico:'▤', lbl:'Carteras',          desc:'Tus clientes guardados', fn:'showCarteras'},
+    {id:'watchlistTab',  ico:'☆', lbl:'Watchlist',         desc:'Seguimiento de activos', fn:'showWatchlist'},
+  ]},
+  { grupo:'Contenido', items:[
+    {id:'analisisTab2',  ico:'◆', lbl:'Análisis',          desc:'Notas y cierre semanal', fn:'showAnalisis'},
+    {id:'viewsTab',      ico:'●', lbl:'Views',             desc:'Análisis técnicos', fn:'showViewsTab'},
+    {id:'fciTab',        ico:'▪', lbl:'FCI',               desc:'Fondos comunes', fn:'showFCI'},
+    {id:'aprenderTab',   ico:'▪', lbl:'Aprender',          desc:'Guías y glosario', fn:'showAprender'},
+  ]},
+];
+
+function renderMobMenu(){
+  var el = document.getElementById('mobMenuBody');
+  if(!el) return;
+  el.innerHTML = MOB_MENU.map(function(g){
+    return '<div class="mm-group">' + g.grupo + '</div>' +
+      g.items.map(function(it){
+        var tab = document.getElementById(it.id);
+        var isActive = tab && tab.classList.contains('active');
+        return '<button class="mm-item' + (isActive?' active':'') + '" onclick="mobMenuGo(\'' + it.fn + '\')">' +
+          '<span class="mm-ico">' + it.ico + '</span>' +
+          '<span><span>' + it.lbl + '</span><span class="mm-desc">' + it.desc + '</span></span>' +
+        '</button>';
+      }).join('');
+  }).join('');
+}
+
+function toggleMobMenu(){
+  var m = document.getElementById('mobMenu');
+  if(!m) return;
+  if(m.classList.contains('open')) { closeMobMenu(); return; }
+  renderMobMenu();
+  m.classList.add('open');
+  document.getElementById('menuBtn').classList.add('menu-open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobMenu(){
+  var m = document.getElementById('mobMenu');
+  if(!m) return;
+  m.classList.remove('open');
+  var b = document.getElementById('menuBtn');
+  if(b) b.classList.remove('menu-open');
+  document.body.style.overflow = '';
+}
+
+function mobMenuGo(fnName){
+  closeMobMenu();
+  var fn = window[fnName];
+  if(typeof fn === 'function'){
+    fn();
+    setTimeout(updateMenuLabel, 60);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+
+// Mantiene el label del botón sincronizado con la sección activa
+function updateMenuLabel(){
+  var cur = document.getElementById('menuCurrent');
+  if(!cur) return;
+  var active = document.querySelector('.nav-strip a.active');
+  if(!active) return;
+  // Limpia el ícono inicial del texto de la tab
+  var txt = active.textContent.trim().replace(/^[^\w\sÁÉÍÓÚáéíóúÑñ]+\s*/, '');
+  cur.textContent = txt || 'Secciones';
+}
+
+// Cerrar con Escape
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape') closeMobMenu();
+});
+// ══ /MENÚ MOBILE ═════════════════════════════════════════════════════
+
+// ══ CENTRAR TAB ACTIVA EN LA NAV (mobile) ════════════════════════════
+function centerActiveTab(instant){
+  var nav = document.getElementById('navStrip');
+  if(!nav) return;
+  var active = nav.querySelector('a.active');
+  if(!active) return;
+  // Solo tiene sentido si la nav realmente scrollea
+  if(nav.scrollWidth <= nav.clientWidth + 4) return;
+  var target = active.offsetLeft - (nav.clientWidth / 2) + (active.offsetWidth / 2);
+  target = Math.max(0, Math.min(target, nav.scrollWidth - nav.clientWidth));
+  try{
+    nav.scrollTo({ left: target, behavior: instant ? 'auto' : 'smooth' });
+  }catch(e){ nav.scrollLeft = target; }
+}
+// Centrar cada vez que se cambia de sección
+document.addEventListener('click', function(ev){
+  var a = ev.target.closest ? ev.target.closest('.nav-strip a') : null;
+  if(a) setTimeout(function(){ centerActiveTab(false); updateMenuLabel(); }, 60);
+});
+// ══ /CENTRAR TAB ═════════════════════════════════════════════════════
+
 function showHoy(e){
   e && e.preventDefault();
   activePanel='hoy';
@@ -5823,20 +5903,6 @@ function calcRebalanceo(){
 // ══ /REBALANCEO ════════════════════════════════════════════════════════
 
 
-function showSobre(e){
-  e&&e.preventDefault();
-  activePanel='sobre';
-  hideAllPanels();
-  if(window._pmAbort) { window._pmAbort.abort(); window._pmAbort = null; }
-  if(window._pmInterval) { clearInterval(window._pmInterval); window._pmInterval = null; }
-  var wll=document.getElementById('wlList'); if(wll) wll.innerHTML='';
-  var wle=document.getElementById('wlEmpty'); if(wle) wle.style.display='none';
-  ['feed','newsletterBlock','noResults','feedHeader','fciPanel','aprenderPanel','diagPanel','radarPanel','editorPanel','watchlistPanel','viewsStandalonePanel'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-  document.querySelectorAll('.note-card,.empty,.loading-card,#emptyState,#noResults').forEach(function(el){el.style.display='none';});
-  var sp=document.getElementById('sobrePanel'); if(sp) { sp.style.display='none'; void sp.offsetWidth; sp.style.display='block'; }
-  document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
-  document.getElementById('sobreTab').classList.add('active');
-}
 // ── SAVED PORTFOLIO ──────────────────────────────────────────
 function getSavedPortfolio() {
   try { return JSON.parse(localStorage.getItem('cn_portfolio')||'null'); } catch(e) { return null; }
@@ -7043,6 +7109,10 @@ window.addEventListener('load', function(){
   else if(urlSection === 'analisis') { showAnalisis(); }
   else if(urlSection === 'aprender') { showAprender(); }
   else { showHoy(); }
+  // Dejar la pestaña activa centrada en la nav (clave en mobile)
+  setTimeout(function(){ centerActiveTab(true); updateMenuLabel(); }, 80);
+  setTimeout(function(){ centerActiveTab(true); updateMenuLabel(); }, 400);
+  window.addEventListener('resize', function(){ centerActiveTab(true); });
   // Pre-render analisis filters (hidden until tab clicked)
   renderMobCards();
 });
