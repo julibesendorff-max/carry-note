@@ -936,13 +936,17 @@ footer{background:transparent;border-top:none;max-width:1440px;padding:0 3rem 2.
   color:var(--muted);font-size:0.95rem;line-height:1;padding:0.35rem 0.6rem;cursor:pointer}
 .mm-group{font-size:0.56rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
   color:var(--gold);padding:0.9rem 0.35rem 0.45rem}
-.mm-item{display:flex;align-items:center;gap:0.7rem;width:100%;text-align:left;
+.mm-item{display:flex;align-items:flex-start;gap:0.8rem;width:100%;text-align:left;
   background:transparent;border:none;border-radius:9px;cursor:pointer;
-  padding:0.7rem 0.6rem;font-size:0.95rem;font-weight:500;color:var(--text)}
+  padding:0.75rem 0.65rem;color:var(--text)}
 .mm-item:hover{background:var(--surface2)}
-.mm-item.active{background:rgba(20,52,203,0.08);color:var(--gold);font-weight:700}
-.mm-ico{width:19px;text-align:center;font-size:0.82rem;flex-shrink:0}
-.mm-desc{font-size:0.72rem;color:var(--muted2);font-weight:400;margin-top:0.08rem}
+.mm-item.active{background:rgba(20,52,203,0.08);font-weight:700}
+.mm-item.active .mm-lbl{color:var(--gold)}
+.mm-ico{width:20px;text-align:center;font-size:0.85rem;flex-shrink:0;line-height:1.5}
+/* Apila título y descripción en columna */
+.mm-text{display:flex;flex-direction:column;gap:0.18rem;min-width:0}
+.mm-lbl{display:block;font-size:0.97rem;font-weight:600;line-height:1.3;color:inherit}
+.mm-desc{display:block;font-size:0.76rem;color:var(--muted2);font-weight:400;line-height:1.4}
 
 @media(max-width:768px){
   .nav-strip{display:none}
@@ -5611,7 +5615,10 @@ function renderMobMenu(){
         var isActive = tab && tab.classList.contains('active');
         return '<button class="mm-item' + (isActive?' active':'') + '" onclick="mobMenuGo(\'' + it.fn + '\')">' +
           '<span class="mm-ico">' + it.ico + '</span>' +
-          '<span><span>' + it.lbl + '</span><span class="mm-desc">' + it.desc + '</span></span>' +
+          '<span class="mm-text">' +
+            '<span class="mm-lbl">' + it.lbl + '</span>' +
+            '<span class="mm-desc">' + it.desc + '</span>' +
+          '</span>' +
         '</button>';
       }).join('');
   }).join('');
