@@ -956,6 +956,25 @@ footer{background:transparent;border-top:none;max-width:1440px;padding:0 3rem 2.
   .hdr-li span{display:none}
 }
 
+
+/* ── Filtros de Análisis en mobile: tira scrolleable ───────── */
+@media(max-width:768px){
+  #analisisFilters > div{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding-bottom:0.3rem;
+    margin:0 -0.15rem;
+  }
+  #analisisFilters > div::-webkit-scrollbar{display:none}
+  #analisisFilters .af-btn{
+    flex-shrink:0;
+    font-size:0.74rem;
+    padding:0.45rem 0.9rem;
+  }
+}
+
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 <!-- v2.1 -->
@@ -1202,11 +1221,11 @@ if('serviceWorker' in navigator) {
     <!-- ANÁLISIS SUBSECTION FILTERS -->
     <div id="analisisFilters" style="display:none;margin-bottom:1.5rem;border-bottom:1px solid var(--border2);padding-bottom:1rem">
       <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
-        <button onclick="setAnalisisFilter('semanal')" id="af-semanal" class="af-btn" style="border-color:var(--gold);color:var(--gold)">◈ Cierre semanal</button>
-        
-        <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro & Geopolítica</button>
+        <button onclick="setAnalisisFilter('all')" id="af-all" class="af-btn af-active">⦿ Recientes</button>
+        <button onclick="setAnalisisFilter('semanal')" id="af-semanal" class="af-btn">◈ Cierre semanal</button>
+        <button onclick="setAnalisisFilter('macro_geo')" id="af-macro_geo" class="af-btn">Macro &amp; Geopolítica</button>
         <button onclick="setAnalisisFilter('markets')" id="af-markets" class="af-btn">Mercados</button>
-        <button onclick="setAnalisisFilter('latam')" id="af-latam" class="af-btn">EM & Latam</button>
+        <button onclick="setAnalisisFilter('latam')" id="af-latam" class="af-btn">EM &amp; Latam</button>
       </div>
     </div>
     <div class="feed" id="feed">
@@ -6547,9 +6566,8 @@ function showAnalisis(e) {
   document.querySelectorAll('.nav-strip a').forEach(function(a){a.classList.remove('active');});
   var tab=document.getElementById('analisisTab2');if(tab)tab.classList.add('active');
   var ep=document.getElementById('editorPanel');if(ep)ep.style.display=isEditor?'block':'none';
-  // Reset away from removed 'views' filter
-  if(!currentAnalisisFilter || currentAnalisisFilter === 'views') currentAnalisisFilter = 'macro_geo';
-  setAnalisisFilter(currentAnalisisFilter);
+  // Siempre abrir en "Recientes": lo último publicado, sin importar categoría
+  setAnalisisFilter('all');
   // Ensure notes are loaded (in case initial load ran before activePanel was set)
   if(!allNotes || allNotes.length === 0) {
     loadNotes();
@@ -6557,12 +6575,12 @@ function showAnalisis(e) {
     renderNotes();
   }
 }
-var currentAnalisisFilter='all';
+var currentAnalisisFilter='all';  // 'all' = Recientes
 function setAnalisisFilter(filter){
   currentAnalisisFilter=filter;
   // Ensure standalone views panel is hidden
   var vsp=document.getElementById('viewsStandalonePanel'); if(vsp) vsp.style.display='none';
-  ['semanal','macro_geo','markets','latam'].forEach(function(f){
+  ['all','semanal','macro_geo','markets','latam'].forEach(function(f){
     var btn=document.getElementById('af-'+f);
     if(btn){if(f===filter)btn.classList.add('af-active');else btn.classList.remove('af-active');}
   });
