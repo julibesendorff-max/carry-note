@@ -42,6 +42,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/auto-stocks.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "og-image.png",
       "use": "@vercel/static"
     },
@@ -78,6 +82,10 @@
     {
       "src": "/api/auto-notes",
       "dest": "/api/auto-notes.js"
+    },
+    {
+      "src": "/api/auto-stocks",
+      "dest": "/api/auto-stocks.js"
     },
     {
       "src": "/diagnostico",
@@ -139,6 +147,10 @@
     {
       "path": "/api/auto-notes",
       "schedule": "30 12 * * 1-5"
+    },
+    {
+      "path": "/api/auto-stocks",
+      "schedule": "0 18 * * 1-5"
     }
   ]
 }
